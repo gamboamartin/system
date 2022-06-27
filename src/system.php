@@ -199,6 +199,14 @@ class system extends controlador_base{
                 header:  $header, ws: $ws);
         }
 
+
+        if(!isset($this->row_upd)){
+            $this->row_upd = new stdClass();
+        }
+        if(!isset($this->row_upd->status)){
+            $this->row_upd->status = '';
+        }
+
         $button_status = (new directivas())->button_href_status(cols: 12, registro_id:$this->registro_id,
             seccion: $this->seccion,status: $this->row_upd->status);
         if(errores::$error){
