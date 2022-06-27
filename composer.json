@@ -1,0 +1,37 @@
+{
+  "name": "gamboa.martin/system",
+  "description": "Base controlador para templates",
+  "type": "library",
+  "license": "GPL-3.0-or-later",
+  "authors": [
+    {
+      "name": "Martin Gamboa",
+      "email": "gamboa.martin@gmail.com"
+    }
+  ],
+
+    "autoload": {
+        "psr-4": {
+          "system\\": "src/",
+          "config\\": "config/",
+          "gamboamartin\\system\\": "src/"
+        }
+    },
+    "require": {
+      "gamboa.martin/test": "dev-main",
+      "gamboa.martin/errores": "^1.0.0",
+      "gamboa.martin/administrador": "^1.0.0",
+      "gamboa.martin/calculo": "dev-main",
+      "gamboa.martin/validacion": "dev-main",
+      "gamboa.martin/base_modelos": "dev-main",
+      "gamboa.martin/compresor": "dev-main",
+      "gamboa.martin/configuraciones": "dev-main",
+      "gamboa.martin/plugins": "dev-main",
+      "gamboa.martin/template_1": "dev-main",
+      "ext-mysqli": "*",
+      "ext-pdo": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    }
+}
