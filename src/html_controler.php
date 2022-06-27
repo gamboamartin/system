@@ -48,7 +48,7 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al validar cols', data: $valida);
         }
 
-        if(!isset($controler->controler->row_upd)){
+        if(!isset($controler->row_upd)){
             $controler->row_upd = new stdClass();
         }
 
