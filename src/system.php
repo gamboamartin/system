@@ -5,6 +5,7 @@ use base\orm\modelo;
 use config\generales;
 use config\views;
 use gamboamartin\errores\errores;
+use html\directivas;
 use PDO;
 use stdClass;
 
@@ -192,7 +193,7 @@ class system extends controlador_base{
                 header:  $header, ws: $ws);
         }
 
-        $inputs = $this->html->modifica();
+        $inputs = $this->html->modifica(controler: $this);
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al generar inputs', data: $inputs,
                 header:  $header, ws: $ws);
