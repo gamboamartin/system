@@ -57,7 +57,7 @@ class system extends controlador_base{
         $r_alta =  array();
         $this->inputs = new stdClass();
 
-        $inputs = $this->html->alta();
+        $inputs = $this->html->alta(controler: $this);
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al generar inputs', data: $inputs,
                 header:  $header, ws: $ws);
