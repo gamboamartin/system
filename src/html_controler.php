@@ -1,8 +1,10 @@
 <?php
 namespace gamboamartin\system;
+use base\orm\modelo;
 use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
 use html\directivas;
+use html\html;
 use stdClass;
 
 class html_controler{
@@ -108,5 +110,31 @@ class html_controler{
         }
 
         return $controler->inputs;
+    }
+
+    protected function select_catalogo(modelo $modelo): array|string
+    {
+        $key_id = $modelo->tabla.'_id';
+        $key_descripcion_select = $modelo->tabla.'_descripcion_select';
+        $columnas[] = $key_id;
+        $columnas[] = $key_descripcion_select;
+        $registros = $modelo->registros_activos(columnas: $columnas);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener registros',data:  $registros);
+        }
+
+        $values = array();
+        foreach ($registros as $registro){
+            $values[$registro[$key_id]] = $registro[$key_descripcion_select];
+        }
+
+        $label = str_replace('_', ' ', $modelo->tabla);
+        $label = ucwords($label);
+
+        $select = (new html())->select(cols:12, id_selected:-1, label: $label,name:$key_id,values: $values);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar select', data: $select);
+        }
+        return $select;
     }
 }
