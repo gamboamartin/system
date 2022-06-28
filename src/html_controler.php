@@ -31,6 +31,37 @@ class html_controler{
         return $controler->inputs;
     }
 
+    private function genera_values_selects(stdClass $keys, array $registros): array
+    {
+        $values = array();
+        foreach ($registros as $registro){
+            $values[$registro[$keys->id]] = $registro[$keys->descripcion_select];
+        }
+        return $values;
+    }
+
+    private function init_data_select(modelo $modelo): array|stdClass
+    {
+        $keys = $this->keys_base(tabla: $modelo->tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar keys',data:  $keys);
+        }
+
+        $values = $this->values_selects(keys: $keys,modelo: $modelo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener valores',data:  $values);
+        }
+
+        $label = $this->label(tabla: $modelo->tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener label',data:  $label);
+        }
+
+        $keys->values = $values;
+        $keys->label = $label;
+        return $keys;
+    }
+
     /**
      * @param stdClass $cols Objeto con la definicion del numero de columnas a integrar en un input base
      * @param system $controler
@@ -91,6 +122,34 @@ class html_controler{
         return $controler->inputs;
     }
 
+    /**
+     * Asigna los keys necesarios para un select
+     * @param string $tabla Tabla o nombre del modelo en ejecucion
+     * @return stdClass|array obj->id, obj->descripcion_select
+     * @version 0.2.5
+     */
+    private function keys_base(string $tabla): stdClass|array
+    {
+        $tabla = trim($tabla);
+        if($tabla === ''){
+            return $this->error->error(mensaje: 'Error tabla esta vacia',data:  $tabla);
+        }
+        $key_id = $tabla.'_id';
+        $key_descripcion_select = $tabla.'_descripcion_select';
+
+        $data = new stdClass();
+        $data->id = $key_id;
+        $data->descripcion_select = $key_descripcion_select;
+
+        return $data;
+    }
+
+    private function label(string $tabla): string
+    {
+        $label = str_replace('_', ' ', $tabla);
+        return ucwords($label);
+    }
+
     public function modifica(system $controler): array|stdClass
     {
         $controler->inputs = new stdClass();
@@ -112,29 +171,48 @@ class html_controler{
         return $controler->inputs;
     }
 
-    protected function select_catalogo(modelo $modelo): array|string
+    private function rows_select(stdClass $keys, modelo $modelo): array
     {
-        $key_id = $modelo->tabla.'_id';
-        $key_descripcion_select = $modelo->tabla.'_descripcion_select';
-        $columnas[] = $key_id;
-        $columnas[] = $key_descripcion_select;
+        $columnas[] = $keys->id;
+        $columnas[] = $keys->descripcion_select;
+
         $registros = $modelo->registros_activos(columnas: $columnas);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener registros',data:  $registros);
         }
+        return $registros;
+    }
 
-        $values = array();
-        foreach ($registros as $registro){
-            $values[$registro[$key_id]] = $registro[$key_descripcion_select];
+    protected function select_catalogo(modelo $modelo): array|string
+    {
+
+        $init = $this->init_data_select(modelo: $modelo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar datos', data: $init);
         }
 
-        $label = str_replace('_', ' ', $modelo->tabla);
-        $label = ucwords($label);
-
-        $select = (new html())->select(cols:12, id_selected:-1, label: $label,name:$key_id,values: $values);
+        $select = (new html())->select(cols:12, id_selected:-1, label: $init->label,name:$init->id,
+            values: $init->values);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $select);
         }
         return $select;
     }
+
+    private function values_selects(stdClass $keys, modelo $modelo): array
+    {
+        $registros = $this->rows_select(keys: $keys,modelo: $modelo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener registros',data:  $registros);
+        }
+
+        $values = $this->genera_values_selects(keys: $keys,registros: $registros);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al asignar valores',data:  $values);
+        }
+
+        return $values;
+    }
+
+
 }
