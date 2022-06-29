@@ -21,6 +21,8 @@ class system extends controlador_base{
     public array $secciones = array();
     public array $keys_row_lista = array();
     public array $rows_lista = array('id','codigo','codigo_bis','descripcion','descripcion_select','alias');
+    public array $inputs_alta = array('codigo','codigo_bis','descripcion','descripcion_select','alias');
+    public string $forms_inputs_alta = '';
 
     public function __construct(html_controler $html,PDO $link, modelo $modelo, links_menu $obj_link,
                                 array $filtro_boton_lista = array(), string $campo_busca = 'registro_id',
@@ -63,6 +65,12 @@ class system extends controlador_base{
             return $this->retorno_error(mensaje: 'Error al generar inputs', data: $inputs,
                 header:  $header, ws: $ws);
         }
+
+        $form_alta = '';
+        foreach($this->inputs_alta as $input_alta){
+            $form_alta .= $this->inputs->$input_alta;
+        }
+        $this->forms_inputs_alta = $form_alta;
 
         $include_inputs_alta = (new generales())->path_base."templates/inputs/$this->seccion/alta.php";
         if(!file_exists($include_inputs_alta)){
