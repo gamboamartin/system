@@ -22,7 +22,9 @@ class system extends controlador_base{
     public array $keys_row_lista = array();
     public array $rows_lista = array('id','codigo','codigo_bis','descripcion','descripcion_select','alias');
     public array $inputs_alta = array('codigo','codigo_bis','descripcion','descripcion_select','alias');
+    public array $inputs_modifica = array('id','codigo','codigo_bis','descripcion','descripcion_select','alias');
     public string $forms_inputs_alta = '';
+    public string $forms_inputs_modifica = '';
 
     public function __construct(html_controler $html,PDO $link, modelo $modelo, links_menu $obj_link,
                                 array $filtro_boton_lista = array(), string $campo_busca = 'registro_id',
@@ -222,6 +224,13 @@ class system extends controlador_base{
                 header:  $header, ws: $ws);
         }
         $this->inputs->status = $button_status;
+
+
+        $form_modifica = '';
+        foreach($this->inputs_modifica as $input_modifica){
+            $form_modifica .= $this->inputs->$input_modifica;
+        }
+        $this->forms_inputs_modifica = $form_modifica;
 
         $include_inputs_modifica = (new generales())->path_base."templates/inputs/$this->seccion/modifica.php";
         if(!file_exists($include_inputs_modifica)){
