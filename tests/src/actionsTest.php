@@ -83,6 +83,34 @@ class actionsTest extends test {
         errores::$error = false;
     }
 
+    public function test_limpia_butons(): void
+    {
+        errores::$error = false;
+        $act = new actions();
+        $act = new liberator($act);
+        $_GET['session_id'] = 1;
+
+        $resultado = $act->limpia_butons();
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty($resultado);
+
+        errores::$error = false;
+        $_POST['guarda'] = 'X';
+        $resultado = $act->limpia_butons();
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty($resultado);
+
+        errores::$error = false;
+        $_POST['guarda_otro'] = 'X';
+        $resultado = $act->limpia_butons();
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty($resultado);
+        errores::$error = false;
+    }
+
     public function test_link_accion(): void
     {
         errores::$error = false;

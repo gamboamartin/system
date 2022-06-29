@@ -145,6 +145,7 @@ class actions{
 
     /**
      * Limpia los valores POST de botones
+     * @version 0.6.5 Se ajusta modelo base
      * @return array
      */
     private function limpia_butons(): array
