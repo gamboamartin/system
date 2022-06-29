@@ -183,7 +183,7 @@ class html_controler{
         return $registros;
     }
 
-    protected function select_catalogo(modelo $modelo): array|string
+    protected function select_catalogo(int $id_selected, modelo $modelo): array|string
     {
 
         $init = $this->init_data_select(modelo: $modelo);
@@ -191,7 +191,7 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al inicializar datos', data: $init);
         }
 
-        $select = (new html())->select(cols:12, id_selected:-1, label: $init->label,name:$init->id,
+        $select = (new html())->select(cols:12, id_selected:$id_selected, label: $init->label,name:$init->id,
             values: $init->values);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $select);
