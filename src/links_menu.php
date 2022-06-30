@@ -10,6 +10,10 @@ class links_menu{
     protected string $session_id;
     protected errores $error;
     private array $secciones;
+
+    /**
+     * @param int $registro_id Registro a integrar en el link href
+     */
     public function __construct(int $registro_id){
         $this->error = new errores();
         $this->links = new stdClass();
@@ -76,6 +80,12 @@ class links_menu{
         return $this->links;
     }
 
+    /**
+     * @param string $accion Accion a asignar o generar link
+     * @param int $registro_id
+     * @param string $seccion
+     * @return array|stdClass
+     */
     private function con_id(string $accion, int $registro_id, string $seccion): array|stdClass
     {
         $function = 'link_'.$accion;
@@ -96,6 +106,10 @@ class links_menu{
         return "./index.php?seccion=$seccion&accion=elimina_bd&registro_id=$registro_id";
     }
 
+    /**
+     * @param int $registro_id Registro a integrar en el link href
+     * @return array|stdClass
+     */
     private function eliminas_bd(int $registro_id): array|stdClass
     {
         $init = $this->links_con_id(accion: 'elimina_bd',registro_id: $registro_id);
@@ -106,6 +120,12 @@ class links_menu{
         return $this->links;
     }
 
+    /**
+     * @param string $accion Accion a asignar o generar link
+     * @param string $link Link href con ruta
+     * @param string $seccion Seccion a asignar link
+     * @return stdClass
+     */
     private function init_action(string $accion, string $link, string $seccion): stdClass
     {
         if(!isset($this->links->$seccion)){
@@ -226,6 +246,10 @@ class links_menu{
         return $modifica;
     }
 
+    /**
+     * @param int $registro_id Registro a integrar en el link href
+     * @return stdClass|array
+     */
     protected function links(int $registro_id): stdClass|array
     {
         $this->session_id = trim($this->session_id);
@@ -272,6 +296,11 @@ class links_menu{
         return $this->links;
     }
 
+    /**
+     * @param string $accion Accion a asignar o generar link
+     * @param int $registro_id
+     * @return array|stdClass
+     */
     private function links_con_id(string $accion, int $registro_id): array|stdClass
     {
         foreach ($this->secciones as $seccion){
