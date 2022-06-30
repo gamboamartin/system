@@ -9,6 +9,11 @@ class init{
         $this->error = new errores();
     }
 
+    /**
+     * @param string $campo_puro Campo puro de la tabla en ejecucion
+     * @param string $tabla
+     * @return array|stdClass
+     */
     private function data_key_row_lista(string $campo_puro, string $tabla): array|stdClass
     {
         $key_value = $this->key_value_campo(campo_puro: $campo_puro, tabla: $tabla);
@@ -35,6 +40,10 @@ class init{
         return $keys_row_lista;
     }
 
+    /**
+     * @param system $controller Controlador en ejecucion
+     * @return stdClass
+     */
     private function init_acciones_base(system $controller): stdClass
     {
         $controller->acciones = new stdClass();
@@ -50,6 +59,10 @@ class init{
         return $controller->acciones;
     }
 
+    /**
+     * @param system $controller Controlador en ejecucion
+     * @return array|stdClass
+     */
     public function init_controller(system $controller): array|stdClass
     {
         $init_msj = (new mensajeria())->init_mensajes(controler: $controller);
@@ -75,6 +88,11 @@ class init{
         return $data;
     }
 
+    /**
+     * @param string $campo_puro Campo puro de la tabla en ejecucion
+     * @param string $tabla
+     * @return array|stdClass
+     */
     public function key_row_lista(string $campo_puro, string $tabla): array|stdClass
     {
         $data_key_row_lista = $this->data_key_row_lista(campo_puro: $campo_puro, tabla: $tabla);
@@ -89,6 +107,10 @@ class init{
         return $key_row_lista;
     }
 
+    /**
+     * @param system $controler Controlador en ejecucion
+     * @return array
+     */
     public function keys_row_lista(system $controler): array
     {
 
@@ -111,6 +133,11 @@ class init{
         return ucwords($name_lista);
     }
 
+    /**
+     * @param string $campo_puro Campo puro de la tabla en ejecucion
+     * @param string $tabla
+     * @return string
+     */
     private function key_value_campo(string $campo_puro, string $tabla): string
     {
         return $tabla.'_'.$campo_puro;

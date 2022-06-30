@@ -6,6 +6,7 @@ use config\generales;
 use config\views;
 use gamboamartin\errores\errores;
 use html\directivas;
+use JsonException;
 use PDO;
 use stdClass;
 
@@ -26,6 +27,17 @@ class system extends controlador_base{
     public string $forms_inputs_alta = '';
     public string $forms_inputs_modifica = '';
 
+    /**
+     * @param html_controler $html Html base
+     * @param PDO $link
+     * @param modelo $modelo
+     * @param links_menu $obj_link
+     * @param array $filtro_boton_lista
+     * @param string $campo_busca
+     * @param string $valor_busca_fault
+     * @param stdClass $paths_conf
+     * @throws JsonException
+     */
     public function __construct(html_controler $html,PDO $link, modelo $modelo, links_menu $obj_link,
                                 array $filtro_boton_lista = array(), string $campo_busca = 'registro_id',
                                 string $valor_busca_fault = '', stdClass $paths_conf = new stdClass())
