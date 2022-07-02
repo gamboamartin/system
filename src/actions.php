@@ -95,6 +95,10 @@ class actions{
         return $registros_view;
     }
 
+    /**
+     * Inicializa los datos para una accion de tipo alta bd
+     * @return array|string
+     */
     public function init_alta_bd(): array|string
     {
         $siguiente_view = (new actions())->siguiente_view();

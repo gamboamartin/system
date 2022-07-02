@@ -28,6 +28,7 @@
       "gamboa.martin/configuraciones": "dev-main",
       "gamboa.martin/plugins": "dev-main",
       "gamboa.martin/template_1": "dev-main",
+      "gamboa.martin/template": "dev-main",
       "ext-mysqli": "*",
       "ext-pdo": "*"
     },

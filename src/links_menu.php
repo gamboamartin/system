@@ -44,7 +44,7 @@ class links_menu{
      * @param string $seccion Seccion en ejecucion
      * @return string|array
      */
-    private function alta(string $seccion): string|array
+    protected function alta(string $seccion): string|array
     {
         $seccion = trim($seccion);
         if($seccion === ''){
@@ -82,7 +82,7 @@ class links_menu{
 
     /**
      * @param string $accion Accion a asignar o generar link
-     * @param int $registro_id
+     * @param int $registro_id Registro a aplicar identificador
      * @param string $seccion
      * @return array|stdClass
      */
@@ -121,6 +121,7 @@ class links_menu{
     }
 
     /**
+     * Inicializa un link para generar una accion
      * @param string $accion Accion a asignar o generar link
      * @param string $link Link href con ruta
      * @param string $seccion Seccion a asignar link
@@ -298,7 +299,7 @@ class links_menu{
 
     /**
      * @param string $accion Accion a asignar o generar link
-     * @param int $registro_id
+     * @param int $registro_id Registro a aplicar identificador
      * @return array|stdClass
      */
     private function links_con_id(string $accion, int $registro_id): array|stdClass

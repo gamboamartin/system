@@ -97,6 +97,12 @@ class system extends controlador_base{
         return $r_alta;
     }
 
+    /**
+     * @param bool $header Si header mostrara el resultado en el navegador
+     * @param bool $ws Mostrara el resultado en forma de json
+     * @return array|stdClass
+     * @throws JsonException
+     */
     public function alta_bd(bool $header, bool $ws = false): array|stdClass
     {
 
