@@ -54,6 +54,30 @@ class links_menuTest extends test {
     }
 
     /**
+     */
+    #[NoReturn] public function test_init_action(): void
+    {
+        errores::$error = false;
+        $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_GET['session_id'] = '1';
+        $html = new links_menu(-1);
+        $html = new liberator($html);
+
+
+        $seccion = 'c';
+        $link = 'c';
+        $accion = 'a';
+
+        $resultado = $html->init_action($accion, $link, $seccion);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("c", $resultado->c->a);
+        errores::$error = false;
+    }
+
+    /**
      * @throws JsonException
      */
     #[NoReturn] public function test_init_link_controller(): void

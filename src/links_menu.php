@@ -44,7 +44,7 @@ class links_menu{
      * @param string $seccion Seccion en ejecucion
      * @return string|array
      */
-    protected function alta(string $seccion): string|array
+    private function alta(string $seccion): string|array
     {
         $seccion = trim($seccion);
         if($seccion === ''){
@@ -125,10 +125,23 @@ class links_menu{
      * @param string $accion Accion a asignar o generar link
      * @param string $link Link href con ruta
      * @param string $seccion Seccion a asignar link
-     * @return stdClass
+     * @return stdClass|array
+     * @version 0.10.5
      */
-    private function init_action(string $accion, string $link, string $seccion): stdClass
+    private function init_action(string $accion, string $link, string $seccion): stdClass|array
     {
+        $accion = trim($accion);
+        if($accion === ''){
+            return $this->error->error(mensaje: 'Error la accion esta vacia', data:$accion);
+        }
+        $link = trim($link);
+        if($link === ''){
+            return $this->error->error(mensaje: 'Error $link esta vacio', data:$link);
+        }
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(mensaje: 'Error $seccion esta vacia', data:$seccion);
+        }
         if(!isset($this->links->$seccion)){
             $this->links->$seccion = new stdClass();
         }
@@ -171,7 +184,7 @@ class links_menu{
      * @param string $seccion Seccion a inicializar el link
      * @return array|string
      */
-    private function link_alta(string $seccion): array|string
+    protected function link_alta(string $seccion): array|string
     {
         $seccion = trim($seccion);
         if($seccion === ''){
