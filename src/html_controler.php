@@ -53,10 +53,11 @@ class html_controler{
 
     /**
      * Inicializa los datos de un select
+     * @param bool $con_registros
      * @param modelo $modelo
      * @return array|stdClass
      */
-    private function init_data_select(modelo $modelo): array|stdClass
+    private function init_data_select(bool $con_registros, modelo $modelo): array|stdClass
     {
 
         $keys = $this->keys_base(tabla: $modelo->tabla);
@@ -64,7 +65,7 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al generar keys',data:  $keys);
         }
 
-        $values = $this->values_selects(keys: $keys,modelo: $modelo);
+        $values = $this->values_selects(con_registros: $con_registros, keys: $keys,modelo: $modelo);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener valores',data:  $values);
         }
@@ -210,10 +211,10 @@ class html_controler{
         return $registros;
     }
 
-    protected function select_catalogo(int $cols, int $id_selected, modelo $modelo): array|string
+    protected function select_catalogo(int $cols, bool $con_registros, int $id_selected, modelo $modelo): array|string
     {
 
-        $init = $this->init_data_select(modelo: $modelo);
+        $init = $this->init_data_select(con_registros: $con_registros, modelo: $modelo);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar datos', data: $init);
         }
@@ -226,11 +227,14 @@ class html_controler{
         return $select;
     }
 
-    private function values_selects(stdClass $keys, modelo $modelo): array
+    private function values_selects( bool $con_registros, stdClass $keys, modelo $modelo): array
     {
-        $registros = $this->rows_select(keys: $keys,modelo: $modelo);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener registros',data:  $registros);
+        $registros = array();
+        if($con_registros) {
+            $registros = $this->rows_select(keys: $keys, modelo: $modelo);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al obtener registros', data: $registros);
+            }
         }
 
         $values = $this->genera_values_selects(keys: $keys,registros: $registros);
