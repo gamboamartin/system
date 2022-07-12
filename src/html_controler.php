@@ -42,6 +42,7 @@ class html_controler{
 
     private function init_data_select(modelo $modelo): array|stdClass
     {
+
         $keys = $this->keys_base(tabla: $modelo->tabla);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar keys',data:  $keys);
@@ -64,6 +65,7 @@ class html_controler{
 
     /**
      * @param stdClass $cols Objeto con la definicion del numero de columnas a integrar en un input base
+     * @version 0.11.5
      * @param system $controler
      * @param bool $value_vacio
      * @return array|stdClass
@@ -84,12 +86,16 @@ class html_controler{
         if(!isset($controler->row_upd)){
             $controler->row_upd = new stdClass();
         }
+        if(empty($controler->inputs)){
+            $controler->inputs = new stdClass();
+        }
 
         $html_codigo = $this->directivas->input_codigo(cols: $cols->codigo,row_upd: $controler->row_upd,
             value_vacio: $value_vacio);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar input', data: $html_codigo);
         }
+
         $controler->inputs->codigo = $html_codigo;
 
         $html_codigo_bis = $this->directivas->input_codigo_bis(cols: $cols->codigo_bis,
