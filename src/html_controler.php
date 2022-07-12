@@ -16,6 +16,11 @@ class html_controler{
         $this->error = new errores();
     }
 
+    /**
+     * Genera los inputs base de un alta de cualquier controller que herede
+     * @param system $controler Controlador en ejecucion
+     * @return array|stdClass
+     */
     public function alta(system $controler): array|stdClass
     {
         $controler->inputs = new stdClass();
@@ -31,6 +36,12 @@ class html_controler{
         return $controler->inputs;
     }
 
+    /**
+     * Asigna los values de un select
+     * @param stdClass $keys
+     * @param array $registros
+     * @return array
+     */
     private function genera_values_selects(stdClass $keys, array $registros): array
     {
         $values = array();
@@ -40,6 +51,11 @@ class html_controler{
         return $values;
     }
 
+    /**
+     * Inicializa los datos de un select
+     * @param modelo $modelo
+     * @return array|stdClass
+     */
     private function init_data_select(modelo $modelo): array|stdClass
     {
 
@@ -150,6 +166,11 @@ class html_controler{
         return $data;
     }
 
+    /**
+     * Genera un label valido para se mostrado en front
+     * @param string $tabla
+     * @return string
+     */
     private function label(string $tabla): string
     {
         $label = str_replace('_', ' ', $tabla);
