@@ -69,6 +69,21 @@ class actionsTest extends test {
 
     }
 
+    public function test_init_alta_bd(): void
+    {
+        errores::$error = false;
+        $act = new actions();
+        //$act = new liberator($act);
+        $_GET['session_id'] = 1;
+
+
+        $resultado = $act->init_alta_bd();
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('modifica', $resultado);
+        errores::$error = false;
+    }
+
     public function test_key_id(): void
     {
         errores::$error = false;

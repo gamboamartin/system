@@ -211,6 +211,15 @@ class html_controler{
         return $registros;
     }
 
+    /**
+     * Genera el input de tipo select
+     * @param int $cols Numero de columnas boostrap
+     * @param bool $con_registros Si con registros , obtiene todos los registros activos del modelo en ejecucion
+     *  para la asignacion de options, Si no, deja el select en blanco o vacio
+     * @param int $id_selected Identificador de un registro y cargado utilizado para modifica, aplica selected
+     * @param modelo $modelo Modelo de datos ejecucion
+     * @return array|string Un string con options en forma de html
+     */
     protected function select_catalogo(int $cols, bool $con_registros, int $id_selected, modelo $modelo): array|string
     {
 

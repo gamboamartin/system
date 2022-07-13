@@ -97,15 +97,16 @@ class actions{
 
     /**
      * Inicializa los datos para una accion de tipo alta bd
+     * v0.15.5
      * @return array|string
      */
     public function init_alta_bd(): array|string
     {
-        $siguiente_view = (new actions())->siguiente_view();
+        $siguiente_view = $this->siguiente_view();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener siguiente view', data: $siguiente_view);
         }
-        $limpia_button = (new actions())->limpia_butons();
+        $limpia_button = $this->limpia_butons();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al limpiar botones', data: $limpia_button);
         }
