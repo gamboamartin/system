@@ -133,11 +133,12 @@ class actions{
         foreach ($registros as $indice=>$row){
 
             if($style_status){
-                $style = 'danger';
-                $key = $seccion.'_'.$accion;
-                if($row->$key === 'activo'){
-                    $style = 'info';
+
+                $style = $this->style(accion: $accion, row: $row, seccion: $seccion);
+                if(errores::$error){
+                    return $this->error->error(mensaje: 'Error al asignar style', data:  $style);
                 }
+
             }
             $registros_view = $this->asigna_link_rows(accion: $accion,indice:  $indice,obj_link:  $obj_link,
                 registros_view: $registros_view,row:  $row, seccion: $seccion, style: $style);
@@ -274,6 +275,16 @@ class actions{
             $siguiente_view = 'alta';
         }
         return $siguiente_view;
+    }
+
+    private function style(string $accion, stdClass $row, string $seccion): string
+    {
+        $style = 'danger';
+        $key = $seccion.'_'.$accion;
+        if($row->$key === 'activo'){
+            $style = 'info';
+        }
+        return $style;
     }
 
     /**

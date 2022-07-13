@@ -69,6 +69,13 @@ class system extends controlador_base{
 
     }
 
+    /**
+     * Funcion que genera los inputs y templates base para un alta
+     * @version 0.17.5
+     * @param bool $header Si header muestra resultado via http
+     * @param bool $ws Muestra resultado via Json
+     * @return array|string
+     */
     public function alta(bool $header, bool $ws = false): array|string
     {
         $r_alta =  array();
@@ -94,7 +101,7 @@ class system extends controlador_base{
         $this->include_inputs_alta = $include_inputs_alta;
 
 
-        return $r_alta;
+        return $this->forms_inputs_alta;
     }
 
     /**
