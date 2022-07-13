@@ -29,6 +29,35 @@ class html_controlerTest extends test {
     /**
      * @throws JsonException
      */
+    public function test_alta(): void
+    {
+        errores::$error = false;
+        $html = new html_controler();
+        //$html = new liberator($html);
+
+
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+        $html_controler = new html_controler();
+
+        $modelo = new adm_accion($this->link);
+        $obj_link = new links_menu(-1);
+
+
+        $controler = new system(html: $html_controler, link: $this->link, modelo: $modelo, obj_link: $obj_link,
+            paths_conf: $this->paths_conf);
+
+        $resultado = $html->alta($controler);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<div class='control-group col-sm-6'><label class='control-label' for='codigo'>Codigo</label><div class='controls'><input type='text' name='codigo' value='' class='form-control'  required id='codigo' placeholder='Codigo' /></div></div>", $resultado->codigo);
+
+        errores::$error = false;
+    }
+
+    /**
+     * @throws JsonException
+     */
     public function test_inputs_base(): void
     {
         errores::$error = false;

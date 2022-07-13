@@ -20,6 +20,7 @@ class html_controler{
      * Genera los inputs base de un alta de cualquier controller que herede
      * @param system $controler Controlador en ejecucion
      * @return array|stdClass
+     * @version 0.16.5
      */
     public function alta(system $controler): array|stdClass
     {
