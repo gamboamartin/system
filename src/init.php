@@ -127,10 +127,21 @@ class init{
         return $controler->keys_row_lista;
     }
 
-    public function limpia_data_row(string $key, array $row): array
+    private function limpia_data_row(string $key, array $row): array
     {
         if(isset($row[$key])){
             unset($row[$key]);
+        }
+        return $row;
+    }
+
+    public function limpia_rows(array $keys, array $row): array
+    {
+        foreach ($keys as $key){
+            $row = $this->limpia_data_row(key: $key,row:  $row);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al limpiar datos',data:  $row);
+            }
         }
         return $row;
     }
