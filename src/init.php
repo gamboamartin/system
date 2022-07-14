@@ -154,12 +154,22 @@ class init{
 
     /**
      * Genera un key para un campo
+     * @version 0.20.5
      * @param string $campo_puro Campo puro de la tabla en ejecucion
      * @param string $tabla Tabla o seccion o modelo
-     * @return string
+     * @return string|array
      */
-    private function key_value_campo(string $campo_puro, string $tabla): string
+    private function key_value_campo(string $campo_puro, string $tabla): string|array
     {
+        $tabla = trim($tabla);
+        if($tabla === ''){
+            return $this->error->error(mensaje: 'Error tabla esta vacia',data:  $tabla);
+        }
+        $campo_puro = trim($campo_puro);
+        if($campo_puro === ''){
+            return $this->error->error(mensaje: 'Error $campo_puro esta vacio',data:  $campo_puro);
+        }
+
         return $tabla.'_'.$campo_puro;
     }
 
