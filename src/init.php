@@ -11,7 +11,7 @@ class init{
 
     /**
      * @param string $campo_puro Campo puro de la tabla en ejecucion
-     * @param string $tabla
+     * @param string $tabla Tabla o seccion o modelo
      * @return array|stdClass
      */
     private function data_key_row_lista(string $campo_puro, string $tabla): array|stdClass
@@ -90,10 +90,10 @@ class init{
 
     /**
      * @param string $campo_puro Campo puro de la tabla en ejecucion
-     * @param string $tabla
+     * @param string $tabla Tabla o seccion o modelo
      * @return array|stdClass
      */
-    public function key_row_lista(string $campo_puro, string $tabla): array|stdClass
+    private function key_row_lista(string $campo_puro, string $tabla): array|stdClass
     {
         $data_key_row_lista = $this->data_key_row_lista(campo_puro: $campo_puro, tabla: $tabla);
         if(errores::$error){
@@ -116,7 +116,7 @@ class init{
 
         foreach ($controler->rows_lista as $row){
 
-            $key_row_lista = (new init())->key_row_lista(campo_puro: $row, tabla: $controler->tabla);
+            $key_row_lista = $this->key_row_lista(campo_puro: $row, tabla: $controler->tabla);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al inicializar $key_row_lista', data: $key_row_lista);
             }
@@ -127,6 +127,14 @@ class init{
         return $controler->keys_row_lista;
     }
 
+    public function limpia_data_row(string $key, array $row): array
+    {
+        if(isset($row[$key])){
+            unset($row[$key]);
+        }
+        return $row;
+    }
+
     private function name_lista(string $campo_puro): string
     {
         $name_lista = str_replace('_', ' ', $campo_puro);
@@ -134,8 +142,9 @@ class init{
     }
 
     /**
+     * Genera un key para un campo
      * @param string $campo_puro Campo puro de la tabla en ejecucion
-     * @param string $tabla
+     * @param string $tabla Tabla o seccion o modelo
      * @return string
      */
     private function key_value_campo(string $campo_puro, string $tabla): string
