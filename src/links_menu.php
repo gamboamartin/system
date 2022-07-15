@@ -398,6 +398,12 @@ class links_menu{
         return $this->links;
     }
 
+    /**
+     * Genera los parametros de in link sin registro_id
+     * @param string $seccion Seccion en ejecucion o llamada
+     * @param string $accion Accion a generar link
+     * @return array|stdClass
+     */
     private function sin_id(string $seccion, string $accion): array|stdClass
     {
 
