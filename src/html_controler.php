@@ -224,10 +224,11 @@ class html_controler{
      * @param modelo $modelo Modelo de datos ejecucion
      * @return array|string Un string con options en forma de html
      */
-    protected function select_catalogo(int $cols, bool $con_registros, int $id_selected, modelo $modelo): array|string
+    protected function select_catalogo(int $cols, bool $con_registros, int $id_selected, modelo $modelo,
+                                       string $label = ''): array|string
     {
 
-        $init = $this->init_data_select(con_registros: $con_registros, modelo: $modelo);
+        $init = $this->init_data_select(con_registros: $con_registros, modelo: $modelo, label: $label);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar datos', data: $init);
         }
