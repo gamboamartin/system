@@ -56,9 +56,10 @@ class html_controler{
      * Inicializa los datos de un select
      * @param bool $con_registros
      * @param modelo $modelo
+     * @param string $label
      * @return array|stdClass
      */
-    private function init_data_select(bool $con_registros, modelo $modelo): array|stdClass
+    private function init_data_select(bool $con_registros, modelo $modelo, string $label = ''): array|stdClass
     {
 
         $keys = $this->keys_base(tabla: $modelo->tabla);
@@ -71,9 +72,11 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al obtener valores',data:  $values);
         }
 
-        $label = $this->label(tabla: $modelo->tabla);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener label',data:  $label);
+        if($label === '') {
+            $label = $this->label(tabla: $modelo->tabla);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al obtener label', data: $label);
+            }
         }
 
         $keys->values = $values;
