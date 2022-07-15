@@ -400,6 +400,7 @@ class links_menu{
 
     /**
      * Genera los parametros de in link sin registro_id
+     * @version 0.25.5
      * @param string $seccion Seccion en ejecucion o llamada
      * @param string $accion Accion a generar link
      * @return array|stdClass
@@ -407,12 +408,22 @@ class links_menu{
     private function sin_id(string $seccion, string $accion): array|stdClass
     {
 
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(mensaje: 'Error la seccion esta vacia', data: $seccion);
+        }
+        $accion = trim($accion);
+        if($accion === ''){
+            return $this->error->error(mensaje: 'Error la $accion esta vacia', data: $accion);
+        }
+
         $this->session_id = trim($this->session_id);
         if($this->session_id === ''){
             return $this->error->error(mensaje: 'Error links_menu->session_id esta vacio', data: $this->session_id);
         }
 
         $function_link = 'link_'.$accion;
+
 
         $link_accion = $this->$function_link(seccion: $seccion);
         if (errores::$error) {

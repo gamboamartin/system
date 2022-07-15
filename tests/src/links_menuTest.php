@@ -128,5 +128,25 @@ class links_menuTest extends test {
         errores::$error = false;
     }
 
+    /**
+     * @throws JsonException
+     */
+    #[NoReturn] public function test_sin_id(): void
+    {
+        errores::$error = false;
+        $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_GET['session_id'] = '1';
+        $html = new links_menu(-1);
+        $html = new liberator($html);
+
+
+        $resultado = $html->sin_id('a', 'lista');
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
 }
 
