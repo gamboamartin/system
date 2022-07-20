@@ -7,6 +7,7 @@ use gamboamartin\controllers\controlador_adm_sistema;
 use gamboamartin\controllers\controlador_sistema;
 use gamboamartin\errores\errores;
 use gamboamartin\system\mensajeria;
+use gamboamartin\template\html;
 use gamboamartin\test\test;
 use JsonException;
 use stdClass;
@@ -39,8 +40,8 @@ class mensajeriaTest extends test {
         $_GET['session_id'] = '1';
         $controler = new controlador_adm_seccion(link: $this->link, paths_conf: $this->paths_conf);
         //$inicializacion = new liberator($inicializacion);
-
-        $resultado = $msj->init_mensajes($controler);
+        $html = new html();
+        $resultado = $msj->init_mensajes($controler,$html);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
 
@@ -55,7 +56,7 @@ class mensajeriaTest extends test {
         $controler = new controlador_adm_seccion(link: $this->link, paths_conf: $this->paths_conf);
         //$inicializacion = new liberator($inicializacion);
 
-        $resultado = $msj->init_mensajes($controler);
+        $resultado = $msj->init_mensajes($controler,$html);
 
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);

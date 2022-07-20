@@ -2,17 +2,19 @@
 namespace gamboamartin\system;
 use base\orm\modelo;
 use gamboamartin\errores\errores;
+use gamboamartin\template\directivas;
+use gamboamartin\template\html;
 use gamboamartin\validacion\validacion;
-use html\directivas;
-use html\html;
+
+
 use stdClass;
 
 class html_controler{
-    protected directivas $directivas;
+    public directivas $directivas;
     protected errores $error;
 
-    public function __construct(){
-        $this->directivas = new directivas();
+    public function __construct(html $html){
+        $this->directivas = new directivas(html: $html);
         $this->error = new errores();
     }
 

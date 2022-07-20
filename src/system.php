@@ -36,7 +36,6 @@ class system extends controlador_base{
      * @param string $campo_busca
      * @param string $valor_busca_fault
      * @param stdClass $paths_conf
-     * @throws JsonException
      */
     public function __construct(html_controler $html,PDO $link, modelo $modelo, links_menu $obj_link,
                                 array $filtro_boton_lista = array(), string $campo_busca = 'registro_id',
@@ -46,7 +45,7 @@ class system extends controlador_base{
         parent::__construct(link: $link,modelo:  $modelo,filtro_boton_lista:  $filtro_boton_lista,
             campo_busca:  $campo_busca,valor_busca_fault:  $valor_busca_fault,paths_conf:  $paths_conf);
 
-        $init = (new init())->init_controller(controller:$this);
+        $init = (new init())->init_controller(controller:$this,html: $html->directivas->html );
         if(errores::$error){
             $error = $this->errores->error(mensaje: 'Error al inicializar controller', data: $init);
             print_r($error);

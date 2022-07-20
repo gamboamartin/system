@@ -7,6 +7,7 @@
 namespace gamboamartin\system;
 use base\controller\controlador_base;
 use gamboamartin\errores\errores;
+use gamboamartin\template\html;
 use html\directivas;
 use stdClass;
 
@@ -21,17 +22,18 @@ class mensajeria{
     /**
      * Inicializa los mensajes a mostrar en views
      * @param controlador_base $controler Controlador en ejecucion
+     * @param html $html
      * @return array|stdClass
      * @version 0.20.1
      */
-    public function init_mensajes(controlador_base $controler): array|stdClass
+    public function init_mensajes(controlador_base $controler, html $html): array|stdClass
     {
-        $mensaje_exito = (new directivas())->mensaje_exito(mensaje_exito: $controler->mensaje_exito);
+        $mensaje_exito = (new directivas(html: $html))->mensaje_exito(mensaje_exito: $controler->mensaje_exito);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar alerta', data: $mensaje_exito);
         }
 
-        $mensaje_warning = (new directivas())->mensaje_warning(mensaje_warning: $controler->mensaje_warning);
+        $mensaje_warning = (new directivas(html: $html))->mensaje_warning(mensaje_warning: $controler->mensaje_warning);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar alerta', data: $mensaje_warning);
         }

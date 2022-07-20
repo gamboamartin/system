@@ -90,7 +90,8 @@ class links_menuTest extends test {
         $html = new links_menu(-1);
         //$html = new liberator($html);
 
-        $html_controler = new html_controler();
+        $html_ = new \html\html();
+        $html_controler = new html_controler($html_);
 
         $modelo = new adm_accion($this->link);
         $obj_link = new links_menu(-1);

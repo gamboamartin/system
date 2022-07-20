@@ -7,6 +7,7 @@ use gamboamartin\system\links_menu;
 use gamboamartin\system\system;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
+use html\html;
 use JsonException;
 use models\adm_accion;
 use stdClass;
@@ -33,8 +34,8 @@ class systemTest extends test {
         errores::$error = false;
         $_GET['session_id'] = 1;
         $_GET['seccion'] = 'adm_accion';
-
-        $html_controler = new html_controler();
+        $html = new html();
+        $html_controler = new html_controler($html);
 
         $modelo = new adm_accion($this->link);
         $obj_link = new links_menu(-1);

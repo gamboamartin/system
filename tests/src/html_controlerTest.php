@@ -1,11 +1,10 @@
 <?php
 namespace tests\controllers;
-use gamboamartin\controllers\controlador_adm_seccion;
-use gamboamartin\controllers\controlador_adm_session;
 use gamboamartin\errores\errores;
 use gamboamartin\system\html_controler;
 use gamboamartin\system\links_menu;
 use gamboamartin\system\system;
+use gamboamartin\template\html;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 use JsonException;
@@ -27,18 +26,18 @@ class html_controlerTest extends test {
     }
 
     /**
-     * @throws JsonException
      */
     public function test_alta(): void
     {
         errores::$error = false;
-        $html = new html_controler();
+        $html_ = new html();
+        $html = new html_controler($html_);
         //$html = new liberator($html);
 
 
         $_GET['session_id'] = 1;
         $_GET['seccion'] = 'adm_accion';
-        $html_controler = new html_controler();
+        $html_controler = new html_controler($html_);
 
         $modelo = new adm_accion($this->link);
         $obj_link = new links_menu(-1);
@@ -50,7 +49,7 @@ class html_controlerTest extends test {
         $resultado = $html->alta($controler);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div class='control-group col-sm-6'><label class='control-label' for='codigo'>Codigo</label><div class='controls'><input type='text' name='codigo' value='' class='form-control'  required id='codigo' placeholder='Codigo' /></div></div>", $resultado->codigo);
+        $this->assertEquals("<div |class|><div |class|><input type='text' name='codigo' value='' |class|  required id='codigo' placeholder='Codigo' /></div></div>", $resultado->codigo);
 
         errores::$error = false;
     }
@@ -61,13 +60,14 @@ class html_controlerTest extends test {
     public function test_inputs_base(): void
     {
         errores::$error = false;
-        $html = new html_controler();
+        $html_ = new \html\html();
+        $html = new html_controler($html_);
         $html = new liberator($html);
 
 
         $_GET['session_id'] = 1;
         $_GET['seccion'] = 'adm_accion';
-        $html_controler = new html_controler();
+        $html_controler = new html_controler($html_);
 
         $modelo = new adm_accion($this->link);
         $obj_link = new links_menu(-1);
@@ -90,7 +90,8 @@ class html_controlerTest extends test {
     public function test_keys_base(): void
     {
         errores::$error = false;
-        $html = new html_controler();
+        $html_ = new \html\html();
+        $html = new html_controler($html_);
         $html = new liberator($html);
 
         $tabla = 'a';

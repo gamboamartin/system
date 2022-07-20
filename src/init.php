@@ -1,6 +1,7 @@
 <?php
 namespace gamboamartin\system;
 use gamboamartin\errores\errores;
+use gamboamartin\template\html;
 use stdClass;
 
 class init{
@@ -61,11 +62,12 @@ class init{
 
     /**
      * @param system $controller Controlador en ejecucion
+     * @param html $html
      * @return array|stdClass
      */
-    public function init_controller(system $controller): array|stdClass
+    public function init_controller(system $controller, html $html): array|stdClass
     {
-        $init_msj = (new mensajeria())->init_mensajes(controler: $controller);
+        $init_msj = (new mensajeria())->init_mensajes(controler: $controller,html: $html);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar mensajes', data: $init_msj);
         }
