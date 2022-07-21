@@ -60,7 +60,7 @@ class html_controlerTest extends test {
     public function test_inputs_base(): void
     {
         errores::$error = false;
-        $html_ = new \html\html();
+        $html_ = new html();
         $html = new html_controler($html_);
         $html = new liberator($html);
 
@@ -83,14 +83,14 @@ class html_controlerTest extends test {
         $resultado = $html->inputs_base($cols, $controler, $value_vacio);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div class='control-group col-sm-1'><label class='control-label' for='codigo'>Codigo</label><div class='controls'><input type='text' name='codigo' value='' class='form-control'  required id='codigo' placeholder='Codigo' /></div></div>", $resultado->codigo);
+        $this->assertEquals("<div |class|><div |class|><input type='text' name='codigo' value='' |class|  required id='codigo' placeholder='Codigo' /></div></div>", $resultado->codigo);
 
     }
 
     public function test_keys_base(): void
     {
         errores::$error = false;
-        $html_ = new \html\html();
+        $html_ = new html();
         $html = new html_controler($html_);
         $html = new liberator($html);
 

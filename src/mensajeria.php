@@ -7,8 +7,9 @@
 namespace gamboamartin\system;
 use base\controller\controlador_base;
 use gamboamartin\errores\errores;
+use gamboamartin\template\directivas;
 use gamboamartin\template\html;
-use html\directivas;
+
 use stdClass;
 
 class mensajeria{

@@ -6,6 +6,7 @@ use gamboamartin\errores\errores;
 use gamboamartin\system\html_controler;
 use gamboamartin\system\links_menu;
 use gamboamartin\system\system;
+use gamboamartin\template\html;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 
@@ -90,7 +91,7 @@ class links_menuTest extends test {
         $html = new links_menu(-1);
         //$html = new liberator($html);
 
-        $html_ = new \html\html();
+        $html_ = new html();
         $html_controler = new html_controler($html_);
 
         $modelo = new adm_accion($this->link);

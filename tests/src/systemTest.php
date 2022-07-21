@@ -5,9 +5,10 @@ use gamboamartin\errores\errores;
 use gamboamartin\system\html_controler;
 use gamboamartin\system\links_menu;
 use gamboamartin\system\system;
+use gamboamartin\template\html;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use html\html;
+
 use JsonException;
 use models\adm_accion;
 use stdClass;
@@ -48,7 +49,7 @@ class systemTest extends test {
 
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("control-group col-sm-12'><label class='control-label' for='descripcion'>Descri",$resultado);
+        $this->assertStringContainsStringIgnoringCase("<div |class|><div |class|><input type='text' name='codigo' value=''",$resultado);
         errores::$error = false;
     }
 
