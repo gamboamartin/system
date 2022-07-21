@@ -5,6 +5,7 @@ use base\orm\modelo;
 use config\generales;
 use config\views;
 use gamboamartin\errores\errores;
+use gamboamartin\template\html;
 use html\directivas;
 use JsonException;
 use PDO;
@@ -13,8 +14,6 @@ use stdClass;
 class system extends controlador_base{
 
     private html_controler $html;
-
-
 
     public stdClass $acciones;
 
@@ -26,6 +25,7 @@ class system extends controlador_base{
     public array $inputs_modifica = array('id','codigo','codigo_bis','descripcion','descripcion_select','alias');
     public string $forms_inputs_alta = '';
     public string $forms_inputs_modifica = '';
+    public html $html_base;
 
     /**
      * @param html_controler $html Html base
@@ -45,7 +45,8 @@ class system extends controlador_base{
         parent::__construct(link: $link,modelo:  $modelo,filtro_boton_lista:  $filtro_boton_lista,
             campo_busca:  $campo_busca,valor_busca_fault:  $valor_busca_fault,paths_conf:  $paths_conf);
 
-        $init = (new init())->init_controller(controller:$this,html: $html->directivas->html );
+        $this->html_base = $html->html_base;
+        $init = (new init())->init_controller(controller:$this,html: $this->html_base );
         if(errores::$error){
             $error = $this->errores->error(mensaje: 'Error al inicializar controller', data: $init);
             print_r($error);
@@ -241,7 +242,7 @@ class system extends controlador_base{
             $this->row_upd->status = '';
         }
 
-        $button_status = (new directivas())->button_href_status(cols: 12, registro_id:$this->registro_id,
+        $button_status = (new directivas(html: $this->html_base))->button_href_status(cols: 12, registro_id:$this->registro_id,
             seccion: $this->seccion,status: $this->row_upd->status);
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al generar boton', data: $button_status,

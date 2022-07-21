@@ -12,10 +12,12 @@ use stdClass;
 class html_controler{
     public directivas $directivas;
     protected errores $error;
+    public html $html_base;
 
     public function __construct(html $html){
         $this->directivas = new directivas(html: $html);
         $this->error = new errores();
+        $this->html_base = $html;
     }
 
     /**
