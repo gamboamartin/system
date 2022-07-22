@@ -129,6 +129,12 @@ class init{
         return $controler->keys_row_lista;
     }
 
+    /**
+     * Limpia los elementos de tipo row previos al alta de un registro
+     * @param string $key Key a limpiar
+     * @param array $row Registro a aplicar limpieza
+     * @return array
+     */
     private function limpia_data_row(string $key, array $row): array
     {
         if(isset($row[$key])){
@@ -137,6 +143,12 @@ class init{
         return $row;
     }
 
+    /**
+     * Limpiar los elementos de un registro previo a su insersion
+     * @param array $keys Keys a limpiar
+     * @param array $row Registro a limpiar
+     * @return array
+     */
     public function limpia_rows(array $keys, array $row): array
     {
         foreach ($keys as $key){
