@@ -240,7 +240,7 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al inicializar datos', data: $init);
         }
 
-        $select = (new html())->select(cols:$cols, id_selected:$id_selected, label: $init->label,name:$init->id,
+        $select = $this->html_base->select(cols:$cols, id_selected:$id_selected, label: $init->label,name:$init->id,
             values: $init->values);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $select);
