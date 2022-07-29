@@ -40,6 +40,21 @@ class initTest extends test {
         errores::$error = false;
     }
 
+    public function test_limpia_data_row(): void
+    {
+        errores::$error = false;
+        $init = new init();
+        $init = new liberator($init);
+
+        $key = 'a';
+        $row = array('a'=>'x');
+        $resultado = $init->limpia_data_row($key, $row);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty($resultado);
+        errores::$error = false;
+    }
+
 
 
 }

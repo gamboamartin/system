@@ -133,6 +133,10 @@ class init{
      * Limpia los elementos de tipo row previos al alta de un registro
      * @param string $key Key a limpiar
      * @param array $row Registro a aplicar limpieza
+     * @version 0.27.30
+     * @verfuncion 0.1.0
+     * @author mgamboa
+     * @fecha 2022-07-29 11:21
      * @return array
      */
     private function limpia_data_row(string $key, array $row): array
