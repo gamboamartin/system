@@ -151,6 +151,10 @@ class init{
      * Limpiar los elementos de un registro previo a su insersion
      * @param array $keys Keys a limpiar
      * @param array $row Registro a limpiar
+     * @version 0.29.30
+     * @verfuncion 0.1.0
+     * @author mgamboa
+     * @fecha 2022-07-29 12:08
      * @return array
      */
     public function limpia_rows(array $keys, array $row): array
