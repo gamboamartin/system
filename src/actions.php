@@ -259,11 +259,12 @@ class actions{
             return $this->error->error(mensaje: 'Error la seccion no esta habilitada para links', data:  $seccion);
         }
 
-        $retorno = $links->links->$seccion->modifica;
-        if($siguiente_view === 'alta'){
-            $retorno = $links->links->$seccion->alta;
+        $siguiente_view = trim($siguiente_view);
+        if($siguiente_view === ''){
+            $siguiente_view = 'modifica';
         }
-        return $retorno;
+
+        return $links->links->$seccion->$siguiente_view;
     }
 
     /**
