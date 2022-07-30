@@ -242,18 +242,17 @@ class actions{
     /**
      * Genera un link para ser aplicado en header despues de una accion
      * @version 0.22.2
-     * @param int $registro_id Identificador del modelo
+     * @param links_menu $links Generador de links
      * @param string $seccion Seccion en ejecucion
      * @param string $siguiente_view Que accion se ejecutara
      * @return array|string link para header
      */
-    public function retorno_alta_bd(int $registro_id, string $seccion, string $siguiente_view): array|string
+    public function retorno_alta_bd(links_menu $links, string $seccion, string $siguiente_view): array|string
     {
         $seccion = trim($seccion);
         if($seccion === ''){
             return $this->error->error(mensaje: 'Error la seccion esta vacia', data:  $seccion);
         }
-        $links = new links_menu(registro_id: $registro_id);
 
         if(!isset($links->links->$seccion)){
             return $this->error->error(mensaje: 'Error la seccion no esta habilitada para links', data:  $seccion);
