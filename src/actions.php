@@ -97,7 +97,7 @@ class actions{
 
     /**
      * Inicializa los datos para una accion de tipo alta bd
-     * v0.15.5
+     * @version v0.15.5
      * @return array|string
      */
     public function init_alta_bd(): array|string
@@ -161,6 +161,9 @@ class actions{
         }
         if(isset($_POST['guarda_otro'])){
             unset($_POST['guarda_otro']);
+        }
+        if(isset($_POST['btn_action_next'])){
+            unset($_POST['btn_action_next']);
         }
         return $_POST;
     }
