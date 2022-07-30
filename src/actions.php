@@ -277,6 +277,9 @@ class actions{
         if(isset($_POST['guarda_otro'])){
             $siguiente_view = 'alta';
         }
+        elseif (isset($_POST['btn_action_next'])){
+            $siguiente_view = $_POST['btn_action_next'];
+        }
         return $siguiente_view;
     }
 
