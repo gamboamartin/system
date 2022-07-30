@@ -68,7 +68,7 @@ class initTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertEmpty($resultado);
         errores::$error = false;
-        
+
     }
 
 

@@ -232,7 +232,7 @@ class html_controler{
      * @return array|string Un string con options en forma de html
      */
     protected function select_catalogo(int $cols, bool $con_registros, int $id_selected, modelo $modelo,
-                                       string $key_id = '', string $label = '', string $required = ""): array|string
+                                       string $key_id = '', string $label = '', bool $required = false): array|string
     {
 
         $init = $this->init_data_select(con_registros: $con_registros, modelo: $modelo, key_id: $key_id, label: $label);
