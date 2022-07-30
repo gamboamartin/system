@@ -112,19 +112,21 @@ class system extends controlador_base{
      */
     public function alta_bd(bool $header, bool $ws = false): array|stdClass
     {
-
+        $this->link->beginTransaction();
         $siguiente_view = (new actions())->init_alta_bd();
         if(errores::$error){
+            $this->link->rollBack();
             return $this->retorno_error(mensaje: 'Error al obtener siguiente view', data: $siguiente_view,
                 header:  $header, ws: $ws);
         }
 
         $r_alta_bd = parent::alta_bd(header: false,ws: false);
         if(errores::$error){
+            $this->link->rollBack();
             return $this->retorno_error(mensaje: 'Error al dar de alta registro', data: $r_alta_bd, header:  $header,
                 ws: $ws);
         }
-
+        $this->link->commit();
         if($header){
             $retorno = (new actions())->retorno_alta_bd(registro_id: $r_alta_bd->registro_id, seccion: $this->tabla,
                 siguiente_view: $siguiente_view);
@@ -140,7 +142,7 @@ class system extends controlador_base{
             echo json_encode($r_alta_bd, JSON_THROW_ON_ERROR);
             exit;
         }
-
+        $r_alta_bd->siguiente_view = $siguiente_view;
         return $r_alta_bd;
     }
 
