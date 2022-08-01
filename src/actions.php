@@ -170,16 +170,17 @@ class actions{
 
     /**
      * Asigna los datos de un link para ser usado en la views
-     * @version 0.28.2
      * @param string $accion Accion a ejecutar en el boton
      * @param string $key_id Key donde se encuentra el id del modelo
      * @param links_menu $obj_link Objeto para generacion de links
      * @param stdClass $row Registro en verificacion y asignacion
      * @param string $seccion Seccion en ejecucion
+     * @param int $registro_id
      * @return array|string
+     * @version 0.28.2
      */
     private function link_accion(string $accion, string $key_id , links_menu $obj_link, stdClass $row,
-                                 string $seccion): array|string
+                                 string $seccion, int $registro_id = -1): array|string
     {
 
         $valida = $this->valida_data_link(accion: $accion,key_id: $key_id,row: $row,seccion: $seccion);
@@ -187,7 +188,12 @@ class actions{
             return $this->error->error(mensaje: 'Error al validar datos', data:  $valida);
         }
 
+        if($registro_id!==-1){
+            $row->$key_id = $registro_id;
+        }
+
         $links_menu = new $obj_link(registro_id: $row->$key_id);
+        
 
         if(!isset($links_menu->links->$seccion)){
             return $this->error->error(mensaje: "Error no existe links_menu->$seccion", data:  $links_menu);
