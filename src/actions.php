@@ -193,7 +193,7 @@ class actions{
         }
 
         $links_menu = new $obj_link(registro_id: $row->$key_id);
-        
+
 
         if(!isset($links_menu->links->$seccion)){
             return $this->error->error(mensaje: "Error no existe links_menu->$seccion", data:  $links_menu);
