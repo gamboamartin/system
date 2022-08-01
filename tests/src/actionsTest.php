@@ -160,7 +160,7 @@ class actionsTest extends test {
 
         $links = new links_menu($registro_id);
 
-        $resultado = $act->retorno_alta_bd($links, $seccion, $siguiente_view);
+        $resultado = $act->retorno_alta_bd(-1, $seccion, $siguiente_view);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('./index.php?seccion=adm_accion_grupo&accion=modifica&registro_id=-1&session_id=1', $resultado);

@@ -247,21 +247,17 @@ class actions{
 
     /**
      * Genera un link para ser aplicado en header despues de una accion
-     * @version 0.22.2
-     * @param links_menu $links Generador de links
+     * @param int $registro_id Registro identificador del registro a procesar
      * @param string $seccion Seccion en ejecucion
      * @param string $siguiente_view Que accion se ejecutara
      * @return array|string link para header
+     * @version 0.22.2
      */
-    public function retorno_alta_bd(links_menu $links, string $seccion, string $siguiente_view): array|string
+    public function retorno_alta_bd(int $registro_id, string $seccion, string $siguiente_view): array|string
     {
         $seccion = trim($seccion);
         if($seccion === ''){
             return $this->error->error(mensaje: 'Error la seccion esta vacia', data:  $seccion);
-        }
-
-        if(!isset($links->links->$seccion)){
-            return $this->error->error(mensaje: 'Error la seccion no esta habilitada para links', data:  $seccion);
         }
 
         $siguiente_view = trim($siguiente_view);
@@ -269,7 +265,15 @@ class actions{
             $siguiente_view = 'modifica';
         }
 
-        return $links->links->$seccion->$siguiente_view;
+        $link = (new links_menu(registro_id: $registro_id))->link_con_id(accion:$siguiente_view,
+            registro_id: $registro_id, seccion: $seccion);
+
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar link', data:  $link);
+        }
+
+
+        return $link;
     }
 
     /**
