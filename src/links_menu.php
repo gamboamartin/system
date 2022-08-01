@@ -215,6 +215,13 @@ class links_menu{
         return $alta_bd;
     }
 
+    public function link_con_id(string $accion, int $registro_id, string $seccion): array|string
+    {
+        $link = "./index.php?seccion=$seccion&accion=$accion&registro_id=$registro_id";
+        $link.="&session_id=$this->session_id";
+        return $link;
+    }
+
     private function link_elimina_bd(int $registro_id, string $seccion): array|string
     {
         $elimina = $this->elimina_bd(registro_id: $registro_id, seccion: $seccion);
