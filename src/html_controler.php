@@ -60,14 +60,17 @@ class html_controler{
      * Inicializa los datos de un select
      * @param bool $con_registros
      * @param modelo $modelo
+     * @param string $key_descripcion_select
      * @param string $key_id
      * @param string $label
      * @return array|stdClass
      */
-    private function init_data_select(bool $con_registros, modelo $modelo, string $key_id = '', string $label = ''): array|stdClass
+    private function init_data_select(bool $con_registros, modelo $modelo, string $key_descripcion_select= '',
+                                      string $key_id = '', string $label = ''): array|stdClass
     {
 
-        $keys = $this->keys_base(tabla: $modelo->tabla, key_id: $key_id);
+        $keys = $this->keys_base(tabla: $modelo->tabla, key_descripcion_select: $key_descripcion_select,
+            key_id: $key_id);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar keys',data:  $keys);
         }
@@ -160,7 +163,7 @@ class html_controler{
      * @return stdClass|array obj->id, obj->descripcion_select
      * @version 0.2.5
      */
-    private function keys_base(string $tabla, string $key_id = ''): stdClass|array
+    private function keys_base(string $tabla, string $key_descripcion_select = '', string $key_id = ''): stdClass|array
     {
         $tabla = trim($tabla);
         if($tabla === ''){
@@ -169,7 +172,10 @@ class html_controler{
         if($key_id === '') {
             $key_id = $tabla . '_id';
         }
-        $key_descripcion_select = $tabla.'_descripcion_select';
+        if($key_descripcion_select === '') {
+            $key_descripcion_select = $tabla.'_descripcion_select';
+        }
+
 
         $data = new stdClass();
         $data->id = $key_id;
@@ -232,10 +238,12 @@ class html_controler{
      * @return array|string Un string con options en forma de html
      */
     protected function select_catalogo(int $cols, bool $con_registros, int $id_selected, modelo $modelo,
-                                       string $key_id = '', string $label = '', bool $required = false): array|string
+                                       string $key_descripcion_select = '', string $key_id = '', string $label = '',
+                                       bool $required = false): array|string
     {
 
-        $init = $this->init_data_select(con_registros: $con_registros, modelo: $modelo, key_id: $key_id, label: $label);
+        $init = $this->init_data_select(con_registros: $con_registros, modelo: $modelo,
+            key_descripcion_select: $key_descripcion_select, key_id: $key_id, label: $label);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar datos', data: $init);
         }
