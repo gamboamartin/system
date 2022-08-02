@@ -43,8 +43,8 @@ class html_controler{
 
     /**
      * Asigna los values de un select
-     * @param stdClass $keys
-     * @param array $registros
+     * @param stdClass $keys Keys para asignacion basica
+     * @param array $registros Conjunto de registros a integrar
      * @return array
      */
     private function genera_values_selects(stdClass $keys, array $registros): array
