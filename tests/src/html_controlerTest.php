@@ -54,6 +54,29 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_genera_values_selects(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
+
+        $keys = new stdClass();
+        $keys->id = 'a';
+        $keys->descripcion_select = 'b';
+        $registros = array();
+        $registros[0]['a'] = 'x';
+        $registros[0]['b'] = 'd';
+        $resultado = $html->genera_values_selects($keys, $registros);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("x", $resultado['x']['a']);
+        $this->assertEquals("d", $resultado['x']['b']);
+        $this->assertEquals("d", $resultado['x']['descripcion_select']);
+
+        errores::$error = false;
+    }
+
     /**
      * @throws JsonException
      */

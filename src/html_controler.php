@@ -46,11 +46,29 @@ class html_controler{
      * @param stdClass $keys Keys para asignacion basica
      * @param array $registros Conjunto de registros a integrar
      * @return array
+     * @version 0.48.32
+     * @verfuncion 0.1.0
+     * @fecha 2022-08-02 18:12
+     * @author mgamboa
      */
     private function genera_values_selects(stdClass $keys, array $registros): array
     {
+        $keys_valida = array('id','descripcion_select');
+        $valida = (new validacion())->valida_existencia_keys(keys: $keys_valida, registro: $keys);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar keys',data:  $valida);
+        }
         $values = array();
         foreach ($registros as $registro){
+            if(!is_array($registro)){
+                return $this->error->error(mensaje: 'Error registro debe ser un array',data:  $registro);
+            }
+            $keys_valida = array($keys->id,$keys->descripcion_select);
+            $valida = (new validacion())->valida_existencia_keys(keys: $keys_valida, registro: $registro);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al validar registro',data:  $valida);
+            }
+
             $values[$registro[$keys->id]] = $registro;
             $values[$registro[$keys->id]]['descripcion_select'] = $registro[$keys->descripcion_select];
         }
