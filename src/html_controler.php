@@ -52,6 +52,7 @@ class html_controler{
         $values = array();
         foreach ($registros as $registro){
             $values[$registro[$keys->id]] = $registro;
+            $values[$registro[$keys->id]]['descripcion_select'] = $registro[$keys->descripcion_select];
         }
         return $values;
     }
