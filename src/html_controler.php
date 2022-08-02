@@ -59,7 +59,7 @@ class html_controler{
 
     /**
      * Inicializa los datos de un select
-     * @param bool $con_registros
+     * @param bool $con_registros Si no con registros integra el select vacio para ser llenado posterior con ajax
      * @param modelo $modelo
      * @param array $extra_params_keys
      * @param string $key_descripcion_select
@@ -220,6 +220,13 @@ class html_controler{
         return $controler->inputs;
     }
 
+    /**
+     * Obtiene los registros para un select
+     * @param stdClass $keys Keys para obtencion de campos
+     * @param modelo $modelo Modelo del select
+     * @param array $extra_params_keys Datos a integrar para extra params
+     * @return array
+     */
     private function rows_select(stdClass $keys, modelo $modelo, array $extra_params_keys = array()): array
     {
         $columnas[] = $keys->id;
@@ -265,6 +272,13 @@ class html_controler{
         return $select;
     }
 
+    /**
+     * @param bool $con_registros
+     * @param stdClass $keys Keys para obtencion de campos
+     * @param modelo $modelo
+     * @param array $extra_params_keys
+     * @return array
+     */
     private function values_selects( bool $con_registros, stdClass $keys, modelo $modelo,
                                      array $extra_params_keys = array()): array
     {
