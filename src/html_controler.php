@@ -51,7 +51,7 @@ class html_controler{
     {
         $values = array();
         foreach ($registros as $registro){
-            $values[$registro[$keys->id]] = $registro[$keys->descripcion_select];
+            $values[$registro[$keys->id]] = $registro;
         }
         return $values;
     }
@@ -60,13 +60,15 @@ class html_controler{
      * Inicializa los datos de un select
      * @param bool $con_registros
      * @param modelo $modelo
+     * @param array $extra_params_keys
      * @param string $key_descripcion_select
      * @param string $key_id
      * @param string $label
      * @return array|stdClass
      */
-    private function init_data_select(bool $con_registros, modelo $modelo, string $key_descripcion_select= '',
-                                      string $key_id = '', string $label = ''): array|stdClass
+    private function init_data_select(bool $con_registros, modelo $modelo, array $extra_params_keys = array(),
+                                      string $key_descripcion_select= '', string $key_id = '',
+                                      string $label = ''): array|stdClass
     {
 
         $keys = $this->keys_base(tabla: $modelo->tabla, key_descripcion_select: $key_descripcion_select,
@@ -75,7 +77,8 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al generar keys',data:  $keys);
         }
 
-        $values = $this->values_selects(con_registros: $con_registros, keys: $keys,modelo: $modelo);
+        $values = $this->values_selects(con_registros: $con_registros, keys: $keys,modelo: $modelo,
+            extra_params_keys: $extra_params_keys);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener valores',data:  $values);
         }
@@ -216,10 +219,14 @@ class html_controler{
         return $controler->inputs;
     }
 
-    private function rows_select(stdClass $keys, modelo $modelo): array
+    private function rows_select(stdClass $keys, modelo $modelo, array $extra_params_keys = array()): array
     {
         $columnas[] = $keys->id;
         $columnas[] = $keys->descripcion_select;
+
+        foreach ($extra_params_keys as $key){
+            $columnas[] = $key;
+        }
 
         $registros = $modelo->registros_activos(columnas: $columnas);
         if(errores::$error){
@@ -238,29 +245,31 @@ class html_controler{
      * @return array|string Un string con options en forma de html
      */
     protected function select_catalogo(int $cols, bool $con_registros, int $id_selected, modelo $modelo,
-                                       string $key_descripcion_select = '', string $key_id = '', string $label = '',
-                                       bool $required = false): array|string
+                                       array $extra_params_keys = array(), string $key_descripcion_select = '',
+                                       string $key_id = '', string $label = '', bool $required = false): array|string
     {
 
         $init = $this->init_data_select(con_registros: $con_registros, modelo: $modelo,
-            key_descripcion_select: $key_descripcion_select, key_id: $key_id, label: $label);
+            extra_params_keys: $extra_params_keys, key_descripcion_select: $key_descripcion_select,
+            key_id: $key_id, label: $label);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar datos', data: $init);
         }
 
         $select = $this->html_base->select(cols:$cols, id_selected:$id_selected, label: $init->label,name:$init->id,
-            values: $init->values,required: $required);
+            values: $init->values, extra_params_key: $extra_params_keys,required: $required);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $select);
         }
         return $select;
     }
 
-    private function values_selects( bool $con_registros, stdClass $keys, modelo $modelo): array
+    private function values_selects( bool $con_registros, stdClass $keys, modelo $modelo,
+                                     array $extra_params_keys = array()): array
     {
         $registros = array();
         if($con_registros) {
-            $registros = $this->rows_select(keys: $keys, modelo: $modelo);
+            $registros = $this->rows_select(keys: $keys, modelo: $modelo, extra_params_keys: $extra_params_keys);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al obtener registros', data: $registros);
             }
