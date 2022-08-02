@@ -226,13 +226,27 @@ class html_controler{
      * @param modelo $modelo Modelo del select
      * @param array $extra_params_keys Datos a integrar para extra params
      * @return array
+     * @version 0.47.32
+     * @verfuncion 0.1.0
+     * @fecha 2022-08-02 17:32
+     * @author mgamboa
      */
     private function rows_select(stdClass $keys, modelo $modelo, array $extra_params_keys = array()): array
     {
+        $keys_val = array('id','descripcion_select');
+        $valida = (new validacion())->valida_existencia_keys(keys: $keys_val,registro:  $keys);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar keys',data:  $valida);
+        }
+
         $columnas[] = $keys->id;
         $columnas[] = $keys->descripcion_select;
 
         foreach ($extra_params_keys as $key){
+            $key = trim($key);
+            if($key === ''){
+                return $this->error->error(mensaje: 'Error el key de extra params esta vacio',data:  $extra_params_keys);
+            }
             $columnas[] = $key;
         }
 

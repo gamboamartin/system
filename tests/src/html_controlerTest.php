@@ -105,5 +105,29 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_rows_select(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
+
+        $modelo = new adm_accion($this->link);
+        $keys = new stdClass();
+        $keys->id = 'adm_accion_id';
+        $keys->descripcion_select = 'adm_accion_descripcion';
+        $extra_params_keys = array();
+        $extra_params_keys[] = 'adm_seccion_descripcion';
+
+        $resultado = $html->rows_select($keys, $modelo,$extra_params_keys);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('1', $resultado[0]['adm_accion_id']);
+        $this->assertEquals('alta', $resultado[0]['adm_accion_descripcion']);
+        $this->assertEquals('adm_grupo', $resultado[0]['adm_seccion_descripcion']);
+
+        errores::$error = false;
+    }
+
 }
 
