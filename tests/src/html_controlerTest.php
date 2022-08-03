@@ -9,6 +9,7 @@ use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 use JsonException;
 use models\adm_accion;
+use models\adm_menu;
 use models\adm_usuario;
 use stdClass;
 
@@ -190,6 +191,46 @@ class html_controlerTest extends test {
         $this->assertEquals('alta', $resultado[0]['adm_accion_descripcion']);
         $this->assertEquals('adm_grupo', $resultado[0]['adm_seccion_descripcion']);
 
+        errores::$error = false;
+    }
+
+    public function test_select_catalogo(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
+
+        $cols = -1;
+        $con_registros = false;
+        $id_selected = -1;
+        $modelo = new adm_menu($this->link);
+        $resultado = $html->select_catalogo($cols, $con_registros, $id_selected, $modelo);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error al validar cols', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $cols = 1;
+        $con_registros = true;
+        $id_selected = -1;
+        $modelo = new adm_menu($this->link);
+        $resultado = $html->select_catalogo($cols, $con_registros, $id_selected, $modelo);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error al inicializar datos', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $cols = 1;
+        $con_registros = true;
+        $id_selected = -1;
+        $modelo = new adm_menu($this->link);
+        $resultado = $html->select_catalogo($cols, $con_registros, $id_selected, $modelo,key_descripcion_select: 'adm_menu_id');
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase("div class='control-group col-sm-1'><div class='controls'><select class='form-control selectpicker color-secondary adm_menu_id' id='adm_menu_id'", $resultado);
         errores::$error = false;
     }
 

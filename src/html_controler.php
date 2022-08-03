@@ -313,12 +313,21 @@ class html_controler{
      * @param int $id_selected Identificador de un registro y cargado utilizado para modifica, aplica selected
      * @param modelo $modelo Modelo de datos ejecucion
      * @return array|string Un string con options en forma de html
+     * @version 0.56.32
+     * @verfuncion 0.1.0
+     * @fecha 2022-08-03 16:27
+     * @author mgamboa
      */
     protected function select_catalogo(int $cols, bool $con_registros, int $id_selected, modelo $modelo,
                                        array $extra_params_keys = array(), array $filtro=array(),
                                        string $key_descripcion_select = '', string $key_id = '', string $label = '',
                                        bool $required = false): array|string
     {
+
+        $valida = (new directivas(html:$this->html_base))->valida_cols(cols:$cols);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar cols', data: $valida);
+        }
 
         $init = $this->init_data_select(con_registros: $con_registros, modelo: $modelo,
             extra_params_keys: $extra_params_keys, filtro:$filtro, key_descripcion_select: $key_descripcion_select,
