@@ -79,7 +79,7 @@ class html_controler{
      * Inicializa los datos de un select
      * @param bool $con_registros Si no con registros integra el select vacio para ser llenado posterior con ajax
      * @param modelo $modelo Modelo en ejecucion para la asignacion de datos
-     * @param array $extra_params_keys
+     * @param array $extra_params_keys Keys de extra params para ser cargados en un select
      * @param string $key_descripcion_select
      * @param string $key_id
      * @param string $label
@@ -102,15 +102,16 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al obtener valores',data:  $values);
         }
 
-        if($label === '') {
-            $label = $this->label(tabla: $modelo->tabla);
+        $label_ =$label;
+        if($label_ === '') {
+            $label_ = $this->label(tabla: $modelo->tabla);
             if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al obtener label', data: $label);
+                return $this->error->error(mensaje: 'Error al obtener label', data: $label_);
             }
         }
 
         $keys->values = $values;
-        $keys->label = $label;
+        $keys->label = $label_;
         return $keys;
     }
 
@@ -209,11 +210,26 @@ class html_controler{
     /**
      * Genera un label valido para se mostrado en front
      * @param string $tabla Tabla o estructura para generar etiqueta
-     * @return string
+     * @return string|array
+     * @version 0.50.32
+     * @verfuncion 0.1.0
+     * @fecha 2022-08-03 09:22
+     * @author mgamboa
      */
-    private function label(string $tabla): string
+    private function label(string $tabla): string|array
     {
+        $tabla = trim($tabla);
+        if($tabla === ''){
+            return $this->error->error(mensaje: 'Error tabla esta vacia', data: $tabla);
+        }
         $label = str_replace('_', ' ', $tabla);
+
+        $label = trim($label);
+        if($label === ''){
+            return $this->error->error(mensaje: 'Error $label esta vacio', data: $label);
+        }
+
+
         return ucwords($label);
     }
 

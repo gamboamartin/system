@@ -128,6 +128,21 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_label(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
+
+        $tabla = 'a_';
+        $resultado = $html->label($tabla);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('A',$resultado);
+        errores::$error = false;
+    }
+
     public function test_rows_select(): void
     {
         errores::$error = false;
