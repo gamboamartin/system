@@ -272,8 +272,8 @@ class html_controler{
      * @fecha 2022-08-02 17:32
      * @author mgamboa
      */
-    private function rows_select(stdClass $keys, modelo $modelo, array $filtro = array(),
-                                 array $extra_params_keys = array()): array
+    private function rows_select(stdClass $keys, modelo $modelo, array $extra_params_keys = array(),
+                                 array $filtro = array()): array
     {
         $keys_val = array('id','descripcion_select');
         $valida = (new validacion())->valida_existencia_keys(keys: $keys_val,registro:  $keys);
@@ -336,14 +336,17 @@ class html_controler{
      * @param stdClass $keys Keys para obtencion de campos
      * @param modelo $modelo Modelo para asignacion de datos
      * @param array $extra_params_keys Keys para asignacion de extra params para ser utilizado en javascript
+     * @param array $filtro Filtro para obtencion de datos del select
      * @return array
      * @version 0.49.31
      * @verfuncion 0.1.0
+     * @verfuncion 0.2.0 Se integra filtro
      * @fecha 2022-08-03 09:04
+     * @fecha 2022-08-03 14:50
      * @author mgamboa
      */
     private function values_selects( bool $con_registros, stdClass $keys, modelo $modelo,
-                                     array $extra_params_keys = array()): array
+                                     array $extra_params_keys = array(), array $filtro = array()): array
     {
         $keys_valida = array('id','descripcion_select');
         $valida = (new validacion())->valida_existencia_keys(keys: $keys_valida, registro: $keys);
@@ -353,7 +356,8 @@ class html_controler{
 
         $registros = array();
         if($con_registros) {
-            $registros = $this->rows_select(keys: $keys, modelo: $modelo, extra_params_keys: $extra_params_keys);
+            $registros = $this->rows_select(keys: $keys, modelo: $modelo, extra_params_keys: $extra_params_keys,
+                filtro:$filtro);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al obtener registros', data: $registros);
             }
