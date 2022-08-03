@@ -262,14 +262,18 @@ class html_controler{
      * Obtiene los registros para un select
      * @param stdClass $keys Keys para obtencion de campos
      * @param modelo $modelo Modelo del select
+     * @param array $filtro Filtro de datos para filtro and
      * @param array $extra_params_keys Datos a integrar para extra params
      * @return array
      * @version 0.47.32
-     * @verfuncion 0.1.0
+     * @verfuncion 0.1.0 UT fin
+     * @verfuncion 0.2.0 Se integra param filtro
+     * @fecha 2022-08-02 17:32
      * @fecha 2022-08-02 17:32
      * @author mgamboa
      */
-    private function rows_select(stdClass $keys, modelo $modelo, array $extra_params_keys = array()): array
+    private function rows_select(stdClass $keys, modelo $modelo, array $filtro = array(),
+                                 array $extra_params_keys = array()): array
     {
         $keys_val = array('id','descripcion_select');
         $valida = (new validacion())->valida_existencia_keys(keys: $keys_val,registro:  $keys);
@@ -288,11 +292,13 @@ class html_controler{
             $columnas[] = $key;
         }
 
-        $registros = $modelo->registros_activos(columnas: $columnas);
+        $filtro[$modelo->tabla.'.status'] = 'activo';
+        $registros = $modelo->filtro_and(columnas: $columnas, filtro: $filtro);
+
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener registros',data:  $registros);
         }
-        return $registros;
+        return $registros->registros;
     }
 
     /**

@@ -180,7 +180,8 @@ class html_controlerTest extends test {
         $extra_params_keys = array();
         $extra_params_keys[] = 'adm_seccion_descripcion';
 
-        $resultado = $html->rows_select($keys, $modelo,$extra_params_keys);
+        $resultado = $html->rows_select(keys:$keys, modelo:$modelo,extra_params_keys:$extra_params_keys);
+
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('1', $resultado[0]['adm_accion_id']);
