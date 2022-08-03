@@ -91,7 +91,9 @@ class html_controlerTest extends test {
         $key_descripcion_select = 'adm_usuario_id';
         $key_id = '';
         $label = '';
-        $resultado = $html->init_data_select($con_registros, $modelo,$extra_params_keys,$key_descripcion_select,$key_id,$label);
+        $resultado = $html->init_data_select(con_registros:$con_registros,modelo: $modelo,
+            extra_params_keys:$extra_params_keys,key_descripcion_select:$key_descripcion_select,key_id:$key_id,
+            label:$label);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('adm_usuario_id',$resultado->id);

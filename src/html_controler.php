@@ -80,17 +80,20 @@ class html_controler{
      * @param bool $con_registros Si no con registros integra el select vacio para ser llenado posterior con ajax
      * @param modelo $modelo Modelo en ejecucion para la asignacion de datos
      * @param array $extra_params_keys Keys de extra params para ser cargados en un select
+     * @param array $filtro Filtro para obtencion de datos para options
      * @param string $key_descripcion_select key del registro para mostrar en un select
      * @param string $key_id key Id de value para option
      * @param string $label Etiqueta a mostrar
      * @return array|stdClass
      * @version 0.52.32
+     * @version 0.55.32
      * @verfuncion 0.1.0
+     * @verfuncion 0.2.0 Se integra filtro
      * @fecha 2022-08-03 09:55
      * @author mgamboa
      */
     private function init_data_select(bool $con_registros, modelo $modelo, array $extra_params_keys = array(),
-                                      string $key_descripcion_select= '', string $key_id = '',
+                                      array $filtro = array(), string $key_descripcion_select= '', string $key_id = '',
                                       string $label = ''): array|stdClass
     {
 
@@ -101,7 +104,7 @@ class html_controler{
         }
 
         $values = $this->values_selects(con_registros: $con_registros, keys: $keys,modelo: $modelo,
-            extra_params_keys: $extra_params_keys);
+            extra_params_keys: $extra_params_keys, filtro: $filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener valores',data:  $values);
         }
@@ -266,6 +269,7 @@ class html_controler{
      * @param array $extra_params_keys Datos a integrar para extra params
      * @return array
      * @version 0.47.32
+     * @version 0.53.32
      * @verfuncion 0.1.0 UT fin
      * @verfuncion 0.2.0 Se integra param filtro
      * @fecha 2022-08-02 17:32
@@ -311,12 +315,13 @@ class html_controler{
      * @return array|string Un string con options en forma de html
      */
     protected function select_catalogo(int $cols, bool $con_registros, int $id_selected, modelo $modelo,
-                                       array $extra_params_keys = array(), string $key_descripcion_select = '',
-                                       string $key_id = '', string $label = '', bool $required = false): array|string
+                                       array $extra_params_keys = array(), array $filtro=array(),
+                                       string $key_descripcion_select = '', string $key_id = '', string $label = '',
+                                       bool $required = false): array|string
     {
 
         $init = $this->init_data_select(con_registros: $con_registros, modelo: $modelo,
-            extra_params_keys: $extra_params_keys, key_descripcion_select: $key_descripcion_select,
+            extra_params_keys: $extra_params_keys, filtro:$filtro, key_descripcion_select: $key_descripcion_select,
             key_id: $key_id, label: $label);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar datos', data: $init);
@@ -339,6 +344,7 @@ class html_controler{
      * @param array $filtro Filtro para obtencion de datos del select
      * @return array
      * @version 0.49.31
+     * @version 0.54.32
      * @verfuncion 0.1.0
      * @verfuncion 0.2.0 Se integra filtro
      * @fecha 2022-08-03 09:04
