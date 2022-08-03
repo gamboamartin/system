@@ -78,7 +78,7 @@ class html_controler{
     /**
      * Inicializa los datos de un select
      * @param bool $con_registros Si no con registros integra el select vacio para ser llenado posterior con ajax
-     * @param modelo $modelo
+     * @param modelo $modelo Modelo en ejecucion para la asignacion de datos
      * @param array $extra_params_keys
      * @param string $key_descripcion_select
      * @param string $key_id
@@ -208,7 +208,7 @@ class html_controler{
 
     /**
      * Genera un label valido para se mostrado en front
-     * @param string $tabla
+     * @param string $tabla Tabla o estructura para generar etiqueta
      * @return string
      */
     private function label(string $tabla): string
@@ -305,15 +305,26 @@ class html_controler{
     }
 
     /**
-     * @param bool $con_registros
+     * Genera los values para ser utilizados en los selects options
+     * @param bool $con_registros si con registros muestra todos los registros
      * @param stdClass $keys Keys para obtencion de campos
-     * @param modelo $modelo
-     * @param array $extra_params_keys
+     * @param modelo $modelo Modelo para asignacion de datos
+     * @param array $extra_params_keys Keys para asignacion de extra params para ser utilizado en javascript
      * @return array
+     * @version 0.49.31
+     * @verfuncion 0.1.0
+     * @fecha 2022-08-03 09:04
+     * @author mgamboa
      */
     private function values_selects( bool $con_registros, stdClass $keys, modelo $modelo,
                                      array $extra_params_keys = array()): array
     {
+        $keys_valida = array('id','descripcion_select');
+        $valida = (new validacion())->valida_existencia_keys(keys: $keys_valida, registro: $keys);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar keys',data:  $valida);
+        }
+
         $registros = array();
         if($con_registros) {
             $registros = $this->rows_select(keys: $keys, modelo: $modelo, extra_params_keys: $extra_params_keys);
