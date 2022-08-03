@@ -84,6 +84,10 @@ class html_controler{
      * @param string $key_id key Id de value para option
      * @param string $label Etiqueta a mostrar
      * @return array|stdClass
+     * @version 0.52.32
+     * @verfuncion 0.1.0
+     * @fecha 2022-08-03 09:55
+     * @author mgamboa
      */
     private function init_data_select(bool $con_registros, modelo $modelo, array $extra_params_keys = array(),
                                       string $key_descripcion_select= '', string $key_id = '',

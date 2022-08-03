@@ -9,6 +9,7 @@ use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 use JsonException;
 use models\adm_accion;
+use models\adm_usuario;
 use stdClass;
 
 
@@ -74,6 +75,28 @@ class html_controlerTest extends test {
         $this->assertEquals("d", $resultado['x']['b']);
         $this->assertEquals("d", $resultado['x']['descripcion_select']);
 
+        errores::$error = false;
+    }
+
+    public function test_init_data_select(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
+
+        $con_registros = true;
+        $modelo = new adm_usuario($this->link);
+        $extra_params_keys = array('adm_grupo_descripcion');
+        $key_descripcion_select = 'adm_usuario_id';
+        $key_id = '';
+        $label = '';
+        $resultado = $html->init_data_select($con_registros, $modelo,$extra_params_keys,$key_descripcion_select,$key_id,$label);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('adm_usuario_id',$resultado->id);
+        $this->assertEquals('adm_usuario_id',$resultado->descripcion_select);
+        $this->assertEquals('2',$resultado->values[2]['adm_usuario_id']);
         errores::$error = false;
     }
 
