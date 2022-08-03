@@ -80,9 +80,9 @@ class html_controler{
      * @param bool $con_registros Si no con registros integra el select vacio para ser llenado posterior con ajax
      * @param modelo $modelo Modelo en ejecucion para la asignacion de datos
      * @param array $extra_params_keys Keys de extra params para ser cargados en un select
-     * @param string $key_descripcion_select
-     * @param string $key_id
-     * @param string $label
+     * @param string $key_descripcion_select key del registro para mostrar en un select
+     * @param string $key_id key Id de value para option
+     * @param string $label Etiqueta a mostrar
      * @return array|stdClass
      */
     private function init_data_select(bool $con_registros, modelo $modelo, array $extra_params_keys = array(),
