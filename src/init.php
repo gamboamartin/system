@@ -1,5 +1,6 @@
 <?php
 namespace gamboamartin\system;
+use config\generales;
 use gamboamartin\errores\errores;
 use gamboamartin\template\html;
 use stdClass;
@@ -193,6 +194,25 @@ class init{
         }
 
         return $tabla.'_'.$campo_puro;
+    }
+
+    /**
+     * Asigna un valor a sun row id para su uso en selects
+     * @param stdClass $row Registro verificar
+     * @param string $tabla Tabla o modelo
+     * @return stdClass
+     */
+    public function row_value_id(stdClass $row, string $tabla): stdClass
+    {
+        $key = $tabla.'_id';
+        if(!isset($row->$key)){
+            $row->$key = -1;
+        }
+        if((int)$row->$key === -1){
+            $row->$key = (new generales())->defaults[$tabla]['id'];
+        }
+
+        return $row;
     }
 
 
