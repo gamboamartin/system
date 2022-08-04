@@ -84,6 +84,7 @@ class html_controler{
      * @param string $key_descripcion_select key del registro para mostrar en un select
      * @param string $key_id key Id de value para option
      * @param string $label Etiqueta a mostrar
+     * @param string $name
      * @return array|stdClass
      * @version 0.52.32
      * @version 0.55.32
@@ -94,11 +95,11 @@ class html_controler{
      */
     private function init_data_select(bool $con_registros, modelo $modelo, array $extra_params_keys = array(),
                                       array $filtro = array(), string $key_descripcion_select= '', string $key_id = '',
-                                      string $label = ''): array|stdClass
+                                      string $label = '', string $name = ''): array|stdClass
     {
 
         $keys = $this->keys_base(tabla: $modelo->tabla, key_descripcion_select: $key_descripcion_select,
-            key_id: $key_id);
+            key_id: $key_id, name: $name);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar keys',data:  $keys);
         }
@@ -189,11 +190,16 @@ class html_controler{
 
     /**
      * Asigna los keys necesarios para un select
-     * @param string $tabla Tabla o nombre del modelo en ejecucion
+     * @param string $tabla Tabla del select
+     * @param string $key_descripcion_select base de descripcion
+     * @param string $key_id identificador key
+     * @param string $name Name del input
      * @return stdClass|array obj->id, obj->descripcion_select
      * @version 0.2.5
+     * @verfuncion 0.2.0 Se carga name
      */
-    private function keys_base(string $tabla, string $key_descripcion_select = '', string $key_id = ''): stdClass|array
+    private function keys_base(string $tabla, string $key_descripcion_select = '', string $key_id = '',
+                               string $name = ''): stdClass|array
     {
         $tabla = trim($tabla);
         if($tabla === ''){
@@ -201,6 +207,10 @@ class html_controler{
         }
         if($key_id === '') {
             $key_id = $tabla . '_id';
+        }
+        $name = trim($name);
+        if($name === ''){
+            $name = $key_id;
         }
         if($key_descripcion_select === '') {
             $key_descripcion_select = $tabla.'_descripcion_select';
@@ -210,6 +220,7 @@ class html_controler{
         $data = new stdClass();
         $data->id = $key_id;
         $data->descripcion_select = $key_descripcion_select;
+        $data->name = $name;
 
         return $data;
     }
@@ -321,7 +332,7 @@ class html_controler{
     protected function select_catalogo(int $cols, bool $con_registros, int $id_selected, modelo $modelo,
                                        array $extra_params_keys = array(), array $filtro=array(),
                                        string $key_descripcion_select = '', string $key_id = '', string $label = '',
-                                       bool $required = false): array|string
+                                       string $name = '', bool $required = false): array|string
     {
 
         $valida = (new directivas(html:$this->html_base))->valida_cols(cols:$cols);
@@ -331,12 +342,12 @@ class html_controler{
 
         $init = $this->init_data_select(con_registros: $con_registros, modelo: $modelo,
             extra_params_keys: $extra_params_keys, filtro:$filtro, key_descripcion_select: $key_descripcion_select,
-            key_id: $key_id, label: $label);
+            key_id: $key_id, label: $label, name: $name);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar datos', data: $init);
         }
 
-        $select = $this->html_base->select(cols:$cols, id_selected:$id_selected, label: $init->label,name:$init->id,
+        $select = $this->html_base->select(cols:$cols, id_selected:$id_selected, label: $init->label,name:$init->name,
             values: $init->values, extra_params_key: $extra_params_keys,required: $required);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $select);

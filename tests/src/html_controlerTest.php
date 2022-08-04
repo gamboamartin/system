@@ -227,10 +227,27 @@ class html_controlerTest extends test {
         $con_registros = true;
         $id_selected = -1;
         $modelo = new adm_menu($this->link);
-        $resultado = $html->select_catalogo($cols, $con_registros, $id_selected, $modelo,key_descripcion_select: 'adm_menu_id');
+        $resultado = $html->select_catalogo(cols: $cols,con_registros:  $con_registros,id_selected:  $id_selected,
+            modelo:  $modelo,key_descripcion_select: 'adm_menu_id');
+
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase("div class='control-group col-sm-1'><div class='controls'><select class='form-control selectpicker color-secondary adm_menu_id' id='adm_menu_id'", $resultado);
+        errores::$error = false;
+
+
+        $cols = 1;
+        $con_registros = true;
+        $id_selected = -1;
+        $modelo = new adm_menu($this->link);
+        $resultado = $html->select_catalogo(cols: $cols,con_registros:  $con_registros,id_selected:  $id_selected,
+            modelo:  $modelo,key_descripcion_select: 'adm_menu_id',name: 'x');
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase("<div class='control-group col-sm-1'><div class='controls'><select class='form-control selectpicker color-secondary x' id='x' name='x' ><option value=''  >Selecciona una ", $resultado);
+
+
         errores::$error = false;
     }
 
