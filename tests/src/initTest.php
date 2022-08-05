@@ -71,6 +71,30 @@ class initTest extends test {
 
     }
 
+    public function test_row_value_id(): void
+    {
+        errores::$error = false;
+        $init = new init();
+        //$init = new liberator($init);
+
+        $tabla = 'a';
+        $row = array();
+        $resultado = $init->row_value_id($row, $tabla);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(-1,$resultado['a_id']);
+
+        errores::$error = false;
+
+        $tabla = 'a';
+        $row = new stdClass();
+        $resultado = $init->row_value_id($row, $tabla);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(-1,$resultado->a_id);
+        errores::$error = false;
+    }
+
 
 
 }

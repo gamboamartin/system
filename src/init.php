@@ -198,24 +198,40 @@ class init{
 
     /**
      * Asigna un valor a sun row id para su uso en selects
-     * @param stdClass $row Registro verificar
+     * @param stdClass|array $row Registro verificar
      * @param string $tabla Tabla o modelo
-     * @return stdClass
+     * @return stdClass|array
+     * @version 0.60.32
+     * @verfuncion 0.1.0
+     * @fecha 2022-08-05 09:43
+     * @author mgamboa
      */
-    public function row_value_id(stdClass $row, string $tabla): stdClass
+    public function row_value_id(stdClass|array $row, string $tabla): stdClass|array
     {
-        $key = $tabla.'_id';
-        if(!isset($row->$key)){
-            $row->$key = -1;
+        $tabla = trim($tabla);
+        if($tabla === ''){
+            return $this->error->error(mensaje: 'Error la tabla esta vacia',data:  $tabla);
         }
-        if((int)$row->$key === -1){
-            $generales = new generales();
-            if($generales->defaults[$tabla]['id']) {
-                $row->$key = $generales->defaults[$tabla]['id'];
-            }
+        $row_ = $row;
+        if(is_array($row_)){
+            $row_ = (object)$row_;
         }
 
-        return $row;
+        $key = $tabla.'_id';
+        if(!isset($row_->$key)){
+            $row_->$key = -1;
+        }
+        if((int)$row_->$key === -1){
+            $generales = new generales();
+            if(isset($generales->defaults[$tabla]['id'])) {
+                $row_->$key = $generales->defaults[$tabla]['id'];
+            }
+        }
+        if(is_array($row)){
+            $row_ = (array)$row_;
+        }
+
+        return $row_;
     }
 
 
