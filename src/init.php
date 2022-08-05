@@ -200,13 +200,14 @@ class init{
      * Asigna un valor a sun row id para su uso en selects
      * @param stdClass|array $row Registro verificar
      * @param string $tabla Tabla o modelo
+     * @param string $key Key del campo  a inicializar
      * @return stdClass|array
      * @version 0.60.32
      * @verfuncion 0.1.0
      * @fecha 2022-08-05 09:43
      * @author mgamboa
      */
-    public function row_value_id(stdClass|array $row, string $tabla): stdClass|array
+    public function row_value_id(stdClass|array $row, string $tabla, string $key = ''): stdClass|array
     {
         $tabla = trim($tabla);
         if($tabla === ''){
@@ -217,7 +218,11 @@ class init{
             $row_ = (object)$row_;
         }
 
-        $key = $tabla.'_id';
+        $key = trim($key);
+        if($key==='') {
+            $key = $tabla . '_id';
+        }
+
         if(!isset($row_->$key)){
             $row_->$key = -1;
         }

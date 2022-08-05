@@ -80,6 +80,7 @@ class initTest extends test {
         $tabla = 'a';
         $row = array();
         $resultado = $init->row_value_id($row, $tabla);
+
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals(-1,$resultado['a_id']);
