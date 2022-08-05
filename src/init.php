@@ -209,7 +209,10 @@ class init{
             $row->$key = -1;
         }
         if((int)$row->$key === -1){
-            $row->$key = (new generales())->defaults[$tabla]['id'];
+            $generales = new generales();
+            if($generales->defaults[$tabla]['id']) {
+                $row->$key = $generales->defaults[$tabla]['id'];
+            }
         }
 
         return $row;
