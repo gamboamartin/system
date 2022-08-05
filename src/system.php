@@ -29,7 +29,7 @@ class system extends controlador_base{
 
     /**
      * @param html_controler $html Html base
-     * @param PDO $link
+     * @param PDO $link Conexion a la base de datos
      * @param modelo $modelo
      * @param links_menu $obj_link
      * @param array $filtro_boton_lista

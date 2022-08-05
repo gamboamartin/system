@@ -12,6 +12,7 @@ class init{
     }
 
     /**
+     * Genera los datos para una lista
      * @param string $campo_puro Campo puro de la tabla en ejecucion
      * @param string $tabla Tabla o seccion o modelo
      * @return array|stdClass
@@ -92,6 +93,7 @@ class init{
     }
 
     /**
+     * Obtiene un row para una lista
      * @param string $campo_puro Campo puro de la tabla en ejecucion
      * @param string $tabla Tabla o seccion o modelo
      * @return array|stdClass
@@ -111,6 +113,7 @@ class init{
     }
 
     /**
+     * Genera los keys para una lista
      * @param system $controler Controlador en ejecucion
      * @return array
      */
@@ -169,8 +172,19 @@ class init{
         return $row;
     }
 
+    /**
+     * Genera el hd de una lista
+     * @param string $campo_puro Nombre del campo
+     * @return string
+     * @version 0.62.32
+     * @verfuncion 0.1.0
+     * @fecha 2022-08-05 16:46
+     * @author mgamboa
+     */
     private function name_lista(string $campo_puro): string
     {
+        $campo_puro = trim($campo_puro);
+
         $name_lista = str_replace('_', ' ', $campo_puro);
         return ucwords($name_lista);
     }

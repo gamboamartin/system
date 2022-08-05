@@ -40,6 +40,21 @@ class initTest extends test {
         errores::$error = false;
     }
 
+    public function test_name_lista(): void
+    {
+        errores::$error = false;
+        $init = new init();
+        $init = new liberator($init);
+
+        $campo_puro = '';
+
+        $resultado = $init->name_lista($campo_puro);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
     public function test_limpia_data_row(): void
     {
         errores::$error = false;
