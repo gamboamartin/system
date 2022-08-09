@@ -293,6 +293,13 @@ class actions{
         return $siguiente_view;
     }
 
+    /**
+     * Genera el estilo de un css  
+     * @param string $accion
+     * @param stdClass $row
+     * @param string $seccion
+     * @return string
+     */
     private function style(string $accion, stdClass $row, string $seccion): string
     {
         $style = 'danger';
