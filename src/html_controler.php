@@ -330,9 +330,9 @@ class html_controler{
      * @author mgamboa
      */
     protected function select_catalogo(int $cols, bool $con_registros, int $id_selected, modelo $modelo,
-                                       array $extra_params_keys = array(), array $filtro=array(),
-                                       string $key_descripcion_select = '', string $key_id = '', string $label = '',
-                                       string $name = '', bool $required = false): array|string
+                                       bool $disabled = false, array $extra_params_keys = array(),
+                                       array $filtro=array(), string $key_descripcion_select = '', string $key_id = '',
+                                       string $label = '', string $name = '', bool $required = false): array|string
     {
 
         $valida = (new directivas(html:$this->html_base))->valida_cols(cols:$cols);
@@ -348,7 +348,7 @@ class html_controler{
         }
 
         $select = $this->html_base->select(cols:$cols, id_selected:$id_selected, label: $init->label,name:$init->name,
-            values: $init->values, extra_params_key: $extra_params_keys,required: $required);
+            values: $init->values, disabled: $disabled, extra_params_key: $extra_params_keys,required: $required);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $select);
         }

@@ -243,9 +243,11 @@ class html_controlerTest extends test {
         $resultado = $html->select_catalogo(cols: $cols,con_registros:  $con_registros,id_selected:  $id_selected,
             modelo:  $modelo,key_descripcion_select: 'adm_menu_id',name: 'x');
 
+
+
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("<div class='control-group col-sm-1'><div class='controls'><select class='form-control selectpicker color-secondary x' id='x' name='x' ><option value=''  >Selecciona una ", $resultado);
+        $this->assertStringContainsStringIgnoringCase("<div class='control-group col-sm-1'><div class='controls'><select class='form-control selectpicker color-secondary x' id='x' name='x'  ><option value=''  >Selecciona una opcion</option><option value='1'  >1", $resultado);
 
 
         errores::$error = false;
