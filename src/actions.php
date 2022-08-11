@@ -294,7 +294,7 @@ class actions{
     }
 
     /**
-     * Genera el estilo de un css  
+     * Genera el estilo de un css
      * @param string $accion
      * @param stdClass $row
      * @param string $seccion

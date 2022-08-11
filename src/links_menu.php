@@ -215,6 +215,13 @@ class links_menu{
         return $alta_bd;
     }
 
+    /**
+     * Funcion que genera un link con un id definido para la ejecucion de una accion
+     * @param string $accion Accion a ejecutar
+     * @param int $registro_id
+     * @param string $seccion
+     * @return array|string
+     */
     public function link_con_id(string $accion, int $registro_id, string $seccion): array|string
     {
         $link = "./index.php?seccion=$seccion&accion=$accion&registro_id=$registro_id";
