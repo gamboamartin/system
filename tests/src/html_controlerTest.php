@@ -103,6 +103,25 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_input_codigo(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        //$html = new liberator($html);
+
+        $row_upd = new stdClass();
+        $cols = 1;
+        $value_vacio = false;
+
+        $resultado = $html->input_codigo($cols, $row_upd, $value_vacio);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<div |class|><div |class|><input type='text' name='codigo' value='' |class|  required id='codigo' placeholder='Codigo' /></div></div>", $resultado);
+
+        errores::$error = false;
+    }
+
     /**
      * @throws JsonException
      */
