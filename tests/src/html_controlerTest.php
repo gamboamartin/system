@@ -122,6 +122,25 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_input_codigo_bis(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        //$html = new liberator($html);
+
+        $row_upd = new stdClass();
+        $cols = 1;
+        $value_vacio = false;
+
+        $resultado = $html->input_codigo_bis($cols, $row_upd, $value_vacio);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<div |class|><div |class|><input type='text' name='codigo_bis' value='' |class|  required id='codigo_bis' placeholder='Codigo BIS' /></div></div>", $resultado);
+
+        errores::$error = false;
+    }
+
     /**
      * @throws JsonException
      */
