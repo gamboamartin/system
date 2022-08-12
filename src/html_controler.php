@@ -123,6 +123,14 @@ class html_controler{
         return $keys;
     }
 
+    /**
+     * Genera un input de tipo ID
+     * @param int $cols
+     * @param stdClass $row_upd
+     * @param bool $value_vacio
+     * @param bool $disabled
+     * @return array|string
+     */
     public function input_id(int $cols, stdClass $row_upd, bool $value_vacio, bool $disabled = false): array|string
     {
 
