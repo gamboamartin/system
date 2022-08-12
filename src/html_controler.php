@@ -156,7 +156,7 @@ class html_controler{
         return $div;
     }
 
-    public function input_codigo_bis(int $cols, stdClass $row_upd, bool $value_vacio): array|string
+    public function input_codigo_bis(int $cols, stdClass $row_upd, bool $value_vacio, bool $disabled = false): array|string
     {
 
         if($cols<=0){
@@ -166,7 +166,7 @@ class html_controler{
             return $this->error->error(mensaje: 'Error cold debe ser menor o igual a  12', data: $cols);
         }
 
-        $html =$this->directivas->input_text_required(disable: false,name: 'codigo_bis',place_holder: 'Codigo BIS',
+        $html =$this->directivas->input_text_required(disable: $disabled,name: 'codigo_bis',place_holder: 'Codigo BIS',
             row_upd: $row_upd, value_vacio: $value_vacio);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar input', data: $html);
