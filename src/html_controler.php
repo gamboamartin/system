@@ -195,13 +195,14 @@ class html_controler{
     }
 
     /**
-     * Genera iun input de tipo codigo bis
+     * Genera iun input de tipo descripcion
      * @param int $cols Columnas en css
      * @param stdClass $row_upd Registro en proceso
      * @param bool $value_vacio is vacio no muestra datos
      * @param bool $disabled Si disabled el input queda deshabilitado
      * @param string $place_holder Etiqueta a mostrar
      * @return array|string
+     * @version 0.74.32
      */
     public function input_descripcion(int $cols, stdClass $row_upd, bool $value_vacio, bool $disabled = false,
                                       string $place_holder = 'Descripcion'): array|string
