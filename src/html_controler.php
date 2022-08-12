@@ -123,7 +123,15 @@ class html_controler{
         return $keys;
     }
 
-    public function input_codigo(int $cols, stdClass $row_upd, bool $value_vacio): array|string
+    /**
+     * Genera un input de tipo codigo
+     * @param int $cols Columnas en css
+     * @param stdClass $row_upd Registro en proceso
+     * @param bool $value_vacio is vacio no muestra datos
+     * @param bool $disabled Si disabled el input queda deshabilitado
+     * @return array|string
+     */
+    public function input_codigo(int $cols, stdClass $row_upd, bool $value_vacio,bool $disabled = false): array|string
     {
 
         if($cols<=0){
@@ -133,7 +141,8 @@ class html_controler{
             return $this->error->error(mensaje: 'Error cold debe ser menor o igual a  12', data: $cols);
         }
 
-        $html =$this->directivas->input_text_required(disable: false,name: 'codigo',place_holder: 'Codigo',row_upd: $row_upd,
+        $html =$this->directivas->input_text_required(disable: $disabled,name: 'codigo',
+            place_holder: 'Codigo',row_upd: $row_upd,
             value_vacio: $value_vacio);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar input', data: $html);
@@ -149,9 +158,9 @@ class html_controler{
 
     /**
      * Genera un input de tipo ID
-     * @param int $cols
-     * @param stdClass $row_upd
-     * @param bool $value_vacio
+     * @param int $cols Columnas en css
+     * @param stdClass $row_upd Registro en proceso
+     * @param bool $value_vacio is vacio no muestra datos
      * @param bool $disabled
      * @return array|string
      */
