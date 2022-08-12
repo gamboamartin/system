@@ -130,6 +130,7 @@ class html_controler{
      * @param bool $value_vacio is vacio no muestra datos
      * @param bool $disabled Si disabled el input queda deshabilitado
      * @return array|string
+     * @version 0.72.32
      */
     public function input_codigo(int $cols, stdClass $row_upd, bool $value_vacio,bool $disabled = false): array|string
     {
@@ -156,6 +157,14 @@ class html_controler{
         return $div;
     }
 
+    /**
+     * Genera iun input de tipo codigo bis
+     * @param int $cols Columnas en css
+     * @param stdClass $row_upd Registro en proceso
+     * @param bool $value_vacio is vacio no muestra datos
+     * @param bool $disabled Si disabled el input queda deshabilitado
+     * @return array|string
+     */
     public function input_codigo_bis(int $cols, stdClass $row_upd, bool $value_vacio, bool $disabled = false): array|string
     {
 
