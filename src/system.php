@@ -25,6 +25,7 @@ class system extends controlador_base{
     public array $inputs_modifica = array('id','codigo','codigo_bis','descripcion','descripcion_select','alias');
     public string $forms_inputs_alta = '';
     public string $forms_inputs_modifica = '';
+    public array $subtitulos_menu;
     public html $html_base;
 
     /**
@@ -65,6 +66,15 @@ class system extends controlador_base{
             var_dump($error);
             die('Error');
         }
+
+        $views = new views();
+        if(!isset($views->subtitulos_menu)){
+            $error = $this->errores->error(mensaje: 'Error no existe subtitulos_menu en views', data: $views);
+            var_dump($error);
+            die('Error');
+        }
+
+        $this->subtitulos_menu = $views->subtitulos_menu;
 
 
     }
