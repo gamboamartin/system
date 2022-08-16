@@ -237,16 +237,17 @@ class html_controler{
      * @param bool $disabled si disabled deshabilita input
      * @param string $place_holder etiqueta a mostrar
      * @return array|string
+     * @version 0.75.32
      */
     public function input_id(int $cols, stdClass $row_upd, bool $value_vacio, bool $disabled = false,
                              string $place_holder = 'Id'): array|string
     {
 
         if($cols<=0){
-            return $this->error->error(mensaje: 'Error cold debe ser mayor a 0', data: $cols);
+            return $this->error->error(mensaje: 'Error cols debe ser mayor a 0', data: $cols);
         }
         if($cols>=13){
-            return $this->error->error(mensaje: 'Error cold debe ser menor o igual a  12', data: $cols);
+            return $this->error->error(mensaje: 'Error cols debe ser menor o igual a  12', data: $cols);
         }
 
         $html =$this->directivas->input_text_required(disable: $disabled,name: 'id',place_holder:$place_holder,
@@ -463,6 +464,14 @@ class html_controler{
      *  para la asignacion de options, Si no, deja el select en blanco o vacio
      * @param int $id_selected Identificador de un registro y cargado utilizado para modifica, aplica selected
      * @param modelo $modelo Modelo de datos ejecucion
+     * @param bool $disabled Si disabled el input queda deshabilitado
+     * @param array $extra_params_keys Extraparams datos a obtener para integrar en data-extra
+     * @param array $filtro Filtro para obtencion de datos
+     * @param string $key_descripcion_select Key para mostrar en options
+     * @param string $key_id Key para integrar el value
+     * @param string $label Etiqueta a mostrar en select
+     * @param string $name Nombre del input
+     * @param bool $required si required agrega el atributo required a input
      * @return array|string Un string con options en forma de html
      * @version 0.56.32
      * @verfuncion 0.1.0
