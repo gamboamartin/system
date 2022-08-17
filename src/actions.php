@@ -281,7 +281,7 @@ class actions{
      * @version 1.16.1
      * @return string
      */
-    private function siguiente_view(): string
+    public function siguiente_view(): string
     {
         $siguiente_view = 'modifica';
         if(isset($_POST['guarda_otro'])){
