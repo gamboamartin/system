@@ -26,6 +26,7 @@ class system extends controlador_base{
     public string $forms_inputs_alta = '';
     public string $forms_inputs_modifica = '';
     public html $html_base;
+    public array $btns = array();
 
     /**
      * @param html_controler $html Html base
