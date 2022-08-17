@@ -221,6 +221,7 @@ class links_menu{
      * @param int $registro_id Registro identificador
      * @param string $seccion Seccion de envio
      * @return array|string
+     * @version 0.81.32
      */
     public function link_con_id(string $accion, int $registro_id, string $seccion): array|string
     {

@@ -79,6 +79,30 @@ class links_menuTest extends test {
     }
 
     /**
+     */
+    #[NoReturn] public function test_link_con_id(): void
+    {
+        errores::$error = false;
+        $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_GET['session_id'] = '1';
+        $html = new links_menu(-1);
+        //$html = new liberator($html);
+
+
+        $seccion = 'a';
+        $registro_id = '-1';
+        $accion = 'b';
+
+        $resultado = $html->link_con_id($accion, $registro_id, $seccion);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("./index.php?seccion=a&accion=b&registro_id=-1&session_id=1", $resultado);
+        errores::$error = false;
+    }
+
+    /**
      * @throws JsonException
      */
     #[NoReturn] public function test_init_link_controller(): void
