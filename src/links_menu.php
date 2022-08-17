@@ -218,12 +218,21 @@ class links_menu{
     /**
      * Funcion que genera un link con un id definido para la ejecucion de una accion
      * @param string $accion Accion a ejecutar
-     * @param int $registro_id
-     * @param string $seccion
+     * @param int $registro_id Registro identificador
+     * @param string $seccion Seccion de envio
      * @return array|string
      */
     public function link_con_id(string $accion, int $registro_id, string $seccion): array|string
     {
+        $accion = trim($accion);
+        if($accion === ''){
+            return $this->error->error(mensaje: 'Error al accion esta vacia', data: $accion);
+        }
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(mensaje: 'Error al $seccion esta vacia', data: $seccion);
+        }
+
         $link = "./index.php?seccion=$seccion&accion=$accion&registro_id=$registro_id";
         $link.="&session_id=$this->session_id";
         return $link;

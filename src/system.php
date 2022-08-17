@@ -148,7 +148,6 @@ class system extends controlador_base{
 
         if($header){
 
-
             $retorno = (new actions())->retorno_alta_bd(registro_id: $r_alta_bd->registro_id, seccion: $this->tabla,
                 siguiente_view: $siguiente_view);
             if(errores::$error){
