@@ -44,6 +44,7 @@ class init{
     }
 
     /**
+     * Inicializa las acciones basicas para botones
      * @param system $controller Controlador en ejecucion
      * @return stdClass
      */
