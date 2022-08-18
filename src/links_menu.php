@@ -220,10 +220,12 @@ class links_menu{
      * @param string $accion Accion a ejecutar
      * @param int $registro_id Registro identificador
      * @param string $seccion Seccion de envio
+     * @param array $params
      * @return array|string
      * @version 0.81.32
      */
-    public function link_con_id(string $accion, int $registro_id, string $seccion): array|string
+    public function link_con_id(string $accion, int $registro_id, string $seccion,
+                                array $params = array()): array|string
     {
         $accion = trim($accion);
         if($accion === ''){
@@ -234,8 +236,13 @@ class links_menu{
             return $this->error->error(mensaje: 'Error al $seccion esta vacia', data: $seccion);
         }
 
+        $vars_get = '';
+        foreach ($params as $var=>$value){
+            $vars_get.="&$var=$value";
+        }
+
         $link = "./index.php?seccion=$seccion&accion=$accion&registro_id=$registro_id";
-        $link.="&session_id=$this->session_id";
+        $link.="&session_id=$this->session_id$vars_get";
         return $link;
     }
 
