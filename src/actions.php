@@ -250,10 +250,12 @@ class actions{
      * @param int $registro_id Registro identificador del registro a procesar
      * @param string $seccion Seccion en ejecucion
      * @param string $siguiente_view Que accion se ejecutara
+     * @param array $params Parametros extra por get
      * @return array|string link para header
      * @version 0.22.2
      */
-    public function retorno_alta_bd(int $registro_id, string $seccion, string $siguiente_view): array|string
+    public function retorno_alta_bd(int $registro_id, string $seccion, string $siguiente_view,
+                                    array $params = array()): array|string
     {
         $seccion = trim($seccion);
         if($seccion === ''){
@@ -266,7 +268,7 @@ class actions{
         }
 
         $link = (new links_menu(registro_id: $registro_id))->link_con_id(accion:$siguiente_view,
-            registro_id: $registro_id, seccion: $seccion);
+            registro_id: $registro_id, seccion: $seccion,params: $params);
 
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar link', data:  $link);
