@@ -29,6 +29,7 @@ class system extends controlador_base{
     public array $btns = array();
     public string $include_menu_secciones = '';
     public int $number_active = 0;
+    public int $total_items_sections = 0;
 
     /**
      * @param html_controler $html Html base
