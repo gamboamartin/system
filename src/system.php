@@ -27,6 +27,8 @@ class system extends controlador_base{
     public string $forms_inputs_modifica = '';
     public html $html_base;
     public array $btns = array();
+    public string $include_menu_secciones = '';
+    public int $number_active = 0;
 
     /**
      * @param html_controler $html Html base
@@ -67,6 +69,8 @@ class system extends controlador_base{
             die('Error');
         }
 
+        $this->include_menu_secciones = "templates/$this->tabla/$this->accion/secciones.php";
+
 
 
     }
@@ -101,6 +105,7 @@ class system extends controlador_base{
         }
 
         $this->include_inputs_alta = $include_inputs_alta;
+
 
 
         return $this->forms_inputs_alta;
@@ -286,6 +291,8 @@ class system extends controlador_base{
         }
 
         $this->include_inputs_modifica = $include_inputs_modifica;
+
+
 
         return $r_modifica;
     }
