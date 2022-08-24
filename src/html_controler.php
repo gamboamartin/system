@@ -392,6 +392,16 @@ class html_controler{
         return ucwords($label);
     }
 
+    public function menu_lateral_title(string $etiqueta): array|string
+    {
+        $menu_lateral = $this->html_base->menu_lateral($etiqueta);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar menu lateral texto', data: $menu_lateral);
+        }
+        return $menu_lateral;
+
+    }
+
     public function modifica(system $controler): array|stdClass
     {
         $controler->inputs = new stdClass();
