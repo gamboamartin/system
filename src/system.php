@@ -30,6 +30,7 @@ class system extends controlador_base{
     public string $include_menu_secciones = '';
     public int $number_active = 0;
     public int $total_items_sections = 0;
+    public string $menu_lateral = '';
 
     /**
      * @param html_controler $html Html base
