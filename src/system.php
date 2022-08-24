@@ -31,6 +31,7 @@ class system extends controlador_base{
     public int $number_active = 0;
     public int $total_items_sections = 0;
     public string $menu_lateral = '';
+    public array $actions_number = array();
 
     /**
      * @param html_controler $html Html base
