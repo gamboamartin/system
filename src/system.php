@@ -28,7 +28,6 @@ class system extends controlador_base{
     public html $html_base;
     public array $btns = array();
     public string $include_menu_secciones = '';
-    public int $number_active = 0;
     public int $total_items_sections = 0;
     public string $menu_lateral = '';
     public array $actions_number = array();
