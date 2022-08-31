@@ -155,15 +155,8 @@ class system extends controlador_base{
 
 
         if($header){
-
-            $retorno = (new actions())->retorno_alta_bd(registro_id: $r_alta_bd->registro_id, seccion: $this->tabla,
-                siguiente_view: $siguiente_view);
-            if(errores::$error){
-                return $this->retorno_error(mensaje: 'Error al dar de alta registro', data: $r_alta_bd, header:  true,
-                    ws: $ws);
-            }
-            header('Location:'.$retorno);
-            exit;
+            $this->retorno_base(registro_id:$r_alta_bd->registro_id, result: $r_alta_bd,
+                siguiente_view: $siguiente_view,ws:  $ws);
         }
         if($ws){
             header('Content-Type: application/json');
@@ -315,5 +308,31 @@ class system extends controlador_base{
         $this->header_out(result: $r_modifica_bd, header: $header,ws:  $ws);
 
         return $r_modifica_bd;
+    }
+
+    /**
+     * Ejecuta el retorno de una transaccion
+     * @param int $registro_id Identificador en proceso
+     * @param mixed $result Resultado
+     * @param string $siguiente_view Vista de retorno
+     * @param bool $ws si webservice
+     * @param bool $header Si header
+     * @return array|void
+     * @version 0.90.32
+     *
+     */
+    PUBLIC function retorno_base(int $registro_id, mixed $result, string $siguiente_view, bool $ws,
+                                    bool $header = true):bool|array{
+        $retorno = (new actions())->retorno_alta_bd(registro_id: $registro_id, seccion: $this->tabla,
+            siguiente_view: $siguiente_view);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al dar de alta registro', data: $result, header:  $header,
+                ws: $ws);
+        }
+        if($header) {
+            header('Location:' . $retorno);
+            exit;
+        }
+        return true;
     }
 }

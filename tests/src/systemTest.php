@@ -53,5 +53,32 @@ class systemTest extends test {
         errores::$error = false;
     }
 
+    /**
+     * @throws JsonException
+     */
+    public function test_retorno_base(): void
+    {
+        errores::$error = false;
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+        $html = new html();
+        $html_controler = new html_controler($html);
+
+        $modelo = new adm_accion($this->link);
+        $obj_link = new links_menu(-1);
+
+        $controler = new system(html: $html_controler, link: $this->link, modelo: $modelo, obj_link: $obj_link,
+            paths_conf: $this->paths_conf);
+        //$controler = new liberator($controler);
+
+        $registro_id = -1;
+        $result = array();
+        $siguiente_view = '';
+        $ws = false;
+        $resultado = $controler->retorno_base($registro_id, $result, $siguiente_view, $ws, false);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
 }
 
