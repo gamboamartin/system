@@ -11,6 +11,15 @@ use JsonException;
 use PDO;
 use stdClass;
 
+/**
+ * @var int $total_items_sections Corresponde al numero de acciones a mostrar en un menu lateral
+ * @var array $actions_number Corresponde a la configuracion de links de un menu lateral
+ *          $this->actions_number['contacto']['item'] = 4;
+ *          $this->actions_number['contacto']['etiqueta'] = 'Contacto';
+ *
+ * @var string $menu_lateral Es un html con la forma de un menu lateral con acciones e items definidos
+ *
+ */
 class system extends controlador_base{
 
     private html_controler $html;
