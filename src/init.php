@@ -47,6 +47,7 @@ class init{
      * Inicializa las acciones basicas para botones
      * @param system $controller Controlador en ejecucion
      * @return stdClass
+     * @version 0.92.32
      */
     private function init_acciones_base(system $controller): stdClass
     {
