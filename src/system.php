@@ -40,6 +40,7 @@ class system extends controlador_base{
     public int $total_items_sections = 0;
     public string $menu_lateral = '';
     public array $actions_number = array();
+    public string $include_breadcrumb = '';
 
     /**
      * @param html_controler $html Html base
@@ -81,6 +82,14 @@ class system extends controlador_base{
         }
 
         $this->include_menu_secciones = "templates/$this->tabla/$this->accion/secciones.php";
+        $include_breadcrumb = (new views())->ruta_templates."head/$this->accion/title.php";
+        if(file_exists("templates/head/$this->tabla/$this->accion/title.php")){
+            $include_breadcrumb = "templates/head/$this->tabla/$this->accion/title.php";
+        }
+        $this->include_breadcrumb = $include_breadcrumb;
+        if(!file_exists($include_breadcrumb)){
+            $this->include_breadcrumb = '';
+        }
 
 
 
