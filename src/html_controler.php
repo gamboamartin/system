@@ -503,8 +503,22 @@ class html_controler{
         return $registros->registros;
     }
 
+    /**
+     * Genera un select automatico conforme a params
+     * @param PDO $link Conexion a la BD
+     * @param string $name_model Nombre del modelo
+     * @param stdClass $params Parametros a ejecutar para select
+     * @param stdClass $selects Selects precargados
+     * @return array|stdClass
+     * @version 0.96.32
+     */
     protected function select_aut(PDO $link, string $name_model, stdClass $params, stdClass $selects): array|stdClass
     {
+        $name_model = trim($name_model);
+        if($name_model === ''){
+            return $this->error->error(mensaje: 'Error $name_model esta vacio', data: $name_model);
+        }
+
         $params_select = $this->params_select(name_model: $name_model, params: $params);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al maquetar params', data: $params_select);
