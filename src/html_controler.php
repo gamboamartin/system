@@ -392,8 +392,18 @@ class html_controler{
         return ucwords($label);
     }
 
+    /**
+     * Genera un menu lateral con titulo
+     * @param string $etiqueta Etiqueta del menu
+     * @return array|string
+     * @version 0.93.32
+     */
     public function menu_lateral_title(string $etiqueta): array|string
     {
+        $etiqueta = trim($etiqueta);
+        if($etiqueta === ''){
+            return $this->error->error(mensaje: 'Error la etiqueta esta vacia', data: $etiqueta);
+        }
         $menu_lateral = $this->html_base->menu_lateral($etiqueta);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar menu lateral texto', data: $menu_lateral);
@@ -488,7 +498,7 @@ class html_controler{
      * @fecha 2022-08-03 16:27
      * @author mgamboa
      */
-    protected function select_catalogo(int $cols, bool $con_registros, int $id_selected, modelo $modelo,
+    public function select_catalogo(int $cols, bool $con_registros, int $id_selected, modelo $modelo,
                                        bool $disabled = false, array $extra_params_keys = array(),
                                        array $filtro=array(), string $key_descripcion_select = '', string $key_id = '',
                                        string $label = '', string $name = '', bool $required = false): array|string

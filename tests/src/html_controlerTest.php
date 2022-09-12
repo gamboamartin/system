@@ -245,6 +245,23 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_menu_lateral_title(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        //$html = new liberator($html);
+
+
+        $etiqueta = 'a';
+
+        $resultado = $html->menu_lateral_title($etiqueta);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<span class='texto-menu-lateral'>a</span>", $resultado);
+        errores::$error = false;
+    }
+
     public function test_rows_select(): void
     {
         errores::$error = false;
