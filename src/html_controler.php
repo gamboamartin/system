@@ -1,12 +1,14 @@
 <?php
 namespace gamboamartin\system;
 use base\orm\modelo;
+use base\orm\modelo_base;
 use gamboamartin\errores\errores;
 use gamboamartin\template\directivas;
 use gamboamartin\template\html;
 use gamboamartin\validacion\validacion;
 
 
+use PDO;
 use stdClass;
 
 class html_controler{
@@ -433,9 +435,19 @@ class html_controler{
         return $controler->inputs;
     }
 
-    protected function params_select(string $name_model, stdClass $params): stdClass
+    /**
+     * Inicializa los parametros de un select
+     * @param string $name_model Nombre del modelo
+     * @param stdClass $params Parametros inicializados
+     * @return stdClass|array
+     * @version 0.95.32
+     */
+    private function params_select(string $name_model, stdClass $params): stdClass|array
     {
-
+        $name_model = trim($name_model);
+        if($name_model === ''){
+            return $this->error->error(mensaje: 'Error $name_model esta vacio', data: $name_model);
+        }
         $data = new stdClass();
 
         $data->cols = $params->cols ?? 12;
@@ -491,6 +503,30 @@ class html_controler{
         return $registros->registros;
     }
 
+    protected function select_aut(PDO $link, string $name_model, stdClass $params, stdClass $selects): array|stdClass
+    {
+        $params_select = $this->params_select(name_model: $name_model, params: $params);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al maquetar params', data: $params_select);
+        }
+
+        $name_select_id = $name_model.'_id';
+        $modelo = (new modelo_base($link))->genera_modelo(modelo: $name_model);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar modelo', data: $modelo);
+        }
+        $select  = $this->select_catalogo(cols:$params_select->cols,con_registros:$params_select->con_registros,
+            id_selected:$params_select->id_selected, modelo: $modelo,label:$params_select->label,
+            required: $params_select->required);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar select', data: $select);
+        }
+
+        $selects->$name_select_id = $select;
+
+        return $selects;
+    }
+
     /**
      * Genera el input de tipo select
      * @param int $cols Numero de columnas boostrap
@@ -512,7 +548,7 @@ class html_controler{
      * @fecha 2022-08-03 16:27
      * @author mgamboa
      */
-    public function select_catalogo(int $cols, bool $con_registros, int $id_selected, modelo $modelo,
+    protected function select_catalogo(int $cols, bool $con_registros, int $id_selected, modelo $modelo,
                                        bool $disabled = false, array $extra_params_keys = array(),
                                        array $filtro=array(), string $key_descripcion_select = '', string $key_id = '',
                                        string $label = '', string $name = '', bool $required = false): array|string
