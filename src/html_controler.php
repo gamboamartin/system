@@ -433,6 +433,20 @@ class html_controler{
         return $controler->inputs;
     }
 
+    protected function params_select(string $name_model, stdClass $params): stdClass
+    {
+
+        $data = new stdClass();
+
+        $data->cols = $params->cols ?? 12;
+        $data->con_registros = $params->con_registros ?? true;
+        $data->id_selected = $params->id_selected ?? -1;
+        $data->label = $params->label ?? str_replace('_',' ', strtoupper($name_model));
+        $data->required = $params->required ?? true;
+
+        return $data;
+    }
+
     /**
      * Obtiene los registros para un select
      * @param stdClass $keys Keys para obtencion de campos
