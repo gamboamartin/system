@@ -590,12 +590,31 @@ class html_controler{
         return $select;
     }
 
+    /**
+     * Genera selects en volumen con parametros
+     * @param array $keys_selects conjunto de selects
+     * @param PDO $link Conexion a la base de datos
+     * @return array|stdClass
+     * @version 0.100.32
+     */
     protected function selects_alta(array $keys_selects, PDO $link): array|stdClass
     {
 
         $selects = new stdClass();
 
         foreach ($keys_selects as $name_model=>$params){
+
+            if(!is_object($params)){
+                return $this->error->error(mensaje: 'Error $params debe ser un objeto', data: $params);
+            }
+            $name_model = trim($name_model);
+            if($name_model === ''){
+                return $this->error->error(mensaje: 'Error $name_model esta vacio', data: $name_model);
+            }
+            if(is_numeric($name_model)){
+                return $this->error->error(mensaje: 'Error $name_model debe ser el nombre de un modelo valido',
+                    data: $name_model);
+            }
 
             $selects  = $this->select_aut(link: $link,name_model:  $name_model,params:  $params, selects: $selects);
             if(errores::$error){

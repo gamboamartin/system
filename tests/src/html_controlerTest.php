@@ -378,6 +378,23 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_selects_alta(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
+
+        $link = $this->link;
+        $keys_selects = array();
+        $keys_selects['adm_seccion'] = new stdClass();
+        $resultado = $html->selects_alta($keys_selects, $link);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase("lect class='form-control selectpicker color-secondary adm_se", $resultado->adm_seccion_id);
+        errores::$error = false;
+    }
+
     public function test_values_selects(): void
     {
         errores::$error = false;
