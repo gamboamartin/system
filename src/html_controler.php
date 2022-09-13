@@ -457,6 +457,8 @@ class html_controler{
         $data->id_selected = $params->id_selected ?? -1;
         $data->label = $params->label ?? str_replace('_',' ', strtoupper($name_model));
         $data->required = $params->required ?? true;
+        $data->disabled = $params->disabled ?? false;
+        $data->filtro = $params->filtro ?? array();
 
         return $data;
     }
@@ -531,9 +533,9 @@ class html_controler{
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar modelo', data: $modelo);
         }
-        $select  = $this->select_catalogo(cols:$params_select->cols,con_registros:$params_select->con_registros,
-            id_selected:$params_select->id_selected, modelo: $modelo,label:$params_select->label,
-            required: $params_select->required);
+        $select  = $this->select_catalogo(cols: $params_select->cols, con_registros: $params_select->con_registros,
+            id_selected: $params_select->id_selected, modelo: $modelo, disabled: $params_select->disabled,
+            filtro: $params_select->filtro, label: $params_select->label, required: $params_select->required);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $select);
         }
