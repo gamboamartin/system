@@ -1,5 +1,6 @@
 <?php
 namespace tests\controllers;
+use gamboamartin\controllers\controlador_adm_session;
 use gamboamartin\errores\errores;
 use gamboamartin\system\html_controler;
 use gamboamartin\system\links_menu;
@@ -259,6 +260,22 @@ class html_controlerTest extends test {
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("<span class='texto-menu-lateral'>a</span>", $resultado);
+        errores::$error = false;
+    }
+
+    public function test_modifica(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        //$html = new liberator($html);
+
+        $controler = new controlador_adm_session(link: $this->link, paths_conf: $this->paths_conf);
+
+
+        $resultado = $html->modifica($controler);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
         errores::$error = false;
     }
 

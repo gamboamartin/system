@@ -1,5 +1,7 @@
 <?php
 namespace gamboamartin\system;
+use base\controller\controlador_base;
+use base\controller\controler;
 use base\orm\modelo;
 use base\orm\modelo_base;
 use gamboamartin\errores\errores;
@@ -275,7 +277,7 @@ class html_controler{
      * @param bool $value_vacio
      * @return array|stdClass
      */
-    protected function inputs_base(stdClass $cols, system $controler, bool $value_vacio): array|stdClass
+    protected function inputs_base(stdClass $cols, controler $controler, bool $value_vacio): array|stdClass
     {
 
         $keys = array('codigo','codigo_bis');
@@ -416,9 +418,19 @@ class html_controler{
 
     }
 
-    public function modifica(system $controler): array|stdClass
+    /**
+     * Inicializa la base para modifica frontend
+     * @param system $controler Controlador en ejecucion
+     * @return array|stdClass
+     * @version 0.102.32
+     */
+    public function modifica(controler $controler): array|stdClass
     {
         $controler->inputs = new stdClass();
+
+        if(!isset($controler->row_upd)){
+            $controler->row_upd = new stdClass();
+        }
 
         $html_id = $this->directivas->input_id(cols:4,row_upd: $controler->row_upd,value_vacio: false);
         if(errores::$error){
