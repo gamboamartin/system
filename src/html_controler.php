@@ -588,6 +588,11 @@ class html_controler{
         return $select;
     }
 
+    protected function texts_alta(stdClass $row_upd, bool $value_vacio, stdClass $params = new stdClass()): array|stdClass
+    {
+        return new stdClass();
+    }
+
     /**
      * Genera los values para ser utilizados en los selects options
      * @param bool $con_registros si con registros muestra todos los registros
