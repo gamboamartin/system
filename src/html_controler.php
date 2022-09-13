@@ -77,6 +77,8 @@ class html_controler{
         return $values;
     }
 
+
+
     /**
      * Inicializa los datos de un select
      * @param bool $con_registros Si no con registros integra el select vacio para ser llenado posterior con ajax
@@ -512,7 +514,7 @@ class html_controler{
      * @return array|stdClass
      * @version 0.96.32
      */
-    protected function select_aut(PDO $link, string $name_model, stdClass $params, stdClass $selects): array|stdClass
+    private function select_aut(PDO $link, string $name_model, stdClass $params, stdClass $selects): array|stdClass
     {
         $name_model = trim($name_model);
         if($name_model === ''){
@@ -586,6 +588,24 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al generar select', data: $select);
         }
         return $select;
+    }
+
+    protected function selects_alta(array $keys_selects, PDO $link): array|stdClass
+    {
+
+        $selects = new stdClass();
+
+        foreach ($keys_selects as $name_model=>$params){
+
+            $selects  = $this->select_aut(link: $link,name_model:  $name_model,params:  $params, selects: $selects);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar select', data: $selects);
+            }
+
+        }
+
+        return $selects;
+
     }
 
     protected function texts_alta(stdClass $row_upd, bool $value_vacio, stdClass $params = new stdClass()): array|stdClass
