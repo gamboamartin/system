@@ -79,6 +79,25 @@ class html_controler{
         return $values;
     }
 
+    protected function init_alta(array $keys_selects, PDO $link): array|stdClass
+    {
+        $selects = $this->selects_alta(keys_selects: $keys_selects, link: $link);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar selects', data: $selects);
+        }
+
+        $texts = $this->texts_alta(row_upd: new stdClass(), value_vacio: true);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar texts', data: $texts);
+        }
+
+        $alta_inputs = new stdClass();
+        $alta_inputs->selects = $selects;
+        $alta_inputs->texts = $texts;
+
+        return $alta_inputs;
+    }
+
 
 
     /**
