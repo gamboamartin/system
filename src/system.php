@@ -192,6 +192,13 @@ class system extends controlador_base{
             return $this->retorno_error(mensaje: 'Error al eliminar', data: $r_del, header:  $header,
                 ws: $ws);
         }
+
+        $siguiente_view = (new actions())->init_alta_bd(siguiente_view: 'lista');
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al obtener siguiente view', data: $siguiente_view,
+                header:  $header, ws: $ws);
+        }
+
         if($header){
             $retorno = $_SERVER['HTTP_REFERER'];
             header('Location:'.$retorno);
