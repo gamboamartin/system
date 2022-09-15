@@ -640,6 +640,11 @@ class html_controler{
             if(!is_object($params)){
                 return $this->error->error(mensaje: 'Error $params debe ser un objeto', data: $params);
             }
+
+            if(isset($params->name_model)){
+                $name_model = $params->name_model;
+
+            }
             $name_model = trim($name_model);
             if($name_model === ''){
                 return $this->error->error(mensaje: 'Error $name_model esta vacio', data: $name_model);
