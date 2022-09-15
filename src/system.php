@@ -202,6 +202,7 @@ class system extends controlador_base{
             echo json_encode($r_del, JSON_THROW_ON_ERROR);
             exit;
         }
+
         return $r_del;
     }
 

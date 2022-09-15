@@ -280,17 +280,18 @@ class actions{
 
     /**
      * Determina que funcion se ejecutara despues del alta bd
-     * @version 1.16.1
+     * @param string $siguiente_view Siguiente view base a la que se dirigira el retorno header
      * @return string
+     * @version 1.16.1
      */
-    public function siguiente_view(): string
+    public function siguiente_view(string $siguiente_view = 'modifica'): string
     {
-        $siguiente_view = 'modifica';
+
         if(isset($_POST['guarda_otro'])){
             $siguiente_view = 'alta';
         }
         elseif (isset($_POST['btn_action_next'])){
-            $siguiente_view = $_POST['btn_action_next'];
+            $siguiente_view = (string)$_POST['btn_action_next'];
         }
         return $siguiente_view;
     }
