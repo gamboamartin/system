@@ -69,7 +69,7 @@ class systemTest extends test {
 
         $controler = new system(html: $html_controler, link: $this->link, modelo: $modelo, obj_link: $obj_link,
             paths_conf: $this->paths_conf);
-        //$controler = new liberator($controler);
+        $controler = new liberator($controler);
 
         $registro_id = -1;
         $result = array();
