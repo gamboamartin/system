@@ -354,7 +354,7 @@ class system extends controlador_base{
      * @return bool|array
      * @version 0.90.32
      */
-    private function retorno_base(int $registro_id, mixed $result, string $siguiente_view, bool $ws,
+    protected function retorno_base(int $registro_id, mixed $result, string $siguiente_view, bool $ws,
                                     bool $header = true):bool|array{
         $retorno = (new actions())->retorno_alta_bd(registro_id: $registro_id, seccion: $this->tabla,
             siguiente_view: $siguiente_view);
