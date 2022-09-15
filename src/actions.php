@@ -97,12 +97,13 @@ class actions{
 
     /**
      * Inicializa los datos para una accion de tipo alta bd
-     * @version v0.15.5
+     * @param string $siguiente_view Siguiente view default
      * @return array|string
+     * @version v0.15.5
      */
-    public function init_alta_bd(): array|string
+    public function init_alta_bd(string $siguiente_view = 'modifica'): array|string
     {
-        $siguiente_view = $this->siguiente_view();
+        $siguiente_view = $this->siguiente_view(siguiente_view: $siguiente_view);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener siguiente view', data: $siguiente_view);
         }
