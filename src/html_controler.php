@@ -544,10 +544,11 @@ class html_controler{
      * @param string $name_model Nombre del modelo
      * @param stdClass $params Parametros a ejecutar para select
      * @param stdClass $selects Selects precargados
+     * @param string $tabla
      * @return array|stdClass
      * @version 0.96.32
      */
-    private function select_aut(PDO $link, string $name_model, stdClass $params, stdClass $selects): array|stdClass
+    private function select_aut(PDO $link, string $name_model, stdClass $params, stdClass $selects, string $tabla = ''): array|stdClass
     {
         $name_model = trim($name_model);
         if($name_model === ''){
@@ -559,7 +560,11 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al maquetar params', data: $params_select);
         }
 
-        $name_select_id = $name_model.'_id';
+        if($tabla === ''){
+            $tabla = $name_model;
+        }
+
+        $name_select_id = $tabla.'_id';
         $modelo = (new modelo_base($link))->genera_modelo(modelo: $name_model);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar modelo', data: $modelo);
