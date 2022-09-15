@@ -642,9 +642,13 @@ class html_controler{
 
         foreach ($keys_selects as $name_model=>$params){
 
+            /**
+             * REFCATORIZAR LUNES GET NAME MODEL GET TABLA
+             */
             if(!is_object($params)){
                 return $this->error->error(mensaje: 'Error $params debe ser un objeto', data: $params);
             }
+            $tabla = $name_model;
 
             if(isset($params->name_model)){
                 $name_model = $params->name_model;
@@ -659,7 +663,8 @@ class html_controler{
                     data: $name_model);
             }
 
-            $selects  = $this->select_aut(link: $link,name_model:  $name_model,params:  $params, selects: $selects);
+            $selects  = $this->select_aut(
+                link: $link,name_model:  $name_model,params:  $params, selects: $selects, tabla: $tabla);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar select', data: $selects);
             }
