@@ -98,6 +98,25 @@ class html_controler{
         return $alta_inputs;
     }
 
+    protected function init_alta2(modelo $modelo, PDO $link, array $keys_selects): array|stdClass
+    {
+        $selects = $this->selects_alta2(modelo: $modelo, link: $link, keys_selects: $keys_selects);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar selects', data: $selects);
+        }
+
+        $texts = $this->texts_alta(row_upd: new stdClass(), value_vacio: true);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar texts', data: $texts);
+        }
+
+        $alta_inputs = new stdClass();
+        $alta_inputs->selects = $selects;
+        $alta_inputs->texts = $texts;
+
+        return $alta_inputs;
+    }
+
 
 
     /**
@@ -544,6 +563,20 @@ class html_controler{
         return $data;
     }
 
+    private function params_select2(stdClass $params, string $label): stdClass|array
+    {
+        $data = new stdClass();
+        $data->cols = $params->cols ?? 6;
+        $data->con_registros = $params->con_registros ?? true;
+        $data->id_selected = $params->id_selected ?? -1;
+        $data->disabled = $params->disabled ?? false;
+        $data->filtro = $params->filtro ?? array();
+        $data->required = $params->required ?? true;
+        $data->label = $params->label ?? str_replace('_',' ', $label);
+        return $data;
+    }
+
+
     /**
      * Obtiene los registros para un select
      * @param stdClass $keys Keys para obtencion de campos
@@ -629,6 +662,17 @@ class html_controler{
         $selects->$name_select_id = $select;
 
         return $selects;
+    }
+
+    private function select_aut2(PDO $link, modelo $modelo, mixed $params_select): array|stdClass|string
+    {
+        $select  = $this->select_catalogo(cols: $params_select->cols, con_registros: $params_select->con_registros,
+            id_selected: $params_select->id_selected, modelo: $modelo, disabled: $params_select->disabled,
+            filtro: $params_select->filtro, label: $params_select->label, required: $params_select->required);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar select', data: $select);
+        }
+        return $select;
     }
 
     /**
@@ -724,6 +768,45 @@ class html_controler{
         return $selects;
 
     }
+
+    protected function selects_alta2(modelo $modelo, PDO $link,array $keys_selects = array()): array|stdClass
+    {
+        $campos_view = $this->obtener_inputs($modelo->campos_view);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener campos de la vista del modelo', data: $campos_view);
+        }
+
+        $selects = new stdClass();
+
+        foreach ($campos_view['selects'] as $item => $modelo){
+
+            if (array_key_exists($item, $keys_selects) && !is_object($keys_selects[$item])){
+                return $this->error->error(mensaje: 'Error $params debe ser un objeto', data: $keys_selects[$item]);
+            }
+
+            $params_select = new stdClass();
+
+            if (array_key_exists($item, $keys_selects) ){
+                $params_select = $keys_selects[$item];
+            }
+
+            $params_select = $this->params_select2(params: $params_select,label: $item);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar select', data: $params_select);
+            }
+
+            $select = $this->select_aut2(link: $link, modelo: $modelo,params_select: $params_select);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar select', data: $select);
+            }
+            $selects->$item = $select;
+        }
+
+        return $selects;
+    }
+
+
+
 
     protected function texts_alta(stdClass $row_upd, bool $value_vacio, stdClass $params = new stdClass()): array|stdClass
     {
