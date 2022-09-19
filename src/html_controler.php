@@ -98,7 +98,7 @@ class html_controler{
         return $alta_inputs;
     }
 
-    protected function init_alta2(modelo $modelo, PDO $link, array $keys_selects): array|stdClass
+    protected function init_alta2(modelo $modelo, PDO $link, array $keys_selects = array()): array|stdClass
     {
         $selects = $this->selects_alta2(modelo: $modelo, link: $link, keys_selects: $keys_selects);
         if (errores::$error) {
