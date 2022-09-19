@@ -468,6 +468,56 @@ class html_controler{
         return $controler->inputs;
     }
 
+    protected function obtener_inputs(mixed $campos_view): array|stdClass
+    {
+        $selects = array();
+
+        foreach ($campos_view as $item => $campo){
+            $tipo_input = $this->obtener_tipo_input(campo: $campo);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al obtener el tipo de input', data: $tipo_input);
+            }
+
+            switch ($tipo_input) {
+                case 'selects':
+                    $select = $this->obtener_select(campo: $campo);
+                    if(errores::$error){
+                        return $this->error->error(mensaje: 'Error al obtener select', data: $select);
+                    }
+
+                    $selects[$item] = $select;
+
+                    break;
+                case 'inputs': break;
+                case 'dates': break;
+            }
+        }
+
+        return ['selects' => $selects];
+    }
+
+    protected function obtener_select(mixed $campo): stdClass|array|modelo
+    {
+        if (!isset($campo['model'])){
+            return $this->error->error(mensaje: 'Error no existe key model', data: $campo);
+        }
+
+        if (!is_object($campo['model'])) {
+            return $this->error->error(mensaje: 'Error: El modelo brindado no esta definido', data: $campo);
+        }
+
+        return $campo['model'];
+    }
+
+    protected function obtener_tipo_input(mixed $campo): string|stdClass|array
+    {
+        if (!isset($campo['type'])){
+            return $this->error->error(mensaje: 'Error no existe key type', data: $campo);
+        }
+
+        return $campo['type'];
+    }
+
     /**
      * Inicializa los parametros de un select
      * @param string $name_model Nombre del modelo
