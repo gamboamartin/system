@@ -512,6 +512,7 @@ class html_controler{
     protected function obtener_inputs(mixed $campos_view): array|stdClass
     {
         $selects = array();
+        $inputs = array();
 
         foreach ($campos_view as $item => $campo){
             $tipo_input = $this->obtener_tipo_input(campo: $campo);
@@ -529,12 +530,13 @@ class html_controler{
                     $selects[$item] = $select;
 
                     break;
-                case 'inputs': break;
+                case 'inputs':
+                    $inputs[] = $item;
+                    break;
                 case 'dates': break;
             }
         }
-
-        return ['selects' => $selects];
+        return ['selects' => $selects,'inputs' => $inputs];
     }
 
     protected function obtener_select(mixed $campo): stdClass|array|modelo
