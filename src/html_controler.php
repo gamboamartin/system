@@ -98,14 +98,14 @@ class html_controler{
         return $alta_inputs;
     }
 
-    protected function init_alta2(modelo $modelo, PDO $link, array $keys_selects = array()): array|stdClass
+    protected function init_alta2(stdClass $row_upd, modelo $modelo, PDO $link, array $keys_selects = array()): array|stdClass
     {
         $selects = $this->selects_alta2(modelo: $modelo, link: $link, keys_selects: $keys_selects);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar selects', data: $selects);
         }
 
-        $texts = $this->texts_alta(row_upd: new stdClass(), value_vacio: true);
+        $texts = $this->texts_alta2(modelo: $modelo,row_upd: $row_upd);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar texts', data: $texts);
         }
@@ -373,6 +373,28 @@ class html_controler{
         return $controler->inputs;
     }
 
+    public function input_template(mixed $params_select, stdClass $row_upd): array|string
+    {
+        $valida = $this->directivas->valida_cols(cols: $params_select->cols);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar columnas', data: $valida);
+        }
+
+        $html =$this->directivas->input_text(disable: $params_select->disable, name: $params_select->name,
+            place_holder: $params_select->place_holder, required: $params_select->required, row_upd: $row_upd,
+            value_vacio: $params_select->value_vacio);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar input', data: $html);
+        }
+
+        $div = $this->directivas->html->div_group(cols: $params_select->cols,html:  $html);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar div', data: $div);
+        }
+
+        return $div;
+    }
+
     /**
      * Asigna los keys necesarios para un select
      * @param string $tabla Tabla del select
@@ -535,6 +557,21 @@ class html_controler{
         }
 
         return $campo['type'];
+    }
+
+    private function params_input2(stdClass $params, string $name,string $place_holder): stdClass|array
+    {
+        $data = new stdClass();
+        $data->cols = $params->cols ?? 6;
+        $data->disabled = $params->disabled ?? false;
+        $data->name = $params->name ?? $name;
+        $data->place_holder = $params->place_holder ?? $place_holder;
+        $data->required = $params->required ?? true;
+        $data->row_upd = $params->row_upd ?? new stdClass();
+        $data->value_vacio = $params->value_vacio ?? false;
+        $data->disable = $params->disable ?? false;
+
+        return $data;
     }
 
     /**
@@ -811,6 +848,38 @@ class html_controler{
     protected function texts_alta(stdClass $row_upd, bool $value_vacio, stdClass $params = new stdClass()): array|stdClass
     {
         return new stdClass();
+    }
+
+    protected function texts_alta2(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
+    {
+        $campos_view = $this->obtener_inputs($modelo->campos_view);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener campos de la vista del modelo', data: $campos_view);
+        }
+
+        $texts = new stdClass();
+
+        foreach ($campos_view['inputs'] as $item){
+
+            $params_select = new stdClass();
+
+            if (array_key_exists($item, $keys_selects) ){
+                $params_select = $keys_selects[$item];
+            }
+
+            $params_select = $this->params_input2(params: $params_select,name: $item,place_holder: $item);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar select', data: $params_select);
+            }
+
+            $input = $this->input_template(params_select: $params_select,row_upd: $row_upd);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar input', data: $input);
+            }
+            $texts->$item = $input;
+        }
+
+        return $texts;
     }
 
     /**
