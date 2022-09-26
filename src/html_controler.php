@@ -105,7 +105,7 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al generar selects', data: $selects);
         }
 
-        $texts = $this->texts_alta2(modelo: $modelo,row_upd: $row_upd);
+        $texts = $this->texts_alta2(modelo: $modelo,row_upd: $row_upd,keys_selects: $keys_selects);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar texts', data: $texts);
         }
@@ -513,6 +513,7 @@ class html_controler{
     {
         $selects = array();
         $inputs = array();
+        $dates = array();
 
         foreach ($campos_view as $item => $campo){
             $tipo_input = $this->obtener_tipo_input(campo: $campo);
@@ -526,17 +527,17 @@ class html_controler{
                     if(errores::$error){
                         return $this->error->error(mensaje: 'Error al obtener select', data: $select);
                     }
-
                     $selects[$item] = $select;
-
                     break;
                 case 'inputs':
                     $inputs[] = $item;
                     break;
-                case 'dates': break;
+                case 'dates':
+                    $dates[] = $item;
+                    break;
             }
         }
-        return ['selects' => $selects,'inputs' => $inputs];
+        return ['selects' => $selects,'inputs' => $inputs,'dates' => $dates];
     }
 
     protected function obtener_select(mixed $campo): stdClass|array|modelo
