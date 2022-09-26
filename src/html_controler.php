@@ -45,6 +45,60 @@ class html_controler{
         return $controler->inputs;
     }
 
+    protected function dates_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
+    {
+        $campos_view = $this->obtener_inputs($modelo->campos_view);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener campos de la vista del modelo', data: $campos_view);
+        }
+
+        $dates = new stdClass();
+
+        foreach ($campos_view['dates'] as $item){
+
+            $params_select = new stdClass();
+
+            if (array_key_exists($item, $keys_selects) ){
+                $params_select = $keys_selects[$item];
+            }
+
+            $params_select = $this->params_input2(params: $params_select,name: $item,place_holder: $item);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar select', data: $params_select);
+            }
+
+            $date = $this->dates_template(params_select: $params_select,row_upd: $row_upd);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar input', data: $date);
+            }
+            $dates->$item = $date;
+        }
+
+        return $dates;
+    }
+
+    public function dates_template(mixed $params_select, stdClass $row_upd): array|string
+    {
+        $valida = $this->directivas->valida_cols(cols: $params_select->cols);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar columnas', data: $valida);
+        }
+
+        $html =$this->directivas->fecha_required(disable: $params_select->disable, name: $params_select->name,
+            place_holder: $params_select->place_holder,  row_upd: $row_upd,
+            value_vacio: $params_select->value_vacio);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar input', data: $html);
+        }
+
+        $div = $this->directivas->html->div_group(cols: $params_select->cols,html:  $html);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar div', data: $div);
+        }
+
+        return $div;
+    }
+
     /**
      * Asigna los values de un select
      * @param stdClass $keys Keys para asignacion basica
@@ -110,9 +164,15 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al generar texts', data: $texts);
         }
 
+        $dates = $this->dates_alta(modelo: $modelo,row_upd: $row_upd,keys_selects: $keys_selects);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar dates', data: $dates);
+        }
+
         $alta_inputs = new stdClass();
         $alta_inputs->selects = $selects;
         $alta_inputs->texts = $texts;
+        $alta_inputs->dates = $dates;
 
         return $alta_inputs;
     }
