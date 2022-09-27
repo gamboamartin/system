@@ -1,6 +1,6 @@
 <?php
 namespace gamboamartin\system;
-use base\controller\controlador_base;
+
 use base\controller\controler;
 use base\orm\modelo;
 use base\orm\modelo_base;
@@ -905,9 +905,15 @@ class html_controler{
         return $selects;
     }
 
-
-
-
+    /**
+     * Funcion base altas txt
+     * @param stdClass $row_upd Registro en proceso
+     * @param bool $value_vacio si vacio deja in input vacio
+     * @param stdClass $params parametros a integrar
+     * @return array|stdClass
+     * @version 0.119.33
+     *
+     */
     protected function texts_alta(stdClass $row_upd, bool $value_vacio, stdClass $params = new stdClass()): array|stdClass
     {
         return new stdClass();
