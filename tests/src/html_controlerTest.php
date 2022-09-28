@@ -279,6 +279,24 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_obtener_select(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+
+
+        $html_controler = new html_controler($html_);
+        $html_controler = new liberator($html_controler);
+        $campo = array();
+        $campo['model'] = new adm_accion($this->link);
+        $resultado = $html_controler->obtener_select($campo);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
     public function test_params_select(): void
     {
         errores::$error = false;

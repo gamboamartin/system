@@ -600,7 +600,13 @@ class html_controler{
         return ['selects' => $selects,'inputs' => $inputs,'dates' => $dates];
     }
 
-    protected function obtener_select(mixed $campo): stdClass|array|modelo
+    /**
+     * Obtiene un modelo basado en campo
+     * @param array $campo Conjunto de modelos
+     * @return array|modelo
+     * @version 0.120.33
+     */
+    protected function obtener_select(array $campo): array|modelo
     {
         if (!isset($campo['model'])){
             return $this->error->error(mensaje: 'Error no existe key model', data: $campo);
