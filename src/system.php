@@ -351,13 +351,14 @@ class system extends controlador_base{
      * @param string $siguiente_view Vista de retorno
      * @param bool $ws si webservice
      * @param bool $header Si header
+     * @param array $params Envia parametros por GET en retorno $_GET['PARAMETRO'] = 1
      * @return bool|array
      * @version 0.90.32
      */
     protected function retorno_base(int $registro_id, mixed $result, string $siguiente_view, bool $ws,
-                                    bool $header = true):bool|array{
+                                    bool $header = true, array $params = array()):bool|array{
         $retorno = (new actions())->retorno_alta_bd(registro_id: $registro_id, seccion: $this->tabla,
-            siguiente_view: $siguiente_view);
+            siguiente_view: $siguiente_view, params: $params);
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al dar de alta registro', data: $result, header:  $header,
                 ws: $ws);
