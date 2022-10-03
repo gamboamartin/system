@@ -169,12 +169,12 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al generar dates', data: $dates);
         }
 
-        $alta_inputs = new stdClass();
-        $alta_inputs->selects = $selects;
-        $alta_inputs->texts = $texts;
-        $alta_inputs->dates = $dates;
+        $fields = array();
+        $fields['selects'] = $selects;
+        $fields['inputs'] = $texts;
+        $fields['dates'] = $dates;
 
-        return $alta_inputs;
+        return $fields;
     }
 
 
