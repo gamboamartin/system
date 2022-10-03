@@ -221,6 +221,22 @@ class system extends controlador_base{
         return $r_del;
     }
 
+    public function genera_inputs(array $keys_selects = array()): array|stdClass
+    {
+        $inputs = $this->html->init_alta2(row_upd: $this->row_upd, modelo: $this->modelo, link: $this->link,
+            keys_selects:$keys_selects);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al generar inputs', data: $inputs);
+        }
+
+        $inputs_asignados = $this->asigna_inputs(inputs: $inputs);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al asignar inputs', data: $inputs_asignados);
+        }
+
+        return $inputs_asignados;
+    }
+
     /**
      * Genera la lista mostrable en la accion de cat_sat_tipo_persona / lista
      * @version 0.5.0
