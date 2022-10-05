@@ -248,6 +248,18 @@ class system extends controlador_base{
     {
         $columnas = array();
         foreach ($this->keys_row_lista as $key_row_lista){
+            if(!is_object($key_row_lista)){
+                return $this->retorno_error(mensaje: 'Error el key_row_lista debe ser un objeto',
+                    data:  $key_row_lista, header: $header, ws: $ws);
+            }
+            $keys = array('campo');
+            $valida = $this->validacion->valida_existencia_keys(
+                keys: $keys, registro: $key_row_lista,valida_vacio: false);
+            if(errores::$error){
+                return $this->retorno_error(mensaje: 'Error al validar key_row_lista',
+                    data:  $valida, header: $header, ws: $ws);
+            }
+
             $columnas[] = $key_row_lista->campo;
         }
 
