@@ -251,6 +251,65 @@ class system extends controlador_base{
         return $inputs_asignados;
     }
 
+    public function get_data(bool $header, bool $ws = false){
+        $filtro = array();
+        if(isset($_POST['filtro'])) {
+            $filtro = $_POST['filtro'];
+        }
+
+        $n_rows_for_page = 10;
+        if(isset($_POST['n_rows_for_page'])) {
+            $n_rows_for_page = $_POST['n_rows_for_page'];
+        }
+
+        $limit = $n_rows_for_page;
+
+        $pagina = 1;
+        if(isset($_POST['pagina'])) {
+            $pagina = $_POST['pagina'];
+        }
+
+
+        $n_rows = $this->modelo->cuenta(filtro:$filtro, tipo_filtro: 'textos');
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al obtener registros', data: $n_rows,header: $header,ws: $ws);
+        }
+
+        $offset = ($pagina - 1) * $n_rows_for_page;
+
+        if($n_rows <= $limit){
+            $offset = 0;
+        }
+
+        $result = $this->modelo->filtro_and(filtro:$filtro,limit: $limit, offset: $offset,tipo_filtro: 'textos');
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al obtener registros', data: $result,header: $header,ws: $ws);
+        }
+
+
+        $out = array();
+        $out['n_registros'] = $n_rows;
+        $out['registros'] = $result->registros;
+        $out['data_result'] = $result;
+
+        if($ws){
+            header('Content-Type: application/json');
+            try{
+                echo json_encode($out, JSON_THROW_ON_ERROR);
+            }
+            catch (Throwable $e){
+                $error =  $this->errores->error(mensaje: 'Error al obtener registros', data: $e);
+                print_r($error);
+            }
+            exit;
+
+        }
+
+        return $out;
+
+
+    }
+
     /**
      * Genera la lista mostrable en la accion de cat_sat_tipo_persona / lista
      * @param bool $header if header se ejecuta en html
