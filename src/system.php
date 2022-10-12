@@ -262,35 +262,18 @@ class system extends controlador_base{
             $n_rows_for_page = $_POST['n_rows_for_page'];
         }
 
-        $limit = $n_rows_for_page;
-
         $pagina = 1;
         if(isset($_POST['pagina'])) {
             $pagina = $_POST['pagina'];
         }
+        
 
-
-        $n_rows = $this->modelo->cuenta(filtro:$filtro, tipo_filtro: 'textos');
+        $out = $this->modelo->get_data_lista(filtro: $filtro,n_rows_for_page: $n_rows_for_page,pagina: $pagina);
         if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al obtener registros', data: $n_rows,header: $header,ws: $ws);
-        }
-
-        $offset = ($pagina - 1) * $n_rows_for_page;
-
-        if($n_rows <= $limit){
-            $offset = 0;
-        }
-
-        $result = $this->modelo->filtro_and(filtro:$filtro,limit: $limit, offset: $offset,tipo_filtro: 'textos');
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al obtener registros', data: $result,header: $header,ws: $ws);
+            return $this->retorno_error(mensaje: 'Error al obtener registros', data: $out,header: $header,ws: $ws);
         }
 
 
-        $out = array();
-        $out['n_registros'] = $n_rows;
-        $out['registros'] = $result->registros;
-        $out['data_result'] = $result;
 
         if($ws){
             header('Content-Type: application/json');
