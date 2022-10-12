@@ -69,78 +69,84 @@ class systemTest extends test {
             paths_conf: $this->paths_conf);
         //$controler = new liberator($controler);
 
+        $controler->columnas_lista_data_table[] = 'adm_accion_id';
         $resultado = $controler->get_data(header:false);
 
+
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(255,$resultado['n_registros']);
-        $this->assertCount(10,$resultado['registros']);
+        $this->assertEquals(255,$resultado['recordsTotal']);
+        $this->assertCount(10,$resultado['data']);
 
         errores::$error = false;
 
         $_POST['n_rows_for_page'] = 2;
         $resultado = $controler->get_data(header:false);
 
+
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(255,$resultado['n_registros']);
-        $this->assertCount(2,$resultado['registros']);
+        $this->assertEquals(255,$resultado['recordsTotal']);
+        $this->assertCount(10,$resultado['data']);
 
         errores::$error = false;
 
-        $_POST['n_rows_for_page'] = 15;
-        $_POST['pagina'] = 2;
+        $_GET['length'] = 15;
+        $_GET['start'] = 21;
         $resultado = $controler->get_data(header:false);
+
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(255,$resultado['n_registros']);
-        $this->assertCount(15,$resultado['registros']);
-        $this->assertEquals(16,$resultado['registros'][0]['adm_accion_id']);
+        $this->assertEquals(255,$resultado['recordsTotal']);
+        $this->assertCount(15,$resultado['data']);
+        $this->assertEquals(16,$resultado['data'][0][0]);
 
 
         errores::$error = false;
 
-        $_POST['n_rows_for_page'] = 15;
-        $_POST['pagina'] = 1;
-        $_POST['filtro']['adm_accion.id'] = 2;
+        $_GET['length'] = 15;
+        $_GET['start'] = 0;
+        $_GET['search']['value'] = 2;
+        $controler->columnas_lista_data_table_filter[] = 'adm_accion.id';
         $resultado = $controler->get_data(header:false);
 
+
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(68,$resultado['n_registros']);
-        $this->assertCount(15,$resultado['registros']);
-        $this->assertEquals(2,$resultado['registros'][0]['adm_accion_id']);
+        $this->assertEquals(68,$resultado['recordsTotal']);
+        $this->assertCount(15,$resultado['data']);
+        $this->assertEquals(2,$resultado['data'][0][0]);
 
         errores::$error = false;
 
-        $_POST['n_rows_for_page'] = 15;
-        $_POST['pagina'] = 2;
-        $_POST['filtro']['adm_accion.id'] = 2;
+        $_GET['length'] = 15;
+        $_GET['start'] = 20;
+        $_GET['search']['value'] = 2;
         $resultado = $controler->get_data(header:false);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(68,$resultado['n_registros']);
-        $this->assertCount(15,$resultado['registros']);
-        $this->assertEquals(420,$resultado['registros'][0]['adm_accion_id']);
+        $this->assertEquals(68,$resultado['recordsTotal']);
+        $this->assertCount(15,$resultado['data']);
+        $this->assertEquals(420,$resultado['data'][0][0]);
 
         errores::$error = false;
 
-        $_POST['n_rows_for_page'] = 15;
-        $_POST['pagina'] = 2;
-        $_POST['filtro']['adm_accion.id'] = 42;
+        $_GET['length'] = 15;
+        $_GET['start'] = 20;
+        $_GET['search']['value'] = 42;
         $resultado = $controler->get_data(header:false);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(4,$resultado['n_registros']);
-        $this->assertCount(4,$resultado['registros']);
-        $this->assertEquals(42,$resultado['registros'][0]['adm_accion_id']);
+        $this->assertEquals(4,$resultado['recordsTotal']);
+        $this->assertCount(4,$resultado['data']);
+        $this->assertEquals(42,$resultado['data'][0][0]);
 
         errores::$error = false;
 
-        $_POST['n_rows_for_page'] = 15;
-        $_POST['pagina'] = 2;
-        $_POST['filtro']['adm_accion.id'] = 420;
+        $_GET['length'] = 15;
+        $_GET['start'] = 21;
+        $_GET['search']['value'] = 420;
 
         $resultado = $controler->get_data(header:false);
 
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(1,$resultado['n_registros']);
-        $this->assertCount(1,$resultado['registros']);
-        $this->assertEquals(420,$resultado['registros'][0]['adm_accion_id']);
+        $this->assertEquals(1,$resultado['recordsTotal']);
+        $this->assertCount(1,$resultado['data']);
+        $this->assertEquals(420,$resultado['data'][0][0]);
 
         errores::$error = false;
 
