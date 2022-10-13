@@ -455,6 +455,28 @@ class html_controler{
         return $div;
     }
 
+    protected function input_text_required(int $cols, bool $disabled, string $name, string $place_holder,
+                                           stdClass $row_upd, bool $value_vacio): array|string
+    {
+        $valida = $this->directivas->valida_cols(cols: $cols);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar columnas', data: $valida);
+        }
+
+        $html =$this->directivas->input_text_required(disable: $disabled,name: $name,place_holder: $place_holder,
+            row_upd: $row_upd, value_vacio: $value_vacio);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar input', data: $html);
+        }
+
+        $div = $this->directivas->html->div_group(cols: $cols,html:  $html);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar div', data: $div);
+        }
+
+        return $div;
+    }
+
     /**
      * Asigna los keys necesarios para un select
      * @param string $tabla Tabla del select
