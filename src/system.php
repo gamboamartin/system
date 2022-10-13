@@ -33,6 +33,7 @@ class system extends controlador_base{
     public array $rows_lista = array('id','codigo','codigo_bis','descripcion','descripcion_select','alias');
     public array $columnas_lista_data_table = array();
     public array $columnas_lista_data_table_filter = array();
+    public array $datatable = array();
     public array $inputs_alta = array('codigo','codigo_bis','descripcion','descripcion_select','alias');
     public array $inputs_modifica = array('id','codigo','codigo_bis','descripcion','descripcion_select','alias');
     public string $forms_inputs_alta = '';
@@ -202,24 +203,37 @@ class system extends controlador_base{
         return $columnas;
     }
 
-    private function data_output ( array|stdClass $columns, array $data ): array
+    public function datatable_init(string $key, array $elementos): array
     {
-        if(is_object($columns)){
-            $columns = (array)$columns;
+        if (!array_key_exists($key, $this->datatable)){
+            return $this->errores->error(mensaje: 'Error la key no existe', data:  $this->datatable);
         }
-        $out = array();
 
-        foreach ($data as $registro) {
-            $row = array();
+        if ($key === "columnDefs"){
+            $keys = array_keys(array_reduce($elementos, 'array_merge', []));
 
-            foreach($columns as $indice2=>$column) {
-                $row[$indice2] = $registro[$column];
+            foreach ($keys as $valor){
+                $existe = $this->datatable_validate_columnDefs($valor);
+                if(errores::$error){
+                    return $this->errores->error(mensaje: 'Error al comprobar propiedad', data:  $this->datatable);
+                }
             }
-            $out[] = $row;
-
-
         }
-        return $out;
+
+        $this->datatable[$key] = $elementos;
+
+        return $this->datatable;
+    }
+
+    private function datatable_validate_columnDefs(string $propiedad): array|bool
+    {
+        $propiedades = array("visible","targets","rendered");
+
+        if (!in_array($propiedad, $propiedades)){
+            return $this->errores->error(mensaje: 'Error la propiedad no esta definida', data:  $this->datatable);
+        }
+
+        return true;
     }
 
     public function elimina_bd(bool $header, bool $ws): array|stdClass
@@ -299,30 +313,26 @@ class system extends controlador_base{
                 $filtro_especial[$indice][$column]['operador'] = 'LIKE';
                 $filtro_especial[$indice][$column]['valor'] = addslashes(trim("%$str%"));
                 $filtro_especial[$indice][$column]['comparacion'] = "OR";
-
             }
         }
 
-
         $data_result = $this->modelo->get_data_lista(filtro_especial: $filtro_especial,
             n_rows_for_page: $n_rows_for_page, pagina: $pagina);
-
         if(errores::$error){
             $this->retorno_error(mensaje: 'Error al obtener data result', data: $data_result,header:  $header, ws: $ws);
         }
 
-        $data_output = $this->data_output(columns:  $this->columnas_lista_data_table, data: $data_result['registros'] );
-
+        $data = (new actions())->registros_view_actions(acciones: $this->acciones,
+            obj_link: $this->obj_link,registros:  $data_result['data_result']->registros_obj, seccion:  $this->seccion);
         if(errores::$error){
-            $this->retorno_error(mensaje: 'Error al maquetar', data: $data_output,header:  $header, ws: $ws);
+            return $this->errores->error(mensaje: 'Error al asignar link', data:  $data);
         }
-
 
         $salida = array(
             "draw"         => $draw,
             "recordsTotal"    => intval( $data_result['n_registros']),
             "recordsFiltered" => intval( $data_result['n_registros'] ),
-            "data"            => $data_output);
+            "data"            => $data);
 
         if($ws) {
             ob_clean();
@@ -336,8 +346,6 @@ class system extends controlador_base{
             exit;
         }
         return $salida;
-
-
     }
 
     /**

@@ -74,7 +74,7 @@ class systemTest extends test {
 
 
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(255,$resultado['recordsTotal']);
+        $this->assertEquals(1020,$resultado['recordsTotal']);
         $this->assertCount(10,$resultado['data']);
 
         errores::$error = false;
@@ -82,9 +82,8 @@ class systemTest extends test {
         $_POST['n_rows_for_page'] = 2;
         $resultado = $controler->get_data(header:false);
 
-
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(255,$resultado['recordsTotal']);
+        $this->assertEquals(1020,$resultado['recordsTotal']);
         $this->assertCount(10,$resultado['data']);
 
         errores::$error = false;
@@ -92,11 +91,10 @@ class systemTest extends test {
         $_GET['length'] = 15;
         $_GET['start'] = 21;
         $resultado = $controler->get_data(header:false);
-
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(255,$resultado['recordsTotal']);
+        $this->assertEquals(1020,$resultado['recordsTotal']);
         $this->assertCount(15,$resultado['data']);
-        $this->assertEquals(16,$resultado['data'][0][0]);
+        $this->assertEquals(16,$resultado['data'][0]->adm_accion_id);
 
 
         errores::$error = false;
@@ -106,12 +104,10 @@ class systemTest extends test {
         $_GET['search']['value'] = 2;
         $controler->columnas_lista_data_table_filter[] = 'adm_accion.id';
         $resultado = $controler->get_data(header:false);
-
-
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(68,$resultado['recordsTotal']);
+        $this->assertEquals(213,$resultado['recordsTotal']);
         $this->assertCount(15,$resultado['data']);
-        $this->assertEquals(2,$resultado['data'][0][0]);
+        $this->assertEquals(2,$resultado['data'][0]->adm_accion_id);
 
         errores::$error = false;
 
@@ -120,9 +116,9 @@ class systemTest extends test {
         $_GET['search']['value'] = 2;
         $resultado = $controler->get_data(header:false);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(68,$resultado['recordsTotal']);
+        $this->assertEquals(213,$resultado['recordsTotal']);
         $this->assertCount(15,$resultado['data']);
-        $this->assertEquals(420,$resultado['data'][0][0]);
+        $this->assertEquals(420,$resultado['data'][0]->adm_accion_id);
 
         errores::$error = false;
 
@@ -131,9 +127,9 @@ class systemTest extends test {
         $_GET['search']['value'] = 42;
         $resultado = $controler->get_data(header:false);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(4,$resultado['recordsTotal']);
-        $this->assertCount(4,$resultado['data']);
-        $this->assertEquals(42,$resultado['data'][0][0]);
+        $this->assertEquals(22,$resultado['recordsTotal']);
+        $this->assertCount(7,$resultado['data']);
+        $this->assertEquals(8542,$resultado['data'][0]->adm_accion_id);
 
         errores::$error = false;
 
@@ -144,9 +140,9 @@ class systemTest extends test {
         $resultado = $controler->get_data(header:false);
 
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(1,$resultado['recordsTotal']);
-        $this->assertCount(1,$resultado['data']);
-        $this->assertEquals(420,$resultado['data'][0][0]);
+        $this->assertEquals(2,$resultado['recordsTotal']);
+        $this->assertCount(2,$resultado['data']);
+        $this->assertEquals(420,$resultado['data'][0]->adm_accion_id);
 
         errores::$error = false;
 

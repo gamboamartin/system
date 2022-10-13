@@ -59,9 +59,6 @@ class actionsTest extends test {
         $registros_view = array();
 
         $resultado = $act->asigna_link_rows($accion, $indice, $obj_link, $registros_view, $row, $seccion, $style);
-
-
-
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals(1, $resultado[0]->adm_seccion_id);
