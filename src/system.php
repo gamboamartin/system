@@ -95,7 +95,39 @@ class system extends controlador_base{
             $this->include_breadcrumb = '';
         }
 
+        foreach ($this->rows_lista as $item){
+            $this->datatable["columns"][] = $this->seccion."_".$item;
+            $this->datatable["titulos"][] = ucwords(str_replace("_"," ", $item));
+        }
 
+        $this->datatable["columns"][] = "link_modifica";
+        $this->datatable["columns"][] = "link_elimina_bd";
+        $this->datatable["titulos"][] = "Modifica";
+        $this->datatable["titulos"][] = "Elimina";
+        $this->datatable["columnDefs"] = array();
+
+        $elementos[0]["targets"] = 6;
+        $rendered = array();
+        $rendered[0]["type"] = "button";
+        $rendered[0]["index"] = "link_modifica";
+        $rendered[0]["class"] = "btn-warning";
+        $rendered[0]["text"] = "Modifica";
+        $elementos[0]["rendered"] = $rendered;
+
+        $elementos[1]["targets"] = 7;
+        $rendered = array();
+        $rendered[0]["type"] = "button";
+        $rendered[0]["index"] = "link_elimina_bd";
+        $rendered[0]["class"] = "btn-danger";
+        $rendered[0]["text"] = "Elimina";
+        $elementos[1]["rendered"] = $rendered;
+
+        $this->datatable_init("columnDefs", $elementos);
+        if(errores::$error){
+            $error = $this->errores->error(mensaje: 'Error al inicializar columnDefs', data: $this->datatable);
+            var_dump($error);
+            die('Error');
+        }
 
     }
 
