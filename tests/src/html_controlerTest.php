@@ -213,6 +213,27 @@ class html_controlerTest extends test {
 
     }
 
+    public function test_input_text_required(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
+
+        $row_upd = new stdClass();
+        $cols = 1;
+        $disabled = false;
+        $name = 'a';
+        $place_holder = 'b';
+        $value_vacio = false;
+
+        $resultado = $html->input_text_required($cols, $disabled, $name, $place_holder, $row_upd, $value_vacio);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<div |class|><div |class|><input type='text' name='a' value='' |class|  required id='a' placeholder='b' /></div></div>",$resultado);
+        errores::$error = false;
+    }
+
     public function test_keys_base(): void
     {
         errores::$error = false;
@@ -357,7 +378,8 @@ class html_controlerTest extends test {
         $resultado = $html->select_aut($this->link, $name_model, $params, $selects);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("<select class='form-control selectpicker color-secondary adm_seccion_id'", $resultado->adm_seccion_id);
+        $this->assertStringContainsStringIgnoringCase("l selectpicker color-secondary  adm_seccion_id' data-live-search='true' id='adm_seccion_id' n", $resultado->adm_seccion_id);
+        $this->assertStringContainsStringIgnoringCase("='true' id='adm_seccion_id' name='adm_seccion_id' required ><option value=''  >Selecciona u", $resultado->adm_seccion_id);
         errores::$error = false;
     }
 
@@ -392,7 +414,10 @@ class html_controlerTest extends test {
 
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("div class='control-group col-sm-1'><div class='controls'><select class='form-control selectpicker color-secondary adm_menu_id' id='adm_menu_id'", $resultado);
+        $this->assertStringContainsStringIgnoringCase("<div class='control-group col-sm-1'><div class='controls'><select class='form-contr", $resultado);
+        $this->assertStringContainsStringIgnoringCase("><select class='form-control selectpicker color-secondary  adm_", $resultado);
+        $this->assertStringContainsStringIgnoringCase("lor-secondary  adm_menu_id' data-live-search='true' id='adm_menu_id", $resultado);
+        $this->assertStringContainsStringIgnoringCase("u_id' name='adm_menu_id'  ><option value=''  >Selecciona una opcion</option><op", $resultado);
         errores::$error = false;
 
 
@@ -407,7 +432,11 @@ class html_controlerTest extends test {
 
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("<div class='control-group col-sm-1'><div class='controls'><select class='form-control selectpicker color-secondary x' id='x' name='x'  ><option value=''  >Selecciona una opcion</option><option value='1'  >1", $resultado);
+        $this->assertStringContainsStringIgnoringCase("<div class='control-group col-sm-1'><div class='controls'><sele", $resultado);
+        $this->assertStringContainsStringIgnoringCase("lect class='form-control selectpicker color-secondar", $resultado);
+        $this->assertStringContainsStringIgnoringCase("x' data-live-search='true' id='x' n", $resultado);
+        $this->assertStringContainsStringIgnoringCase("'x' name='x'  ><option value=''  >S", $resultado);
+        $this->assertStringContainsStringIgnoringCase("elecciona una opcion</option><option value='1'", $resultado);
 
 
         errores::$error = false;
@@ -426,7 +455,11 @@ class html_controlerTest extends test {
         $resultado = $html->selects_alta($keys_selects, $link);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("lect class='form-control selectpicker color-secondary adm_se", $resultado->adm_seccion_id);
+        $this->assertStringContainsStringIgnoringCase("<div class='control-group col-sm-12'><div class='cont", $resultado->adm_seccion_id);
+        $this->assertStringContainsStringIgnoringCase("'controls'><select class='form-control selectp", $resultado->adm_seccion_id);
+        $this->assertStringContainsStringIgnoringCase("l selectpicker color-secondary  adm_secci", $resultado->adm_seccion_id);
+        $this->assertStringContainsStringIgnoringCase("m_seccion_id' data-live-search='true' id='ad", $resultado->adm_seccion_id);
+        $this->assertStringContainsStringIgnoringCase("dm_seccion_id' name='adm_seccion_id' required ><option value='", $resultado->adm_seccion_id);
         errores::$error = false;
     }
 

@@ -455,12 +455,27 @@ class html_controler{
         return $div;
     }
 
+    /**
+     * Genera un input text required
+     * @param int $cols N columnas css
+     * @param bool $disabled attr disable
+     * @param string $name Name input
+     * @param string $place_holder Tag Input
+     * @param stdClass $row_upd Registro en proceso
+     * @param bool $value_vacio si vacio no valida
+     * @return array|string
+     * @version 0.130.33
+     */
     protected function input_text_required(int $cols, bool $disabled, string $name, string $place_holder,
                                            stdClass $row_upd, bool $value_vacio): array|string
     {
         $valida = $this->directivas->valida_cols(cols: $cols);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar columnas', data: $valida);
+        }
+        $valida = $this->directivas->valida_data_label(name: $name,place_holder:  $place_holder);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar datos ', data: $valida);
         }
 
         $html =$this->directivas->input_text_required(disable: $disabled,name: $name,place_holder: $place_holder,
