@@ -269,6 +269,10 @@ class system extends controlador_base{
 
         $headers = $titulos;
 
+        if (count($index_header) == 0){
+            $headers = $columns;
+        }
+
         if (count($index_header) > 0){
             foreach ($index_header as $index){
                 $headers = array_merge(array_slice($headers, 0, $index), array($columns[$index]),
