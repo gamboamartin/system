@@ -96,33 +96,26 @@ class system extends controlador_base{
         }
 
         foreach ($this->rows_lista as $item){
-            $this->datatable["columns"][] = $this->seccion."_".$item;
-            $this->datatable["titulos"][] = ucwords(str_replace("_"," ", $item));
+            $columns[] = $this->seccion."_".$item;
+            $titulos[] = ucwords(str_replace("_"," ", $item));
         }
 
-        $this->datatable["columns"][] = "link_modifica";
-        $this->datatable["columns"][] = "link_elimina_bd";
-        $this->datatable["titulos"][] = "Modifica";
-        $this->datatable["titulos"][] = "Elimina";
-        $this->datatable["columnDefs"] = array();
+        array_push($columns, "link_modifica", "link_elimina_bd");
+        array_push($titulos, "Modifica", "Elimina");
 
-        $elementos[0]["targets"] = 6;
-        $rendered = array();
-        $rendered[0]["type"] = "button";
-        $rendered[0]["index"] = "link_modifica";
-        $rendered[0]["class"] = "btn-warning";
-        $rendered[0]["text"] = "Modifica";
-        $elementos[0]["rendered"] = $rendered;
+        $columndefs[0]["type"] = "button";
+        $columndefs[0]["targets"] = 6;
+        $columndefs[0]["rendered"][0]["index"] = "link_modifica";
+        $columndefs[0]["rendered"][0]["class"] = "btn-warning";
+        $columndefs[0]["rendered"][0]["text"] = "Modifica";
 
-        $elementos[1]["targets"] = 7;
-        $rendered = array();
-        $rendered[0]["type"] = "button";
-        $rendered[0]["index"] = "link_elimina_bd";
-        $rendered[0]["class"] = "btn-danger";
-        $rendered[0]["text"] = "Elimina";
-        $elementos[1]["rendered"] = $rendered;
+        $columndefs[1]["type"] = "button";
+        $columndefs[1]["targets"] = 7;
+        $columndefs[1]["rendered"][0]["index"] = "link_elimina_bd";
+        $columndefs[1]["rendered"][0]["class"] = "btn-danger";
+        $columndefs[1]["rendered"][0]["text"] = "Elimina";
 
-        $this->datatable_init("columnDefs", $elementos);
+        $this->datatable_init(columns: $columns,titulos: $titulos,columndefs: $columndefs);
         if(errores::$error){
             $error = $this->errores->error(mensaje: 'Error al inicializar columnDefs', data: $this->datatable);
             var_dump($error);
@@ -235,34 +228,67 @@ class system extends controlador_base{
         return $columnas;
     }
 
-    public function datatable_init(string $key, array $elementos): array
+    private function datatable_columnDefs_init(array $columns, array $columndefs): array
     {
-        if (!array_key_exists($key, $this->datatable)){
-            return $this->errores->error(mensaje: 'Error la key no existe', data:  $this->datatable);
+        $index_header = array();
+
+        foreach ($columndefs as $item){
+
+            $keys = array_keys($item);
+
+            $valida = $this->datatable_validate_columnDefs(keys: $keys);
+            if(errores::$error){
+                return $this->errores->error(mensaje: 'Error al validar columnDefs', data:  $valida);
+            }
+
+            if (array_key_exists("visible",$item) && array_key_exists("targets",$item)){
+
+                $column["type"] = "text";
+                $column["targets"] = ($item['targets'][0]) - 1;
+                $rendered[]["index"] = $columns[$column["targets"]];
+                foreach ($item["targets"] as $target){
+                    $rendered[]["index"] = $columns[$target];
+                    array_push($index_header, $target);
+                }
+                $column["rendered"] = $rendered;
+                $this->datatable["columnDefs"][]= $column;
+            }
+        }
+        return $index_header;
+    }
+
+    public function datatable_init(array $columns, array $titulos = array(), array $columndefs = array()): array
+    {
+        $this->datatable["columns"] = $columns;
+        $this->datatable["columnDefs"] = $columndefs;
+
+        $index_header = $this->datatable_columnDefs_init(columns: $columns,columndefs: $columndefs);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al inicializar columnDefs', data:  $index_header);
         }
 
-        if ($key === "columnDefs"){
-            $keys = array_keys(array_reduce($elementos, 'array_merge', []));
+        $headers = $titulos;
 
-            foreach ($keys as $valor){
-                $existe = $this->datatable_validate_columnDefs($valor);
-                if(errores::$error){
-                    return $this->errores->error(mensaje: 'Error al comprobar propiedad', data:  $this->datatable);
-                }
+        if (count($index_header) > 0){
+            foreach ($index_header as $index){
+                $headers = array_merge(array_slice($headers, 0, $index), array($columns[$index]),
+                    array_slice($headers, $index));
             }
         }
 
-        $this->datatable[$key] = $elementos;
+        $this->datatable["titulos"] = $headers;
 
         return $this->datatable;
     }
 
-    private function datatable_validate_columnDefs(string $propiedad): array|bool
+    private function datatable_validate_columnDefs(array $keys): array|bool
     {
-        $propiedades = array("visible","targets","rendered");
+        $propiedades = array("type","visible","targets","rendered");
 
-        if (!in_array($propiedad, $propiedades)){
-            return $this->errores->error(mensaje: 'Error la propiedad no esta definida', data:  $this->datatable);
+        foreach ($keys as $key){
+            if (!in_array($key, $propiedades)){
+                return $this->errores->error(mensaje: 'Error la propiedad no esta definida', data:  $this->datatable);
+            }
         }
 
         return true;
