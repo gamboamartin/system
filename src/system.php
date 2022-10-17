@@ -105,13 +105,13 @@ class system extends controlador_base{
 
         $columndefs[0]["type"] = "button";
         $columndefs[0]["targets"] = 6;
-        $columndefs[0]["rendered"][0]["index"] = "link_modifica";
+        $columndefs[0]["rendered"][0]["index"] = "modifica";
         $columndefs[0]["rendered"][0]["class"] = "btn-warning";
         $columndefs[0]["rendered"][0]["text"] = "Modifica";
 
         $columndefs[1]["type"] = "button";
         $columndefs[1]["targets"] = 7;
-        $columndefs[1]["rendered"][0]["index"] = "link_elimina_bd";
+        $columndefs[1]["rendered"][0]["index"] = "elimina_bd";
         $columndefs[1]["rendered"][0]["class"] = "btn-danger";
         $columndefs[1]["rendered"][0]["text"] = "Elimina";
 
