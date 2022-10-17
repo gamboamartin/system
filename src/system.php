@@ -384,17 +384,20 @@ class system extends controlador_base{
             $this->retorno_error(mensaje: 'Error al obtener data result', data: $data_result,header:  $header, ws: $ws);
         }
 
-        $data = (new actions())->registros_view_actions(acciones: $this->acciones,
-            obj_link: $this->obj_link,registros:  $data_result['data_result']->registros_obj, seccion:  $this->seccion);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al asignar link', data:  $data);
+        $links = (array)$this->obj_link->links->{$this->seccion};
+
+        foreach ($data_result['registros'] as $key => $value){
+            foreach ($links as $index => $link){
+                $links[$index] = $this->reemplazar_id_link($link,"&registro_id=","&",$value['em_empleado_id']);
+            }
+            $data_result['registros'][$key] = array_merge($value,$links);
         }
 
         $salida = array(
             "draw"         => $draw,
             "recordsTotal"    => intval( $data_result['n_registros']),
             "recordsFiltered" => intval( $data_result['n_registros'] ),
-            "data"            => $data);
+            "data"            => $data_result['registros']);
 
         if($ws) {
             ob_clean();
@@ -519,6 +522,17 @@ class system extends controlador_base{
         $this->header_out(result: $r_modifica_bd, header: $header,ws:  $ws);
 
         return $r_modifica_bd;
+    }
+
+    function reemplazar_id_link($str, $start, $end, $replacement) {
+
+        $replacement = $start . $replacement . $end;
+
+        $start = preg_quote($start, '/');
+        $end = preg_quote($end, '/');
+        $regex = "/({$start})(.*?)({$end})/";
+
+        return preg_replace($regex,$replacement,$str);
     }
 
     /**
