@@ -1,8 +1,10 @@
 <?php
 namespace gamboamartin\system;
+use base\controller\controler;
 use config\generales;
 use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
+use models\adm_accion;
 use stdClass;
 
 class links_menu{
@@ -120,6 +122,28 @@ class links_menu{
         return $this->links;
     }
 
+    public function genera_links(controler $controler): array|stdClass
+    {
+        $filtro['adm_seccion.descripcion']  = $controler->seccion;
+        $acciones = (new adm_accion($controler->link))->filtro_and(columnas: array("adm_accion_descripcion"),
+            filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener acciones de la seccion',data:  $acciones);
+        }
+
+        if ($acciones->n_registros > 0){
+            foreach ($acciones->registros as $registro){
+                $accion = $registro['adm_accion_descripcion'];
+                $init = $this->link_init(seccion: $controler->seccion, accion: $accion,
+                    registro_id: $controler->registro_id);
+                if(errores::$error){
+                    return $this->error->error(mensaje: 'Error al inicializar links', data: $init);
+                }
+            }
+        }
+        return $this->links;
+    }
+
     /**
      * Inicializa un link para generar una accion
      * @param string $accion Accion a asignar o generar link
@@ -177,6 +201,10 @@ class links_menu{
         return $this->links;
     }
 
+    private function link(string $seccion, string $accion,int $registro_id): string
+    {
+        return "./index.php?seccion=$seccion&accion=$accion&registro_id=$registro_id&session_id=$this->session_id";
+    }
 
     /**
      * Genera un link de tipo alta
@@ -255,6 +283,21 @@ class links_menu{
 
         $elimina.="&session_id=$this->session_id";
         return $elimina;
+    }
+
+    private function link_init(string $seccion, string $accion,int $registro_id): array|stdClass
+    {
+        $link = $this->link(seccion: $seccion,accion: $accion,registro_id: $registro_id);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar link', data: $link);
+        }
+
+        $init = $this->init_action(accion: $accion,link: $link,seccion: $seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar link', data: $init);
+        }
+
+        return $init;
     }
 
     private function link_lista(string $seccion): array|string
