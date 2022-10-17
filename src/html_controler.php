@@ -716,6 +716,7 @@ class html_controler{
         $data->filtro = $params->filtro ?? array();
         $data->required = $params->required ?? true;
         $data->label = $params->label ?? str_replace('_',' ', $label);
+        $data->extra_params_keys = $params->extra_params_keys ?? array();
         return $data;
     }
 
@@ -811,7 +812,8 @@ class html_controler{
     {
         $select  = $this->select_catalogo(cols: $params_select->cols, con_registros: $params_select->con_registros,
             id_selected: $params_select->id_selected, modelo: $modelo, disabled: $params_select->disabled,
-            filtro: $params_select->filtro, label: $params_select->label, required: $params_select->required);
+            extra_params_keys: $params_select->extra_params_keys, filtro: $params_select->filtro,
+            label: $params_select->label, required: $params_select->required);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $select);
         }
