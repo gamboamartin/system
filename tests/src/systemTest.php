@@ -67,14 +67,17 @@ class systemTest extends test {
 
         $controler = new system(html: $html_controler, link: $this->link, modelo: $modelo, obj_link: $obj_link,
             paths_conf: $this->paths_conf);
+
+
         //$controler = new liberator($controler);
 
+        errores::$error = false;
         $controler->columnas_lista_data_table[] = 'adm_accion_id';
         $resultado = $controler->get_data(header:false);
 
 
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(1020,$resultado['recordsTotal']);
+        $this->assertEquals(255,$resultado['recordsTotal']);
         $this->assertCount(10,$resultado['data']);
 
         errores::$error = false;
@@ -83,7 +86,7 @@ class systemTest extends test {
         $resultado = $controler->get_data(header:false);
 
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(1020,$resultado['recordsTotal']);
+        $this->assertEquals(255,$resultado['recordsTotal']);
         $this->assertCount(10,$resultado['data']);
 
         errores::$error = false;
@@ -91,10 +94,11 @@ class systemTest extends test {
         $_GET['length'] = 15;
         $_GET['start'] = 21;
         $resultado = $controler->get_data(header:false);
+        //print_r($resultado);exit;
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(1020,$resultado['recordsTotal']);
+        $this->assertEquals(255,$resultado['recordsTotal']);
         $this->assertCount(15,$resultado['data']);
-        $this->assertEquals(16,$resultado['data'][0]->adm_accion_id);
+        $this->assertEquals(16,$resultado['data'][0]['adm_accion_id']);
 
 
         errores::$error = false;
@@ -102,12 +106,15 @@ class systemTest extends test {
         $_GET['length'] = 15;
         $_GET['start'] = 0;
         $_GET['search']['value'] = 2;
-        $controler->columnas_lista_data_table_filter[] = 'adm_accion.id';
+
+        $controler->datatable['filtro'] = array('adm_accion.id');
         $resultado = $controler->get_data(header:false);
+
+
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(213,$resultado['recordsTotal']);
+        $this->assertEquals(68,$resultado['recordsTotal']);
         $this->assertCount(15,$resultado['data']);
-        $this->assertEquals(2,$resultado['data'][0]->adm_accion_id);
+        $this->assertEquals(2,$resultado['data'][0]['adm_accion_id']);
 
         errores::$error = false;
 
@@ -116,9 +123,9 @@ class systemTest extends test {
         $_GET['search']['value'] = 2;
         $resultado = $controler->get_data(header:false);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(213,$resultado['recordsTotal']);
+        $this->assertEquals(68,$resultado['recordsTotal']);
         $this->assertCount(15,$resultado['data']);
-        $this->assertEquals(420,$resultado['data'][0]->adm_accion_id);
+        $this->assertEquals(420,$resultado['data'][0]['adm_accion_id']);
 
         errores::$error = false;
 
@@ -127,9 +134,9 @@ class systemTest extends test {
         $_GET['search']['value'] = 42;
         $resultado = $controler->get_data(header:false);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(22,$resultado['recordsTotal']);
-        $this->assertCount(7,$resultado['data']);
-        $this->assertEquals(8542,$resultado['data'][0]->adm_accion_id);
+        $this->assertEquals(4,$resultado['recordsTotal']);
+        $this->assertCount(4,$resultado['data']);
+        $this->assertEquals(42,$resultado['data'][0]['adm_accion_id']);
 
         errores::$error = false;
 
@@ -140,9 +147,9 @@ class systemTest extends test {
         $resultado = $controler->get_data(header:false);
 
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(2,$resultado['recordsTotal']);
-        $this->assertCount(2,$resultado['data']);
-        $this->assertEquals(420,$resultado['data'][0]->adm_accion_id);
+        $this->assertEquals(1,$resultado['recordsTotal']);
+        $this->assertCount(1,$resultado['data']);
+        $this->assertEquals(420,$resultado['data'][0]['adm_accion_id']);
 
         errores::$error = false;
 

@@ -96,13 +96,15 @@ class system extends controlador_base{
         }
 
         foreach ($this->rows_lista as $item){
-            $columns[] = $this->seccion."_".$item;
-            $titulos[] = ucwords(str_replace("_"," ", $item));
-            $filtro[] = $this->seccion.".".$item;
+            $key_lista = $this->tabla.'_'.$item;
+            $columns[$key_lista]['titulo'] = ucwords(str_replace("_"," ", $key_lista));
+            $columns[$key_lista]['filtro'] = $this->seccion.'.'.$item;
+
         }
 
-        array_push($columns, "link_modifica", "link_elimina_bd");
-        array_push($titulos, "Modifica", "Elimina");
+        $columns['link_modifica']['titulo'] = 'Modifica';
+        $columns['link_elimina_bd']['titulo'] = 'Elimina';
+
 
         $columndefs[0]["type"] = "button";
         $columndefs[0]["targets"] = 6;
@@ -116,7 +118,7 @@ class system extends controlador_base{
         $columndefs[1]["rendered"][0]["class"] = "btn-danger";
         $columndefs[1]["rendered"][0]["text"] = "Elimina";
 
-        $this->datatable_init(columns: $columns,titulos: $titulos,columndefs: $columndefs,filtro: $filtro);
+        $this->datatable_init(columns: $columns,columndefs: $columndefs);
         if(errores::$error){
             $error = $this->errores->error(mensaje: 'Error al inicializar columnDefs', data: $this->datatable);
             var_dump($error);
@@ -258,27 +260,46 @@ class system extends controlador_base{
         return $index_header;
     }
 
-    public function datatable_init(array $columns, array $titulos = array(), array $columndefs = array(),
-                                   array $filtro = array()): array
+    public function datatable_init(array $columns, array $columndefs = array()): array
     {
-        $this->datatable["columns"] = $columns;
-        $this->datatable["columnDefs"] = $columndefs;
-        $this->datatable["filtro"] = $filtro;
+        $data_columns = array_keys($columns);
 
-        $index_header = $this->datatable_columnDefs_init(columns: $columns,columndefs: $columndefs);
+        $this->datatable["columns"] = $data_columns;
+        $this->datatable["columnDefs"] = $columndefs;
+
+
+        $index_header = $this->datatable_columnDefs_init(columns: $data_columns,columndefs: $columndefs);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al inicializar columnDefs', data:  $index_header);
         }
 
+        $titulos = array();
+        $filtros = array();
+        foreach ($columns as $campo=>$data){
+
+            $titulo = str_replace('_', ' ', $campo);
+            $titulo = ucwords($titulo);
+            if(isset($data['titulo'])){
+                $titulo = $data['titulo'];
+            }
+            if(isset($data['filtro']) && $data['filtro'] !==''){
+                $filtros[] = $data['filtro'];
+            }
+            $titulos[] = $titulo;
+        }
+
+        $this->datatable["filtro"] = $filtros;
+
+
         $headers = $titulos;
 
-        if (count($index_header) == 0){
-            $headers = $columns;
+        if (count($titulos) == 0){
+            $headers = $data_columns;
         }
 
         if (count($index_header) > 0){
             foreach ($index_header as $index){
-                $headers = array_merge(array_slice($headers, 0, $index), array($columns[$index]),
+                $headers = array_merge(array_slice($headers, 0, $index), array($data_columns[$index]),
                     array_slice($headers, $index));
             }
         }
@@ -383,16 +404,26 @@ class system extends controlador_base{
 
         $data_result = $this->modelo->get_data_lista(filtro_especial: $filtro_especial,
             n_rows_for_page: $n_rows_for_page, pagina: $pagina);
+
         if(errores::$error){
-            $this->retorno_error(mensaje: 'Error al obtener data result', data: $data_result,header:  $header, ws: $ws);
+           return $this->retorno_error(mensaje: 'Error al obtener data result', data: $data_result,header:  $header, ws: $ws);
         }
+
+
 
         $links = (array)$this->obj_link->links->{$this->seccion};
 
         foreach ($data_result['registros'] as $key => $value){
+
             foreach ($links as $index => $link){
-                $links[$index] = $this->reemplazar_id_link($link,"&registro_id=","&",$value[$this->seccion.'_id']);
+                $links_data = $this->reemplazar_id_link(str:$link,start: "&registro_id=",end: "&",replacement: $value[$this->seccion.'_id']);
+                if(errores::$error){
+                    return $this->retorno_error(mensaje: 'Error al maquetar link', data: $links_data,header:  $header, ws: $ws);
+                }
+
+                $links[$index] = $links_data;
             }
+
             $data_result['registros'][$key] = array_merge($value,$links);
         }
 
