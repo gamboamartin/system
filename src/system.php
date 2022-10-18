@@ -98,6 +98,7 @@ class system extends controlador_base{
         foreach ($this->rows_lista as $item){
             $columns[] = $this->seccion."_".$item;
             $titulos[] = ucwords(str_replace("_"," ", $item));
+            $filtro[] = $this->seccion.".".$item;
         }
 
         array_push($columns, "link_modifica", "link_elimina_bd");
@@ -115,7 +116,7 @@ class system extends controlador_base{
         $columndefs[1]["rendered"][0]["class"] = "btn-danger";
         $columndefs[1]["rendered"][0]["text"] = "Elimina";
 
-        $this->datatable_init(columns: $columns,titulos: $titulos,columndefs: $columndefs);
+        $this->datatable_init(columns: $columns,titulos: $titulos,columndefs: $columndefs,filtro: $filtro);
         if(errores::$error){
             $error = $this->errores->error(mensaje: 'Error al inicializar columnDefs', data: $this->datatable);
             var_dump($error);
@@ -257,10 +258,12 @@ class system extends controlador_base{
         return $index_header;
     }
 
-    public function datatable_init(array $columns, array $titulos = array(), array $columndefs = array()): array
+    public function datatable_init(array $columns, array $titulos = array(), array $columndefs = array(),
+                                   array $filtro = array()): array
     {
         $this->datatable["columns"] = $columns;
         $this->datatable["columnDefs"] = $columndefs;
+        $this->datatable["filtro"] = $filtro;
 
         $index_header = $this->datatable_columnDefs_init(columns: $columns,columndefs: $columndefs);
         if(errores::$error){
@@ -371,7 +374,7 @@ class system extends controlador_base{
         if(isset($_GET['search']) && $_GET['search']['value'] !== '' ) {
             $str = $_GET['search']['value'];
 
-            foreach ($this->columnas_lista_data_table_filter as $indice=>$column) {
+            foreach ($this->datatable["filtro"] as $indice=>$column) {
                 $filtro_especial[$indice][$column]['operador'] = 'LIKE';
                 $filtro_especial[$indice][$column]['valor'] = addslashes(trim("%$str%"));
                 $filtro_especial[$indice][$column]['comparacion'] = "OR";
@@ -388,7 +391,7 @@ class system extends controlador_base{
 
         foreach ($data_result['registros'] as $key => $value){
             foreach ($links as $index => $link){
-                $links[$index] = $this->reemplazar_id_link($link,"&registro_id=","&",$value['em_empleado_id']);
+                $links[$index] = $this->reemplazar_id_link($link,"&registro_id=","&",$value[$this->seccion.'_id']);
             }
             $data_result['registros'][$key] = array_merge($value,$links);
         }
