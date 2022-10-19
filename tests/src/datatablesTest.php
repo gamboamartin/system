@@ -248,6 +248,20 @@ class datatablesTest extends test {
         errores::$error = false;
     }
 
+    public function test_type(): void
+    {
+        errores::$error = false;
+        $datatables = new datatables();
+        //$datatables = new liberator($datatables);
+
+        $column = array();
+
+        $resultado = $datatables->type($column);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('text', $resultado);
+        errores::$error = false;
+    }
 
 
 }

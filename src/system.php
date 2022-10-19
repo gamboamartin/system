@@ -286,26 +286,15 @@ class system extends controlador_base{
 
             $targets = $indice_columna === count($columns) ? $index_button:$indice_columna;
 
+            $columnDefs_obj = (new datatables())->columns_defs(column: $column, indice: $indice, targets: $targets, type: $type);
+            if(errores::$error){
+                return $this->errores->error(mensaje: 'Error al generar columnDefs', data:  $columnDefs_obj);
+            }
+
+            $this->datatable["columnDefs"][] = $columnDefs_obj;
+
             if ($type === 'button'){
-
-
-                $columnDefs_obj = (new datatables())->columns_defs(column: $column, indice: $indice, targets: $targets, type: $type);
-                if(errores::$error){
-                    return $this->errores->error(mensaje: 'Error al generar columnDefs', data:  $columnDefs_obj);
-                }
-
-                $this->datatable["columnDefs"][] = $columnDefs_obj;
                 $index_button -= 1;
-
-            } else if (array_key_exists("campos",$column) && is_array($column["campos"])){
-
-                $columnDefs_obj = (new datatables())->columns_defs(column: $column, indice: $indice, targets: $targets, type: $type);
-                if(errores::$error){
-                    return $this->errores->error(mensaje: 'Error al generar columnDefs', data:  $columnDefs_obj);
-                }
-
-                $this->datatable["columnDefs"][] = $columnDefs_obj;
-
             }
         }
         return $this->datatable;

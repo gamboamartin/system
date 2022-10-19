@@ -164,6 +164,12 @@ class datatables{
         return $rendered;
     }
 
+    /**
+     * Obtiene el type data
+     * @param array $column Columna a validar
+     * @return string
+     * @version 0.148.33
+     */
     PUBLIC function type(array $column): string
     {
         $type = 'text';
