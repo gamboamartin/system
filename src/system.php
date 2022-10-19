@@ -102,9 +102,12 @@ class system extends controlador_base{
             $filtro[] = $this->seccion.'.'.$key_row_lista;
             $titulo = str_replace('_', ' ', $key_row_lista);
             $titulo = ucwords( $titulo);
-            $columns[$this->seccion."_id"]["titulo"] = $titulo;
+            $columns[$this->seccion."_$key_row_lista"]["titulo"] = $titulo;
         }
 
+        /**
+         * MAÑANA GET ACCIONES DESDE ACCION GRUPO DEFINIDAS COMO ACCION SOBRE REGISTRO ID
+         */
         $columns["modifica"]["titulo"] = "Modifica";
         $columns["modifica"]["type"] = "button";
         $columns["elimina_bd"]["titulo"] = "Elimina";
