@@ -73,6 +73,33 @@ class datatablesTest extends test {
         errores::$error = false;
     }
 
+    public function test_column_titulo(): void
+    {
+        errores::$error = false;
+        $datatables = new datatables();
+
+        $column = array();
+        $indice = '';
+        $column_obj = new stdClass();
+        $resultado = $datatables->column_titulo($column, $column_obj, $indice);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase("Error al validar column", $resultado['mensaje']);
+
+        errores::$error = false;
+        $datatables = new datatables();
+
+        $column['titulo'] = 'a';
+        $indice = '';
+        $column_obj = new stdClass();
+        $resultado = $datatables->column_titulo($column, $column_obj, $indice);
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("a", $resultado->title);
+        errores::$error = false;
+    }
+
     /**
      */
     public function test_columns_defs(): void

@@ -1,12 +1,15 @@
 <?php
 namespace gamboamartin\system;
 use gamboamartin\errores\errores;
+use gamboamartin\validacion\validacion;
 use stdClass;
 
 class datatables{
     private errores $error;
+    private validacion $valida;
     public function __construct(){
         $this->error = new errores();
+        $this->valida = new validacion();
     }
 
     /**
@@ -27,6 +30,20 @@ class datatables{
         $column_obj->title = is_string($column)? $column:$indice;
         $column_obj->data = $indice;
         return $column_obj;
+    }
+
+    PUBLIC function column_titulo(array $column, stdClass $column_obj, string $indice): stdClass|array
+    {
+        $keys = array('titulo');
+        $valida = $this->valida->valida_existencia_keys(keys: $keys,registro:  $column);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar column', data:  $valida);
+        }
+        $column_obj->title = $indice;
+        if(is_string($column["titulo"])){
+            $column_obj->title = $column["titulo"];
+        }
+        return$column_obj;
     }
 
     /**

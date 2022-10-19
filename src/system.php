@@ -274,8 +274,13 @@ class system extends controlador_base{
             }
 
             if (is_array($column) && array_key_exists("titulo",$column)){
-                $column_obj->title = is_string($column["titulo"])? $column["titulo"]:$indice;
+
+                $column_obj = (new datatables())->column_titulo(column: $column, column_obj: $column_obj, indice: $indice);
+                if(errores::$error){
+                    return $this->errores->error(mensaje: 'Error al generar column title', data:  $column_obj);
+                }
             }
+
             $this->datatable["columns"][] = $column_obj;
 
             $indice_columna = array_search($indice, array_keys($columns));
