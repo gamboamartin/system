@@ -264,20 +264,14 @@ class system extends controlador_base{
         $this->datatable["columnDefs"] = array();
         $this->datatable['filtro'] = $filtro;
 
-        $index_button = -1;
 
-        foreach ($columns as $indice => $column){
-
-            $data = (new datatables())->genera_column(column: $column,columns:  $columns,datatable:  $this->datatable,
-                indice:  $indice, index_button: $index_button);
-            if(errores::$error){
-                return $this->errores->error(mensaje: 'Error al generar column', data:  $data);
-            }
-
-            $this->datatable = $data->datatable;
-            $index_button = $data->index_button;
-
+        $datatable = (new datatables())->columns(columns: $columns, datatable: $this->datatable);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al generar columns', data:  $datatable);
         }
+
+        $this->datatable = $datatable;
+
         return $this->datatable;
     }
 

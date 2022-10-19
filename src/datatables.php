@@ -60,6 +60,37 @@ class datatables{
     }
 
     /**
+     * Genera columnas para datatable
+     * @param array $columns Columnas
+     * @param array $datatable Objeto inicializado
+     * @return array
+     * @version 0.150.33
+     */
+    public function columns(array $columns, array $datatable): array
+    {
+
+        $index_button = -1;
+
+        foreach ($columns as $indice => $column){
+
+            $valida = $this->valida_base(column: $column,indice:  $indice);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al validar datos', data:  $valida);
+            }
+
+            $data = $this->genera_column(column: $column,columns:  $columns,datatable:  $datatable,
+                indice:  $indice, index_button: $index_button);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar column', data:  $data);
+            }
+            $datatable = $data->datatable;
+            $index_button = $data->index_button;
+
+        }
+        return $datatable;
+    }
+
+    /**
      * Genera las columnas para datatables
      * @param array|string $column Columna
      * @param string $indice Indice o key
@@ -107,7 +138,7 @@ class datatables{
      * @return array|stdClass
      * @version 0.149.33
      */
-    PUBLIC function genera_column(array|string $column, array $columns, array $datatable, string $indice, int $index_button): array|stdClass
+    private function genera_column(array|string $column, array $columns, array $datatable, string $indice, int $index_button): array|stdClass
     {
         $valida = $this->valida_base(column: $column,indice:  $indice);
         if(errores::$error){

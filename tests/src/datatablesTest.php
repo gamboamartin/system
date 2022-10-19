@@ -102,6 +102,32 @@ class datatablesTest extends test {
         errores::$error = false;
     }
 
+    public function test_columns(): void
+    {
+        errores::$error = false;
+        $datatables = new datatables();
+        //$datatables = new liberator($datatables);
+
+        $columns = array();
+        $datatable = array();
+
+        $resultado = $datatables->columns($columns, $datatable);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+
+        $columns = array();
+        $datatable = array();
+
+        $columns['a'] = 'a';
+
+        $resultado = $datatables->columns($columns, $datatable);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     /**
      */
     public function test_columns_defs(): void
@@ -178,7 +204,7 @@ class datatablesTest extends test {
     {
         errores::$error = false;
         $datatables = new datatables();
-        //$datatables = new liberator($datatables);
+        $datatables = new liberator($datatables);
 
         $column = 'x';
         $columns = array();
