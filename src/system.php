@@ -267,9 +267,11 @@ class system extends controlador_base{
         $index_button = -1;
 
         foreach ($columns as $indice => $column){
-            $column_obj = new stdClass();
-            $column_obj->title = is_string($column)? $column:$indice;
-            $column_obj->data = $indice;
+
+            $column_obj = (new datatables())->column_init(column: $column, indice: $indice);
+            if(errores::$error){
+                return $this->errores->error(mensaje: 'Error al generar column', data:  $column_obj);
+            }
 
             if (is_array($column) && array_key_exists("titulo",$column)){
                 $column_obj->title = is_string($column["titulo"])? $column["titulo"]:$indice;

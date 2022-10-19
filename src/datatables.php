@@ -8,6 +8,27 @@ class datatables{
     public function __construct(){
         $this->error = new errores();
     }
+
+    /**
+     * Inicializa una columna
+     * @param array|string $column Columna a inicializar
+     * @param string $indice Indice de row
+     * @return stdClass|array
+     * @version 0.144.33
+     */
+    PUBLIC function column_init(array|string $column, string $indice): stdClass|array
+    {
+        $valida = $this->valida_base(column: $column,indice:  $indice);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar datos', data:  $valida);
+        }
+
+        $column_obj = new stdClass();
+        $column_obj->title = is_string($column)? $column:$indice;
+        $column_obj->data = $indice;
+        return $column_obj;
+    }
+
     /**
      * Genera las columnas para datatables
      * @param array|string $column Columna
@@ -20,21 +41,9 @@ class datatables{
     PUBLIC function columns_defs(array|string $column, string $indice, int $targets, string $type): stdClass|array
     {
 
-        if(is_string($column)){
-            $column = trim($column);
-            if($column === ''){
-                return $this->error->error(mensaje: 'Error column no puede venir vacia', data:  $column);
-            }
-        }
-        if(is_array($column)){
-            if(count($column) === 0){
-                return $this->error->error(mensaje: 'Error column no puede venir vacia', data:  $column);
-            }
-        }
-
-        $indice = trim($indice);
-        if($indice === ''){
-            return $this->error->error(mensaje: 'Error indice no puede venir vacia', data:  $indice);
+        $valida = $this->valida_base(column: $column,indice:  $indice);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar datos', data:  $valida);
         }
 
         $rendered = $this->rendered(column: $column);
@@ -72,5 +81,25 @@ class datatables{
             }
         }
         return $rendered;
+    }
+
+    private function valida_base(array|string $column, string $indice): bool|array
+    {
+        if(is_string($column)){
+            $column = trim($column);
+            if($column === ''){
+                return $this->error->error(mensaje: 'Error column no puede venir vacia', data:  $column);
+            }
+        }
+        if(is_array($column)){
+            if(count($column) === 0){
+                return $this->error->error(mensaje: 'Error column no puede venir vacia', data:  $column);
+            }
+        }
+        $indice = trim($indice);
+        if($indice === ''){
+            return $this->error->error(mensaje: 'Error indice no puede venir vacia', data:  $indice);
+        }
+        return true;
     }
 }

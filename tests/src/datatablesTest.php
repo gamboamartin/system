@@ -21,9 +21,61 @@ class datatablesTest extends test {
         $this->paths_conf->views = '/var/www/html/system/config/views.php';
     }
 
+    public function test_column_init(): void
+    {
+        errores::$error = false;
+        $datatables = new datatables();
+
+        $column = '';
+        $indice = '';
+        $resultado = $datatables->column_init($column, $indice);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase("Error al validar datos", $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $column = 'a';
+        $indice = '';
+        $resultado = $datatables->column_init($column, $indice);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase("Error al validar datos", $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $column = 'a';
+        $indice = 'b';
+        $resultado = $datatables->column_init($column, $indice);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("a", $resultado->title);
+        $this->assertEquals("b", $resultado->data);
+
+        errores::$error = false;
+
+        $column = array();
+        $indice = 'b';
+        $resultado = $datatables->column_init($column, $indice);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase("Error al validar datos", $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $column = array('a');
+        $indice = 'b';
+        $resultado = $datatables->column_init($column, $indice);
+        $this->assertEquals("b", $resultado->title);
+        $this->assertEquals("b", $resultado->data);
+
+
+        errores::$error = false;
+    }
+
     /**
      */
-    public function test_columns_defss(): void
+    public function test_columns_defs(): void
     {
         errores::$error = false;
         $datatables = new datatables();
@@ -35,7 +87,7 @@ class datatablesTest extends test {
         $resultado = $datatables->columns_defs($column, $indice, $targets, $type);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("Error column no puede venir vacia", $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase("Error al validar datos", $resultado['mensaje']);
 
         errores::$error = false;
 
@@ -46,7 +98,7 @@ class datatablesTest extends test {
         $resultado = $datatables->columns_defs($column, $indice, $targets, $type);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("Error indice no puede venir vacia", $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase("Error al validar datos", $resultado['mensaje']);
 
         errores::$error = false;
 
@@ -72,7 +124,7 @@ class datatablesTest extends test {
         $resultado = $datatables->columns_defs($column, $indice, $targets, $type);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("Error column no puede venir vacia", $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase("Error al validar datos", $resultado['mensaje']);
 
         errores::$error = false;
 
