@@ -68,7 +68,7 @@ class datatables{
      * @return stdClass|array
      * @version 0.143.33
      */
-    PUBLIC function columns_defs(array|string $column, string $indice, int $targets, string $type): stdClass|array
+    private function columns_defs(array|string $column, string $indice, int $targets, string $type): stdClass|array
     {
 
         $valida = $this->valida_base(column: $column,indice:  $indice);
@@ -95,6 +95,56 @@ class datatables{
         array_unshift($columns_defs_obj->rendered,$indice);
 
         return $columns_defs_obj;
+    }
+
+    /**
+     * Genera una columna para datatable
+     * @param array|string $column Columna a integrar
+     * @param array $columns Columnas
+     * @param array $datatable obj inicializado de controler
+     * @param string $indice indice de columna
+     * @param int $index_button Index o posicion
+     * @return array|stdClass
+     * @version 0.149.33
+     */
+    PUBLIC function genera_column(array|string $column, array $columns, array $datatable, string $indice, int $index_button): array|stdClass
+    {
+        $valida = $this->valida_base(column: $column,indice:  $indice);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar datos', data:  $valida);
+        }
+
+        $column_obj = $this->maqueta_column_obj(column: $column,indice:  $indice);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar column title', data:  $column_obj);
+        }
+
+        $datatable["columns"][] = $column_obj;
+
+        $indice_columna = array_search($indice, array_keys($columns));
+
+        $type = $this->type(column: $column);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar type', data:  $type);
+        }
+
+        $targets = $indice_columna === count($columns) ? $index_button:$indice_columna;
+
+        $columnDefs_obj = $this->columns_defs(column: $column, indice: $indice, targets: $targets, type: $type);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar columnDefs', data:  $columnDefs_obj);
+        }
+
+        $datatable["columnDefs"][] = $columnDefs_obj;
+
+        if ($type === 'button'){
+            $index_button -= 1;
+        }
+
+        $data = new stdClass();
+        $data->datatable = $datatable;
+        $data->index_button = $index_button;
+        return $data;
     }
 
     /**
@@ -129,7 +179,7 @@ class datatables{
      * @return array|stdClass
      * @version 0.147.33
      */
-    PUBLIC function maqueta_column_obj(array|string $column, string $indice): array|stdClass
+    private function maqueta_column_obj(array|string $column, string $indice): array|stdClass
     {
         $valida = $this->valida_base(column: $column,indice:  $indice);
         if(errores::$error){
@@ -166,14 +216,14 @@ class datatables{
 
     /**
      * Obtiene el type data
-     * @param array $column Columna a validar
+     * @param array|string $column Columna a validar
      * @return string
      * @version 0.148.33
      */
-    PUBLIC function type(array $column): string
+    private function type(array|string $column): string
     {
         $type = 'text';
-        if(array_key_exists("type",$column) && $column["type"] === "button"){
+        if(is_array($column) && array_key_exists("type",$column) && $column["type"] === "button"){
             $type = $column["type"];
         }
         return $type;

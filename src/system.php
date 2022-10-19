@@ -268,34 +268,15 @@ class system extends controlador_base{
 
         foreach ($columns as $indice => $column){
 
-            $column_obj = (new datatables())->maqueta_column_obj(column: $column,indice:  $indice);
+            $data = (new datatables())->genera_column(column: $column,columns:  $columns,datatable:  $this->datatable,
+                indice:  $indice, index_button: $index_button);
             if(errores::$error){
-                return $this->errores->error(mensaje: 'Error al generar column title', data:  $column_obj);
+                return $this->errores->error(mensaje: 'Error al generar column', data:  $data);
             }
 
-            $this->datatable["columns"][] = $column_obj;
+            $this->datatable = $data->datatable;
+            $index_button = $data->index_button;
 
-            $indice_columna = array_search($indice, array_keys($columns));
-
-
-            $type = (new datatables())->type(column: $column);
-            if(errores::$error){
-                return $this->errores->error(mensaje: 'Error al generar type', data:  $type);
-            }
-
-
-            $targets = $indice_columna === count($columns) ? $index_button:$indice_columna;
-
-            $columnDefs_obj = (new datatables())->columns_defs(column: $column, indice: $indice, targets: $targets, type: $type);
-            if(errores::$error){
-                return $this->errores->error(mensaje: 'Error al generar columnDefs', data:  $columnDefs_obj);
-            }
-
-            $this->datatable["columnDefs"][] = $columnDefs_obj;
-
-            if ($type === 'button'){
-                $index_button -= 1;
-            }
         }
         return $this->datatable;
     }

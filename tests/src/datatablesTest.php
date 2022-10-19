@@ -108,6 +108,7 @@ class datatablesTest extends test {
     {
         errores::$error = false;
         $datatables = new datatables();
+        $datatables = new liberator($datatables);
 
         $column = '';
         $indice = '';
@@ -173,6 +174,23 @@ class datatablesTest extends test {
         errores::$error = false;
     }
 
+    public function test_genera_column(): void
+    {
+        errores::$error = false;
+        $datatables = new datatables();
+        //$datatables = new liberator($datatables);
+
+        $column = 'x';
+        $columns = array();
+        $datatable = array();
+        $indice = 'a';
+        $index_button = -1;
+        $resultado = $datatables->genera_column($column, $columns, $datatable, $indice, $index_button);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_integra_titulo(): void
     {
         errores::$error = false;
@@ -224,7 +242,7 @@ class datatablesTest extends test {
     {
         errores::$error = false;
         $datatables = new datatables();
-        //$datatables = new liberator($datatables);
+        $datatables = new liberator($datatables);
 
         $column = 'a';
         $indice = 'c';
@@ -252,7 +270,7 @@ class datatablesTest extends test {
     {
         errores::$error = false;
         $datatables = new datatables();
-        //$datatables = new liberator($datatables);
+        $datatables = new liberator($datatables);
 
         $column = array();
 
