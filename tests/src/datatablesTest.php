@@ -106,7 +106,7 @@ class datatablesTest extends test {
     {
         errores::$error = false;
         $datatables = new datatables();
-        //$datatables = new liberator($datatables);
+        $datatables = new liberator($datatables);
 
         $columns = array();
         $datatable = array();
@@ -200,6 +200,31 @@ class datatablesTest extends test {
         errores::$error = false;
     }
 
+    public function test_datatable(): void
+    {
+        errores::$error = false;
+        $datatables = new datatables();
+        //$datatables = new liberator($datatables);
+
+        $filtro = array();
+        $columns = array();
+        $columns['z'] = 'a';
+        $columns['b']['type'] = 'button';
+
+        $resultado = $datatables->datatable(columns: $columns, filtro:$filtro);
+       // print_r($resultado);exit;
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("a", $resultado['columns'][0]->title);
+        $this->assertEquals("z", $resultado['columns'][0]->data);
+        $this->assertEquals("a", $resultado['columns'][0]->title);
+        $this->assertEquals("z", $resultado['columns'][0]->data);
+        errores::$error = false;
+
+
+
+    }
+
     public function test_genera_column(): void
     {
         errores::$error = false;
@@ -221,7 +246,7 @@ class datatablesTest extends test {
     {
         errores::$error = false;
         $datatables = new datatables();
-        //$datatables = new liberator($datatables);
+        $datatables = new liberator($datatables);
 
         $filtro = array();
 

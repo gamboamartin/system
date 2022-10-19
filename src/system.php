@@ -261,14 +261,9 @@ class system extends controlador_base{
     public function datatable_init(array $columns, array $filtro = array()): array
     {
 
-        $datatable = (new datatables())->init_datatable(filtro:$filtro);
+        $datatable = (new datatables())->datatable(columns: $columns, filtro: $filtro);
         if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al inicializar datatable', data:  $datatable);
-        }
-
-        $datatable = (new datatables())->columns(columns: $columns, datatable: $datatable);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al generar columns', data:  $datatable);
+            return $this->errores->error(mensaje: 'Error al generar datatables base', data:  $datatable);
         }
 
         $this->datatable = $datatable;

@@ -66,7 +66,7 @@ class datatables{
      * @return array
      * @version 0.150.33
      */
-    public function columns(array $columns, array $datatable): array
+    private function columns(array $columns, array $datatable): array
     {
 
         $index_button = -1;
@@ -129,6 +129,27 @@ class datatables{
     }
 
     /**
+     * Genera la estructura para datatables
+     * @param array $columns Columnas
+     * @param array $filtro Filtros
+     * @return array
+     * @version 0.152.33
+     */
+    public function datatable(array $columns, array $filtro = array()): array
+    {
+        $datatable = $this->init_datatable(filtro:$filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar datatable', data:  $datatable);
+        }
+
+        $datatable = $this->columns(columns: $columns, datatable: $datatable);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar columns', data:  $datatable);
+        }
+        return $datatable;
+    }
+
+    /**
      * Genera una columna para datatable
      * @param array|string $column Columna a integrar
      * @param array $columns Columnas
@@ -184,7 +205,7 @@ class datatables{
      * @return array
      * @version 0.151.33
      */
-    public function init_datatable(array $filtro): array
+    private function init_datatable(array $filtro): array
     {
         $datatable["columns"] = array();
         $datatable["columnDefs"] = array();
