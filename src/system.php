@@ -247,10 +247,11 @@ class system extends controlador_base{
         return $index_header;
     }
 
-    public function datatable_init(array $columns): array
+    public function datatable_init(array $columns, array $filtro = array()): array
     {
         $this->datatable["columns"] = array();
         $this->datatable["columnDefs"] = array();
+        $this->datatable['filtro'] = $filtro;
 
         $index_button = -1;
 
