@@ -227,21 +227,7 @@ class system extends controlador_base{
         return $columnas;
     }
 
-    private function columnsdefs(array|string $column, string $indice, int $targets, string $type): stdClass
-    {
 
-
-
-        $columnDefs_obj = new stdClass();
-        $columnDefs_obj->targets = $targets;
-        $columnDefs_obj->data = null;
-        $columnDefs_obj->type = $type;
-        $columnDefs_obj->rendered = array_key_exists("campos",$column)? array_values($column["campos"]) : [];
-
-        array_unshift($columnDefs_obj->rendered,$indice);
-
-        return $columnDefs_obj;
-    }
 
     private function datatable_columnDefs_init(array $columns, array $columndefs): array
     {
@@ -297,7 +283,7 @@ class system extends controlador_base{
                 $targets =$indice_columna === count($columns) ? $index_button:$indice_columna;
 
 
-                $columnDefs_obj = $this->columnsdefs(column: $column, indice: $indice, targets: $targets, type: 'button');
+                $columnDefs_obj = (new datatables())->columns_defs(column: $column, indice: $indice, targets: $targets, type: 'button');
                 if(errores::$error){
                     return $this->errores->error(mensaje: 'Error al generar columnDefs', data:  $columnDefs_obj);
                 }
@@ -309,7 +295,7 @@ class system extends controlador_base{
 
 
 
-                $columnDefs_obj = $this->columnsdefs(column: $column, indice: $indice, targets: $indice_columna, type: 'text');
+                $columnDefs_obj = (new datatables())->columns_defs(column: $column, indice: $indice, targets: $indice_columna, type: 'text');
                 if(errores::$error){
                     return $this->errores->error(mensaje: 'Error al generar columnDefs', data:  $columnDefs_obj);
                 }

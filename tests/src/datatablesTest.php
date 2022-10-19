@@ -1,0 +1,98 @@
+<?php
+namespace tests\controllers;
+
+use gamboamartin\errores\errores;
+use gamboamartin\system\datatables;
+use gamboamartin\test\test;
+
+use stdClass;
+
+
+class datatablesTest extends test {
+    public errores $errores;
+    private stdClass $paths_conf;
+    public function __construct(?string $name = null, array $data = [], $dataName = '')
+    {
+        parent::__construct($name, $data, $dataName);
+        $this->errores = new errores();
+        $this->paths_conf = new stdClass();
+        $this->paths_conf->generales = '/var/www/html/system/config/generales.php';
+        $this->paths_conf->database = '/var/www/html/system/config/database.php';
+        $this->paths_conf->views = '/var/www/html/system/config/views.php';
+    }
+
+    /**
+     */
+    public function test_columns_defss(): void
+    {
+        errores::$error = false;
+        $datatables = new datatables();
+
+        $column = '';
+        $indice = '';
+        $targets = '1';
+        $type = '';
+        $resultado = $datatables->columns_defs($column, $indice, $targets, $type);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase("Error column no puede venir vacia", $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $column = 'a';
+        $indice = '';
+        $targets = '1';
+        $type = '';
+        $resultado = $datatables->columns_defs($column, $indice, $targets, $type);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase("Error indice no puede venir vacia", $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $column = 'a';
+        $indice = 'a';
+        $targets = '1';
+        $type = 'a';
+        $resultado = $datatables->columns_defs($column, $indice, $targets, $type);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("1", $resultado->targets);
+        $this->assertEquals(null, $resultado->data);
+        $this->assertEquals('a', $resultado->type);
+        $this->assertEquals('a', $resultado->rendered[0]);
+
+
+        errores::$error = false;
+
+        $column = array();
+        $indice = 'a';
+        $targets = '1';
+        $type = 'a';
+        $resultado = $datatables->columns_defs($column, $indice, $targets, $type);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase("Error column no puede venir vacia", $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $column['campos'] = array('a');
+        $indice = 'b';
+        $targets = '1';
+        $type = 'a';
+        $resultado = $datatables->columns_defs($column, $indice, $targets, $type);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("1", $resultado->targets);
+        $this->assertEquals(null, $resultado->data);
+        $this->assertEquals('a', $resultado->type);
+        $this->assertEquals('b', $resultado->rendered[0]);
+        $this->assertEquals('a', $resultado->rendered[1]);
+
+        errores::$error = false;
+    }
+
+
+
+}
+
