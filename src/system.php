@@ -277,12 +277,19 @@ class system extends controlador_base{
 
             $indice_columna = array_search($indice, array_keys($columns));
 
-            if (array_key_exists("type",$column) && $column["type"] === "button"){
 
-                $targets =$indice_columna === count($columns) ? $index_button:$indice_columna;
+            $type = (new datatables())->type(column: $column);
+            if(errores::$error){
+                return $this->errores->error(mensaje: 'Error al generar type', data:  $type);
+            }
 
 
-                $columnDefs_obj = (new datatables())->columns_defs(column: $column, indice: $indice, targets: $targets, type: 'button');
+            $targets = $indice_columna === count($columns) ? $index_button:$indice_columna;
+
+            if ($type === 'button'){
+
+
+                $columnDefs_obj = (new datatables())->columns_defs(column: $column, indice: $indice, targets: $targets, type: $type);
                 if(errores::$error){
                     return $this->errores->error(mensaje: 'Error al generar columnDefs', data:  $columnDefs_obj);
                 }
@@ -292,9 +299,7 @@ class system extends controlador_base{
 
             } else if (array_key_exists("campos",$column) && is_array($column["campos"])){
 
-
-
-                $columnDefs_obj = (new datatables())->columns_defs(column: $column, indice: $indice, targets: $indice_columna, type: 'text');
+                $columnDefs_obj = (new datatables())->columns_defs(column: $column, indice: $indice, targets: $targets, type: $type);
                 if(errores::$error){
                     return $this->errores->error(mensaje: 'Error al generar columnDefs', data:  $columnDefs_obj);
                 }

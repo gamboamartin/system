@@ -122,8 +122,20 @@ class datatables{
         return $column_obj;
     }
 
+    /**
+     * Maqueta una columna a integrar
+     * @param array|string $column Columna
+     * @param string $indice Key
+     * @return array|stdClass
+     * @version 0.147.33
+     */
     PUBLIC function maqueta_column_obj(array|string $column, string $indice): array|stdClass
     {
+        $valida = $this->valida_base(column: $column,indice:  $indice);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar datos', data:  $valida);
+        }
+
         $column_obj = $this->column_init(column: $column, indice: $indice);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar column', data:  $column_obj);
@@ -150,6 +162,15 @@ class datatables{
             }
         }
         return $rendered;
+    }
+
+    PUBLIC function type(array $column): string
+    {
+        $type = 'text';
+        if(array_key_exists("type",$column) && $column["type"] === "button"){
+            $type = $column["type"];
+        }
+        return $type;
     }
 
     private function valida_base(array|string $column, string $indice): bool|array

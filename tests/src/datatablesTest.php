@@ -220,6 +220,34 @@ class datatablesTest extends test {
         errores::$error = false;
     }
 
+    public function test_maqueta_column_obj(): void
+    {
+        errores::$error = false;
+        $datatables = new datatables();
+        //$datatables = new liberator($datatables);
+
+        $column = 'a';
+        $indice = 'c';
+
+        $resultado = $datatables->maqueta_column_obj($column, $indice);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a', $resultado->title);
+        $this->assertEquals('c', $resultado->data);
+
+        errores::$error = false;
+
+        $column = array('z');
+        $indice = 'c';
+
+        $resultado = $datatables->maqueta_column_obj($column, $indice);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('c', $resultado->title);
+        $this->assertEquals('c', $resultado->data);
+        errores::$error = false;
+    }
+
 
 
 }
