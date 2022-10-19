@@ -268,17 +268,9 @@ class system extends controlador_base{
 
         foreach ($columns as $indice => $column){
 
-            $column_obj = (new datatables())->column_init(column: $column, indice: $indice);
+            $column_obj = (new datatables())->maqueta_column_obj(column: $column,indice:  $indice);
             if(errores::$error){
-                return $this->errores->error(mensaje: 'Error al generar column', data:  $column_obj);
-            }
-
-            if (is_array($column) && array_key_exists("titulo",$column)){
-
-                $column_obj = (new datatables())->column_titulo(column: $column, column_obj: $column_obj, indice: $indice);
-                if(errores::$error){
-                    return $this->errores->error(mensaje: 'Error al generar column title', data:  $column_obj);
-                }
+                return $this->errores->error(mensaje: 'Error al generar column title', data:  $column_obj);
             }
 
             $this->datatable["columns"][] = $column_obj;

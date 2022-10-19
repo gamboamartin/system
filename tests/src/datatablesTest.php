@@ -3,6 +3,7 @@ namespace tests\controllers;
 
 use gamboamartin\errores\errores;
 use gamboamartin\system\datatables;
+use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 
 use stdClass;
@@ -25,6 +26,7 @@ class datatablesTest extends test {
     {
         errores::$error = false;
         $datatables = new datatables();
+        $datatables = new liberator($datatables);
 
         $column = '';
         $indice = '';
@@ -77,6 +79,7 @@ class datatablesTest extends test {
     {
         errores::$error = false;
         $datatables = new datatables();
+        $datatables = new liberator($datatables);
 
         $column = array();
         $indice = '';
@@ -87,10 +90,9 @@ class datatablesTest extends test {
         $this->assertStringContainsStringIgnoringCase("Error al validar column", $resultado['mensaje']);
 
         errores::$error = false;
-        $datatables = new datatables();
 
         $column['titulo'] = 'a';
-        $indice = '';
+        $indice = 'z';
         $column_obj = new stdClass();
         $resultado = $datatables->column_titulo($column, $column_obj, $indice);
 
@@ -167,6 +169,53 @@ class datatablesTest extends test {
         $this->assertEquals('a', $resultado->type);
         $this->assertEquals('b', $resultado->rendered[0]);
         $this->assertEquals('a', $resultado->rendered[1]);
+
+        errores::$error = false;
+    }
+
+    public function test_integra_titulo(): void
+    {
+        errores::$error = false;
+        $datatables = new datatables();
+        $datatables = new liberator($datatables);
+
+        $column = '';
+        $indice = 'a';
+        $column_obj = new stdClass();
+        $resultado = $datatables->integra_titulo($column, $column_obj, $indice);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+
+        $column = array();
+        $indice = '';
+        $column_obj = new stdClass();
+        $resultado = $datatables->integra_titulo($column, $column_obj, $indice);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+
+        errores::$error = false;
+
+        $column = array();
+        $column['titulo'] = array();
+        $indice = 'a';
+        $column_obj = new stdClass();
+        $resultado = $datatables->integra_titulo($column, $column_obj, $indice);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a', $resultado->title);
+
+        errores::$error = false;
+
+        $column = array();
+        $column['titulo'] = 'z';
+        $indice = 'a';
+        $column_obj = new stdClass();
+        $resultado = $datatables->integra_titulo($column, $column_obj, $indice);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('z', $resultado->title);
 
         errores::$error = false;
     }
