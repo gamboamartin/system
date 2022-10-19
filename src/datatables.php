@@ -179,6 +179,20 @@ class datatables{
     }
 
     /**
+     * Inicializa datatables
+     * @param array $filtro Filtro
+     * @return array
+     * @version 0.151.33
+     */
+    public function init_datatable(array $filtro): array
+    {
+        $datatable["columns"] = array();
+        $datatable["columnDefs"] = array();
+        $datatable['filtro'] = $filtro;
+        return $datatable;
+    }
+
+    /**
      * Integra el titulo en ele objeto de columna a generar
      * @param array|string $column Columna data
      * @param stdClass $column_obj Columnas de retorno inicializadas

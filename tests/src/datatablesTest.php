@@ -217,6 +217,23 @@ class datatablesTest extends test {
         errores::$error = false;
     }
 
+    public function test_init_datatable(): void
+    {
+        errores::$error = false;
+        $datatables = new datatables();
+        //$datatables = new liberator($datatables);
+
+        $filtro = array();
+
+        $resultado = $datatables->init_datatable($filtro);
+        $this->assertIsArray($resultado);
+        $this->assertIsArray($resultado['columns']);
+        $this->assertIsArray($resultado['columnDefs']);
+        $this->assertIsArray($resultado['filtro']);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_integra_titulo(): void
     {
         errores::$error = false;
