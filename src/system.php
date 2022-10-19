@@ -95,36 +95,23 @@ class system extends controlador_base{
             $this->include_breadcrumb = '';
         }
 
-        foreach ($this->rows_lista as $item){
-            $key_lista = $this->tabla.'_'.$item;
-            $columns[$key_lista]['titulo'] = ucwords(str_replace("_"," ", $key_lista));
-            $columns[$key_lista]['filtro'] = $this->seccion.'.'.$item;
+        $columns[$this->seccion."_id"]["titulo"] = "Id";
+        $columns[$this->seccion."_codigo"]["titulo"] = "Codigo";
+        $columns[$this->seccion."_codigo_bis"]["titulo"] = "Codigo Bis";
+        $columns[$this->seccion."_descripcion"]["titulo"] = "Descripcion";
+        $columns[$this->seccion."_descripcion_select"]["titulo"] = "Descripcion Select";
+        $columns[$this->seccion."_alias"]["titulo"] = "Alias Select";
+        $columns["modifica"]["titulo"] = "Modifica";
+        $columns["modifica"]["type"] = "button";
+        $columns["elimina_bd"]["titulo"] = "Elimina";
+        $columns["elimina_bd"]["type"] = "button";
 
-        }
-
-        $columns['link_modifica']['titulo'] = 'Modifica';
-        $columns['link_elimina_bd']['titulo'] = 'Elimina';
-
-
-        $columndefs[0]["type"] = "button";
-        $columndefs[0]["targets"] = 6;
-        $columndefs[0]["rendered"][0]["index"] = "modifica";
-        $columndefs[0]["rendered"][0]["class"] = "btn-warning";
-        $columndefs[0]["rendered"][0]["text"] = "Modifica";
-
-        $columndefs[1]["type"] = "button";
-        $columndefs[1]["targets"] = 7;
-        $columndefs[1]["rendered"][0]["index"] = "elimina_bd";
-        $columndefs[1]["rendered"][0]["class"] = "btn-danger";
-        $columndefs[1]["rendered"][0]["text"] = "Elimina";
-
-        $this->datatable_init(columns: $columns,columndefs: $columndefs);
+        $this->datatable_init(columns: $columns);
         if(errores::$error){
             $error = $this->errores->error(mensaje: 'Error al inicializar columnDefs', data: $this->datatable);
             var_dump($error);
             die('Error');
         }
-
     }
 
     /**
@@ -260,52 +247,44 @@ class system extends controlador_base{
         return $index_header;
     }
 
-    public function datatable_init(array $columns, array $columndefs = array()): array
+    public function datatable_init(array $columns): array
     {
-        $data_columns = array_keys($columns);
+        $this->datatable["columns"] = array();
+        $this->datatable["columnDefs"] = array();
 
-        $this->datatable["columns"] = $data_columns;
-        $this->datatable["columnDefs"] = $columndefs;
+        $index_button = -1;
 
+        foreach ($columns as $indice => $column){
+            $column_obj = new stdClass();
+            $column_obj->title = is_string($column)? $column:$indice;
+            $column_obj->data = $indice;
 
-        $index_header = $this->datatable_columnDefs_init(columns: $data_columns,columndefs: $columndefs);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al inicializar columnDefs', data:  $index_header);
-        }
-
-        $titulos = array();
-        $filtros = array();
-        foreach ($columns as $campo=>$data){
-
-            $titulo = str_replace('_', ' ', $campo);
-            $titulo = ucwords($titulo);
-            if(isset($data['titulo'])){
-                $titulo = $data['titulo'];
+            if (is_array($column) && array_key_exists("titulo",$column)){
+                $column_obj->title = is_string($column["titulo"])? $column["titulo"]:$indice;
             }
-            if(isset($data['filtro']) && $data['filtro'] !==''){
-                $filtros[] = $data['filtro'];
-            }
-            $titulos[] = $titulo;
-        }
+            $this->datatable["columns"][] = $column_obj;
 
-        $this->datatable["filtro"] = $filtros;
+            $indice_columna = array_search($indice, array_keys($columns));
 
-
-        $headers = $titulos;
-
-        if (count($titulos) == 0){
-            $headers = $data_columns;
-        }
-
-        if (count($index_header) > 0){
-            foreach ($index_header as $index){
-                $headers = array_merge(array_slice($headers, 0, $index), array($data_columns[$index]),
-                    array_slice($headers, $index));
+            if (array_key_exists("type",$column) && $column["type"] === "button"){
+                $columnDefs_obj = new stdClass();
+                $columnDefs_obj->targets = $indice_columna === count($columns) ? $index_button:$indice_columna;
+                $columnDefs_obj->data = null;
+                $columnDefs_obj->type = "button";
+                $columnDefs_obj->rendered = array_key_exists("campos",$column)? array_values($column["campos"]) : [];
+                array_unshift($columnDefs_obj->rendered,$indice);
+                $this->datatable["columnDefs"][] = $columnDefs_obj;
+                $index_button -= 1;
+            } else if (array_key_exists("campos",$column) && is_array($column["campos"])){
+                $columnDefs_obj = new stdClass();
+                $columnDefs_obj->targets = $indice_columna;
+                $columnDefs_obj->data = null;
+                $columnDefs_obj->type = "text";
+                $columnDefs_obj->rendered = array_values($column["campos"]);
+                array_unshift($columnDefs_obj->rendered,$indice);
+                $this->datatable["columnDefs"][] = $columnDefs_obj;
             }
         }
-
-        $this->datatable["titulos"] = $headers;
-
         return $this->datatable;
     }
 
