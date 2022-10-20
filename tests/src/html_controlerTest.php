@@ -81,6 +81,31 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    /**
+     */
+    public function test_hidden(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        //$html = new liberator($html);
+
+        $_SESSION['grupo_id'] = 2;
+
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+
+        
+        $name = 'a';
+        $value = 'c';
+        $resultado = $html->hidden($name, $value);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<input type='hidden' name='a' value='c'>",$resultado);
+        errores::$error = false;
+    }
+
     public function test_init_data_select(): void
     {
         errores::$error = false;

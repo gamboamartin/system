@@ -133,6 +133,26 @@ class html_controler{
         return $values;
     }
 
+    /**
+     * Genera un input de tipo hidden
+     * @param string $name Nombre del input
+     * @param string $value Valor del input
+     * @return array|string
+     * @version 0.159.34
+     */
+    public function hidden(string $name, string $value): array|string
+    {
+        $name = trim($name);
+        if($name === ''){
+            return $this->error->error(mensaje: 'Error name esta vacio',data:  $name);
+        }
+        $value = trim($value);
+        if($value === ''){
+            return $this->error->error(mensaje: 'Error value esta vacio',data:  $value);
+        }
+        return "<input type='hidden' name='$name' value='$value'>";
+    }
+
     protected function init_alta(array $keys_selects, PDO $link): array|stdClass
     {
         $selects = $this->selects_alta(keys_selects: $keys_selects, link: $link);
