@@ -289,6 +289,24 @@ class datatablesTest extends test {
 
     }
 
+    public function test_filtro_especial_datatable(): void
+    {
+        errores::$error = false;
+        $datatables = new datatables();
+        //$datatables = new liberator($datatables);
+
+        $column = 'x';
+
+        $str = 'x';
+        $indice = 0;
+        $filtro_especial = array();
+        $resultado = $datatables->filtro_especial_datatable($filtro_especial, $indice, $column, $str);
+
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('%x%', $resultado[0]['x']['valor']);
+        errores::$error = false;
+    }
     public function test_genera_column(): void
     {
         errores::$error = false;

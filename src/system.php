@@ -340,6 +340,34 @@ class system extends controlador_base{
 
 
 
+    private function filtros_especiales_datatable(array $filtro_especial, string $str): array
+    {
+        foreach ($this->datatable["filtro"] as $indice=>$column) {
+
+            $filtro_especial = (new datatables())->filtro_especial_datatable(
+                filtro_especial: $filtro_especial,indice:  $indice, column: $column, str: $str);
+            if(errores::$error){
+                return $this->errores->error(mensaje: 'Error al obtener filtro_especial', data: $filtro_especial);
+            }
+        }
+        return $filtro_especial;
+    }
+
+    private function genera_filtro_especial_datatable(): array
+    {
+        $filtro_especial = array();
+        if(isset($_GET['search']) && $_GET['search']['value'] !== '' ) {
+            $str = $_GET['search']['value'];
+            $filtro_especial = $this->filtros_especiales_datatable(filtro_especial: $filtro_especial,str:  $str);
+            if(errores::$error){
+                return $this->errores->error(mensaje: 'Error al obtener filtro_especial', data: $filtro_especial);
+            }
+        }
+        return $filtro_especial;
+    }
+
+
+
     public function genera_inputs(array $keys_selects = array()): array|stdClass
     {
         $inputs = $this->html->init_alta2(row_upd: $this->row_upd, modelo: $this->modelo, link: $this->link,
@@ -357,6 +385,10 @@ class system extends controlador_base{
     }
 
     public function get_data(bool $header, bool $ws = false){
+
+        /**
+         * REFCATORIZAR
+         */
         $draw = mt_rand(1,999);
         if (isset ( $_GET['draw'] )) {
             $draw = $_GET['draw'];
@@ -373,16 +405,11 @@ class system extends controlador_base{
         if($pagina <= 0){
             $pagina = 1;
         }
+        /*****/
 
-        $filtro_especial = array();
-        if(isset($_GET['search']) && $_GET['search']['value'] !== '' ) {
-            $str = $_GET['search']['value'];
-
-            foreach ($this->datatable["filtro"] as $indice=>$column) {
-                $filtro_especial[$indice][$column]['operador'] = 'LIKE';
-                $filtro_especial[$indice][$column]['valor'] = addslashes(trim("%$str%"));
-                $filtro_especial[$indice][$column]['comparacion'] = "OR";
-            }
+        $filtro_especial = $this->genera_filtro_especial_datatable();
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al obtener filtro_especial', data: $filtro_especial,header:  $header, ws: $ws);
         }
 
         $data_result = $this->modelo->get_data_lista(filtro_especial: $filtro_especial,
@@ -394,20 +421,28 @@ class system extends controlador_base{
 
 
 
-        $links = (array)$this->obj_link->links->{$this->seccion};
 
-        foreach ($data_result['registros'] as $key => $value){
+        $acciones_permitidas = (new datatables())->acciones_permitidas(link:$this->link,seccion:  $this->tabla);
 
-            foreach ($links as $index => $link){
-                $links_data = $this->reemplazar_id_link(str:$link,start: "&registro_id=",end: "&",replacement: $value[$this->seccion.'_id']);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al obtener data result', data: $acciones_permitidas,header:  $header, ws: $ws);
+        }
+
+        foreach ($data_result['registros'] as $key => $row){
+
+            $links = array();
+            foreach ($acciones_permitidas as $indice=>$adm_accion_grupo){
+                $accion = $adm_accion_grupo['adm_accion_descripcion'];
+                $registro_id = $row[$this->seccion.'_id'];
+                $link_con_id = $this->obj_link->link_con_id(accion:$accion, registro_id: $registro_id,seccion:  $this->seccion);
                 if(errores::$error){
-                    return $this->retorno_error(mensaje: 'Error al maquetar link', data: $links_data,header:  $header, ws: $ws);
+                    return $this->retorno_error(mensaje: 'Error al asignar link', data: $link_con_id,header:  $header, ws: $ws);
                 }
-
-                $links[$index] = $links_data;
+                $links[$indice] = $link_con_id;
             }
 
-            $data_result['registros'][$key] = array_merge($value,$links);
+
+            $data_result['registros'][$key] = array_merge($row,$links);
         }
 
         $salida = array(

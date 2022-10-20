@@ -74,7 +74,7 @@ class datatables{
      * @return array
      * @version 0.153.33
      */
-    private function acciones_permitidas(PDO $link, string $seccion): array
+    public function acciones_permitidas(PDO $link, string $seccion): array
     {
         if(!isset($_SESSION)){
             return $this->error->error(mensaje: 'Error no hay SESSION iniciada', data: array());
@@ -252,6 +252,37 @@ class datatables{
             return $this->error->error(mensaje: 'Error al generar columns', data:  $datatable);
         }
         return $datatable;
+    }
+
+    /**
+     * Maqueta un filtro especial para datatables
+     * @param array $filtro_especial Filtro precargado
+     * @param int $indice Indice de column filtro
+     * @param string $column Columna
+     * @param string $str dato para filtrar
+     * @return array
+     * @version 0.155.33
+     *
+     */
+    PUBLIC function filtro_especial_datatable(array $filtro_especial, int $indice, string $column, string $str): array
+    {
+        $str = trim($str);
+        if($str === ''){
+            return $this->error->error(mensaje: 'Error str esta vacio', data: $str);
+        }
+
+        if($indice < 0 ){
+            return $this->error->error(mensaje: 'Error indice debe ser mayor o igual a 0', data: $indice);
+        }
+        $column = trim($column);
+        if($column === ''){
+            return $this->error->error(mensaje: 'Error column esta vacio', data: $column);
+        }
+        $filtro_especial[$indice][$column]['operador'] = 'LIKE';
+        $filtro_especial[$indice][$column]['valor'] = addslashes(trim("%$str%"));
+        $filtro_especial[$indice][$column]['comparacion'] = "OR";
+
+        return $filtro_especial;
     }
 
     private function genera_accion(string $adm_accion_base, array $adm_accion_grupo, array $columns, int $i): array
