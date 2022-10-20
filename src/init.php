@@ -65,9 +65,11 @@ class init{
     }
 
     /**
+     * Inicializa los datos de un controller
      * @param system $controller Controlador en ejecucion
-     * @param html $html
+     * @param html $html Html de template
      * @return array|stdClass
+     * @version
      */
     public function init_controller(system $controller, html $html): array|stdClass
     {

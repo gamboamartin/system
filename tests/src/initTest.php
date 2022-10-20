@@ -62,9 +62,40 @@ class initTest extends test {
         errores::$error = false;
     }
 
+    public function test_init_controller(): void
+    {
+        errores::$error = false;
+
+        $_GET['session_id']  = 1;
+        $_GET['seccion']  = 'adm_menu';
+        $_SESSION['grupo_id'] = 1;
+
+        $init = new init();
+       // $init = new liberator($init);
+
+        $html = new html();
+        $html_controler = new html_controler($html);
+
+        $modelo = new adm_accion($this->link);
+        $obj_link = new links_menu(-1);
+
+        $controler = new system(html: $html_controler, link: $this->link, modelo: $modelo, obj_link: $obj_link,
+            paths_conf: $this->paths_conf);
+
+        $controler->seccion = 'adm_accion';
+
+        $resultado = $init->init_controller($controler, $html);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
     public function test_key_value_campo(): void
     {
         errores::$error = false;
+
+
         $init = new init();
         $init = new liberator($init);
 
