@@ -22,6 +22,31 @@ class datatablesTest extends test {
         $this->paths_conf->views = '/var/www/html/system/config/views.php';
     }
 
+    public function test_accion_base(): void
+    {
+        errores::$error = false;
+        $datatables = new datatables();
+        $datatables = new liberator($datatables);
+        $_SESSION['grupo_id'] = 1;
+
+        $acciones_grupo = array();
+
+        $resultado = $datatables->accion_base($acciones_grupo);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty($resultado);
+
+        errores::$error = false;
+        $acciones_grupo = array();
+        $acciones_grupo['a']['adm_accion_descripcion'] = 'x';
+
+        $resultado = $datatables->accion_base($acciones_grupo);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('x',$resultado);
+        errores::$error = false;
+    }
+
     public function test_acciones_permitidas(): void
     {
         errores::$error = false;

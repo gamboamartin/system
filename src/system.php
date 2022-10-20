@@ -52,14 +52,16 @@ class system extends controlador_base{
      * @param PDO $link Conexion a la base de datos
      * @param modelo $modelo
      * @param links_menu $obj_link
+     * @param stdClass $datatables
      * @param array $filtro_boton_lista
      * @param string $campo_busca
      * @param string $valor_busca_fault
      * @param stdClass $paths_conf
      */
     public function __construct(html_controler $html,PDO $link, modelo $modelo, links_menu $obj_link,
-                                array $filtro_boton_lista = array(), string $campo_busca = 'registro_id',
-                                string $valor_busca_fault = '', stdClass $paths_conf = new stdClass())
+                                stdClass $datatables = new stdClass(), array $filtro_boton_lista = array(),
+                                string $campo_busca = 'registro_id', string $valor_busca_fault = '',
+                                stdClass $paths_conf = new stdClass())
     {
         $this->msj_con_html = false;
         parent::__construct(link: $link,modelo:  $modelo,filtro_boton_lista:  $filtro_boton_lista,
@@ -99,15 +101,26 @@ class system extends controlador_base{
 
 
         $filtro = array();
-        $columns = array();
-        foreach ($this->rows_lista as $key_row_lista){
-            $filtro[] = $this->seccion.'.'.$key_row_lista;
-            $titulo = str_replace('_', ' ', $key_row_lista);
-            $titulo = ucwords( $titulo);
-            $columns[$this->seccion."_$key_row_lista"]["titulo"] = $titulo;
+        if(!isset($datatables->filtro)){
+            foreach ($this->rows_lista as $key_row_lista){
+                $filtro[] = $this->seccion.'.'.$key_row_lista;
+            }
+        }
+        else{
+            $filtro = $datatables->filtro;
         }
 
-
+        if(isset($datatables->columns)){
+            $columns = $datatables->columns;
+        }
+        else{
+            $columns = array();
+            foreach ($this->rows_lista as $key_row_lista){
+                $titulo = str_replace('_', ' ', $key_row_lista);
+                $titulo = ucwords( $titulo);
+                $columns[$this->seccion."_$key_row_lista"]["titulo"] = $titulo;
+            }
+        }
 
 
         $columns = (new datatables())->acciones_columnas(columns: $columns, link: $this->link, seccion: $this->tabla);
@@ -116,6 +129,7 @@ class system extends controlador_base{
             var_dump($error);
             die('Error');
         }
+
 
 
         $this->datatable_init(columns: $columns, filtro: $filtro);

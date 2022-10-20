@@ -15,9 +15,24 @@ class datatables{
         $this->valida = new validacion();
     }
 
-    private function accion_base(array $acciones_grupo){
+    /**
+     * Asigna la primer accion de un datatable
+     * @param array $acciones_grupo Conjunto de permisos
+     * @return string|array
+     * @version 0.154.33
+     */
+    private function accion_base(array $acciones_grupo): string|array
+    {
         $adm_accion_base = '';
         foreach ($acciones_grupo as $adm_accion_grupo){
+            if(!is_array($adm_accion_grupo)){
+                return $this->error->error(mensaje: 'Error adm_accion_grupo debe ser un array', data: $adm_accion_grupo);
+            }
+            $keys = array('adm_accion_descripcion');
+            $valida = $this->valida->valida_existencia_keys(keys:$keys,registro:  $adm_accion_grupo);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al validar accion', data: $valida);
+            }
             $adm_accion_base = $adm_accion_grupo['adm_accion_descripcion'];
             break;
         }
