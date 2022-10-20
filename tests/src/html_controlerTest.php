@@ -37,6 +37,7 @@ class html_controlerTest extends test {
         $html = new html_controler($html_);
         //$html = new liberator($html);
 
+        $_SESSION['grupo_id'] = 2;
 
         $_GET['session_id'] = 1;
         $_GET['seccion'] = 'adm_accion';

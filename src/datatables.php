@@ -2,6 +2,8 @@
 namespace gamboamartin\system;
 use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
+use models\adm_accion_grupo;
+use PDO;
 use SebastianBergmann\CodeUnit\FunctionUnit;
 use stdClass;
 
@@ -11,6 +13,94 @@ class datatables{
     public function __construct(){
         $this->error = new errores();
         $this->valida = new validacion();
+    }
+
+    private function accion_base(array $acciones_grupo){
+        $adm_accion_base = '';
+        foreach ($acciones_grupo as $adm_accion_grupo){
+            $adm_accion_base = $adm_accion_grupo['adm_accion_descripcion'];
+            break;
+        }
+        return $adm_accion_base;
+    }
+
+    public function acciones_columnas(array $columns, PDO $link, string $seccion): array
+    {
+        $acciones_grupo = $this->acciones_permitidas(link: $link,seccion: $seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener acciones', data: $acciones_grupo);
+        }
+
+
+        $adm_accion_base = $this->accion_base(acciones_grupo: $acciones_grupo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener accion base', data: $adm_accion_base);
+        }
+
+
+        $columns = $this->maqueta_accion_base_column(acciones_grupo: $acciones_grupo,adm_accion_base:  $adm_accion_base,columns:  $columns);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al maquetar accion base', data: $columns);
+
+        }
+
+        $columns = $this->columnas_accion(acciones_grupo: $acciones_grupo,adm_accion_base:  $adm_accion_base,columns:  $columns);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al maquetar acciones ', data: $columns);
+
+        }
+        return $columns;
+    }
+
+    /**
+     * Obtiene las acciones permitidas de un grupo de usuario
+     * @param PDO $link Conexion a la base de datos
+     * @param string $seccion Seccion de controlador
+     * @return array
+     * @version 0.153.33
+     */
+    private function acciones_permitidas(PDO $link, string $seccion): array
+    {
+        if(!isset($_SESSION)){
+            return $this->error->error(mensaje: 'Error no hay SESSION iniciada', data: array());
+        }
+        $keys = array('grupo_id');
+        $valida = $this->valida->valida_ids(keys: $keys,registro:  $_SESSION);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar SESSION', data: $valida);
+        }
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(mensaje: 'Error seccion esta vacia', data: $seccion);
+        }
+
+        $filtro = array();
+        $filtro['adm_grupo.id'] = $_SESSION['grupo_id'];
+        $filtro['adm_seccion.descripcion'] = $seccion;
+        $filtro['adm_accion.lista'] = 'activo';
+        $filtro['adm_accion.status'] = 'activo';
+        $filtro['adm_grupo.status'] = 'activo';
+
+        $r_accion_grupo = (new adm_accion_grupo($link))->filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener acciones', data: $r_accion_grupo);
+
+        }
+
+        return $r_accion_grupo->registros;
+    }
+
+    private function columnas_accion(array $acciones_grupo, string $adm_accion_base, array $columns): array
+    {
+        $i = 0;
+        foreach ($acciones_grupo as $adm_accion_grupo){
+            $columns = $this->genera_accion(adm_accion_base: $adm_accion_base,adm_accion_grupo:  $adm_accion_grupo,columns:  $columns,i:  $i);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al maquetar accion ', data: $columns);
+            }
+            $i++;
+        }
+        return $columns;
     }
 
     /**
@@ -149,6 +239,20 @@ class datatables{
         return $datatable;
     }
 
+    private function genera_accion(string $adm_accion_base, array $adm_accion_grupo, array $columns, int $i): array
+    {
+        $adm_accion = $adm_accion_grupo['adm_accion_descripcion'];
+        if($i > 0){
+
+            $columns = $this->integra_accion(adm_accion: $adm_accion,adm_accion_base:  $adm_accion_base,columns:  $columns);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al maquetar accion ', data: $columns);
+            }
+
+        }
+        return $columns;
+    }
+
     /**
      * Genera una columna para datatable
      * @param array|string $column Columna a integrar
@@ -213,6 +317,12 @@ class datatables{
         return $datatable;
     }
 
+    private function integra_accion(string $adm_accion, string $adm_accion_base, array $columns): array
+    {
+        $columns[$adm_accion_base]['campos'][] = $adm_accion;
+        return $columns;
+    }
+
     /**
      * Integra el titulo en ele objeto de columna a generar
      * @param array|string $column Columna data
@@ -236,6 +346,18 @@ class datatables{
             }
         }
         return $column_obj;
+    }
+
+    private function maqueta_accion_base_column(array $acciones_grupo, string $adm_accion_base, array $columns): array
+    {
+
+        if(count($acciones_grupo) > 0){
+            $columns[$adm_accion_base]['titulo'] = 'Acciones';
+            $columns[$adm_accion_base]['type'] = 'button';
+            $columns[$adm_accion_base]['campos'] = array();
+        }
+
+        return $columns;
     }
 
     /**

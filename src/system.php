@@ -8,6 +8,7 @@ use gamboamartin\errores\errores;
 use gamboamartin\template\directivas;
 use gamboamartin\template\html;
 use JsonException;
+use models\adm_accion_grupo;
 use PDO;
 use stdClass;
 use Throwable;
@@ -98,6 +99,7 @@ class system extends controlador_base{
 
 
         $filtro = array();
+        $columns = array();
         foreach ($this->rows_lista as $key_row_lista){
             $filtro[] = $this->seccion.'.'.$key_row_lista;
             $titulo = str_replace('_', ' ', $key_row_lista);
@@ -105,14 +107,15 @@ class system extends controlador_base{
             $columns[$this->seccion."_$key_row_lista"]["titulo"] = $titulo;
         }
 
-        /**
-         * MAÑANA GET ACCIONES DESDE ACCION GRUPO DEFINIDAS COMO ACCION SOBRE REGISTRO ID
-         */
-        $columns["modifica"]["titulo"] = "Modifica";
-        $columns["modifica"]["type"] = "button";
-        $columns["elimina_bd"]["titulo"] = "Elimina";
-        $columns["elimina_bd"]["type"] = "button";
 
+
+
+        $columns = (new datatables())->acciones_columnas(columns: $columns, link: $this->link, seccion: $this->tabla);
+        if(errores::$error){
+            $error = $this->errores->error(mensaje: 'Error al maquetar acciones ', data: $columns);
+            var_dump($error);
+            die('Error');
+        }
 
 
         $this->datatable_init(columns: $columns, filtro: $filtro);
@@ -122,6 +125,8 @@ class system extends controlador_base{
             die('Error');
         }
     }
+
+
 
     /**
      * Funcion que genera los inputs y templates base para un alta
@@ -213,6 +218,8 @@ class system extends controlador_base{
         return $r_alta_bd;
     }
 
+
+
     private function columnas_lista(): array
     {
         $columnas = array();
@@ -226,8 +233,6 @@ class system extends controlador_base{
         }
         return $columnas;
     }
-
-
 
     private function datatable_columnDefs_init(array $columns, array $columndefs): array
     {
@@ -319,6 +324,8 @@ class system extends controlador_base{
         return $r_del;
     }
 
+
+
     public function genera_inputs(array $keys_selects = array()): array|stdClass
     {
         $inputs = $this->html->init_alta2(row_upd: $this->row_upd, modelo: $this->modelo, link: $this->link,
@@ -409,6 +416,8 @@ class system extends controlador_base{
         return $salida;
     }
 
+
+
     /**
      * Genera la lista mostrable en la accion de cat_sat_tipo_persona / lista
      * @param bool $header if header se ejecuta en html
@@ -444,6 +453,8 @@ class system extends controlador_base{
 
         return $this->registros;
     }
+
+
 
     public function modifica(bool $header, bool $ws = false, string $breadcrumbs = '',
                              bool $aplica_form = true, bool $muestra_btn = true): array|string
