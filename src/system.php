@@ -35,6 +35,7 @@ class system extends controlador_base{
     public array $columnas_lista_data_table = array();
     public array $columnas_lista_data_table_filter = array();
     public array $datatable = array();
+    public array $datatables = array();
     public array $inputs_alta = array('codigo','codigo_bis','descripcion','descripcion_select','alias');
     public array $inputs_modifica = array('id','codigo','codigo_bis','descripcion','descripcion_select','alias');
     public string $forms_inputs_alta = '';
@@ -300,6 +301,7 @@ class system extends controlador_base{
         }
 
         $this->datatable = $datatable;
+        $this->datatables[] = $this->datatable;
 
         return $this->datatable;
     }
