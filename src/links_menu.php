@@ -55,8 +55,18 @@ class links_menu{
         return "./index.php?seccion=$seccion&accion=alta";
     }
 
-    private function alta_bd(string $seccion): string
+    /**
+     * Precarga un link alta bd
+     * @param string $seccion Seccion a ejecutar
+     * @return string|array
+     * @version 0.158.34
+     */
+    private function alta_bd(string $seccion): string|array
     {
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(mensaje: 'Error seccion esta vacia', data:$seccion);
+        }
         return "./index.php?seccion=$seccion&accion=alta_bd";
     }
 
@@ -232,7 +242,8 @@ class links_menu{
         return $alta;
     }
 
-    private function link_alta_bd(string $seccion): array|string
+
+    public function link_alta_bd(string $seccion): array|string
     {
         $alta_bd = $this->alta_bd(seccion: $seccion);
         if(errores::$error){

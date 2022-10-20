@@ -56,6 +56,24 @@ class links_menuTest extends test {
 
     /**
      */
+    #[NoReturn] public function test_alta_bd(): void
+    {
+        errores::$error = false;
+        $_GET['session_id'] = 1;
+        $html = new links_menu(-1);
+        $html = new liberator($html);
+
+
+        $seccion = 'a';
+        $resultado = $html->alta_bd($seccion);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("./index.php?seccion=a&accion=alta_bd", $resultado);
+        errores::$error = false;
+    }
+
+    /**
+     */
     #[NoReturn] public function test_init_action(): void
     {
         errores::$error = false;
@@ -153,6 +171,8 @@ class links_menuTest extends test {
         $this->assertEquals("./index.php?seccion=a&accion=alta&session_id=1", $resultado);
         errores::$error = false;
     }
+
+
 
     /**
      */
