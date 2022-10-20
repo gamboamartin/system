@@ -204,6 +204,17 @@ class system extends controlador_base{
             return $this->retorno_error(mensaje: 'Error al obtener siguiente view', data: $siguiente_view,
                 header:  $header, ws: $ws);
         }
+        $seccion_retorno = $this->tabla;
+        if(isset($_POST['seccion_retorno'])){
+            $seccion_retorno = $_POST['seccion_retorno'];
+            unset($_POST['seccion_retorno']);
+        }
+
+        $id_retorno = -1;
+        if(isset($_POST['id_retorno'])){
+            $id_retorno = $_POST['id_retorno'];
+            unset($_POST['id_retorno']);
+        }
 
         $r_alta_bd = parent::alta_bd(header: false,ws: false);
         if(errores::$error){
@@ -220,8 +231,11 @@ class system extends controlador_base{
 
 
         if($header){
-            $this->retorno_base(registro_id:$r_alta_bd->registro_id, result: $r_alta_bd,
-                siguiente_view: $siguiente_view,ws:  $ws);
+            if($id_retorno === -1) {
+                $id_retorno = $r_alta_bd->registro_id;
+            }
+            $this->retorno_base(registro_id:$id_retorno, result: $r_alta_bd, siguiente_view: $siguiente_view,
+                ws:  $ws,seccion_retorno: $seccion_retorno);
         }
         if($ws){
             header('Content-Type: application/json');
@@ -599,12 +613,19 @@ class system extends controlador_base{
      * @param bool $ws si webservice
      * @param bool $header Si header
      * @param array $params Envia parametros por GET en retorno $_GET['PARAMETRO'] = 1
+     * @param string $seccion_retorno Seccion de retorno default this->tabla
      * @return bool|array
      * @version 0.90.32
      */
     protected function retorno_base(int $registro_id, mixed $result, string $siguiente_view, bool $ws,
-                                    bool $header = true, array $params = array()):bool|array{
-        $retorno = (new actions())->retorno_alta_bd(registro_id: $registro_id, seccion: $this->tabla,
+                                    bool $header = true, array $params = array(),
+                                    string $seccion_retorno = ''):bool|array{
+
+        if($seccion_retorno === ''){
+            $seccion_retorno = $this->tabla;
+        }
+
+        $retorno = (new actions())->retorno_alta_bd(registro_id: $registro_id, seccion: $seccion_retorno,
             siguiente_view: $siguiente_view, params: $params);
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al dar de alta registro', data: $result, header:  $header,
