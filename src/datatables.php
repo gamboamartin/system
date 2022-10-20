@@ -240,9 +240,9 @@ class datatables{
      * @return array
      * @version 0.152.33
      */
-    public function datatable(array $columns, array $filtro = array()): array
+    public function datatable(array $columns, array $filtro = array(),string $identificador = ".datatable"): array
     {
-        $datatable = $this->init_datatable(filtro:$filtro);
+        $datatable = $this->init_datatable(filtro:$filtro,identificador: $identificador);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar datatable', data:  $datatable);
         }
@@ -355,11 +355,12 @@ class datatables{
      * @return array
      * @version 0.151.33
      */
-    private function init_datatable(array $filtro): array
+    private function init_datatable(array $filtro,string $identificador = ".datatable"): array
     {
         $datatable["columns"] = array();
         $datatable["columnDefs"] = array();
         $datatable['filtro'] = $filtro;
+        $datatable['identificador'] = $identificador;
         return $datatable;
     }
 

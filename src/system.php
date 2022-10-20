@@ -291,10 +291,10 @@ class system extends controlador_base{
         return $index_header;
     }
 
-    public function datatable_init(array $columns, array $filtro = array()): array
+    public function datatable_init(array $columns, array $filtro = array(), string $identificador = ".datatable"): array
     {
 
-        $datatable = (new datatables())->datatable(columns: $columns, filtro: $filtro);
+        $datatable = (new datatables())->datatable(columns: $columns, filtro: $filtro,identificador: $identificador);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al generar datatables base', data:  $datatable);
         }
