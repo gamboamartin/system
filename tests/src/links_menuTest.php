@@ -155,6 +155,24 @@ class links_menuTest extends test {
     }
 
     /**
+     */
+    #[NoReturn] public function test_links_sin_id(): void
+    {
+        errores::$error = false;
+        $_GET['session_id'] = 1;
+        $html = new links_menu(-1);
+        $html = new liberator($html);
+
+
+        $accion = 'lista';
+        $resultado = $html->links_sin_id($accion);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("./index.php?seccion=adm_accion&accion=modifica&registro_id=-1&session_id=1", $resultado->adm_accion->modifica);
+        errores::$error = false;
+    }
+
+    /**
      * @throws JsonException
      */
     #[NoReturn] public function test_sin_id(): void

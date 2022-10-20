@@ -212,7 +212,7 @@ class links_menu{
      * @param string $seccion Seccion a inicializar el link
      * @return array|string
      */
-    protected function link_alta(string $seccion): array|string
+    public function link_alta(string $seccion): array|string
     {
         $seccion = trim($seccion);
         if($seccion === ''){
@@ -402,8 +402,20 @@ class links_menu{
         return $this->links;
     }
 
+    /**
+     * Genera los links sin ID
+     * @param string $accion Accion a integrar
+     * @return array|stdClass
+     * @version 0.157.33
+     */
     private function links_sin_id(string $accion): array|stdClass
     {
+
+        $accion = trim($accion);
+        if($accion === ''){
+            return $this->error->error(mensaje: 'Error la $accion esta vacia', data: $accion);
+        }
+
         $this->session_id = trim($this->session_id);
         if($this->session_id === ''){
             return $this->error->error(mensaje: 'Error links_menu->session_id esta vacio', data: $this->session_id);
