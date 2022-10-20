@@ -438,7 +438,7 @@ class system extends controlador_base{
                 if(errores::$error){
                     return $this->retorno_error(mensaje: 'Error al asignar link', data: $link_con_id,header:  $header, ws: $ws);
                 }
-                $links[$indice] = $link_con_id;
+                $links[$accion] = $link_con_id;
             }
 
 
