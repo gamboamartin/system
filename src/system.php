@@ -369,6 +369,14 @@ class system extends controlador_base{
         return $filtro_especial;
     }
 
+    /**
+     * Genera el conjunto de botones
+     * @param array $acciones_permitidas Acciones permitidas
+     * @param string $key_id Key de row
+     * @param array $rows conjunto de registros
+     * @return array
+     * @version 0.171.34
+     */
     private function genera_buttons_permiso(array $acciones_permitidas, string $key_id, array $rows): array
     {
         foreach ($rows as $indice=>$row){
@@ -458,6 +466,9 @@ class system extends controlador_base{
 
             $links = array();
             foreach ($acciones_permitidas as $indice=>$adm_accion_grupo){
+                /**
+                 * REFCATORIZAR
+                 */
                 $accion = $adm_accion_grupo['adm_accion_descripcion'];
                 $registro_id = $row[$this->seccion.'_id'];
                 $link_con_id = $this->obj_link->link_con_id(accion:$accion, registro_id: $registro_id,seccion:  $this->seccion);
@@ -521,6 +532,9 @@ class system extends controlador_base{
 
         foreach ($acciones_permitidas as $accion_permitida){
 
+            /**
+             * REFCATORIZAR
+             */
             $keys = array($key_id);
             $valida = $this->validacion->valida_ids(keys: $keys, registro: $row);
             if(errores::$error){
