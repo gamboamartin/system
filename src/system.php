@@ -364,6 +364,18 @@ class system extends controlador_base{
         return $filtro_especial;
     }
 
+    protected function genera_buttons_permiso(array $acciones_permitidas, string $key_id, array $rows): array
+    {
+        foreach ($rows as $indice=>$row){
+            $rows = $this->integra_acciones_permitidas(acciones_permitidas: $acciones_permitidas,
+                indice:  $indice,key_id:  $key_id, row: $row,rows:  $rows);
+            if(errores::$error){
+                return $this->errores->error(mensaje: 'Error al integrar link',data:  $rows);
+            }
+        }
+        return $rows;
+    }
+
     private function genera_filtro_especial_datatable(): array
     {
         $filtro_especial = array();

@@ -127,9 +127,19 @@ class init{
      * @param string $campo_puro Campo puro de la tabla en ejecucion
      * @param string $tabla Tabla o seccion o modelo
      * @return array|stdClass
+     * @version 0.168.34
      */
     private function key_row_lista(string $campo_puro, string $tabla): array|stdClass
     {
+        $tabla = trim($tabla);
+        if($tabla === ''){
+            return $this->error->error(mensaje: 'Error tabla esta vacia',data:  $tabla);
+        }
+        $campo_puro = trim($campo_puro);
+        if($campo_puro === ''){
+            return $this->error->error(mensaje: 'Error $campo_puro esta vacio',data:  $campo_puro);
+        }
+
         $data_key_row_lista = $this->data_key_row_lista(campo_puro: $campo_puro, tabla: $tabla);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar $data_key_row_lista', data: $data_key_row_lista);
