@@ -18,11 +18,13 @@ class html_controler{
     public directivas $directivas;
     protected errores $error;
     public html $html_base;
+    protected validacion $validacion;
 
     public function __construct(html $html){
         $this->directivas = new directivas(html: $html);
         $this->error = new errores();
         $this->html_base = $html;
+        $this->validacion = new validacion();
     }
 
     /**
@@ -46,12 +48,36 @@ class html_controler{
         return $controler->inputs;
     }
 
-    public function boton_link_permitido(array $accion_permitida, int $indice, int $registro_id, array $rows,
-                                         string $seccion): array
+    /**
+     * Integra un boton link para rows de lista
+     * @param array $accion_permitida Datos de accion
+     * @param int $indice Indice de matriz de rows
+     * @param int $registro_id Registro en proceso
+     * @param array $rows registros
+     * @return array
+     * @version 0.165.34
+     */
+    public function boton_link_permitido(array $accion_permitida, int $indice, int $registro_id, array $rows): array
     {
+
+        $keys = array('adm_accion_descripcion','adm_accion_titulo','adm_seccion_descripcion','adm_accion_css');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $accion_permitida);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar  accion_permitida',data:  $valida);
+        }
+
+        if($indice < 0){
+            return $this->error->error(mensaje: 'Error indice debe ser mayor o igual a 0',data:  $indice);
+        }
+
+        if($registro_id <= 0){
+            return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0',data:  $registro_id);
+        }
+
         $link = $this->button_href(
             accion: $accion_permitida['adm_accion_descripcion'], etiqueta: $accion_permitida['adm_accion_titulo'],
-            registro_id:  $registro_id, seccion: $seccion, style:  $accion_permitida['adm_accion_css']);
+            registro_id:  $registro_id, seccion: $accion_permitida['adm_seccion_descripcion'],
+            style:  $accion_permitida['adm_accion_css']);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar link',data:  $link);
         }

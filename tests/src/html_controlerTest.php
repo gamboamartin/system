@@ -58,6 +58,34 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_boton_link_permitido(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        //$html = new liberator($html);
+
+        $_SESSION['grupo_id'] = 2;
+
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+        $accion_permitida = array();
+        $accion_permitida['adm_accion_descripcion'] = 'a';
+        $accion_permitida['adm_accion_titulo'] = 'b';
+        $accion_permitida['adm_seccion_descripcion'] = 'c';
+        $accion_permitida['adm_accion_css'] = 'd';
+        $indice = 1;
+        $registro_id = 1;
+        $rows = array();
+
+        $resultado = $html->boton_link_permitido($accion_permitida, $indice, $registro_id, $rows);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<a role='button' href='index.php?seccion=c&accion=a&registro_id=1&session_id=1' class='btn btn-d col-sm-12'>b</a>", $resultado[1]['acciones']['a']);
+        errores::$error = false;
+    }
+
     /**
      */
     public function test_button_href(): void
