@@ -8,7 +8,6 @@ use gamboamartin\errores\errores;
 use gamboamartin\template\directivas;
 use gamboamartin\template\html;
 use JsonException;
-use models\adm_accion_grupo;
 use PDO;
 use stdClass;
 use Throwable;
@@ -26,7 +25,7 @@ class system extends controlador_base{
 
     private html_controler $html;
 
-    public stdClass $acciones;
+    public stdClass|array $acciones;
 
     public links_menu $obj_link;
     public array $secciones = array();

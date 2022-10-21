@@ -29,6 +29,28 @@ class initTest extends test {
         $this->paths_conf->views = '/var/www/html/system/config/views.php';
     }
 
+    public function test_data_key_row_lista(): void
+    {
+        errores::$error = false;
+
+        $_GET['session_id']  = 1;
+        $_GET['seccion']  = 'adm_menu';
+        $_SESSION['grupo_id'] = 1;
+
+        $init = new init();
+        $init = new liberator($init);
+
+
+        $campo_puro = 'b';
+        $tabla = 'a';
+        $resultado = $init->data_key_row_lista($campo_puro, $tabla);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a_b', $resultado->key_value);
+        $this->assertEquals('B', $resultado->name_lista);
+        errores::$error = false;
+    }
+
     public function test_init_acciones_base(): void
     {
         errores::$error = false;

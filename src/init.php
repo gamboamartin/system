@@ -16,9 +16,19 @@ class init{
      * @param string $campo_puro Campo puro de la tabla en ejecucion
      * @param string $tabla Tabla o seccion o modelo
      * @return array|stdClass
+     * @version 0.163.34
      */
     private function data_key_row_lista(string $campo_puro, string $tabla): array|stdClass
     {
+        $tabla = trim($tabla);
+        if($tabla === ''){
+            return $this->error->error(mensaje: 'Error tabla esta vacia',data:  $tabla);
+        }
+        $campo_puro = trim($campo_puro);
+        if($campo_puro === ''){
+            return $this->error->error(mensaje: 'Error $campo_puro esta vacio',data:  $campo_puro);
+        }
+
         $key_value = $this->key_value_campo(campo_puro: $campo_puro, tabla: $tabla);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar key value lista', data: $key_value);
@@ -69,7 +79,7 @@ class init{
      * @param system $controller Controlador en ejecucion
      * @param html $html Html de template
      * @return array|stdClass
-     * @version
+     * @version 0.163.34
      */
     public function init_controller(system $controller, html $html): array|stdClass
     {
@@ -109,7 +119,8 @@ class init{
             return $this->error->error(mensaje: 'Error al inicializar $data_key_row_lista', data: $data_key_row_lista);
         }
 
-        $key_row_lista = $this->genera_key_row_lista(key_value: $data_key_row_lista->key_value,name_lista:  $data_key_row_lista->name_lista);
+        $key_row_lista = $this->genera_key_row_lista(
+            key_value: $data_key_row_lista->key_value,name_lista:  $data_key_row_lista->name_lista);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar $keys_row_lista', data: $key_row_lista);
         }
