@@ -245,9 +245,7 @@ class system extends controlador_base{
         $r_alta_bd->siguiente_view = $siguiente_view;
         return $r_alta_bd;
     }
-
-
-
+    
     private function columnas_lista(): array
     {
         $columnas = array();
@@ -352,9 +350,7 @@ class system extends controlador_base{
 
         return $r_del;
     }
-
-
-
+    
     private function filtros_especiales_datatable(array $filtro_especial, string $str): array
     {
         foreach ($this->datatable["filtro"] as $indice=>$column) {
@@ -380,9 +376,7 @@ class system extends controlador_base{
         }
         return $filtro_especial;
     }
-
-
-
+    
     public function genera_inputs(array $keys_selects = array()): array|stdClass
     {
         $inputs = $this->html->init_alta2(row_upd: $this->row_upd, modelo: $this->modelo, link: $this->link,
@@ -479,9 +473,20 @@ class system extends controlador_base{
         }
         return $salida;
     }
-
-
-
+    
+    protected function integra_acciones_permitidas(array $acciones_permitidas, int $indice, string $key_id, array $row, array $rows): array
+    {
+        foreach ($acciones_permitidas as $accion_permitida){
+            $rows = $this->html->boton_link_permitido(
+                accion_permitida: $accion_permitida,indice:  $indice,registro_id:  $row[$key_id],rows:  $rows);
+            if(errores::$error){
+                return $this->errores->error(
+                    mensaje: 'Error al integrar link',data:  $rows);
+            }
+        }
+        return $rows;
+    }
+    
     /**
      * Genera la lista mostrable en la accion de cat_sat_tipo_persona / lista
      * @param bool $header if header se ejecuta en html

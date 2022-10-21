@@ -44,8 +44,24 @@ class init{
         return $data;
     }
 
-    private function genera_key_row_lista(string $key_value, string $name_lista): stdClass
+    /**
+     * Genera los keys para un row de lista
+     * @param string $key_value Key a integrar
+     * @param string $name_lista Nombre a mostrar
+     * @return stdClass|array
+     * @version 0.166.34
+     */
+    private function genera_key_row_lista(string $key_value, string $name_lista): stdClass|array
     {
+        $key_value = trim($key_value);
+        if($key_value === ''){
+            return $this->error->error(mensaje: 'Error key_value esta vacio',data:  $key_value);
+        }
+        $name_lista = trim($name_lista);
+        if($name_lista === ''){
+            return $this->error->error(mensaje: 'Error name_lista esta vacio',data:  $name_lista);
+        }
+
         $keys_row_lista = new stdClass();
         $keys_row_lista->campo = $key_value;
         $keys_row_lista->name_lista = $name_lista;

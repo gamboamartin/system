@@ -113,6 +113,28 @@ class initTest extends test {
         errores::$error = false;
     }
 
+    public function test_genera_key_row_lista(): void
+    {
+        errores::$error = false;
+
+        $_GET['session_id']  = 1;
+        $_GET['seccion']  = 'adm_menu';
+        $_SESSION['grupo_id'] = 1;
+
+        $init = new init();
+        $init = new liberator($init);
+
+
+        $key_value = 'a';
+        $name_lista = 'v';
+        $resultado = $init->genera_key_row_lista($key_value, $name_lista);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a', $resultado->campo);
+        $this->assertEquals('v', $resultado->name_lista);
+        errores::$error = false;
+    }
+
     public function test_key_value_campo(): void
     {
         errores::$error = false;
