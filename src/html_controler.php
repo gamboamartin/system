@@ -73,6 +73,9 @@ class html_controler{
         if($registro_id <= 0){
             return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0',data:  $registro_id);
         }
+        if(!isset($rows[$indice])){
+            return $this->error->error(mensaje: 'Error no existe el registro en proceso',data:  $rows);
+        }
 
         $link = $this->button_href(
             accion: $accion_permitida['adm_accion_descripcion'], etiqueta: $accion_permitida['adm_accion_titulo'],
@@ -81,6 +84,19 @@ class html_controler{
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar link',data:  $link);
         }
+
+        if(!is_array($rows[$indice])){
+            return $this->error->error(mensaje: 'rows['.$indice.'] debe ser una array',data:  $rows);
+        }
+
+        if(!isset($rows[$indice]['acciones'])){
+            $rows[$indice]['acciones'] = array();
+        }
+
+        if(array_key_exists($accion_permitida['adm_accion_descripcion'], $rows[$indice]['acciones'])){
+            return $this->error->error(mensaje: 'Error la accion esta repetida',data:  $accion_permitida);
+        }
+
         $rows[$indice]['acciones'][$accion_permitida['adm_accion_descripcion']] = $link;
 
         return $rows;

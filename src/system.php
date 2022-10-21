@@ -473,15 +473,56 @@ class system extends controlador_base{
         }
         return $salida;
     }
-    
-    protected function integra_acciones_permitidas(array $acciones_permitidas, int $indice, string $key_id, array $row, array $rows): array
+
+    /**
+     * Integra las acciones permitidas a un row para lista
+     * @param array $acciones_permitidas Conjunto de acciones
+     * @param int $indice Indice de la matriz de los registros a mostrar
+     * @param string $key_id key de valor para registro id
+     * @param array $row registro en proceso
+     * @param array $rows conjunto de registros
+     * @return array
+     * @version 0.167.34
+     */
+    PUBLIC function integra_acciones_permitidas(array $acciones_permitidas, int $indice, string $key_id, array $row,
+                                                array $rows): array
     {
+
+        if($indice < 0){
+            return $this->errores->error(mensaje: 'Error indice debe ser mayor o igual a 0',data:  $indice);
+        }
+        $key_id = trim($key_id);
+        if($key_id ===''){
+            return $this->errores->error(mensaje: 'Error key_id esta vacio',data:  $key_id);
+        }
+        if(is_numeric($key_id)){
+            return $this->errores->error(mensaje: 'Error key_id debe ser un campo con texto',data:  $key_id);
+        }
+        if(!isset($rows[$indice])){
+            return $this->errores->error(mensaje: 'Error no existe el registro en proceso',data:  $rows);
+        }
+
         foreach ($acciones_permitidas as $accion_permitida){
+
+            $keys = array($key_id);
+            $valida = $this->validacion->valida_ids(keys: $keys, registro: $row);
+            if(errores::$error){
+                return $this->errores->error(mensaje: 'Error al validar row',data:  $valida);
+            }
+
+            if(!is_array($accion_permitida)){
+                return $this->errores->error(mensaje: 'Error accion_permitida debe ser array',data:  $accion_permitida);
+            }
+            $keys = array('adm_accion_descripcion','adm_accion_titulo','adm_seccion_descripcion','adm_accion_css');
+            $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $accion_permitida);
+            if(errores::$error){
+                return $this->errores->error(mensaje: 'Error al validar  accion_permitida',data:  $valida);
+            }
+
             $rows = $this->html->boton_link_permitido(
                 accion_permitida: $accion_permitida,indice:  $indice,registro_id:  $row[$key_id],rows:  $rows);
             if(errores::$error){
-                return $this->errores->error(
-                    mensaje: 'Error al integrar link',data:  $rows);
+                return $this->errores->error(mensaje: 'Error al integrar link',data:  $rows);
             }
         }
         return $rows;
