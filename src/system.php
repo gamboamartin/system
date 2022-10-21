@@ -294,10 +294,12 @@ class system extends controlador_base{
         return $index_header;
     }
 
-    public function datatable_init(array $columns, array $filtro = array(), string $identificador = ".datatable"): array
+    public function datatable_init(array $columns, array $filtro = array(), string $identificador = ".datatable",
+                                   array $data = array()): array
     {
 
-        $datatable = (new datatables())->datatable(columns: $columns, filtro: $filtro,identificador: $identificador);
+        $datatable = (new datatables())->datatable(columns: $columns, filtro: $filtro,identificador: $identificador,
+            data: $data);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al generar datatables base', data:  $datatable);
         }
@@ -431,22 +433,23 @@ class system extends controlador_base{
         if($pagina <= 0){
             $pagina = 1;
         }
-        /*****/
+
+        $filtro  = array();
+        if (isset($_GET['data'])){
+            $filtro = $_GET['data'];
+        }
 
         $filtro_especial = $this->genera_filtro_especial_datatable();
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al obtener filtro_especial', data: $filtro_especial,header:  $header, ws: $ws);
         }
 
-        $data_result = $this->modelo->get_data_lista(filtro_especial: $filtro_especial,
+        $data_result = $this->modelo->get_data_lista(filtro:$filtro,filtro_especial: $filtro_especial,
             n_rows_for_page: $n_rows_for_page, pagina: $pagina);
 
         if(errores::$error){
-           return $this->retorno_error(mensaje: 'Error al obtener data result', data: $data_result,header:  $header, ws: $ws);
+            return $this->retorno_error(mensaje: 'Error al obtener data result', data: $data_result,header:  $header, ws: $ws);
         }
-
-
-
 
         $acciones_permitidas = (new datatables())->acciones_permitidas(link:$this->link,seccion:  $this->tabla);
 
