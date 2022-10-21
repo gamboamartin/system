@@ -99,7 +99,9 @@ class system extends controlador_base{
         }
 
 
-
+        /**
+         * REFACTORIZAR
+         */
         $filtro = array();
         if(!isset($datatables->filtro)){
             foreach ($this->rows_lista as $key_row_lista){
@@ -275,6 +277,9 @@ class system extends controlador_base{
 
             if (array_key_exists("visible",$item) && array_key_exists("targets",$item)){
 
+                /**
+                 * REFACTOTRIZAR
+                 */
                 $column["type"] = "text";
                 $column["targets"] = ($item['targets'][0]) - 1;
                 $rendered[]["index"] = $columns[$column["targets"]];
@@ -364,7 +369,7 @@ class system extends controlador_base{
         return $filtro_especial;
     }
 
-    protected function genera_buttons_permiso(array $acciones_permitidas, string $key_id, array $rows): array
+    private function genera_buttons_permiso(array $acciones_permitidas, string $key_id, array $rows): array
     {
         foreach ($rows as $indice=>$row){
             $rows = $this->integra_acciones_permitidas(acciones_permitidas: $acciones_permitidas,
@@ -724,6 +729,20 @@ class system extends controlador_base{
             return $this->errores->error(mensaje: 'Error al asignar link', data:  $registros_view);
         }
         return $registros_view;
+    }
+
+    protected function rows_con_permisos(string $key_id, array $rows, string $seccion): array
+    {
+        $acciones_permitidas = (new datatables())->acciones_permitidas(link: $this->link, seccion: $seccion);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al obtener acciones',data:  $acciones_permitidas);
+        }
+        $rows = $this->genera_buttons_permiso(acciones_permitidas: $acciones_permitidas,
+            key_id:  $key_id,rows:  $rows);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al integrar link',data:  $rows);
+        }
+        return $rows;
     }
 
     /**

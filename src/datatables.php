@@ -39,6 +39,12 @@ class datatables{
         return $adm_accion_base;
     }
 
+    /**
+     * @param array $columns
+     * @param PDO $link
+     * @param string $seccion
+     * @return array
+     */
     public function acciones_columnas(array $columns, PDO $link, string $seccion): array
     {
         $acciones_grupo = $this->acciones_permitidas(link: $link,seccion: $seccion);
@@ -53,7 +59,8 @@ class datatables{
         }
 
 
-        $columns = $this->maqueta_accion_base_column(acciones_grupo: $acciones_grupo,adm_accion_base:  $adm_accion_base,columns:  $columns);
+        $columns = $this->maqueta_accion_base_column(
+            acciones_grupo: $acciones_grupo,adm_accion_base:  $adm_accion_base,columns:  $columns);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al maquetar accion base', data: $columns);
 
@@ -105,6 +112,12 @@ class datatables{
         return $r_accion_grupo->registros;
     }
 
+    /**
+     * @param array $acciones_grupo
+     * @param string $adm_accion_base
+     * @param array $columns
+     * @return array
+     */
     private function columnas_accion(array $acciones_grupo, string $adm_accion_base, array $columns): array
     {
         $i = 0;
@@ -285,6 +298,13 @@ class datatables{
         return $filtro_especial;
     }
 
+    /**
+     * @param string $adm_accion_base
+     * @param array $adm_accion_grupo
+     * @param array $columns
+     * @param int $i
+     * @return array
+     */
     private function genera_accion(string $adm_accion_base, array $adm_accion_grupo, array $columns, int $i): array
     {
         $adm_accion = $adm_accion_grupo['adm_accion_descripcion'];
@@ -364,6 +384,12 @@ class datatables{
         return $datatable;
     }
 
+    /**
+     * @param string $adm_accion
+     * @param string $adm_accion_base
+     * @param array $columns
+     * @return array
+     */
     private function integra_accion(string $adm_accion, string $adm_accion_base, array $columns): array
     {
         $columns[$adm_accion_base]['campos'][] = $adm_accion;
@@ -395,10 +421,22 @@ class datatables{
         return $column_obj;
     }
 
+    /**
+     * Maqueta los elementos para un row
+     * @param array $acciones_grupo Acciones permitidas
+     * @param string $adm_accion_base accion
+     * @param array $columns Columnas precargadas
+     * @return array
+     * @version 0.170.34
+     */
     private function maqueta_accion_base_column(array $acciones_grupo, string $adm_accion_base, array $columns): array
     {
 
         if(count($acciones_grupo) > 0){
+            $adm_accion_base = trim($adm_accion_base);
+            if($adm_accion_base === ''){
+                return $this->error->error(mensaje: 'Error adm_accion_base esta vacia', data:  $adm_accion_base);
+            }
             $columns[$adm_accion_base]['titulo'] = 'Acciones';
             $columns[$adm_accion_base]['type'] = 'button';
             $columns[$adm_accion_base]['campos'] = array();

@@ -54,6 +54,7 @@ class initTest extends test {
     public function test_init_acciones_base(): void
     {
         errores::$error = false;
+        $_SESSION['grupo_id'] = 2;
 
         try {
             $_GET['session_id'] = random_int(1, 9999);

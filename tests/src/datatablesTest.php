@@ -388,6 +388,26 @@ class datatablesTest extends test {
         errores::$error = false;
     }
 
+    public function test_maqueta_accion_base_column(): void
+    {
+        errores::$error = false;
+        $datatables = new datatables();
+        $datatables = new liberator($datatables);
+
+        $acciones_grupo = array();
+        $acciones_grupo[] = '';
+
+        $adm_accion_base = 'a';
+        $columns = array();
+
+        $resultado = $datatables->maqueta_accion_base_column($acciones_grupo, $adm_accion_base, $columns);
+
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('Acciones', $resultado['a']['titulo']);
+        errores::$error = false;
+    }
+
     public function test_maqueta_column_obj(): void
     {
         errores::$error = false;
