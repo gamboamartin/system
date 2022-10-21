@@ -4,6 +4,7 @@ namespace gamboamartin\system;
 use base\controller\controler;
 use base\orm\modelo;
 use base\orm\modelo_base;
+use config\generales;
 use gamboamartin\errores\errores;
 use gamboamartin\template\directivas;
 use gamboamartin\template\html;
@@ -43,6 +44,48 @@ class html_controler{
         }
 
         return $controler->inputs;
+    }
+
+    public function boton_link_permitido(array $accion_permitida, int $indice, int $registro_id, array $rows,
+                                         string $seccion): array
+    {
+        $link = $this->button_href(
+            accion: $accion_permitida['adm_accion_descripcion'], etiqueta: $accion_permitida['adm_accion_titulo'],
+            registro_id:  $registro_id, seccion: $seccion, style:  $accion_permitida['adm_accion_css']);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar link',data:  $link);
+        }
+        $rows[$indice]['acciones'][$accion_permitida['adm_accion_descripcion']] = $link;
+
+        return $rows;
+    }
+
+    /**
+     * @param string $accion Accion a ejecutar
+     * @param string $etiqueta Etiqueta de boton
+     * @param int $registro_id Registro a integrar
+     * @param string $seccion Seccion a ejecutar
+     * @param string $style Stilo del boton
+     * @param array $params extra-params
+     * @return string|array
+     * @version 0.164.34
+     */
+    private function button_href(string $accion, string $etiqueta, int $registro_id, string $seccion,
+                                string $style, array $params = array()): string|array
+    {
+
+        $valida = $this->html_base->valida_input(accion: $accion,etiqueta:  $etiqueta, seccion: $seccion,style:  $style);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
+        }
+
+        $html = $this->html_base->button_href(accion: $accion,etiqueta:  $etiqueta,registro_id:  $registro_id,
+            seccion:  $seccion, style: $style, params: $params);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar boton', data: $html);
+        }
+
+        return str_replace(array('|role|', '|class|'), array("role='button'", "class='btn btn-$style col-sm-12'"), $html);
     }
 
     protected function dates_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
