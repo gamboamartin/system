@@ -157,6 +157,7 @@ class init{
      * Genera los keys para una lista
      * @param system $controler Controlador en ejecucion
      * @return array
+     * @version 0.169.34
      */
     public function keys_row_lista(system $controler): array
     {

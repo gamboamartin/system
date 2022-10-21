@@ -171,6 +171,8 @@ class systemTest extends test {
         $controler = new system(html: $html_controler, link: $this->link, modelo: $modelo, obj_link: $obj_link,
             paths_conf: $this->paths_conf);
 
+        $controler = new liberator($controler);
+
         $acciones_permitidas = array();
         $indice = 0;
         $key_id = 'x';

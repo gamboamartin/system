@@ -496,7 +496,7 @@ class system extends controlador_base{
      * @return array
      * @version 0.167.34
      */
-    PUBLIC function integra_acciones_permitidas(array $acciones_permitidas, int $indice, string $key_id, array $row,
+    private function integra_acciones_permitidas(array $acciones_permitidas, int $indice, string $key_id, array $row,
                                                 array $rows): array
     {
 
