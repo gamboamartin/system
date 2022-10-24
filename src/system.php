@@ -377,7 +377,7 @@ class system extends controlador_base{
      * @param string $key_id Key de row
      * @param array $rows conjunto de registros
      * @return array
-     * @version 0.171.34
+     * @version 0.172.34
      */
     private function genera_buttons_permiso(array $acciones_permitidas, string $key_id, array $rows): array
     {
@@ -748,8 +748,30 @@ class system extends controlador_base{
         return $registros_view;
     }
 
+    /**
+     * Intregra las acciones a los registros
+     * @param string $key_id Registro id
+     * @param array $rows Conjunto de registros
+     * @param string $seccion Seccion a integrar acciones
+     * @return array
+     * @version 0.173.34
+     */
     protected function rows_con_permisos(string $key_id, array $rows, string $seccion): array
     {
+
+        if(!isset($_SESSION)){
+            return $this->errores->error(mensaje: 'Error no hay SESSION iniciada', data: array());
+        }
+        $keys = array('grupo_id');
+        $valida = $this->validacion->valida_ids(keys: $keys,registro:  $_SESSION);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al validar SESSION', data: $valida);
+        }
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->errores->error(mensaje: 'Error seccion esta vacia', data: $seccion);
+        }
+
         $acciones_permitidas = (new datatables())->acciones_permitidas(link: $this->link, seccion: $seccion);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al obtener acciones',data:  $acciones_permitidas);

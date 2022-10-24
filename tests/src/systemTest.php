@@ -228,6 +228,33 @@ class systemTest extends test {
         errores::$error = false;
     }
 
+    public function test_rows_con_permisos(): void
+    {
+        errores::$error = false;
+        $_SESSION['grupo_id'] = 1;
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+        $html = new html();
+        $html_controler = new html_controler($html);
+
+        $modelo = new adm_accion($this->link);
+        $obj_link = new links_menu(-1);
+
+        $controler = new system(html: $html_controler, link: $this->link, modelo: $modelo, obj_link: $obj_link,
+            paths_conf: $this->paths_conf);
+
+        $controler = new liberator($controler);
+
+
+        $key_id = '';
+        $rows = array();
+        $seccion = 'a';
+
+        $resultado = $controler->rows_con_permisos($key_id, $rows, $seccion);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     /**
      */
     public function test_valida_key_rows_lista(): void
