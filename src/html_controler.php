@@ -60,21 +60,11 @@ class html_controler{
     public function boton_link_permitido(array $accion_permitida, int $indice, int $registro_id, array $rows): array
     {
 
-        $keys = array('adm_accion_descripcion','adm_accion_titulo','adm_seccion_descripcion','adm_accion_css');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $accion_permitida);
+
+        $valida = $this->valida_boton_link(
+            accion_permitida: $accion_permitida,indice:  $indice,registro_id:  $registro_id,rows:  $rows);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar  accion_permitida',data:  $valida);
-        }
-
-        if($indice < 0){
-            return $this->error->error(mensaje: 'Error indice debe ser mayor o igual a 0',data:  $indice);
-        }
-
-        if($registro_id <= 0){
-            return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0',data:  $registro_id);
-        }
-        if(!isset($rows[$indice])){
-            return $this->error->error(mensaje: 'Error no existe el registro en proceso',data:  $rows);
+            return $this->error->error(mensaje: 'Error al validar datos',data:  $valida);
         }
 
         $link = $this->button_href(
@@ -130,6 +120,13 @@ class html_controler{
         return str_replace(array('|role|', '|class|'), array("role='button'", "class='btn btn-$style col-sm-12'"), $html);
     }
 
+    /**
+     * @refactorizar Refactoriza
+     * @param modelo $modelo
+     * @param stdClass $row_upd
+     * @param array $keys_selects
+     * @return array|stdClass
+     */
     protected function dates_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
     {
         $campos_view = $this->obtener_inputs($modelo->campos_view);
@@ -141,6 +138,9 @@ class html_controler{
 
         foreach ($campos_view['dates'] as $item){
 
+            /**
+             * REFACTORIZAR
+             */
             $params_select = new stdClass();
 
             if (array_key_exists($item, $keys_selects) ){
@@ -186,6 +186,7 @@ class html_controler{
 
     /**
      * Asigna los values de un select
+     * @refactorizar Refactorizar
      * @param stdClass $keys Keys para asignacion basica
      * @param array $registros Conjunto de registros a integrar
      * @return array
@@ -203,6 +204,9 @@ class html_controler{
         }
         $values = array();
         foreach ($registros as $registro){
+            /**
+             * REFACTORIZAR
+             */
             if(!is_array($registro)){
                 return $this->error->error(mensaje: 'Error registro debe ser un array',data:  $registro);
             }
@@ -286,6 +290,7 @@ class html_controler{
 
     /**
      * Inicializa los datos de un select
+     * @refactorizar Refactorizar metodo
      * @param bool $con_registros Si no con registros integra el select vacio para ser llenado posterior con ajax
      * @param modelo $modelo Modelo en ejecucion para la asignacion de datos
      * @param array $extra_params_keys Keys de extra params para ser cargados en un select
@@ -319,6 +324,9 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al obtener valores',data:  $values);
         }
 
+        /**
+         * REFACTORIZAR
+         */
         $label_ =$label;
         if($label_ === '') {
             $label_ = $this->label(tabla: $modelo->tabla);
@@ -724,6 +732,9 @@ class html_controler{
             }
 
             switch ($tipo_input) {
+                /**
+                 * refactorizar
+                 */
                 case 'selects':
                     $select = $this->obtener_select(campo: $campo);
                     if(errores::$error){
@@ -854,6 +865,9 @@ class html_controler{
         $columnas[] = $keys->descripcion_select;
 
         foreach ($extra_params_keys as $key){
+            /**
+             * REFACTORIZAR
+             */
             $key = trim($key);
             if($key === ''){
                 return $this->error->error(mensaje: 'Error el key de extra params esta vacio',data:  $extra_params_keys);
@@ -1030,6 +1044,9 @@ class html_controler{
 
         foreach ($campos_view['selects'] as $item => $modelo){
 
+            /**
+             * refactoirzar
+             */
             if (array_key_exists($item, $keys_selects) && !is_object($keys_selects[$item])){
                 return $this->error->error(mensaje: 'Error $params debe ser un objeto', data: $keys_selects[$item]);
             }
@@ -1079,7 +1096,9 @@ class html_controler{
         $texts = new stdClass();
 
         foreach ($campos_view['inputs'] as $item){
-
+            /**
+             * REFCATORIZAR
+             */
             $params_select = new stdClass();
 
             if (array_key_exists($item, $keys_selects) ){
@@ -1099,6 +1118,27 @@ class html_controler{
         }
 
         return $texts;
+    }
+
+    private function valida_boton_link(array $accion_permitida, int $indice, int $registro_id, array $rows): bool|array
+    {
+        $keys = array('adm_accion_descripcion','adm_accion_titulo','adm_seccion_descripcion','adm_accion_css');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $accion_permitida);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar  accion_permitida',data:  $valida);
+        }
+
+        if($indice < 0){
+            return $this->error->error(mensaje: 'Error indice debe ser mayor o igual a 0',data:  $indice);
+        }
+
+        if($registro_id <= 0){
+            return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0',data:  $registro_id);
+        }
+        if(!isset($rows[$indice])){
+            return $this->error->error(mensaje: 'Error no existe el registro en proceso',data:  $rows);
+        }
+        return true;
     }
 
     /**
