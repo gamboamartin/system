@@ -720,6 +720,15 @@ class system extends controlador_base{
         return true;
     }
 
+    protected function row_upd_status(string $key, stdClass $registro): array
+    {
+        $row_upd[$key] = 'inactivo';
+        if($registro->$key === 'inactivo'){
+            $row_upd[$key] = 'activo';
+        }
+        return $row_upd;
+    }
+
     private function rows_lista(): array|stdClass
     {
         $columnas = $this->columnas_lista();
