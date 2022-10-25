@@ -67,10 +67,16 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al validar datos',data:  $valida);
         }
 
-        $link = $this->button_href(
-            accion: $accion_permitida['adm_accion_descripcion'], etiqueta: $accion_permitida['adm_accion_titulo'],
-            registro_id:  $registro_id, seccion: $accion_permitida['adm_seccion_descripcion'],
-            style:  $accion_permitida['adm_accion_css']);
+        $accion = $accion_permitida['adm_accion_descripcion'];
+        $etiqueta = $accion_permitida['adm_accion_titulo'];
+        $seccion = $accion_permitida['adm_seccion_descripcion'];
+        $style = $accion_permitida['adm_accion_css'];
+        //$es_status = $accion_permitida['adm_accion_es_status'];
+
+
+
+        $link = $this->button_href(accion: $accion, etiqueta: $etiqueta, registro_id:  $registro_id, seccion: $seccion,
+            style:  $style);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar link',data:  $link);
         }
@@ -1122,7 +1128,8 @@ class html_controler{
 
     private function valida_boton_link(array $accion_permitida, int $indice, int $registro_id, array $rows): bool|array
     {
-        $keys = array('adm_accion_descripcion','adm_accion_titulo','adm_seccion_descripcion','adm_accion_css');
+        $keys = array('adm_accion_descripcion','adm_accion_titulo','adm_seccion_descripcion','adm_accion_css',
+            'adm_accion_es_status');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $accion_permitida);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar  accion_permitida',data:  $valida);

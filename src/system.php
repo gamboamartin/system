@@ -547,7 +547,8 @@ class system extends controlador_base{
             if(!is_array($accion_permitida)){
                 return $this->errores->error(mensaje: 'Error accion_permitida debe ser array',data:  $accion_permitida);
             }
-            $keys = array('adm_accion_descripcion','adm_accion_titulo','adm_seccion_descripcion','adm_accion_css');
+            $keys = array('adm_accion_descripcion','adm_accion_titulo','adm_seccion_descripcion','adm_accion_css',
+                'adm_accion_es_status');
             $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $accion_permitida);
             if(errores::$error){
                 return $this->errores->error(mensaje: 'Error al validar  accion_permitida',data:  $valida);

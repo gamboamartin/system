@@ -75,13 +75,13 @@ class html_controlerTest extends test {
         $accion_permitida['adm_accion_titulo'] = 'b';
         $accion_permitida['adm_seccion_descripcion'] = 'c';
         $accion_permitida['adm_accion_css'] = 'd';
+        $accion_permitida['adm_accion_es_status'] = 'z';
         $indice = 1;
         $registro_id = 1;
         $rows = array();
         $rows[1] = array();
 
         $resultado = $html->boton_link_permitido($accion_permitida, $indice, $registro_id, $rows);
-
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("<a role='button' href='index.php?seccion=c&accion=a&registro_id=1&session_id=1' class='btn btn-d col-sm-12'>b</a>", $resultado[1]['acciones']['a']);
