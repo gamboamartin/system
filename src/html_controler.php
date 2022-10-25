@@ -67,30 +67,14 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al validar datos',data:  $valida);
         }
 
+        $style = $this->style_btn(accion_permitida: $accion_permitida, row: $rows[$indice]);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener style',data:  $style);
+        }
+
         $accion = $accion_permitida['adm_accion_descripcion'];
         $etiqueta = $accion_permitida['adm_accion_titulo'];
         $seccion = $accion_permitida['adm_seccion_descripcion'];
-        $style = $accion_permitida['adm_accion_css'];
-        $es_status = $accion_permitida['adm_accion_es_status'];
-        $key_es_status = $seccion.'_'.$accion;
-
-        if($es_status === 'activo'){
-            $style = 'warning';
-
-            $keys = array($key_es_status);
-            $valida = $this->validacion->valida_statuses(keys: $keys,registro:  $rows[$indice]);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al validar  registro',data:  $valida);
-            }
-
-            if($rows[$indice][$key_es_status] === 'activo'){
-                $style = 'danger';
-            }
-
-        }
-
-
-
 
         $link = $this->button_href(accion: $accion, etiqueta: $etiqueta, registro_id:  $registro_id, seccion: $seccion,
             style:  $style);
@@ -1093,6 +1077,36 @@ class html_controler{
         }
 
         return $selects;
+    }
+
+    private function style_btn(array $accion_permitida, array $row){
+        $style = $accion_permitida['adm_accion_css'];
+        $es_status = $accion_permitida['adm_accion_es_status'];
+        $accion = $accion_permitida['adm_accion_descripcion'];
+        $seccion = $accion_permitida['adm_seccion_descripcion'];
+        $key_es_status = $seccion.'_'.$accion;
+        if($es_status === 'activo'){
+            $style = $this->style_btn_status(key_es_status: $key_es_status, row: $row);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al obtener style',data:  $style);
+            }
+        }
+        return $style;
+    }
+
+    private function style_btn_status(string $key_es_status, array $row): array|string
+    {
+        $keys = array($key_es_status);
+        $valida = $this->validacion->valida_statuses(keys: $keys,registro:  $row);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar  registro',data:  $valida);
+        }
+
+        $style = 'warning';
+        if($row[$key_es_status] === 'activo'){
+            $style = 'danger';
+        }
+        return $style;
     }
 
     /**
