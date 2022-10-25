@@ -252,6 +252,33 @@ class systemTest extends test {
         errores::$error = false;
     }
 
+    public function test_row_upd_status(): void
+    {
+        errores::$error = false;
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+        $_SESSION['usuario_id'] = 2;
+        $_SESSION['grupo_id'] = 2;
+        $html = new html();
+        $html_controler = new html_controler($html);
+
+        $modelo = new adm_accion($this->link);
+        $obj_link = new links_menu(-1);
+
+        $controler = new system(html: $html_controler, link: $this->link, modelo: $modelo, obj_link: $obj_link,
+            paths_conf: $this->paths_conf);
+        $controler = new liberator($controler);
+
+        $key = 'a';
+        $registro = new stdClass();
+        $registro->a = 'activo';
+        $resultado = $controler->row_upd_status($key, $registro);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsArray($resultado);
+        $this->assertEquals('inactivo',$resultado['a']);
+        errores::$error = false;
+    }
+
     public function test_rows_con_permisos(): void
     {
         errores::$error = false;

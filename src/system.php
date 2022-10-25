@@ -720,8 +720,25 @@ class system extends controlador_base{
         return true;
     }
 
+    /**
+     * Integra el valor a modificar de tipo status
+     * @param string $key Key del valor a ajustar
+     * @param stdClass $registro Registro en proceso
+     * @return array
+     * @version 0.181.34
+     */
     protected function row_upd_status(string $key, stdClass $registro): array
     {
+        $key = trim($key);
+        if($key === ''){
+            return $this->errores->error(mensaje: 'Error key esta vacio', data:  $key);
+        }
+        $keys = array($key);
+        $valida = $this->validacion->valida_statuses(keys: $keys,registro:  $registro);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al validar registro', data:  $valida);
+        }
+
         $row_upd[$key] = 'inactivo';
         if($registro->$key === 'inactivo'){
             $row_upd[$key] = 'activo';
