@@ -220,8 +220,8 @@ class systemTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("<a role='button' href='index.php?seccion=c&accion=a&registro_id=1&session_id=1' class='btn btn-d col-sm-12'>b</a>",$resultado[0]['acciones']['a']);
         $this->assertEquals("<a role='button' href='index.php?seccion=y&accion=b&registro_id=1&session_id=1' class='btn btn-r col-sm-12'>x</a>",$resultado[0]['acciones']['b']);
-        $this->assertEquals("<a role='button' href='index.php?seccion=dd&accion=r&registro_id=1&session_id=1' class='btn btn-danger col-sm-12'>ff</a>",$resultado[0]['acciones']['r']);
-        $this->assertEquals("<a role='button' href='index.php?seccion=dd&accion=rs&registro_id=1&session_id=1' class='btn btn-warning col-sm-12'>ff</a>",$resultado[0]['acciones']['rs']);
+        $this->assertEquals("<a role='button' href='index.php?seccion=dd&accion=r&registro_id=1&session_id=1' class='btn btn-success col-sm-12'>ff</a>",$resultado[0]['acciones']['r']);
+        $this->assertEquals("<a role='button' href='index.php?seccion=dd&accion=rs&registro_id=1&session_id=1' class='btn btn-danger col-sm-12'>ff</a>",$resultado[0]['acciones']['rs']);
         errores::$error = false;
     }
 

@@ -1102,9 +1102,9 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al validar  registro',data:  $valida);
         }
 
-        $style = 'warning';
+        $style = 'danger';
         if($row[$key_es_status] === 'activo'){
-            $style = 'danger';
+            $style = 'success';
         }
         return $style;
     }
