@@ -569,7 +569,7 @@ class system extends controlador_base{
      * @return array
      * @version 0.182.34
      */
-    protected function integra_row_upd(string $key): array
+    private function integra_row_upd(string $key): array
     {
         if($this->registro_id<=0){
             return $this->errores->error(mensaje: 'Error this->registro_id debe ser mayor a 0',
@@ -749,6 +749,21 @@ class system extends controlador_base{
             exit;
         }
         return true;
+    }
+
+
+    protected function row_upd(string $key): array|stdClass
+    {
+        $row_upd = $this->integra_row_upd(key: $key);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al obtener row upd',data:  $row_upd);
+        }
+
+        $upd = $this->modelo->modifica_bd(registro: $row_upd, id: $this->registro_id);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al modificar adm_accion',data:  $upd);
+        }
+        return $upd;
     }
 
     /**
