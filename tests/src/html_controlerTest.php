@@ -75,7 +75,7 @@ class html_controlerTest extends test {
         $accion_permitida['adm_accion_titulo'] = 'b';
         $accion_permitida['adm_seccion_descripcion'] = 'c';
         $accion_permitida['adm_accion_css'] = 'd';
-        $accion_permitida['adm_accion_es_status'] = 'z';
+        $accion_permitida['adm_accion_es_status'] = 'inactivo';
         $indice = 1;
         $registro_id = 1;
         $rows = array();

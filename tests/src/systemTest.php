@@ -185,22 +185,43 @@ class systemTest extends test {
         $acciones_permitidas[0]['adm_accion_titulo'] = 'b';
         $acciones_permitidas[0]['adm_seccion_descripcion'] = 'c';
         $acciones_permitidas[0]['adm_accion_css'] = 'd';
-        $acciones_permitidas[0]['adm_accion_es_status'] = 'd';
+        $acciones_permitidas[0]['adm_accion_es_status'] = 'inactivo';
+
 
         $acciones_permitidas[1]['adm_accion_descripcion'] = 'b';
         $acciones_permitidas[1]['adm_accion_titulo'] = 'x';
         $acciones_permitidas[1]['adm_seccion_descripcion'] = 'y';
         $acciones_permitidas[1]['adm_accion_css'] = 'r';
-        $acciones_permitidas[1]['adm_accion_es_status'] = 'r';
+        $acciones_permitidas[1]['adm_accion_es_status'] = 'inactivo';
+
+        $acciones_permitidas[2]['adm_accion_descripcion'] = 'r';
+        $acciones_permitidas[2]['adm_accion_titulo'] = 'ff';
+        $acciones_permitidas[2]['adm_seccion_descripcion'] = 'dd';
+        $acciones_permitidas[2]['adm_accion_css'] = 'ss';
+        $acciones_permitidas[2]['adm_accion_es_status'] = 'activo';
+
+        $acciones_permitidas[3]['adm_accion_descripcion'] = 'rs';
+        $acciones_permitidas[3]['adm_accion_titulo'] = 'ff';
+        $acciones_permitidas[3]['adm_seccion_descripcion'] = 'dd';
+        $acciones_permitidas[3]['adm_accion_css'] = 'ss';
+        $acciones_permitidas[3]['adm_accion_es_status'] = 'activo';
+
 
         $rows[0] = array();
+        $rows[0]['dd_r'] = 'activo';
+        $rows[0]['dd_rs'] = 'inactivo';
+
 
         $resultado = $controler->integra_acciones_permitidas($acciones_permitidas, $indice, $key_id, $row, $rows);
+
+
 
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("<a role='button' href='index.php?seccion=c&accion=a&registro_id=1&session_id=1' class='btn btn-d col-sm-12'>b</a>",$resultado[0]['acciones']['a']);
         $this->assertEquals("<a role='button' href='index.php?seccion=y&accion=b&registro_id=1&session_id=1' class='btn btn-r col-sm-12'>x</a>",$resultado[0]['acciones']['b']);
+        $this->assertEquals("<a role='button' href='index.php?seccion=dd&accion=r&registro_id=1&session_id=1' class='btn btn-danger col-sm-12'>ff</a>",$resultado[0]['acciones']['r']);
+        $this->assertEquals("<a role='button' href='index.php?seccion=dd&accion=rs&registro_id=1&session_id=1' class='btn btn-warning col-sm-12'>ff</a>",$resultado[0]['acciones']['rs']);
         errores::$error = false;
     }
 

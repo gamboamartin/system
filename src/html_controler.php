@@ -76,6 +76,13 @@ class html_controler{
 
         if($es_status === 'activo'){
             $style = 'warning';
+
+            $keys = array($key_es_status);
+            $valida = $this->validacion->valida_statuses(keys: $keys,registro:  $rows[$indice]);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al validar  registro',data:  $valida);
+            }
+
             if($rows[$indice][$key_es_status] === 'activo'){
                 $style = 'danger';
             }
@@ -1141,6 +1148,12 @@ class html_controler{
         $keys = array('adm_accion_descripcion','adm_accion_titulo','adm_seccion_descripcion','adm_accion_css',
             'adm_accion_es_status');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $accion_permitida);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar  accion_permitida',data:  $valida);
+        }
+
+        $keys = array('adm_accion_es_status');
+        $valida = $this->validacion->valida_statuses(keys: $keys,registro:  $accion_permitida);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar  accion_permitida',data:  $valida);
         }
