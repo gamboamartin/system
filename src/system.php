@@ -562,6 +562,37 @@ class system extends controlador_base{
         }
         return $rows;
     }
+
+    /**
+     * Integra el elemento a modificar en cambio de estatus
+     * @param string $key Key a integrar
+     * @return array
+     * @version 0.182.34
+     */
+    protected function integra_row_upd(string $key): array
+    {
+        if($this->registro_id<=0){
+            return $this->errores->error(mensaje: 'Error this->registro_id debe ser mayor a 0',
+                data:  $this->registro_id);
+        }
+        $key = trim($key);
+        if($key === ''){
+            return $this->errores->error(mensaje: 'Error key esta vacio', data:  $key);
+        }
+
+        $registro = $this->modelo->registro(registro_id: $this->registro_id, columnas_en_bruto: true, retorno_obj: true);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al obtener adm_accion',data:  $registro);
+        }
+
+
+
+        $row_upd = $this->row_upd_status(key: $key,registro:  $registro);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al obtener row upd',data:  $row_upd);
+        }
+        return $row_upd;
+    }
     
     /**
      * Genera la lista mostrable en la accion de cat_sat_tipo_persona / lista
@@ -727,7 +758,7 @@ class system extends controlador_base{
      * @return array
      * @version 0.181.34
      */
-    protected function row_upd_status(string $key, stdClass $registro): array
+    private function row_upd_status(string $key, stdClass $registro): array
     {
         $key = trim($key);
         if($key === ''){
