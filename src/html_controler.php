@@ -71,7 +71,17 @@ class html_controler{
         $etiqueta = $accion_permitida['adm_accion_titulo'];
         $seccion = $accion_permitida['adm_seccion_descripcion'];
         $style = $accion_permitida['adm_accion_css'];
-        //$es_status = $accion_permitida['adm_accion_es_status'];
+        $es_status = $accion_permitida['adm_accion_es_status'];
+        $key_es_status = $seccion.'_'.$accion;
+
+        if($es_status === 'activo'){
+            $style = 'warning';
+            if($rows[$indice][$key_es_status] === 'activo'){
+                $style = 'danger';
+            }
+
+        }
+
 
 
 
