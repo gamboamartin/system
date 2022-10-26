@@ -294,7 +294,6 @@ class html_controler{
     }
 
 
-
     /**
      * Inicializa los datos de un select
      * @refactorizar Refactorizar metodo
@@ -305,7 +304,8 @@ class html_controler{
      * @param string $key_descripcion_select key del registro para mostrar en un select
      * @param string $key_id key Id de value para option
      * @param string $label Etiqueta a mostrar
-     * @param string $name
+     * @param string $name Nombre del input
+     * @param array $not_in Omite resultado de options
      * @return array|stdClass
      * @version 0.52.32
      * @version 0.55.32
@@ -316,7 +316,7 @@ class html_controler{
      */
     private function init_data_select(bool $con_registros, modelo $modelo, array $extra_params_keys = array(),
                                       array $filtro = array(), string $key_descripcion_select= '', string $key_id = '',
-                                      string $label = '', string $name = ''): array|stdClass
+                                      string $label = '', string $name = '', array $not_in = array()): array|stdClass
     {
 
         $keys = $this->keys_base(tabla: $modelo->tabla, key_descripcion_select: $key_descripcion_select,
@@ -326,7 +326,7 @@ class html_controler{
         }
 
         $values = $this->values_selects(con_registros: $con_registros, keys: $keys,modelo: $modelo,
-            extra_params_keys: $extra_params_keys, filtro: $filtro);
+            extra_params_keys: $extra_params_keys, filtro: $filtro, not_in: $not_in);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener valores',data:  $values);
         }
@@ -825,6 +825,7 @@ class html_controler{
         $data->required = $params->required ?? true;
         $data->disabled = $params->disabled ?? false;
         $data->filtro = $params->filtro ?? array();
+        $data->not_in = $params->not_in ?? array();
 
         return $data;
     }
@@ -840,6 +841,7 @@ class html_controler{
         $data->required = $params->required ?? true;
         $data->label = $params->label ?? str_replace('_',' ', $label);
         $data->extra_params_keys = $params->extra_params_keys ?? array();
+        $data->not_in = $params->not_in ?? array();
         return $data;
     }
 
@@ -848,8 +850,9 @@ class html_controler{
      * Obtiene los registros para un select
      * @param stdClass $keys Keys para obtencion de campos
      * @param modelo $modelo Modelo del select
-     * @param array $filtro Filtro de datos para filtro and
      * @param array $extra_params_keys Datos a integrar para extra params
+     * @param array $filtro Filtro de datos para filtro and
+     * @param array $not_in Omite resultados para options
      * @return array
      * @version 0.47.32
      * @version 0.53.32
@@ -860,7 +863,7 @@ class html_controler{
      * @author mgamboa
      */
     private function rows_select(stdClass $keys, modelo $modelo, array $extra_params_keys = array(),
-                                 array $filtro = array()): array
+                                 array $filtro = array(), array $not_in = array()): array
     {
         $keys_val = array('id','descripcion_select');
         $valida = (new validacion())->valida_existencia_keys(keys: $keys_val,registro:  $keys);
@@ -883,7 +886,7 @@ class html_controler{
         }
 
         $filtro[$modelo->tabla.'.status'] = 'activo';
-        $registros = $modelo->filtro_and(columnas: $columnas, filtro: $filtro);
+        $registros = $modelo->filtro_and(columnas: $columnas, filtro: $filtro, not_in: $not_in);
 
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener registros',data:  $registros);
@@ -901,7 +904,8 @@ class html_controler{
      * @return array|stdClass
      * @version 0.96.32
      */
-    private function select_aut(PDO $link, string $name_model, stdClass $params, stdClass $selects, string $tabla = ''): array|stdClass
+    private function select_aut(
+        PDO $link, string $name_model, stdClass $params, stdClass $selects, string $tabla = ''): array|stdClass
     {
         $name_model = trim($name_model);
         if($name_model === ''){
@@ -924,7 +928,8 @@ class html_controler{
         }
         $select  = $this->select_catalogo(cols: $params_select->cols, con_registros: $params_select->con_registros,
             id_selected: $params_select->id_selected, modelo: $modelo, disabled: $params_select->disabled,
-            filtro: $params_select->filtro, label: $params_select->label, required: $params_select->required);
+            filtro: $params_select->filtro, label: $params_select->label, not_in: $params_select->not_in,
+            required: $params_select->required);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $select);
         }
@@ -939,7 +944,7 @@ class html_controler{
         $select  = $this->select_catalogo(cols: $params_select->cols, con_registros: $params_select->con_registros,
             id_selected: $params_select->id_selected, modelo: $modelo, disabled: $params_select->disabled,
             extra_params_keys: $params_select->extra_params_keys, filtro: $params_select->filtro,
-            label: $params_select->label, required: $params_select->required);
+            label: $params_select->label, not_in: $params_select->not_in, required: $params_select->required);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $select);
         }
@@ -961,6 +966,7 @@ class html_controler{
      * @param string $label Etiqueta a mostrar en select
      * @param string $name Nombre del input
      * @param bool $required si required agrega el atributo required a input
+     * @param array $not_in Omite los elementos en obtencion de datos
      * @return array|string Un string con options en forma de html
      * @version 0.56.32
      * @verfuncion 0.1.0
@@ -970,7 +976,8 @@ class html_controler{
     protected function select_catalogo(int $cols, bool $con_registros, int $id_selected, modelo $modelo,
                                        bool $disabled = false, array $extra_params_keys = array(),
                                        array $filtro=array(), string $key_descripcion_select = '', string $key_id = '',
-                                       string $label = '', string $name = '', bool $required = false): array|string
+                                       string $label = '', string $name = '', array $not_in = array(),
+                                       bool $required = false): array|string
     {
 
         $valida = (new directivas(html:$this->html_base))->valida_cols(cols:$cols);
@@ -980,13 +987,13 @@ class html_controler{
 
         $init = $this->init_data_select(con_registros: $con_registros, modelo: $modelo,
             extra_params_keys: $extra_params_keys, filtro:$filtro, key_descripcion_select: $key_descripcion_select,
-            key_id: $key_id, label: $label, name: $name);
+            key_id: $key_id, label: $label, name: $name, not_in: $not_in);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar datos', data: $init);
         }
 
         $select = $this->html_base->select(cols:$cols, id_selected:$id_selected, label: $init->label,name:$init->name,
-            values: $init->values, disabled: $disabled, extra_params_key: $extra_params_keys,required: $required);
+            values: $init->values, disabled: $disabled, extra_params_key: $extra_params_keys, required: $required);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $select);
         }
@@ -1192,6 +1199,7 @@ class html_controler{
      * @param modelo $modelo Modelo para asignacion de datos
      * @param array $extra_params_keys Keys para asignacion de extra params para ser utilizado en javascript
      * @param array $filtro Filtro para obtencion de datos del select
+     * @param array $not_in Omite resultados para options
      * @return array
      * @version 0.49.31
      * @version 0.54.32
@@ -1202,7 +1210,8 @@ class html_controler{
      * @author mgamboa
      */
     private function values_selects( bool $con_registros, stdClass $keys, modelo $modelo,
-                                     array $extra_params_keys = array(), array $filtro = array()): array
+                                     array $extra_params_keys = array(), array $filtro = array(),
+                                     array $not_in = array()): array
     {
         $keys_valida = array('id','descripcion_select');
         $valida = (new validacion())->valida_existencia_keys(keys: $keys_valida, registro: $keys);
@@ -1213,7 +1222,7 @@ class html_controler{
         $registros = array();
         if($con_registros) {
             $registros = $this->rows_select(keys: $keys, modelo: $modelo, extra_params_keys: $extra_params_keys,
-                filtro:$filtro);
+                filtro:$filtro, not_in: $not_in);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al obtener registros', data: $registros);
             }
