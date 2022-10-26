@@ -176,7 +176,7 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al validar columnas', data: $valida);
         }
 
-        $html =$this->directivas->fecha_required(disable: $params_select->disable, name: $params_select->name,
+        $html =$this->directivas->fecha_required(disabled: $params_select->disabled, name: $params_select->name,
             place_holder: $params_select->place_holder,  row_upd: $row_upd,
             value_vacio: $params_select->value_vacio);
         if(errores::$error){
@@ -368,7 +368,7 @@ class html_controler{
             return $this->error->error(mensaje: 'Error cold debe ser menor o igual a  12', data: $cols);
         }
 
-        $html =$this->directivas->input_text_required(disable: $disabled,name: 'codigo',
+        $html =$this->directivas->input_text_required(disabled: $disabled,name: 'codigo',
             place_holder: $place_holder,row_upd: $row_upd,
             value_vacio: $value_vacio);
         if(errores::$error){
@@ -404,7 +404,7 @@ class html_controler{
             return $this->error->error(mensaje: 'Error cold debe ser menor o igual a  12', data: $cols);
         }
 
-        $html =$this->directivas->input_text_required(disable: $disabled,name: 'codigo_bis',place_holder: $place_holder,
+        $html =$this->directivas->input_text_required(disabled: $disabled,name: 'codigo_bis',place_holder: $place_holder,
             row_upd: $row_upd, value_vacio: $value_vacio);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar input', data: $html);
@@ -439,7 +439,7 @@ class html_controler{
             return $this->error->error(mensaje: 'Error cold debe ser menor o igual a  12', data: $cols);
         }
 
-        $html =$this->directivas->input_text_required(disable: $disabled,name: 'descripcion',place_holder: $place_holder,
+        $html =$this->directivas->input_text_required(disabled: $disabled,name: 'descripcion',place_holder: $place_holder,
             row_upd: $row_upd, value_vacio: $value_vacio);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar input', data: $html);
@@ -474,7 +474,7 @@ class html_controler{
             return $this->error->error(mensaje: 'Error cols debe ser menor o igual a  12', data: $cols);
         }
 
-        $html =$this->directivas->input_text_required(disable: $disabled,name: 'id',place_holder:$place_holder,
+        $html =$this->directivas->input_text_required(disabled: $disabled,name: 'id',place_holder:$place_holder,
             row_upd: $row_upd, value_vacio: $value_vacio);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar input', data: $html);
@@ -560,7 +560,7 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al validar columnas', data: $valida);
         }
 
-        $html =$this->directivas->input_text(disable: $params_select->disable, name: $params_select->name,
+        $html =$this->directivas->input_text(disabled: $params_select->disabled, name: $params_select->name,
             place_holder: $params_select->place_holder, required: $params_select->required, row_upd: $row_upd,
             value_vacio: $params_select->value_vacio);
         if(errores::$error){
@@ -598,7 +598,7 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al validar datos ', data: $valida);
         }
 
-        $html =$this->directivas->input_text_required(disable: $disabled,name: $name,place_holder: $place_holder,
+        $html =$this->directivas->input_text_required(disabled: $disabled,name: $name,place_holder: $place_holder,
             row_upd: $row_upd, value_vacio: $value_vacio);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar input', data: $html);
