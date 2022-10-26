@@ -788,17 +788,33 @@ class html_controler{
         return $campo['type'];
     }
 
+    private function params_base(stdClass $data, string $name, stdClass $params): stdClass
+    {
+        $data->disabled = $params->disabled ?? false;
+        $data->con_registros = $params->con_registros ?? true;
+        $data->id_selected = $params->id_selected ?? -1;
+        $data->required = $params->required ?? true;
+        $data->row_upd = $params->row_upd ?? new stdClass();
+        $data->value_vacio = $params->value_vacio ?? false;
+        $data->filtro = $params->filtro ?? array();
+        $data->not_in = $params->not_in ?? array();
+        $data->name = $params->name ?? $name;
+
+        return $data;
+    }
+
     private function params_input2(stdClass $params, string $name,string $place_holder): stdClass|array
     {
         $data = new stdClass();
         $data->cols = $params->cols ?? 6;
-        $data->disabled = $params->disabled ?? false;
-        $data->name = $params->name ?? $name;
+
         $data->place_holder = $params->place_holder ?? $place_holder;
-        $data->required = $params->required ?? true;
-        $data->row_upd = $params->row_upd ?? new stdClass();
-        $data->value_vacio = $params->value_vacio ?? false;
-        $data->disable = $params->disable ?? false;
+        $data->label = $params->label ?? str_replace('_',' ', strtoupper($place_holder));
+
+        $data = $this->params_base(data: $data, name: $name ,params:  $params);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar params', data: $data);
+        }
 
         return $data;
     }
@@ -819,18 +835,24 @@ class html_controler{
         $data = new stdClass();
 
         $data->cols = $params->cols ?? 12;
-        $data->con_registros = $params->con_registros ?? true;
-        $data->id_selected = $params->id_selected ?? -1;
+        $data->place_holder = $params->place_holder ?? $name_model;
         $data->label = $params->label ?? str_replace('_',' ', strtoupper($name_model));
-        $data->required = $params->required ?? true;
-        $data->disabled = $params->disabled ?? false;
-        $data->filtro = $params->filtro ?? array();
-        $data->not_in = $params->not_in ?? array();
+
+        $data = $this->params_base(data: $data, name : $name_model,params:  $params);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar params', data: $data);
+        }
 
         return $data;
     }
 
-    private function params_select2(stdClass $params, string $label): stdClass|array
+    /**
+     * Ajusta los parametros
+     * @param stdClass $params
+     * @param string $label
+     * @return stdClass|array
+     */
+    private function params_select_col_6(stdClass $params, string $label): stdClass|array
     {
         $data = new stdClass();
         $data->cols = $params->cols ?? 6;
@@ -1071,7 +1093,7 @@ class html_controler{
                 $params_select = $keys_selects[$item];
             }
 
-            $params_select = $this->params_select2(params: $params_select,label: $item);
+            $params_select = $this->params_select_col_6(params: $params_select,label: $item);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar select', data: $params_select);
             }

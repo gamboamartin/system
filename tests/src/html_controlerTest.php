@@ -413,6 +413,7 @@ class html_controlerTest extends test {
         $name_model = 'a';
         $params = new stdClass();
         $resultado = $html->params_select($name_model, $params);
+
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals(12, $resultado->cols);
