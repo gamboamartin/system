@@ -788,6 +788,14 @@ class html_controler{
         return $campo['type'];
     }
 
+    /**
+     * Inicializa los parametros para un input
+     * @param stdClass $data Data precargado
+     * @param string $name Nombre del input
+     * @param stdClass $params Parametros
+     * @return stdClass
+     * @version 0.185.34
+     */
     private function params_base(stdClass $data, string $name, stdClass $params): stdClass
     {
         $data->disabled = $params->disabled ?? false;
@@ -800,6 +808,12 @@ class html_controler{
         $data->not_in = $params->not_in ?? array();
         $data->name = $params->name ?? $name;
 
+        $data->extra_params_keys = array();
+        if(isset($params->extra_params_keys) ){
+            $data->extra_params_keys = $params->extra_params_keys;
+        }
+
+
         return $data;
     }
 
@@ -807,7 +821,6 @@ class html_controler{
     {
         $data = new stdClass();
         $data->cols = $params->cols ?? 6;
-
         $data->place_holder = $params->place_holder ?? $place_holder;
         $data->label = $params->label ?? str_replace('_',' ', strtoupper($place_holder));
 
@@ -856,14 +869,14 @@ class html_controler{
     {
         $data = new stdClass();
         $data->cols = $params->cols ?? 6;
-        $data->con_registros = $params->con_registros ?? true;
-        $data->id_selected = $params->id_selected ?? -1;
-        $data->disabled = $params->disabled ?? false;
-        $data->filtro = $params->filtro ?? array();
-        $data->required = $params->required ?? true;
         $data->label = $params->label ?? str_replace('_',' ', $label);
-        $data->extra_params_keys = $params->extra_params_keys ?? array();
-        $data->not_in = $params->not_in ?? array();
+
+        $data = $this->params_base(data: $data,name:  $label,params:  $params);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar params', data: $data);
+        }
+
+
         return $data;
     }
 

@@ -402,6 +402,63 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_params_base(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
+
+
+        $data = new stdClass();
+        $params = new stdClass();
+        $name = '';
+        $resultado = $html->params_base($data, $name, $params);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(true, $resultado->con_registros);
+        $this->assertEquals(-1, $resultado->id_selected);
+        $this->assertEquals(true, $resultado->required);
+        $this->assertEquals(false, $resultado->disabled);
+        $this->assertEquals(false, $resultado->value_vacio);
+        $this->assertIsObject( $resultado->row_upd);
+        $this->assertIsArray( $resultado->filtro);
+        $this->assertEmpty( $resultado->filtro);
+        $this->assertIsArray( $resultado->not_in);
+        $this->assertEmpty( $resultado->not_in);
+        $this->assertEmpty( $resultado->name);
+        $this->assertIsArray( $resultado->extra_params_keys);
+        $this->assertEmpty( $resultado->extra_params_keys);
+
+        errores::$error = false;
+
+        $data = new stdClass();
+        $params = new stdClass();
+        $params->disabled = true;
+        $params->extra_params_keys = array('x'=>'d');
+        $name = '';
+        $resultado = $html->params_base($data, $name, $params);
+        $this->assertIsArray( $resultado->extra_params_keys);
+        $this->assertNotEmpty( $resultado->extra_params_keys);
+
+        errores::$error = false;
+
+        $data = new stdClass();
+        $params = new stdClass();
+        $params->disabled = true;
+        $params->extra_params_keys = array('x'=>'d');
+        $params->filtro = array('x'=>'d');
+        $name = '';
+        $resultado = $html->params_base($data, $name, $params);
+        $this->assertIsArray( $resultado->extra_params_keys);
+        $this->assertNotEmpty( $resultado->extra_params_keys);
+        $this->assertIsArray( $resultado->filtro);
+        $this->assertNotEmpty( $resultado->filtro);
+
+        errores::$error = false;
+
+    }
+
     public function test_params_select(): void
     {
         errores::$error = false;
