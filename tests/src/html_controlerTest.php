@@ -481,6 +481,25 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_retornos(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+
+
+        $html_controler = new html_controler($html_);
+        //$html_controler = new liberator($html_controler);
+        $tabla = 'a';
+        $registro_id= 1;
+        $resultado = $html_controler->retornos($registro_id, $tabla);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<input type='hidden' name='id_retorno' value='1'>",$resultado->hidden_id_retorno);
+        $this->assertEquals("<input type='hidden' name='seccion_retorno' value='a'>",$resultado->hidden_seccion_retorno);
+        errores::$error = false;
+    }
+
     public function test_rows_select(): void
     {
         errores::$error = false;

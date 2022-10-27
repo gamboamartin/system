@@ -880,6 +880,38 @@ class html_controler{
         return $data;
     }
 
+    /**
+     * Retornos hidden
+     * @param int $registro_id Registro id a retornar
+     * @param string $tabla Tabla a retornar
+     * @return array|stdClass
+     * @version 0.187.35
+     */
+    public function retornos(int $registro_id, string $tabla): array|stdClass
+    {
+        $tabla = trim($tabla);
+        if($tabla === ''){
+            return $this->error->error(mensaje: 'Error tabla esta vacia',data:  $tabla);
+        }
+        $registro_id = trim($registro_id);
+        if($registro_id === ''){
+            return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0',data:  $registro_id);
+        }
+        $hidden_id_retorno = $this->hidden(name: 'id_retorno', value: $registro_id);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener hidden_id_retorno',data:  $hidden_id_retorno);
+        }
+        $hidden_seccion_retorno = $this->hidden(name: 'seccion_retorno', value: $tabla);
+        if(errores::$error){
+            return $this->error->error(
+                mensaje: 'Error al obtener hidden_seccion_retorno',data:  $hidden_seccion_retorno);
+        }
+        $data = new stdClass();
+        $data->hidden_id_retorno = $hidden_id_retorno;
+        $data->hidden_seccion_retorno = $hidden_seccion_retorno;
+        return $data;
+    }
+
 
     /**
      * Obtiene los registros para un select
