@@ -134,7 +134,6 @@ class actions{
         foreach ($registros as $indice=>$row){
 
             if($style_status){
-
                 $style = $this->style(accion: $accion, row: $row, seccion: $seccion);
                 if(errores::$error){
                     return $this->error->error(mensaje: 'Error al asignar style', data:  $style);
@@ -299,15 +298,30 @@ class actions{
 
     /**
      * Genera el estilo de un css
-     * @param string $accion
-     * @param stdClass $row
-     * @param string $seccion
-     * @return string
+     * @param string $accion Accion a integrar estilo
+     * @param stdClass $row Registro en proceso
+     * @param string $seccion Seccion
+     * @return string|array
+     * @version 0.188.35
      */
-    private function style(string $accion, stdClass $row, string $seccion): string
+    private function style(string $accion, stdClass $row, string $seccion): string|array
     {
+        $accion = trim($accion);
+        if($accion === ''){
+            return $this->error->error(mensaje: 'Error accion esta vacia', data:  $accion);
+        }
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(mensaje: 'Error seccion esta vacia', data:  $seccion);
+        }
+
         $style = 'danger';
         $key = $seccion.'_'.$accion;
+
+        if(!(isset($row->$key))){
+            return $this->error->error(mensaje: 'Error no existe $row->'.$key, data:  $key);
+        }
+
         if($row->$key === 'activo'){
             $style = 'info';
         }

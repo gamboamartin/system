@@ -6,7 +6,7 @@ use gamboamartin\template\html;
 use stdClass;
 
 class init{
-    private errores $error;
+    protected errores $error;
     public function __construct(){
         $this->error = new errores();
     }

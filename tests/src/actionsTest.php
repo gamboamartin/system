@@ -192,6 +192,25 @@ class actionsTest extends test {
 
     }
 
+    public function test_style(): void
+    {
+        errores::$error = false;
+        $act = new actions();
+        $act = new liberator($act);
+        $_GET['session_id'] = 1;
+        $row = new stdClass();
+
+        $accion = 'a';
+        $seccion = 'v';
+        $row->v_a = 'x';
+
+        $resultado = $act->style($accion, $row, $seccion);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('danger', $resultado);
+        errores::$error = false;
+    }
+
 
 
 
