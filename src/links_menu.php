@@ -5,6 +5,8 @@ use config\generales;
 use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
 use models\adm_accion;
+use models\adm_usuario;
+use PDO;
 use stdClass;
 
 class links_menu{
@@ -16,7 +18,7 @@ class links_menu{
     /**
      * @param int $registro_id Registro a integrar en el link href
      */
-    public function __construct(int $registro_id){
+    public function __construct(PDO $link, int $registro_id){
         $this->error = new errores();
         $this->links = new stdClass();
         $this->session_id = (new generales())->session_id;
@@ -31,7 +33,7 @@ class links_menu{
             die('Error');
         }
 
-        $links = $this->links(registro_id: $registro_id);
+        $links = $this->links(link: $link, registro_id: $registro_id);
         if(errores::$error){
             $error = $this->error->error(mensaje: 'Error al generar links', data: $links);
             print_r($error);
@@ -42,38 +44,61 @@ class links_menu{
 
     /**
      * Genera un link de alta
-     * @version 0.14.0
+     * @param PDO $link
      * @param string $seccion Seccion en ejecucion
      * @return string|array
+     * @version 0.14.0
      */
-    private function alta(string $seccion): string|array
+    private function alta(PDO $link,string $seccion): string|array
     {
         $seccion = trim($seccion);
         if($seccion === ''){
             return $this->error->error(mensaje: 'Error seccion esta vacia', data:$seccion);
         }
-        return "./index.php?seccion=$seccion&accion=alta";
+
+        $tengo_permiso = (new adm_usuario(link: $link))->tengo_permiso(adm_accion: 'alta',adm_seccion:  $seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar si tengo permiso', data: $tengo_permiso);
+        }
+        $link_alta = '';
+        if($tengo_permiso){
+            $link_alta = "./index.php?seccion=$seccion&accion=alta";
+        }
+
+
+        return $link_alta;
     }
 
     /**
      * Precarga un link alta bd
+     * @param PDO $link
      * @param string $seccion Seccion a ejecutar
      * @return string|array
      * @version 0.158.34
      */
-    private function alta_bd(string $seccion): string|array
+    private function alta_bd(PDO $link, string $seccion): string|array
     {
         $seccion = trim($seccion);
         if($seccion === ''){
             return $this->error->error(mensaje: 'Error seccion esta vacia', data:$seccion);
         }
-        return "./index.php?seccion=$seccion&accion=alta_bd";
+
+        $tengo_permiso = (new adm_usuario(link: $link))->tengo_permiso(adm_accion: 'alta_bd', adm_seccion: $seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar si tengo permiso', data: $tengo_permiso);
+        }
+
+        $liga = '';
+        if($tengo_permiso){
+            $liga = "./index.php?seccion=$seccion&accion=alta_bd";
+        }
+        return $liga;
     }
 
-    private function altas(): array|stdClass
+    private function altas(PDO $link): array|stdClass
     {
 
-        $links = $this->links_sin_id(accion: 'alta');
+        $links = $this->links_sin_id(accion: 'alta', link: $link);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializa link', data: $links);
         }
@@ -82,9 +107,9 @@ class links_menu{
         return $this->links;
     }
 
-    private function altas_bd(): array|stdClass
+    private function altas_bd(PDO $link): array|stdClass
     {
-        $links = $this->links_sin_id(accion: 'alta_bd');
+        $links = $this->links_sin_id(accion: 'alta_bd', link: $link);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializa link', data: $links);
         }
@@ -94,14 +119,15 @@ class links_menu{
 
     /**
      * @param string $accion Accion a asignar o generar link
+     * @param PDO $link
      * @param int $registro_id Registro a aplicar identificador
      * @param string $seccion
      * @return array|stdClass
      */
-    private function con_id(string $accion, int $registro_id, string $seccion): array|stdClass
+    private function con_id(string $accion, PDO $link, int $registro_id, string $seccion): array|stdClass
     {
         $function = 'link_'.$accion;
-        $link = $this->$function(registro_id: $registro_id, seccion: $seccion);
+        $link = $this->$function(registro_id: $registro_id, link: $link, seccion: $seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener link de elimina bd', data: $link);
         }
@@ -113,18 +139,30 @@ class links_menu{
         return $init;
     }
 
-    private function elimina_bd(int $registro_id, string $seccion): string
+    private function elimina_bd(PDO $link, int $registro_id, string $seccion): string
     {
-        return "./index.php?seccion=$seccion&accion=elimina_bd&registro_id=$registro_id";
+
+        $tengo_permiso = (new adm_usuario(link: $link))->tengo_permiso(adm_accion: 'elimina_bd', adm_seccion: $seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar si tengo permiso', data: $tengo_permiso);
+        }
+
+        $liga = '';
+        if($tengo_permiso){
+            $liga = "./index.php?seccion=$seccion&accion=elimina_bd&registro_id=$registro_id";
+        }
+
+        return $liga;
     }
 
     /**
+     * @param PDO $link
      * @param int $registro_id Registro a integrar en el link href
      * @return array|stdClass
      */
-    private function eliminas_bd(int $registro_id): array|stdClass
+    private function eliminas_bd(PDO $link, int $registro_id): array|stdClass
     {
-        $init = $this->links_con_id(accion: 'elimina_bd',registro_id: $registro_id);
+        $init = $this->links_con_id(accion: 'elimina_bd', link: $link,registro_id: $registro_id);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializa link', data: $init);
         }
@@ -144,7 +182,7 @@ class links_menu{
         if ($acciones->n_registros > 0){
             foreach ($acciones->registros as $registro){
                 $accion = $registro['adm_accion_descripcion'];
-                $init = $this->link_init(seccion: $controler->seccion, accion: $accion,
+                $init = $this->link_init(link: $controler->link, seccion: $controler->seccion, accion: $accion,
                     registro_id: $controler->registro_id);
                 if(errores::$error){
                     return $this->error->error(mensaje: 'Error al inicializar links', data: $init);
@@ -169,9 +207,7 @@ class links_menu{
             return $this->error->error(mensaje: 'Error la accion esta vacia', data:$accion);
         }
         $link = trim($link);
-        if($link === ''){
-            return $this->error->error(mensaje: 'Error $link esta vacio', data:$link);
-        }
+
         $seccion = trim($seccion);
         if($seccion === ''){
             return $this->error->error(mensaje: 'Error $seccion esta vacia', data:$seccion);
@@ -211,18 +247,35 @@ class links_menu{
         return $this->links;
     }
 
-    private function link(string $seccion, string $accion,int $registro_id): string
+    private function link(PDO $link, string $seccion, string $accion,int $registro_id): string|array
     {
-        return "./index.php?seccion=$seccion&accion=$accion&registro_id=$registro_id&session_id=$this->session_id";
+
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(mensaje: 'Error seccion esta vacia', data:$seccion);
+        }
+
+        $tengo_permiso = (new adm_usuario(link: $link))->tengo_permiso(adm_accion: $accion, adm_seccion: $seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar si tengo permiso', data: $tengo_permiso);
+        }
+
+        $liga = '';
+        if($tengo_permiso){
+            $liga = "./index.php?seccion=$seccion&accion=$accion&registro_id=$registro_id&session_id=$this->session_id";
+        }
+
+        return $liga;
     }
 
     /**
      * Genera un link de tipo alta
-     * @version 0.18.1
+     * @param PDO $link
      * @param string $seccion Seccion a inicializar el link
      * @return array|string
+     * @version 0.18.1
      */
-    public function link_alta(string $seccion): array|string
+    public function link_alta(PDO $link, string $seccion): array|string
     {
         $seccion = trim($seccion);
         if($seccion === ''){
@@ -233,37 +286,60 @@ class links_menu{
             return $this->error->error(mensaje: 'Error links_menu->session_id esta vacio', data: $this->session_id);
         }
 
-        $alta = $this->alta( seccion: $seccion);
+
+        $tengo_permiso = (new adm_usuario(link: $link))->tengo_permiso(adm_accion: 'alta', adm_seccion: $seccion);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener link de alta', data: $alta);
+            return $this->error->error(mensaje: 'Error al validar si tengo permiso', data: $tengo_permiso);
         }
 
-        $alta.="&session_id=$this->session_id";
+        $alta = '';
+        if($tengo_permiso){
+            $alta = $this->alta( link: $link, seccion: $seccion);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al obtener link de alta', data: $alta);
+            }
+            $alta.="&session_id=$this->session_id";
+        }
+
         return $alta;
     }
 
-
-    public function link_alta_bd(string $seccion): array|string
+    /**
+     * Genera un link de tipo alta bd
+     * @param PDO $link Conexion a la base de datos
+     * @param string $seccion Seccion en ejecucion
+     * @return array|string
+     * @version 0.189.35
+     */
+    public function link_alta_bd(PDO $link, string $seccion): array|string
     {
-        $alta_bd = $this->alta_bd(seccion: $seccion);
+        $alta_bd = '';
+        $tengo_permiso = (new adm_usuario(link: $link))->tengo_permiso(adm_accion: 'alta_bd', adm_seccion: $seccion);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener link de alta_bd', data: $alta_bd);
+            return $this->error->error(mensaje: 'Error al validar si tengo permiso', data: $tengo_permiso);
         }
+        if($tengo_permiso) {
+            $alta_bd = $this->alta_bd(link: $link, seccion: $seccion);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al obtener link de alta_bd', data: $alta_bd);
+            }
 
-        $alta_bd.="&session_id=$this->session_id";
+            $alta_bd .= "&session_id=$this->session_id";
+        }
         return $alta_bd;
     }
 
     /**
      * Funcion que genera un link con un id definido para la ejecucion de una accion
      * @param string $accion Accion a ejecutar
+     * @param PDO $link
      * @param int $registro_id Registro identificador
      * @param string $seccion Seccion de envio
      * @param array $params
      * @return array|string
      * @version 0.81.32
      */
-    public function link_con_id(string $accion, int $registro_id, string $seccion,
+    public function link_con_id(string $accion, PDO $link, int $registro_id, string $seccion,
                                 array $params = array()): array|string
     {
         $accion = trim($accion);
@@ -280,25 +356,46 @@ class links_menu{
             $vars_get.="&$var=$value";
         }
 
-        $link = "./index.php?seccion=$seccion&accion=$accion&registro_id=$registro_id";
-        $link.="&session_id=$this->session_id$vars_get";
-        return $link;
-    }
 
-    private function link_elimina_bd(int $registro_id, string $seccion): array|string
-    {
-        $elimina = $this->elimina_bd(registro_id: $registro_id, seccion: $seccion);
+
+        $tengo_permiso = (new adm_usuario(link: $link))->tengo_permiso(adm_accion: $accion, adm_seccion: $seccion);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener link de elimina', data: $elimina);
+            return $this->error->error(mensaje: 'Error al validar si tengo permiso', data: $tengo_permiso);
+        }
+        $link_ancla = '';
+        if($tengo_permiso) {
+            $link_ancla = "./index.php?seccion=$seccion&accion=$accion&registro_id=$registro_id";
+            $link_ancla.="&session_id=$this->session_id$vars_get";
         }
 
-        $elimina.="&session_id=$this->session_id";
+
+        return $link_ancla;
+    }
+
+    private function link_elimina_bd(PDO $link, int $registro_id, string $seccion): array|string
+    {
+
+        $tengo_permiso = (new adm_usuario(link: $link))->tengo_permiso(adm_accion: 'alta_bd', adm_seccion: $seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar si tengo permiso', data: $tengo_permiso);
+        }
+        $elimina = '';
+        if($tengo_permiso) {
+            $elimina = $this->elimina_bd(link: $link, registro_id: $registro_id, seccion: $seccion);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al obtener link de elimina', data: $elimina);
+            }
+
+            $elimina.="&session_id=$this->session_id";
+        }
+
+
         return $elimina;
     }
 
-    private function link_init(string $seccion, string $accion,int $registro_id): array|stdClass
+    private function link_init(PDO $link, string $seccion, string $accion,int $registro_id): array|stdClass
     {
-        $link = $this->link(seccion: $seccion,accion: $accion,registro_id: $registro_id);
+        $link = $this->link(link: $link, seccion: $seccion,accion: $accion,registro_id: $registro_id);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar link', data: $link);
         }
@@ -311,9 +408,9 @@ class links_menu{
         return $init;
     }
 
-    private function link_lista(string $seccion): array|string
+    private function link_lista(PDO $link, string $seccion): array|string
     {
-        $lista_cstp = $this->lista(seccion: $seccion);
+        $lista_cstp = $this->lista(link: $link, seccion: $seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener link de lista', data: $lista_cstp);
         }
@@ -323,63 +420,84 @@ class links_menu{
     }
 
 
-    private function link_modifica(int $registro_id, string $seccion): array|string
+    private function link_modifica(PDO $link, int $registro_id, string $seccion): array|string
     {
-        $modifica = $this->modifica(registro_id: $registro_id, seccion: $seccion);
+
+
+        $tengo_permiso = (new adm_usuario(link: $link))->tengo_permiso(adm_accion: 'modifica', adm_seccion: $seccion);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener link de modifica', data: $modifica);
+            return $this->error->error(mensaje: 'Error al validar si tengo permiso', data: $tengo_permiso);
         }
 
-        $modifica.="&session_id=$this->session_id";
+
+        $modifica = '';
+        if($tengo_permiso){
+            $modifica = $this->modifica(link: $link, registro_id: $registro_id, seccion: $seccion);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al obtener link de modifica', data: $modifica);
+            }
+            $modifica.="&session_id=$this->session_id";
+        }
+
+
         return $modifica;
     }
 
-    private function link_modifica_bd(int $registro_id, string $seccion): array|string
+    private function link_modifica_bd(PDO $link, int $registro_id, string $seccion): array|string
     {
-        $modifica = $this->modifica_bd(registro_id: $registro_id, seccion: $seccion);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener link de modifica_bd', data: $modifica);
-        }
 
-        $modifica.="&session_id=$this->session_id";
+        $tengo_permiso = (new adm_usuario(link: $link))->tengo_permiso(adm_accion: 'modifica_bd', adm_seccion: $seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar si tengo permiso', data: $tengo_permiso);
+        }
+        $modifica = '';
+        if($tengo_permiso) {
+            $modifica = $this->modifica_bd(link: $link, registro_id: $registro_id, seccion: $seccion);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al obtener link de modifica_bd', data: $modifica);
+            }
+
+            $modifica .= "&session_id=$this->session_id";
+        }
         return $modifica;
     }
 
     /**
+     * @param PDO $link
      * @param int $registro_id Registro a integrar en el link href
      * @return stdClass|array
      */
-    protected function links(int $registro_id): stdClass|array
+    protected function links(PDO $link, int $registro_id): stdClass|array
     {
         $this->session_id = trim($this->session_id);
         if($this->session_id === ''){
             return $this->error->error(mensaje: 'Error links_menu->session_id esta vacio', data: $this->session_id);
         }
 
-        $listas  = $this->listas();
+        $listas  = $this->listas(link: $link);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar listas', data: $listas);
         }
-        $modificas  = $this->modificas(registro_id: $registro_id);
+        $modificas  = $this->modificas(link: $link, registro_id: $registro_id);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar modificas', data: $modificas);
         }
-        $altas  = $this->altas();
+        $altas  = $this->altas(link: $link);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar altas', data: $altas);
         }
 
-        $altas_bd  = $this->altas_bd();
+        $altas_bd  = $this->altas_bd(link: $link);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar altas bd', data: $altas_bd);
         }
 
-        $modificas_bd  = $this->modificas_bd(registro_id: $registro_id);
+        $modificas_bd  = $this->modificas_bd(link: $link, registro_id: $registro_id);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar modificas bd', data: $modificas_bd);
         }
 
-        $eliminas_bd  = $this->eliminas_bd(registro_id: $registro_id);
+        $eliminas_bd  = $this->eliminas_bd(link: $link, registro_id: $registro_id);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar eliminas bd', data: $eliminas_bd);
         }
@@ -397,14 +515,15 @@ class links_menu{
 
     /**
      * @param string $accion Accion a asignar o generar link
+     * @param PDO $link
      * @param int $registro_id Registro a aplicar identificador
      * @return array|stdClass
      */
-    private function links_con_id(string $accion, int $registro_id): array|stdClass
+    private function links_con_id(string $accion, PDO $link, int $registro_id): array|stdClass
     {
         foreach ($this->secciones as $seccion){
 
-            $init = $this->con_id(accion: $accion,registro_id: $registro_id,seccion: $seccion);
+            $init = $this->con_id(accion: $accion, link: $link,registro_id: $registro_id,seccion: $seccion);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al inicializa link', data: $init);
             }
@@ -416,10 +535,11 @@ class links_menu{
     /**
      * Genera los links sin ID
      * @param string $accion Accion a integrar
+     * @param PDO $link
      * @return array|stdClass
      * @version 0.157.33
      */
-    private function links_sin_id(string $accion): array|stdClass
+    private function links_sin_id(string $accion, PDO $link): array|stdClass
     {
 
         $accion = trim($accion);
@@ -433,7 +553,7 @@ class links_menu{
         }
         foreach ($this->secciones as $seccion){
 
-            $init = $this->sin_id(seccion: $seccion,accion: $accion);
+            $init = $this->sin_id(seccion: $seccion,accion: $accion, link: $link);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al inicializa link', data: $init);
             }
@@ -443,12 +563,22 @@ class links_menu{
 
 
 
-    private function lista(string $seccion): string
+    private function lista(pdo $link, string $seccion): string
     {
-        return "./index.php?seccion=$seccion&accion=lista";
+
+        $tengo_permiso = (new adm_usuario(link: $link))->tengo_permiso(adm_accion: 'lista', adm_seccion: $seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar si tengo permiso', data: $tengo_permiso);
+        }
+        $lista = '';
+        if($tengo_permiso) {
+            $lista = "./index.php?seccion=$seccion&accion=lista";
+        }
+
+        return $lista;
     }
 
-    private function listas(): array|stdClass
+    private function listas(PDO $link): array|stdClass
     {
 
         $this->session_id = trim($this->session_id);
@@ -456,7 +586,7 @@ class links_menu{
             return $this->error->error(mensaje: 'Error links_menu->session_id esta vacio', data: $this->session_id);
         }
 
-        $links = $this->links_sin_id(accion: 'lista');
+        $links = $this->links_sin_id(accion: 'lista', link: $link);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializa link', data: $links);
         }
@@ -465,30 +595,55 @@ class links_menu{
 
     }
 
-    private function modifica(int $registro_id, string $seccion): string
+    private function modifica(PDO $link, int $registro_id, string $seccion): string|array
     {
-        return "./index.php?seccion=$seccion&accion=modifica&registro_id=$registro_id";
+
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(mensaje: 'Error seccion esta vacia', data:$seccion);
+        }
+
+        $tengo_permiso = (new adm_usuario(link: $link))->tengo_permiso(adm_accion: 'modifica', adm_seccion: $seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar si tengo permiso', data: $tengo_permiso);
+        }
+
+        $liga = '';
+        if($tengo_permiso){
+            $liga = "./index.php?seccion=$seccion&accion=modifica&registro_id=$registro_id";
+        }
+
+        return $liga;
     }
 
-    private function modifica_bd(int $registro_id, string $seccion): string
+    private function modifica_bd(PDO $link, int $registro_id, string $seccion): string
     {
-        return "./index.php?seccion=$seccion&accion=modifica_bd&registro_id=$registro_id";
+        $tengo_permiso = (new adm_usuario(link: $link))->tengo_permiso(adm_accion: 'lista', adm_seccion: $seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar si tengo permiso', data: $tengo_permiso);
+        }
+        $modifica_bd = '';
+        if($tengo_permiso) {
+            $modifica_bd = "./index.php?seccion=$seccion&accion=modifica_bd&registro_id=$registro_id";
+        }
+
+        return $modifica_bd;
     }
 
-    private function modificas(int $registro_id): array|stdClass
+    private function modificas(PDO $link, int $registro_id): array|stdClass
     {
 
-        $init = $this->links_con_id(accion: 'modifica',registro_id: $registro_id);
+        $init = $this->links_con_id(accion: 'modifica', link: $link,registro_id: $registro_id);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializa link', data: $init);
         }
         return $this->links;
     }
 
-    private function modificas_bd(int $registro_id): array|stdClass
+    private function modificas_bd(PDO $link, int $registro_id): array|stdClass
     {
 
-        $init = $this->links_con_id(accion: 'modifica_bd',registro_id: $registro_id);
+        $init = $this->links_con_id(accion: 'modifica_bd', link: $link,registro_id: $registro_id);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializa link', data: $init);
         }
@@ -497,12 +652,13 @@ class links_menu{
 
     /**
      * Genera los parametros de in link sin registro_id
-     * @version 0.25.5
      * @param string $seccion Seccion en ejecucion o llamada
      * @param string $accion Accion a generar link
+     * @param PDO $link Conexion a la base de datos
      * @return array|stdClass
+     * @version 0.25.5
      */
-    private function sin_id(string $seccion, string $accion): array|stdClass
+    private function sin_id(string $accion, PDO $link, string $seccion,): array|stdClass
     {
 
         $seccion = trim($seccion);
@@ -522,7 +678,7 @@ class links_menu{
         $function_link = 'link_'.$accion;
 
 
-        $link_accion = $this->$function_link(seccion: $seccion);
+        $link_accion = $this->$function_link(seccion: $seccion, link: $link);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener link de '.$accion, data: $link_accion);
         }

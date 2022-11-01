@@ -39,16 +39,18 @@ class links_menuTest extends test {
     #[NoReturn] public function test_alta(): void
     {
         errores::$error = false;
+        $_SESSION['usuario_id'] = 2;
         $_GET['session_id'] = 1;
-        $html = new links_menu(-1);
+        $html = new links_menu($this->link, -1);
         $html = new liberator($html);
 
 
         $seccion = 'a';
-        $resultado = $html->alta($seccion);
+        $resultado = $html->alta($this->link, $seccion);
+
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("./index.php?seccion=a&accion=alta", $resultado);
+        $this->assertStringContainsStringIgnoringCase("", $resultado);
 
 
         errores::$error = false;
@@ -60,15 +62,15 @@ class links_menuTest extends test {
     {
         errores::$error = false;
         $_GET['session_id'] = 1;
-        $html = new links_menu(-1);
+        $html = new links_menu($this->link, -1);
         $html = new liberator($html);
 
 
         $seccion = 'a';
-        $resultado = $html->alta_bd($seccion);
+        $resultado = $html->alta_bd($this->link, $seccion);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("./index.php?seccion=a&accion=alta_bd", $resultado);
+        $this->assertEquals("", $resultado);
         errores::$error = false;
     }
 
@@ -81,7 +83,7 @@ class links_menuTest extends test {
         $_GET['accion'] = 'lista';
         $_SESSION['grupo_id'] = 1;
         $_GET['session_id'] = '1';
-        $html = new links_menu(-1);
+        $html = new links_menu($this->link, -1);
         $html = new liberator($html);
 
 
@@ -105,7 +107,7 @@ class links_menuTest extends test {
         $_GET['accion'] = 'lista';
         $_SESSION['grupo_id'] = 1;
         $_GET['session_id'] = '1';
-        $html = new links_menu(-1);
+        $html = new links_menu($this->link, -1);
         //$html = new liberator($html);
 
 
@@ -113,10 +115,10 @@ class links_menuTest extends test {
         $registro_id = '-1';
         $accion = 'b';
 
-        $resultado = $html->link_con_id($accion, $registro_id, $seccion);
+        $resultado = $html->link_con_id($accion, $this->link, $registro_id, $seccion);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("./index.php?seccion=a&accion=b&registro_id=-1&session_id=1", $resultado);
+        $this->assertEquals("", $resultado);
         errores::$error = false;
     }
 
@@ -128,16 +130,17 @@ class links_menuTest extends test {
         errores::$error = false;
         $_GET['seccion'] = 'adm_accion';
         $_GET['accion'] = 'lista';
+        $_SESSION['usuario_id'] = 2;
         $_SESSION['grupo_id'] = 1;
         $_GET['session_id'] = '1';
-        $html = new links_menu(-1);
+        $html = new links_menu($this->link, -1);
         //$html = new liberator($html);
 
         $html_ = new html();
         $html_controler = new html_controler($html_);
 
         $modelo = new adm_accion($this->link);
-        $obj_link = new links_menu(-1);
+        $obj_link = new links_menu($this->link, -1);
         $controler = new system(html: $html_controler, link: $this->link, modelo: $modelo, obj_link: $obj_link,
             paths_conf: $this->paths_conf);
 
@@ -160,15 +163,15 @@ class links_menuTest extends test {
     {
         errores::$error = false;
         $_GET['session_id'] = 1;
-        $html = new links_menu(-1);
+        $html = new links_menu($this->link, -1);
         $html = new liberator($html);
 
 
         $seccion = 'a';
-        $resultado = $html->link_alta($seccion);
+        $resultado = $html->link_alta($this->link, $seccion);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("./index.php?seccion=a&accion=alta&session_id=1", $resultado);
+        $this->assertEquals("", $resultado);
         errores::$error = false;
     }
 
@@ -179,13 +182,14 @@ class links_menuTest extends test {
     #[NoReturn] public function test_links_sin_id(): void
     {
         errores::$error = false;
+        $_SESSION['usuario_id'] = 2;
         $_GET['session_id'] = 1;
-        $html = new links_menu(-1);
+        $html = new links_menu($this->link, -1);
         $html = new liberator($html);
 
 
         $accion = 'lista';
-        $resultado = $html->links_sin_id($accion);
+        $resultado = $html->links_sin_id($accion, $this->link);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("./index.php?seccion=adm_accion&accion=modifica&registro_id=-1&session_id=1", $resultado->adm_accion->modifica);
@@ -202,11 +206,11 @@ class links_menuTest extends test {
         $_GET['accion'] = 'lista';
         $_SESSION['grupo_id'] = 1;
         $_GET['session_id'] = '1';
-        $html = new links_menu(-1);
+        $html = new links_menu($this->link,-1);
         $html = new liberator($html);
 
 
-        $resultado = $html->sin_id('a', 'lista');
+        $resultado = $html->sin_id(accion: 'lista', link: $this->link, seccion: 'a');
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
         errores::$error = false;

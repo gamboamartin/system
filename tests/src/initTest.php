@@ -71,7 +71,7 @@ class initTest extends test {
         $html_controler = new html_controler($html);
 
         $modelo = new adm_accion($this->link);
-        $obj_link = new links_menu(-1);
+        $obj_link = new links_menu($this->link, -1);
 
         $controler = new system(html: $html_controler, link: $this->link, modelo: $modelo, obj_link: $obj_link,
             paths_conf: $this->paths_conf);
@@ -100,7 +100,7 @@ class initTest extends test {
         $html_controler = new html_controler($html);
 
         $modelo = new adm_accion($this->link);
-        $obj_link = new links_menu(-1);
+        $obj_link = new links_menu($this->link, -1);
 
         $controler = new system(html: $html_controler, link: $this->link, modelo: $modelo, obj_link: $obj_link,
             paths_conf: $this->paths_conf);
@@ -173,7 +173,7 @@ class initTest extends test {
         $html_controler = new html_controler($html);
 
         $modelo = new adm_accion($this->link);
-        $obj_link = new links_menu(-1);
+        $obj_link = new links_menu($this->link, -1);
 
         $controler = new system(html: $html_controler, link: $this->link, modelo: $modelo, obj_link: $obj_link,
             paths_conf: $this->paths_conf);

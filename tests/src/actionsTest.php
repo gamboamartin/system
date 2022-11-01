@@ -7,6 +7,7 @@ use gamboamartin\system\links_menu;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 use JsonException;
+use models\adm_seccion;
 use stdClass;
 
 
@@ -48,8 +49,9 @@ class actionsTest extends test {
         $act = new actions();
         $act = new liberator($act);
         $_GET['session_id'] = 1;
+        $_SESSION['usuario_id'] = 2;
         $seccion = 'adm_seccion';
-        $obj_link = new links_menu(-1);
+        $obj_link = new links_menu($this->link, -1);
         $row = new stdClass();
         $row->adm_seccion_id = '1';
 
@@ -58,7 +60,11 @@ class actionsTest extends test {
         $style = 'a';
         $registros_view = array();
 
-        $resultado = $act->asigna_link_rows($accion, $indice, $obj_link, $registros_view, $row, $seccion, $style);
+
+
+        $resultado = $act->asigna_link_rows(accion: $accion,indice:  $indice, link: $this->link,
+            obj_link:  $obj_link,registros_view:  $registros_view,row:  $row,seccion:  $seccion, style: $style);
+
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals(1, $resultado[0]->adm_seccion_id);
@@ -130,15 +136,16 @@ class actionsTest extends test {
         errores::$error = false;
         $act = new actions();
         $act = new liberator($act);
+        $_SESSION['usuario_id'] = 2;
         $_GET['session_id'] = 1;
         $seccion = 'adm_menu';
-        $obj_link = new links_menu(-1);
+        $obj_link = new links_menu($this->link, -1);
         $row = new stdClass();
         $row->a = '1';
         $key_id = 'a';
         $accion = 'elimina_bd';
 
-        $resultado = $act->link_accion($accion, $key_id, $obj_link, $row, $seccion);
+        $resultado = $act->link_accion($accion, $key_id, $this->link, $obj_link, $row, $seccion);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('./index.php?seccion=adm_menu&accion=elimina_bd&registro_id=1&session_id=1', $resultado);
@@ -152,14 +159,15 @@ class actionsTest extends test {
         errores::$error = false;
         $act = new actions();
         //$act = new liberator($act);
+        $_SESSION['usuario_id'] = 2;
         $_GET['session_id'] = 1;
         $registro_id = -1;
         $seccion = 'adm_accion_grupo';
         $siguiente_view = '';
 
-        $links = new links_menu($registro_id);
+       // $links = new links_menu($this->link, $registro_id);
 
-        $resultado = $act->retorno_alta_bd(-1, $seccion, $siguiente_view);
+        $resultado = $act->retorno_alta_bd($this->link, -1, $seccion, $siguiente_view);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('./index.php?seccion=adm_accion_grupo&accion=modifica&registro_id=-1&session_id=1', $resultado);

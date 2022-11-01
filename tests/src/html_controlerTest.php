@@ -44,7 +44,7 @@ class html_controlerTest extends test {
         $html_controler = new html_controler($html_);
 
         $modelo = new adm_accion($this->link);
-        $obj_link = new links_menu(-1);
+        $obj_link = new links_menu($this->link, -1);
 
 
         $controler = new system(html: $html_controler, link: $this->link, modelo: $modelo, obj_link: $obj_link,
@@ -275,12 +275,14 @@ class html_controlerTest extends test {
         $html = new liberator($html);
 
 
+        $_SESSION['usuario_id'] = 2;
+        $_SESSION['grupo_id'] = 2;
         $_GET['session_id'] = 1;
         $_GET['seccion'] = 'adm_accion';
         $html_controler = new html_controler($html_);
 
         $modelo = new adm_accion($this->link);
-        $obj_link = new links_menu(-1);
+        $obj_link = new links_menu($this->link, -1);
         $cols = new stdClass();
         $value_vacio = false;
 

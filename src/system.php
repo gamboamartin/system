@@ -474,7 +474,8 @@ class system extends controlador_base{
                  */
                 $accion = $adm_accion_grupo['adm_accion_descripcion'];
                 $registro_id = $row[$this->seccion.'_id'];
-                $link_con_id = $this->obj_link->link_con_id(accion:$accion, registro_id: $registro_id,seccion:  $this->seccion);
+                $link_con_id = $this->obj_link->link_con_id(accion:$accion, link: $this->link,
+                    registro_id: $registro_id,seccion:  $this->seccion);
                 if(errores::$error){
                     return $this->retorno_error(mensaje: 'Error al asignar link', data: $link_con_id,header:  $header, ws: $ws);
                 }
@@ -738,8 +739,8 @@ class system extends controlador_base{
             $seccion_retorno = $this->tabla;
         }
 
-        $retorno = (new actions())->retorno_alta_bd(registro_id: $registro_id, seccion: $seccion_retorno,
-            siguiente_view: $siguiente_view, params: $params);
+        $retorno = (new actions())->retorno_alta_bd(link: $this->link, registro_id: $registro_id,
+            seccion: $seccion_retorno, siguiente_view: $siguiente_view, params: $params);
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al dar de alta registro', data: $result, header:  $header,
                 ws: $ws);
@@ -813,7 +814,7 @@ class system extends controlador_base{
             return $this->errores->error(mensaje: 'Error al obtener registros', data:  $registros);
         }
 
-        $registros_view = (new actions())->registros_view_actions(acciones: $this->acciones,
+        $registros_view = (new actions())->registros_view_actions(acciones: $this->acciones, link: $this->link,
             obj_link: $this->obj_link,registros:  $registros, seccion:  $this->seccion);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al asignar link', data:  $registros_view);

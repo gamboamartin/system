@@ -104,8 +104,9 @@ class init{
             return $this->error->error(mensaje: 'Error al inicializar mensajes', data: $init_msj);
         }
 
-        $init_links = (new links_menu(registro_id: $controller->registro_id))->init_link_controller(
-            controler: $controller);
+        $init_links = (new links_menu(
+            link: $controller->link, registro_id: $controller->registro_id))->init_link_controller(
+                controler: $controller);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar links', data: $init_links);
         }

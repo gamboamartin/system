@@ -2,6 +2,8 @@
 namespace gamboamartin\system;
 
 use gamboamartin\errores\errores;
+use models\adm_usuario;
+use PDO;
 use stdClass;
 
 class actions{
@@ -34,9 +36,7 @@ class actions{
             return $this->error->error(mensaje: 'Error  $accion esta vacia', data:  $accion);
         }
         $link = trim($link);
-        if($link === ''){
-            return $this->error->error(mensaje: 'Error  $link esta vacio', data:  $link);
-        }
+
         $style = trim($style);
         if($style === ''){
             return $this->error->error(mensaje: 'Error  $style esta vacio', data:  $style);
@@ -54,17 +54,18 @@ class actions{
 
     /**
      * Asigna los links necesarios de cada controller para ser usados en las views y header
-     * @version 0.30.2
      * @param string $accion Accion a ejecutar en el boton
      * @param int $indice Indice de row de registros
+     * @param PDO $link
      * @param links_menu $obj_link Objeto para generacion de links
      * @param array $registros_view Registros de  salida para view
      * @param stdClass $row Registro en verificacion y asignacion
      * @param string $seccion Seccion en ejecucion
      * @param string $style Estilos para botones
      * @return array
+     * @version 0.30.2
      */
-    private function asigna_link_rows(string $accion, int $indice, links_menu $obj_link, array $registros_view,
+    private function asigna_link_rows(string $accion, int $indice, PDO $link, links_menu $obj_link, array $registros_view,
                                       stdClass $row, string $seccion, string $style): array
     {
         $seccion = trim($seccion);
@@ -82,7 +83,8 @@ class actions{
             return $this->error->error(mensaje: 'Error al validar datos', data:  $valida);
         }
 
-        $link = $this->link_accion(accion: $accion,key_id:  $key_id, obj_link: $obj_link,row:  $row,seccion:  $seccion);
+        $link = $this->link_accion(accion: $accion,key_id:  $key_id, link: $link,
+            obj_link: $obj_link,row:  $row,seccion:  $seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar link', data:  $link);
         }
@@ -116,6 +118,7 @@ class actions{
 
     /**
      * @param string $accion Accion a ejecutar en el boton
+     * @param PDO $link
      * @param links_menu $obj_link Objeto para generacion de links
      * @param array $registros
      * @param array $registros_view Registros de  salida para view
@@ -124,7 +127,7 @@ class actions{
      * @param bool $style_status
      * @return array
      */
-    private function genera_link_row(string $accion, links_menu $obj_link, array $registros, array $registros_view,
+    private function genera_link_row(string $accion, PDO $link, links_menu $obj_link, array $registros, array $registros_view,
                                      string $seccion, string $style, bool $style_status): array
     {
 
@@ -140,7 +143,7 @@ class actions{
                 }
 
             }
-            $registros_view = $this->asigna_link_rows(accion: $accion,indice:  $indice,obj_link:  $obj_link,
+            $registros_view = $this->asigna_link_rows(accion: $accion,indice:  $indice, link: $link,obj_link:  $obj_link,
                 registros_view: $registros_view,row:  $row, seccion: $seccion, style: $style);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al asignar link', data:  $registros_view);
@@ -172,6 +175,7 @@ class actions{
      * Asigna los datos de un link para ser usado en la views
      * @param string $accion Accion a ejecutar en el boton
      * @param string $key_id Key donde se encuentra el id del modelo
+     * @param PDO $link
      * @param links_menu $obj_link Objeto para generacion de links
      * @param stdClass $row Registro en verificacion y asignacion
      * @param string $seccion Seccion en ejecucion
@@ -179,28 +183,41 @@ class actions{
      * @return array|string
      * @version 0.28.2
      */
-    private function link_accion(string $accion, string $key_id , links_menu $obj_link, stdClass $row,
+    private function link_accion(string $accion, string $key_id, PDO $link, links_menu $obj_link, stdClass $row,
                                  string $seccion, int $registro_id = -1): array|string
     {
 
-        $valida = $this->valida_data_link(accion: $accion,key_id: $key_id,row: $row,seccion: $seccion);
+
+        $tengo_permiso = (new adm_usuario(link: $link))->tengo_permiso(adm_accion: $accion, adm_seccion: $seccion);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar datos', data:  $valida);
+            return $this->error->error(mensaje: 'Error al validar si tengo permiso', data:  $tengo_permiso);
         }
 
-        if($registro_id!==-1){
-            $row->$key_id = $registro_id;
-        }
+        $links_menu = new stdClass();
+        $links_menu->links = new stdClass();
+        $links_menu->links->$seccion = new stdClass();
+        $links_menu->links->$seccion->$accion = '';
 
-        $links_menu = new $obj_link(registro_id: $row->$key_id);
+        if($tengo_permiso) {
+            $valida = $this->valida_data_link(accion: $accion, key_id: $key_id, row: $row, seccion: $seccion);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
+            }
+
+            if ($registro_id !== -1) {
+                $row->$key_id = $registro_id;
+            }
+
+            $links_menu = new $obj_link(link: $link, registro_id: $row->$key_id);
 
 
-        if(!isset($links_menu->links->$seccion)){
-            return $this->error->error(mensaje: "Error no existe links_menu->$seccion", data:  $links_menu);
-        }
-        $existe_accion = isset($links_menu->links->$seccion->$accion);
-        if(!$existe_accion){
-            return $this->error->error(mensaje: "Error no existe links_menu->$seccion->$accion", data:  $links_menu);
+            if (!isset($links_menu->links->$seccion)) {
+                return $this->error->error(mensaje: "Error no existe links_menu->$seccion", data: $links_menu);
+            }
+            $existe_accion = isset($links_menu->links->$seccion->$accion);
+            if (!$existe_accion) {
+                return $this->error->error(mensaje: "Error no existe links_menu->$seccion->$accion", data: $links_menu);
+            }
         }
 
         return $links_menu->links->$seccion->$accion;
@@ -223,12 +240,13 @@ class actions{
 
     /**
      * @param stdClass $acciones
+     * @param PDO $link
      * @param links_menu $obj_link Objeto para generacion de links
      * @param array $registros
      * @param string $seccion Seccion en ejecucion
      * @return array
      */
-    public function registros_view_actions(stdClass $acciones, links_menu $obj_link, array $registros,
+    public function registros_view_actions(stdClass $acciones, PDO $link, links_menu $obj_link, array $registros,
                                            string $seccion): array
     {
         $registros_view = array();
@@ -236,7 +254,7 @@ class actions{
             $style = $data_accion->style;
             $style_status = $data_accion->style_status;
 
-            $registros_view = $this->genera_link_row(accion: $accion, obj_link: $obj_link, registros:  $registros,
+            $registros_view = $this->genera_link_row(accion: $accion, link: $link, obj_link: $obj_link, registros:  $registros,
                 registros_view: $registros_view,seccion:  $seccion, style: $style, style_status:$style_status);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al asignar link', data:  $registros_view);
@@ -254,7 +272,7 @@ class actions{
      * @return array|string link para header
      * @version 0.22.2
      */
-    public function retorno_alta_bd(int $registro_id, string $seccion, string $siguiente_view,
+    public function retorno_alta_bd(PDO $link, int $registro_id, string $seccion, string $siguiente_view,
                                     array $params = array()): array|string
     {
         $seccion = trim($seccion);
@@ -267,8 +285,8 @@ class actions{
             $siguiente_view = 'modifica';
         }
 
-        $link = (new links_menu(registro_id: $registro_id))->link_con_id(accion:$siguiente_view,
-            registro_id: $registro_id, seccion: $seccion,params: $params);
+        $link = (new links_menu(link: $link, registro_id: $registro_id))->link_con_id(
+            accion:$siguiente_view, link: $link, registro_id: $registro_id, seccion: $seccion,params: $params);
 
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar link', data:  $link);
