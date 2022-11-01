@@ -50,6 +50,7 @@ class actionsTest extends test {
         $act = new liberator($act);
         $_GET['session_id'] = 1;
         $_SESSION['usuario_id'] = 2;
+        $_SESSION['grupo_id'] = 2;
         $seccion = 'adm_seccion';
         $obj_link = new links_menu($this->link, -1);
         $row = new stdClass();

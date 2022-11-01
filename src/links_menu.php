@@ -553,7 +553,7 @@ class links_menu{
         }
         foreach ($this->secciones as $seccion){
 
-            $init = $this->sin_id(seccion: $seccion,accion: $accion, link: $link);
+            $init = $this->sin_id(accion: $accion, link: $link, seccion: $seccion);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al inicializa link', data: $init);
             }

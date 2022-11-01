@@ -131,7 +131,7 @@ class links_menuTest extends test {
         $_GET['seccion'] = 'adm_accion';
         $_GET['accion'] = 'lista';
         $_SESSION['usuario_id'] = 2;
-        $_SESSION['grupo_id'] = 1;
+        $_SESSION['grupo_id'] = 2;
         $_GET['session_id'] = '1';
         $html = new links_menu($this->link, -1);
         //$html = new liberator($html);
