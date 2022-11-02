@@ -192,6 +192,19 @@ class links_menu{
         return $this->links;
     }
 
+    public function get_link(string $seccion, string $accion): array|string
+    {
+        if (!property_exists($this->links, $seccion)) {
+            return $this->error->error(mensaje: 'Error no existe la seccion',data:  $seccion);
+        }
+
+        if (!property_exists($this->links->$seccion, $accion)) {
+            return $this->error->error(mensaje: 'Error no existe la accion',data:  $accion);
+        }
+
+        return $this->links->$seccion->$accion;
+    }
+
     /**
      * Inicializa un link para generar una accion
      * @param string $accion Accion a asignar o generar link
