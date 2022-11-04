@@ -45,7 +45,7 @@ class datatables{
      * @param string $seccion
      * @return array
      */
-    public function acciones_columnas(array $columns, PDO $link, string $seccion): array
+    private function acciones_columnas(array $columns, PDO $link, string $seccion): array
     {
         $acciones_grupo = $this->acciones_permitidas(link: $link,seccion: $seccion);
         if(errores::$error){
@@ -131,6 +131,20 @@ class datatables{
         return $columns;
     }
 
+    private function column_datable_init(stdClass $datatables, array $rows_lista, string $seccion): array
+    {
+        if(isset($datatables->columns)){
+            $columns = $datatables->columns;
+        }
+        else{
+            $columns = $this->columns_datatable(rows_lista: $rows_lista, seccion: $seccion);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al maquetar columns ', data: $columns);
+            }
+        }
+        return $columns;
+    }
+
     /**
      * Inicializa una columna
      * @param array|string $column Columna a inicializar
@@ -208,6 +222,19 @@ class datatables{
         return $datatable;
     }
 
+
+    private function columns_datatable(array $rows_lista, string $seccion): array
+    {
+        $columns = array();
+        foreach ($rows_lista as $key_row_lista){
+            $columns = $this->titulo_column_datatable(columns: $columns,key_row_lista:  $key_row_lista, seccion: $seccion);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al maquetar column titulo ', data: $columns);
+            }
+        }
+        return $columns;
+    }
+
     /**
      * Genera las columnas para datatables
      * @param array|string $column Columna
@@ -246,10 +273,28 @@ class datatables{
         return $columns_defs_obj;
     }
 
+    private function columns_dt(stdClass $datatables, PDO $link, array $rows_lista, string $seccion): array
+    {
+        $columns = $this->column_datable_init(datatables: $datatables,rows_lista: $rows_lista,seccion: $seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al maquetar columns ', data: $columns);
+
+        }
+
+        $columns = $this->acciones_columnas(columns: $columns, link: $link, seccion: $seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al maquetar acciones ', data: $columns);
+
+        }
+        return $columns;
+    }
+
     /**
      * Genera la estructura para datatables
      * @param array $columns Columnas
      * @param array $filtro Filtros
+     * @param string $identificador
+     * @param array $data
      * @return array
      * @version 0.152.33
      */
@@ -266,6 +311,26 @@ class datatables{
             return $this->error->error(mensaje: 'Error al generar columns', data:  $datatable);
         }
         return $datatable;
+    }
+
+    public function datatable_base_init(stdClass $datatables, PDO $link, array $rows_lista, string $seccion): array|stdClass
+    {
+        $filtro = $this->init_filtro_datatables(datatables: $datatables, rows_lista: $rows_lista,seccion: $seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar filtro', data: $filtro);
+        }
+
+
+        $columns = $this->columns_dt(datatables: $datatables, link: $link, rows_lista: $rows_lista, seccion: $seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al maquetar columns ', data: $columns);
+        }
+
+        $data = new stdClass();
+        $data->filtro = $filtro;
+        $data->columns = $columns;
+
+        return $data;
     }
 
     /**
@@ -373,6 +438,8 @@ class datatables{
     /**
      * Inicializa datatables
      * @param array $filtro Filtro
+     * @param string $identificador
+     * @param array $data
      * @return array
      * @version 0.151.33
      */
@@ -384,6 +451,20 @@ class datatables{
         $datatable['identificador'] = $identificador;
         $datatable['data'] = $data;
         return $datatable;
+    }
+
+    private function init_filtro_datatables(stdClass $datatables, array $rows_lista, string $seccion): array
+    {
+        $filtro = array();
+        if(!isset($datatables->filtro)){
+            foreach ($rows_lista as $key_row_lista){
+                $filtro[] = $seccion.'.'.$key_row_lista;
+            }
+        }
+        else{
+            $filtro = $datatables->filtro;
+        }
+        return $filtro;
     }
 
     /**
@@ -487,6 +568,14 @@ class datatables{
             }
         }
         return $rendered;
+    }
+
+    private function titulo_column_datatable(array $columns, string $key_row_lista, string $seccion): array
+    {
+        $titulo = str_replace('_', ' ', $key_row_lista);
+        $titulo = ucwords( $titulo);
+        $columns[$seccion."_$key_row_lista"]["titulo"] = $titulo;
+        return $columns;
     }
 
     /**

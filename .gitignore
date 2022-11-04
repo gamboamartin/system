@@ -51,5 +51,6 @@ config/generales.php
 config/views.php
 vendor
 .phpunit.result.cache
+archivos/
 
 

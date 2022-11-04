@@ -99,42 +99,15 @@ class system extends controlador_base{
         }
 
 
-        /**
-         * REFACTORIZAR
-         */
-        $filtro = array();
-        if(!isset($datatables->filtro)){
-            foreach ($this->rows_lista as $key_row_lista){
-                $filtro[] = $this->seccion.'.'.$key_row_lista;
-            }
-        }
-        else{
-            $filtro = $datatables->filtro;
-        }
-
-        if(isset($datatables->columns)){
-            $columns = $datatables->columns;
-        }
-        else{
-            $columns = array();
-            foreach ($this->rows_lista as $key_row_lista){
-                $titulo = str_replace('_', ' ', $key_row_lista);
-                $titulo = ucwords( $titulo);
-                $columns[$this->seccion."_$key_row_lista"]["titulo"] = $titulo;
-            }
-        }
-
-
-        $columns = (new datatables())->acciones_columnas(columns: $columns, link: $this->link, seccion: $this->tabla);
+        $data_for_datable = (new datatables())->datatable_base_init(
+            datatables: $datatables,link: $this->link,rows_lista: $this->rows_lista,seccion: $this->seccion);
         if(errores::$error){
-            $error = $this->errores->error(mensaje: 'Error al maquetar acciones ', data: $columns);
+            $error = $this->errores->error(mensaje: 'Error al maquetar datos para tables ', data: $data_for_datable);
             var_dump($error);
             die('Error');
         }
 
-
-
-        $this->datatable_init(columns: $columns, filtro: $filtro);
+        $this->datatable_init(columns: $data_for_datable->columns, filtro: $data_for_datable->filtro);
         if(errores::$error){
             $error = $this->errores->error(mensaje: 'Error al inicializar columnDefs', data: $this->datatable);
             var_dump($error);
@@ -506,6 +479,8 @@ class system extends controlador_base{
         return $salida;
     }
 
+
+
     /**
      * Integra las acciones permitidas a un row para lista
      * @param array $acciones_permitidas Conjunto de acciones
@@ -534,23 +509,13 @@ class system extends controlador_base{
             return $this->errores->error(mensaje: 'Error no existe el registro en proceso',data:  $rows);
         }
 
+        if(!isset($rows[$indice]['acciones'])){
+            $rows[$indice]['acciones'] = array();
+        }
+
         foreach ($acciones_permitidas as $accion_permitida){
 
-            /**
-             * REFCATORIZAR
-             */
-            $keys = array($key_id);
-            $valida = $this->validacion->valida_ids(keys: $keys, registro: $row);
-            if(errores::$error){
-                return $this->errores->error(mensaje: 'Error al validar row',data:  $valida);
-            }
-
-            if(!is_array($accion_permitida)){
-                return $this->errores->error(mensaje: 'Error accion_permitida debe ser array',data:  $accion_permitida);
-            }
-            $keys = array('adm_accion_descripcion','adm_accion_titulo','adm_seccion_descripcion','adm_accion_css',
-                'adm_accion_es_status');
-            $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $accion_permitida);
+            $valida = $this->valida_data_btn(accion_permitida: $accion_permitida,key_id:  $key_id, row: $row);
             if(errores::$error){
                 return $this->errores->error(mensaje: 'Error al validar  accion_permitida',data:  $valida);
             }
@@ -856,6 +821,28 @@ class system extends controlador_base{
             return $this->errores->error(mensaje: 'Error al integrar link',data:  $rows);
         }
         return $rows;
+    }
+
+
+
+    private function valida_data_btn(mixed $accion_permitida, string $key_id, array|stdClass $row): bool|array
+    {
+        $keys = array($key_id);
+        $valida = $this->validacion->valida_ids(keys: $keys, registro: $row);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al validar row',data:  $valida);
+        }
+
+        if(!is_array($accion_permitida)){
+            return $this->errores->error(mensaje: 'Error accion_permitida debe ser array',data:  $accion_permitida);
+        }
+        $keys = array('adm_accion_descripcion','adm_accion_titulo','adm_seccion_descripcion','adm_accion_css',
+            'adm_accion_es_status');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $accion_permitida);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al validar  accion_permitida',data:  $valida);
+        }
+        return true;
     }
 
     /**
