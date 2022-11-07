@@ -1076,7 +1076,7 @@ class html_controler{
      * @return array|stdClass
      * @version 0.100.32
      */
-    PUBLIC function selects_alta(array $keys_selects, PDO $link): array|stdClass
+    protected function selects_alta(array $keys_selects, PDO $link): array|stdClass
     {
 
         $selects = new stdClass();

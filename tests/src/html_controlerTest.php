@@ -612,7 +612,7 @@ class html_controlerTest extends test {
         errores::$error = false;
         $html_ = new html();
         $html = new html_controler($html_);
-        //$html = new liberator($html);
+        $html = new liberator($html);
 
         $link = $this->link;
         $keys_selects = array();
