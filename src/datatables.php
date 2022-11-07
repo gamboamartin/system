@@ -1,10 +1,9 @@
 <?php
 namespace gamboamartin\system;
+use gamboamartin\administrador\models\adm_accion_grupo;
 use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
-use models\adm_accion_grupo;
 use PDO;
-use SebastianBergmann\CodeUnit\FunctionUnit;
 use stdClass;
 
 class datatables{

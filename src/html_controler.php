@@ -967,12 +967,14 @@ class html_controler{
      * @param string $name_model Nombre del modelo
      * @param stdClass $params Parametros a ejecutar para select
      * @param stdClass $selects Selects precargados
+     * @param string $namespace_model
      * @param string $tabla
      * @return array|stdClass
      * @version 0.96.32
      */
     private function select_aut(
-        PDO $link, string $name_model, stdClass $params, stdClass $selects, string $tabla = ''): array|stdClass
+        PDO $link, string $name_model, stdClass $params, stdClass $selects,string $namespace_model = '' ,
+        string $tabla = ''): array|stdClass
     {
         $name_model = trim($name_model);
         if($name_model === ''){
@@ -989,7 +991,7 @@ class html_controler{
         }
 
         $name_select_id = $tabla.'_id';
-        $modelo = (new modelo_base($link))->genera_modelo(modelo: $name_model);
+        $modelo = (new modelo_base($link))->genera_modelo(modelo: $name_model,namespace_model: $namespace_model);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar modelo', data: $modelo);
         }
@@ -1074,7 +1076,7 @@ class html_controler{
      * @return array|stdClass
      * @version 0.100.32
      */
-    protected function selects_alta(array $keys_selects, PDO $link): array|stdClass
+    PUBLIC function selects_alta(array $keys_selects, PDO $link): array|stdClass
     {
 
         $selects = new stdClass();
@@ -1091,8 +1093,8 @@ class html_controler{
 
             if(isset($params->name_model)){
                 $name_model = $params->name_model;
-
             }
+
             $name_model = trim($name_model);
             if($name_model === ''){
                 return $this->error->error(mensaje: 'Error $name_model esta vacio', data: $name_model);
@@ -1102,8 +1104,13 @@ class html_controler{
                     data: $name_model);
             }
 
-            $selects  = $this->select_aut(
-                link: $link,name_model:  $name_model,params:  $params, selects: $selects, tabla: $tabla);
+            $namespace_model = '';
+            if(isset($params->namespace_model)){
+                $namespace_model = $params->namespace_model;
+            }
+
+            $selects  = $this->select_aut(link: $link,name_model:  $name_model,params:  $params, selects: $selects,
+                namespace_model: $namespace_model, tabla: $tabla);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar select', data: $selects);
             }

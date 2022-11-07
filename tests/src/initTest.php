@@ -1,8 +1,8 @@
 <?php
-namespace tests\controllers;
+namespace tests\src;
 
+use gamboamartin\administrador\models\adm_accion;
 use gamboamartin\errores\errores;
-use gamboamartin\system\actions;
 use gamboamartin\system\html_controler;
 use gamboamartin\system\init;
 use gamboamartin\system\links_menu;
@@ -10,8 +10,6 @@ use gamboamartin\system\system;
 use gamboamartin\template\html;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use JsonException;
-use models\adm_accion;
 use stdClass;
 use Throwable;
 

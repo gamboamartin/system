@@ -1,8 +1,8 @@
 <?php
 namespace gamboamartin\system;
 
+use gamboamartin\administrador\models\adm_usuario;
 use gamboamartin\errores\errores;
-use models\adm_usuario;
 use PDO;
 use stdClass;
 

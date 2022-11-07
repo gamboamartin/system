@@ -2,10 +2,10 @@
 namespace gamboamartin\system;
 use base\controller\controler;
 use config\generales;
+use gamboamartin\administrador\models\adm_accion;
+use gamboamartin\administrador\models\adm_usuario;
 use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
-use models\adm_accion;
-use models\adm_usuario;
 use PDO;
 use stdClass;
 

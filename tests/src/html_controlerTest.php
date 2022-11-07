@@ -1,5 +1,8 @@
 <?php
-namespace tests\controllers;
+namespace tests\src;
+use gamboamartin\administrador\models\adm_accion;
+use gamboamartin\administrador\models\adm_menu;
+use gamboamartin\administrador\models\adm_usuario;
 use gamboamartin\controllers\controlador_adm_session;
 use gamboamartin\errores\errores;
 use gamboamartin\system\html_controler;
@@ -9,9 +12,6 @@ use gamboamartin\template\html;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 use JsonException;
-use models\adm_accion;
-use models\adm_menu;
-use models\adm_usuario;
 use stdClass;
 
 
@@ -538,7 +538,9 @@ class html_controlerTest extends test {
         $name_model = 'adm_seccion';
         $params = new stdClass();
         $selects = new stdClass();
-        $resultado = $html->select_aut($this->link, $name_model, $params, $selects);
+        $namespace_model = 'gamboamartin\\administrador\\models';
+        $resultado = $html->select_aut(link: $this->link,name_model:  $name_model, params: $params, selects: $selects,
+            namespace_model: $namespace_model);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase("l selectpicker color-secondary  adm_seccion_id' data-live-search='true' id='adm_seccion_id' n", $resultado->adm_seccion_id);
@@ -610,12 +612,14 @@ class html_controlerTest extends test {
         errores::$error = false;
         $html_ = new html();
         $html = new html_controler($html_);
-        $html = new liberator($html);
+        //$html = new liberator($html);
 
         $link = $this->link;
         $keys_selects = array();
         $keys_selects['adm_seccion'] = new stdClass();
+        $keys_selects['adm_seccion']->namespace_model = 'gamboamartin\\administrador\\models';
         $resultado = $html->selects_alta($keys_selects, $link);
+
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase("<div class='control-group col-sm-12'><div class='cont", $resultado->adm_seccion_id);

@@ -51,7 +51,7 @@ class datatablesTest extends test {
     {
         errores::$error = false;
         $datatables = new datatables();
-        $datatables = new liberator($datatables);
+        //$datatables = new liberator($datatables);
         $_SESSION['grupo_id'] = 1;
         $link = $this->link;
         $seccion = 'a';
