@@ -6,7 +6,6 @@ use gamboamartin\administrador\models\adm_accion;
 use gamboamartin\administrador\models\adm_seccion_pertenece;
 use gamboamartin\administrador\models\adm_usuario;
 use gamboamartin\errores\errores;
-use gamboamartin\validacion\validacion;
 use PDO;
 use stdClass;
 
@@ -253,7 +252,7 @@ class links_menu{
         if($seccion === ''){
             return $this->error->error(mensaje: 'Error seccion esta vacia', data:$seccion);
         }
-        
+
 
         if(!isset($this->links->$seccion)){
             $this->links->$seccion = new stdClass();
