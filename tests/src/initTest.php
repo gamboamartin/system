@@ -2,6 +2,7 @@
 namespace tests\src;
 
 use gamboamartin\administrador\models\adm_accion;
+use gamboamartin\administrador\models\adm_seccion_pertenece;
 use gamboamartin\errores\errores;
 use gamboamartin\system\html_controler;
 use gamboamartin\system\init;
@@ -89,7 +90,37 @@ class initTest extends test {
 
         $_GET['session_id']  = 1;
         $_GET['seccion']  = 'adm_menu';
-        $_SESSION['grupo_id'] = 1;
+        $_SESSION['grupo_id'] = 2;
+        $_SESSION['usuario_id'] = 2;
+
+        $r_del = (new adm_seccion_pertenece($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $r_del);
+            print_r($error);
+            exit;
+        }
+
+        $adm_seccion_pertenece_ins['id'] = 10;
+        $adm_seccion_pertenece_ins['adm_seccion_id'] = 10;
+        $adm_seccion_pertenece_ins['adm_sistema_id'] = 2;
+
+        $r_alta = (new adm_seccion_pertenece($this->link))->alta_registro($adm_seccion_pertenece_ins);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $r_alta);
+            print_r($error);
+            exit;
+        }
+
+        $adm_seccion_pertenece_ins['id'] = 1;
+        $adm_seccion_pertenece_ins['adm_seccion_id'] = 1;
+        $adm_seccion_pertenece_ins['adm_sistema_id'] = 2;
+
+        $r_alta = (new adm_seccion_pertenece($this->link))->alta_registro($adm_seccion_pertenece_ins);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $r_alta);
+            print_r($error);
+            exit;
+        }
 
         $init = new init();
        // $init = new liberator($init);

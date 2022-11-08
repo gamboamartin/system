@@ -1,6 +1,8 @@
 <?php
 namespace tests\controllers;
 
+use gamboamartin\administrador\models\adm_seccion_pertenece;
+use gamboamartin\administrador\models\adm_sistema;
 use gamboamartin\errores\errores;
 use gamboamartin\system\actions;
 use gamboamartin\system\links_menu;
@@ -61,6 +63,44 @@ class actionsTest extends test {
         $style = 'a';
         $registros_view = array();
 
+        $r_del = (new adm_seccion_pertenece($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $r_del);
+            print_r($error);
+            exit;
+        }
+
+        $r_del = (new adm_sistema($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $r_del);
+            print_r($error);
+            exit;
+        }
+
+        $registro = array();
+        $registro['id'] = 2;
+        $registro['descripcion'] = 'system';
+        $registro['codigo'] = 'system';
+        $r_alta = (new adm_sistema($this->link))->alta_registro($registro);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $r_alta);
+            print_r($error);
+            exit;
+        }
+
+
+
+
+        $registro = array();
+        $registro['id'] = 1;
+        $registro['adm_sistema_id'] = 2;
+        $registro['adm_seccion_id'] = 13;
+        $r_alta = (new adm_seccion_pertenece($this->link))->alta_registro($registro);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $r_alta);
+            print_r($error);
+            exit;
+        }
 
 
         $resultado = $act->asigna_link_rows(accion: $accion,indice:  $indice, link: $this->link,
@@ -139,6 +179,7 @@ class actionsTest extends test {
         $act = new actions();
         $act = new liberator($act);
         $_SESSION['usuario_id'] = 2;
+        $_SESSION['grupo_id'] = 2;
         $_GET['session_id'] = 1;
         $seccion = 'adm_menu';
         $obj_link = new links_menu($this->link, -1);
@@ -147,7 +188,26 @@ class actionsTest extends test {
         $key_id = 'a';
         $accion = 'elimina_bd';
 
+        $r_del = (new adm_seccion_pertenece($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $r_del);
+            print_r($error);
+            exit;
+        }
+
+        $adm_seccion_pertenece_ins['id'] = 1;
+        $adm_seccion_pertenece_ins['adm_seccion_id'] = 10;
+        $adm_seccion_pertenece_ins['adm_sistema_id'] = 2;
+
+        $r_alta = (new adm_seccion_pertenece($this->link))->alta_registro($adm_seccion_pertenece_ins);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $r_alta);
+            print_r($error);
+            exit;
+        }
+
         $resultado = $act->link_accion($accion, $key_id, $this->link, $obj_link, $row, $seccion);
+
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('./index.php?seccion=adm_menu&accion=elimina_bd&registro_id=1&session_id=1', $resultado);

@@ -3,6 +3,7 @@ namespace gamboamartin\system;
 use base\controller\controler;
 use config\generales;
 use gamboamartin\administrador\models\adm_accion;
+use gamboamartin\administrador\models\adm_seccion_pertenece;
 use gamboamartin\administrador\models\adm_usuario;
 use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
@@ -23,7 +24,14 @@ class links_menu{
         $this->links = new stdClass();
         $this->session_id = (new generales())->session_id;
 
-        $this->secciones = (new generales())->secciones;
+        $secciones = (new adm_seccion_pertenece(link: $link))->secciones_paquete();
+        if($this->session_id === ''){
+            $error = $this->error->error(mensaje: 'Error obtener secciones del paquete', data: $secciones);
+            print_r($error);
+            die('Error');
+        }
+
+        $this->secciones = $secciones;
 
 
         $this->session_id = trim($this->session_id);
