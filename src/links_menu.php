@@ -253,10 +253,28 @@ class links_menu{
         if($seccion === ''){
             return $this->error->error(mensaje: 'Error seccion esta vacia', data:$seccion);
         }
-        $keys = array($seccion);
-        $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $this->links);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar links', data:$valida);
+        
+
+        if(!isset($this->links->$seccion)){
+            $this->links->$seccion = new stdClass();
+        }
+        if(!isset($this->links->$seccion->alta)){
+            $this->links->$seccion->alta = '';
+        }
+        if(!isset($this->links->$seccion->alta_bd)){
+            $this->links->$seccion->alta_bd = '';
+        }
+        if(!isset($this->links->$seccion->elimina_bd)){
+            $this->links->$seccion->elimina_bd = '';
+        }
+        if(!isset($this->links->$seccion->lista)){
+            $this->links->$seccion->lista = '';
+        }
+        if(!isset($this->links->$seccion->modifica)){
+            $this->links->$seccion->modifica = '';
+        }
+        if(!isset($this->links->$seccion->modifica_bd)){
+            $this->links->$seccion->modifica_bd = '';
         }
 
         $controler->link_alta = $this->links->$seccion->alta;
