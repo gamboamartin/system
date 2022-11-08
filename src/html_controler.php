@@ -191,6 +191,62 @@ class html_controler{
         return $div;
     }
 
+    protected function files_alta2(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
+    {
+        $campos_view = $this->obtener_inputs($modelo->campos_view);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener campos de la vista del modelo', data: $campos_view);
+        }
+
+        $texts = new stdClass();
+
+        foreach ($campos_view['files'] as $item){
+            /**
+             * REFCATORIZAR
+             */
+            $params_select = new stdClass();
+
+            if (array_key_exists($item, $keys_selects) ){
+                $params_select = $keys_selects[$item];
+            }
+
+            $params_select = $this->params_input2(params: $params_select,name: $item,place_holder: $item);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar select', data: $params_select);
+            }
+
+            $input = $this->file_template(params_select: $params_select,row_upd: $row_upd);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar input', data: $input);
+            }
+            $texts->$item = $input;
+        }
+
+        return $texts;
+    }
+
+    public function file_template(mixed $params_select, stdClass $row_upd): array|string
+    {
+        $valida = $this->directivas->valida_cols(cols: $params_select->cols);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar columnas', data: $valida);
+        }
+
+        $html =$this->directivas->input_file(disabled: $params_select->disabled, name: $params_select->name,
+            place_holder: $params_select->place_holder, required: $params_select->required, row_upd: $row_upd,
+            value_vacio: $params_select->value_vacio);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar input', data: $html);
+        }
+
+        $div = $this->directivas->html->div_group(cols: $params_select->cols,html:  $html);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar div', data: $div);
+        }
+
+        return $div;
+    }
+
     /**
      * Asigna los values de un select
      * @refactorizar Refactorizar
@@ -280,6 +336,11 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al generar texts', data: $texts);
         }
 
+        $files = $this->files_alta2(modelo: $modelo,row_upd: $row_upd,keys_selects: $keys_selects);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar files', data: $texts);
+        }
+
         $dates = $this->dates_alta(modelo: $modelo,row_upd: $row_upd,keys_selects: $keys_selects);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar dates', data: $dates);
@@ -288,6 +349,7 @@ class html_controler{
         $fields = array();
         $fields['selects'] = $selects;
         $fields['inputs'] = $texts;
+        $fields['files'] = $files;
         $fields['dates'] = $dates;
 
         return $fields;
@@ -730,6 +792,7 @@ class html_controler{
     {
         $selects = array();
         $inputs = array();
+        $files = array();
         $dates = array();
 
         foreach ($campos_view as $item => $campo){
@@ -752,12 +815,15 @@ class html_controler{
                 case 'inputs':
                     $inputs[] = $item;
                     break;
+                case 'files':
+                    $files[] = $item;
+                    break;
                 case 'dates':
                     $dates[] = $item;
                     break;
             }
         }
-        return ['selects' => $selects,'inputs' => $inputs,'dates' => $dates];
+        return ['selects' => $selects,'inputs' => $inputs,'files' => $files,'dates' => $dates];
     }
 
     /**
