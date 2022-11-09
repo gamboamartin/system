@@ -1236,7 +1236,7 @@ class html_controler{
         return $selects;
     }
 
-    private function style_btn(array $accion_permitida, array $row){
+    public function style_btn(array $accion_permitida, array $row){
         $style = $accion_permitida['adm_accion_css'];
         $es_status = $accion_permitida['adm_accion_es_status'];
         $accion = $accion_permitida['adm_accion_descripcion'];
