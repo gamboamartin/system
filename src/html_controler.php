@@ -106,12 +106,14 @@ class html_controler{
      * @param int $registro_id Registro a integrar
      * @param string $seccion Seccion a ejecutar
      * @param string $style Stilo del boton
+     * @param int $cols N columnas css
      * @param array $params extra-params
+     * @param string $role
      * @return string|array
      * @version 0.164.34
      */
     public function button_href(string $accion, string $etiqueta, int $registro_id, string $seccion,
-                                string $style, array $params = array()): string|array
+                                string $style, int $cols = 12, array $params = array(), string $role = 'button'): string|array
     {
 
         $valida = $this->html_base->valida_input(accion: $accion,etiqueta:  $etiqueta, seccion: $seccion,style:  $style);
@@ -119,13 +121,20 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
         }
 
-        $html = $this->html_base->button_href(accion: $accion,etiqueta:  $etiqueta,registro_id:  $registro_id,
-            seccion:  $seccion, style: $style, params: $params);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar boton', data: $html);
+        $session_id = (new generales())->session_id;
+
+        if($session_id === ''){
+            return $this->error->error(mensaje: 'Error la $session_id esta vacia', data: $session_id);
         }
 
-        return str_replace(array('|role|', '|class|'), array("role='button'", "class='btn btn-$style col-sm-12'"), $html);
+        $params_get = '';
+        foreach ($params as $key=>$value){
+            $params_get .= "&$key=$value";
+        }
+
+        $link = "index.php?seccion=$seccion&accion=$accion&registro_id=$registro_id&session_id=$session_id";
+        $link .= $params_get;
+        return "<a role='$role' href='$link' class='btn btn-$style col-sm-$cols'>$etiqueta</a>";
     }
 
     /**

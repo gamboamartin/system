@@ -446,7 +446,11 @@ class system extends controlador_base{
                  * REFCATORIZAR
                  */
                 $accion = $adm_accion_grupo['adm_accion_descripcion'];
+                $titulo = $adm_accion_grupo['adm_accion_titulo'];
+                $seccion = $adm_accion_grupo['adm_seccion_descripcion'];
+                $style = $adm_accion_grupo['adm_accion_css'];
                 $registro_id = $row[$this->seccion.'_id'];
+
 
 
                 $link_con_id = $this->obj_link->link_con_id(accion:$accion, link: $this->link,
@@ -455,13 +459,12 @@ class system extends controlador_base{
                     return $this->retorno_error(mensaje: 'Error al asignar link', data: $link_con_id,header:  $header, ws: $ws);
                 }
 
-
-                /*$link_con_id = $this->html->bu($accion_permitida, $indice, $registro_id, $rows)
+/*
+                $link_con_id = $this->html->button_href(
+                    accion: $accion,etiqueta:  $titulo,registro_id:  $registro_id,seccion:  $seccion,style:  $style);
                 if(errores::$error){
-                    return $this->retorno_error(mensaje: 'Error al asignar link', data: $link_con_id,header:  $header, ws: $ws);
+                    return $this->retorno_error(mensaje: 'Error al asignar button', data: $link_con_id,header:  $header, ws: $ws);
                 }*/
-
-
 
                 $links[$accion] = $link_con_id;
             }
