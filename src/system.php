@@ -453,18 +453,18 @@ class system extends controlador_base{
 
 
 
-                $link_con_id = $this->obj_link->link_con_id(accion:$accion, link: $this->link,
+               /* $link_con_id = $this->obj_link->link_con_id(accion:$accion, link: $this->link,
                     registro_id: $registro_id,seccion:  $this->seccion);
                 if(errores::$error){
                     return $this->retorno_error(mensaje: 'Error al asignar link', data: $link_con_id,header:  $header, ws: $ws);
-                }
+                }*/
 
-/*
+
                 $link_con_id = $this->html->button_href(
-                    accion: $accion,etiqueta:  $titulo,registro_id:  $registro_id,seccion:  $seccion,style:  $style);
+                    accion: $accion,etiqueta:  $titulo,registro_id:  $registro_id,seccion:  $seccion,style:  $style, cols: 3);
                 if(errores::$error){
                     return $this->retorno_error(mensaje: 'Error al asignar button', data: $link_con_id,header:  $header, ws: $ws);
-                }*/
+                }
 
                 $links[$accion] = $link_con_id;
             }
