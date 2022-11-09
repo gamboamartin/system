@@ -100,6 +100,7 @@ class html_controler{
     }
 
     /**
+     * Genera un boton href
      * @param string $accion Accion a ejecutar
      * @param string $etiqueta Etiqueta de boton
      * @param int $registro_id Registro a integrar
