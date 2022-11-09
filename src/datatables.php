@@ -467,13 +467,23 @@ class datatables{
     }
 
     /**
-     * @param string $adm_accion
-     * @param string $adm_accion_base
-     * @param array $columns
+     * Integra una columna de accion a datatable
+     * @param string $adm_accion Accion
+     * @param string $adm_accion_base Accion base
+     * @param array $columns Columnas de datatable
      * @return array
+     * @version 0.198.36
      */
     private function integra_accion(string $adm_accion, string $adm_accion_base, array $columns): array
     {
+        $adm_accion_base = trim($adm_accion_base);
+        if($adm_accion_base === ''){
+            return $this->error->error(mensaje: 'Error adm_accion_base esta vacia', data:  $adm_accion_base);
+        }
+        $adm_accion = trim($adm_accion);
+        if($adm_accion === ''){
+            return $this->error->error(mensaje: 'Error adm_accion esta vacia', data:  $adm_accion);
+        }
         $columns[$adm_accion_base]['campos'][] = $adm_accion;
         return $columns;
     }

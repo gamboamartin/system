@@ -341,6 +341,22 @@ class datatablesTest extends test {
         errores::$error = false;
     }
 
+    public function test_integra_accion(): void
+    {
+        errores::$error = false;
+        $datatables = new datatables();
+        $datatables = new liberator($datatables);
+        $_SESSION['grupo_id'] = 1;
+        $adm_accion = 'b';
+        $adm_accion_base = 'a';
+        $columns = array();
+
+        $resultado = $datatables->integra_accion($adm_accion, $adm_accion_base, $columns);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_integra_titulo(): void
     {
         errores::$error = false;
