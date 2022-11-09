@@ -109,7 +109,7 @@ class html_controler{
      * @return string|array
      * @version 0.164.34
      */
-    private function button_href(string $accion, string $etiqueta, int $registro_id, string $seccion,
+    public function button_href(string $accion, string $etiqueta, int $registro_id, string $seccion,
                                 string $style, array $params = array()): string|array
     {
 

@@ -447,11 +447,22 @@ class system extends controlador_base{
                  */
                 $accion = $adm_accion_grupo['adm_accion_descripcion'];
                 $registro_id = $row[$this->seccion.'_id'];
+
+
                 $link_con_id = $this->obj_link->link_con_id(accion:$accion, link: $this->link,
                     registro_id: $registro_id,seccion:  $this->seccion);
                 if(errores::$error){
                     return $this->retorno_error(mensaje: 'Error al asignar link', data: $link_con_id,header:  $header, ws: $ws);
                 }
+
+
+                /*$link_con_id = $this->html->bu($accion_permitida, $indice, $registro_id, $rows)
+                if(errores::$error){
+                    return $this->retorno_error(mensaje: 'Error al asignar link', data: $link_con_id,header:  $header, ws: $ws);
+                }*/
+
+
+
                 $links[$accion] = $link_con_id;
             }
 
