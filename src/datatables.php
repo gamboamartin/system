@@ -98,7 +98,7 @@ class datatables{
         $filtro = array();
         $filtro['adm_grupo.id'] = $_SESSION['grupo_id'];
         $filtro['adm_seccion.descripcion'] = $seccion;
-        $filtro['adm_accion.lista'] = 'activo';
+        $filtro['adm_accion.es_lista'] = 'activo';
         $filtro['adm_accion.status'] = 'activo';
         $filtro['adm_grupo.status'] = 'activo';
 
