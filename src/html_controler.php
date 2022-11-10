@@ -48,6 +48,7 @@ class html_controler{
         return $controler->inputs;
     }
 
+
     /**
      * Integra un boton link para rows de lista
      * @param array $accion_permitida Datos de accion
@@ -797,7 +798,12 @@ class html_controler{
         return $controler->inputs;
     }
 
-    protected function obtener_inputs(mixed $campos_view): array|stdClass
+    /**
+     * @param array|stdClass $campos_view Campos definidos desde modelo
+     * @return array|stdClass
+     * @version 0.211.37
+     */
+    protected function obtener_inputs(array|stdClass $campos_view): array|stdClass
     {
         $selects = array();
         $inputs = array();
@@ -811,9 +817,7 @@ class html_controler{
             }
 
             switch ($tipo_input) {
-                /**
-                 * refactorizar
-                 */
+
                 case 'selects':
                     $select = $this->obtener_select(campo: $campo);
                     if(errores::$error){
@@ -831,6 +835,7 @@ class html_controler{
                     $dates[] = $item;
                     break;
             }
+
         }
         return ['selects' => $selects,'inputs' => $inputs,'files' => $files,'dates' => $dates];
     }

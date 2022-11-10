@@ -408,6 +408,29 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_obtener_inputs(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        //$html = new liberator($html);
+        $_SESSION['grupo_id'] = 2;
+        $_SESSION['usuario_id'] = 2;
+
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+
+        $html_controler = new html_controler($html_);
+        $html_controler = new liberator($html_controler);
+
+        $campos_view = array();
+        $resultado = $html_controler->obtener_inputs($campos_view);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_obtener_select(): void
     {
         errores::$error = false;
