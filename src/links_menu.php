@@ -179,7 +179,7 @@ class links_menu{
 
     public function genera_links(controler $controler): array|stdClass
     {
-        $filtro['adm_seccion.descripcion']  = $controler->seccion;
+        $filtro['adm_seccion.descripcion']  = $controler->modelo->tabla;
         $acciones = (new adm_accion($controler->link))->filtro_and(columnas: array("adm_accion_descripcion"),
             filtro: $filtro);
         if(errores::$error){
