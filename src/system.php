@@ -499,8 +499,6 @@ class system extends controlador_base{
         return $salida;
     }
 
-
-
     /**
      * Integra las acciones permitidas a un row para lista
      * @param array $acciones_permitidas Conjunto de acciones
@@ -615,8 +613,6 @@ class system extends controlador_base{
 
         return $this->registros;
     }
-
-
 
     public function modifica(bool $header, bool $ws = false, string $breadcrumbs = '',
                              bool $aplica_form = true, bool $muestra_btn = true): array|string
@@ -842,8 +838,6 @@ class system extends controlador_base{
         }
         return $rows;
     }
-
-
 
     private function valida_data_btn(mixed $accion_permitida, string $key_id, array|stdClass $row): bool|array
     {

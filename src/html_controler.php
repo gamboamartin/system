@@ -365,7 +365,6 @@ class html_controler{
         return $fields;
     }
 
-
     /**
      * Inicializa los datos de un select
      * @refactorizar Refactorizar metodo
@@ -855,13 +854,21 @@ class html_controler{
         return $campo['model'];
     }
 
-    protected function obtener_tipo_input(mixed $campo): string|stdClass|array
+    /**
+     * Obtiene el tipo de input para templates
+     * @param array|stdClass $campo
+     * @return string|array
+     * @version 0.205.36
+     */
+    protected function obtener_tipo_input(array|stdClass $campo): string|array
     {
         if (!isset($campo['type'])){
             return $this->error->error(mensaje: 'Error no existe key type', data: $campo);
         }
-
-        return $campo['type'];
+        if(!is_string($campo['type'])){
+            return $this->error->error(mensaje: 'Error type debe ser un string', data: $campo);
+        }
+        return trim($campo['type']);
     }
 
     /**
