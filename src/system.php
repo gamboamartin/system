@@ -614,8 +614,7 @@ class system extends controlador_base{
         return $this->registros;
     }
 
-    public function modifica(bool $header, bool $ws = false, string $breadcrumbs = '',
-                             bool $aplica_form = true, bool $muestra_btn = true): array|string|stdClass
+    public function modifica(bool $header, bool $ws = false): array|stdClass
     {
 
         if($this->registro_id<=0){
