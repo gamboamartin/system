@@ -614,6 +614,13 @@ class system extends controlador_base{
         return $this->registros;
     }
 
+    /**
+     * Inicializa datos para vista modifica
+     * @param bool $header Si header da salida en html
+     * @param bool $ws Si ws da salida json
+     * @return array|stdClass
+     * @version 0.210.37
+     */
     public function modifica(bool $header, bool $ws = false): array|stdClass
     {
 
@@ -663,8 +670,6 @@ class system extends controlador_base{
         }
 
         $this->include_inputs_modifica = $include_inputs_modifica;
-
-
 
         return $r_modifica;
     }
