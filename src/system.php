@@ -379,6 +379,11 @@ class system extends controlador_base{
     
     public function genera_inputs(array $keys_selects = array()): array|stdClass
     {
+        if(!is_object($this->inputs)){
+            return $this->errores->error(
+                mensaje: 'Error controlador->inputs debe se run objeto',data: $this->inputs);
+        }
+
         $inputs = $this->html->init_alta2(row_upd: $this->row_upd, modelo: $this->modelo, link: $this->link,
             keys_selects:$keys_selects);
         if(errores::$error){
