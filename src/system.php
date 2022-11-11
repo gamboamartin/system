@@ -487,6 +487,19 @@ class system extends controlador_base{
         return $salida;
     }
 
+    protected function inputs(array $keys_selects): array|stdClass
+    {
+        $keys_selects = $this->key_selects_txt(keys_selects: $keys_selects);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+        $inputs = $this->genera_inputs(keys_selects: $keys_selects);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al obtener inputs',data:  $inputs);
+        }
+        return $inputs;
+    }
+
     /**
      * Integra las acciones permitidas a un row para lista
      * @param array $acciones_permitidas Conjunto de acciones
@@ -564,6 +577,12 @@ class system extends controlador_base{
             return $this->errores->error(mensaje: 'Error al obtener row upd',data:  $row_upd);
         }
         return $row_upd;
+    }
+
+    protected function key_selects_txt(array $keys_selects): array
+    {
+
+        return $keys_selects;
     }
     
     /**
