@@ -526,6 +526,28 @@ class html_controlerTest extends test {
 
     }
 
+    public function test_params_select_col_6(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+
+
+        $html_controler = new html_controler($html_);
+        $html_controler = new liberator($html_controler);
+        $params = new stdClass();
+        $label = '__a__';
+        $resultado = $html_controler->params_select_col_6($params, $label);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(6, $resultado->cols);
+        $this->assertEquals(true, $resultado->con_registros);
+        $this->assertEquals(-1, $resultado->id_selected);
+        $this->assertEquals(' a ', $resultado->label);
+        $this->assertEquals(true, $resultado->required);
+        errores::$error = false;
+    }
+
     public function test_params_select(): void
     {
         errores::$error = false;

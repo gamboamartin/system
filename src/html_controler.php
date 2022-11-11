@@ -949,15 +949,22 @@ class html_controler{
 
     /**
      * Ajusta los parametros
-     * @param stdClass $params
-     * @param string $label
+     * @param stdClass $params Parametros precargados
+     * @param string $label Etiqueta a mostrar en input
      * @return stdClass|array
+     * @version 0.212.37
      */
     private function params_select_col_6(stdClass $params, string $label): stdClass|array
     {
+        $label = trim($label);
+        if($label === ''){
+            return $this->error->error(mensaje: 'Error label esta vacio', data: $label);
+        }
         $data = new stdClass();
         $data->cols = $params->cols ?? 6;
         $data->label = $params->label ?? str_replace('_',' ', $label);
+
+        $data->label = str_replace('  ', ' ', $data->label);
 
         $data = $this->params_base(data: $data,name:  $label,params:  $params);
         if(errores::$error){
