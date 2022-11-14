@@ -14,6 +14,17 @@ class out_permisos{
         $this->validacion = new validacion();
     }
 
+    public function cols_btn_action(array $acciones_permitidas): int
+    {
+        $n_acciones = count($acciones_permitidas);
+
+        $cols = (int)($n_acciones / 4);
+        if($cols < 3){
+            $cols = 3;
+        }
+        return $cols;
+    }
+
     /**
      * Genera el conjunto de botones
      * @param array $acciones_permitidas Acciones permitidas
