@@ -86,6 +86,17 @@ class out_permisos{
         return $rows;
     }
 
+    public function valida_data_action(array $accion_permitida): bool|array
+    {
+        $keys = array('adm_accion_descripcion','adm_accion_titulo','adm_seccion_descripcion','adm_accion_css',
+            'adm_accion_es_status');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $accion_permitida);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar  accion_permitida',data:  $valida);
+        }
+        return true;
+    }
+
     private function valida_data_btn(mixed $accion_permitida, string $key_id, array|stdClass $row): bool|array
     {
         $keys = array($key_id);
@@ -93,13 +104,11 @@ class out_permisos{
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar row',data:  $valida);
         }
-
         if(!is_array($accion_permitida)){
             return $this->error->error(mensaje: 'Error accion_permitida debe ser array',data:  $accion_permitida);
         }
-        $keys = array('adm_accion_descripcion','adm_accion_titulo','adm_seccion_descripcion','adm_accion_css',
-            'adm_accion_es_status');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $accion_permitida);
+
+        $valida = $this->valida_data_action(accion_permitida: $accion_permitida);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar  accion_permitida',data:  $valida);
         }
