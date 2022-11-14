@@ -86,7 +86,28 @@ class out_permisos{
         return $rows;
     }
 
-    public function valida_data_action(array $accion_permitida): bool|array
+    public function link_btn_action(array $accion_permitida, int $cols, html_controler $html, array $registro, int $registro_id): array|string
+    {
+        $valida = $this->valida_data_action(accion_permitida: $accion_permitida);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar accion_permitida',data:  $valida);
+        }
+
+        $style = $html->style_btn(accion_permitida: $accion_permitida, row: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener style',data:  $style);
+        }
+
+        $link = $html->button_href(accion: $accion_permitida['adm_accion_descripcion'],
+            etiqueta: $accion_permitida['adm_accion_titulo'], registro_id:  $registro_id,
+            seccion: $accion_permitida['adm_seccion_descripcion'], style:  $style, cols: $cols);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar link',data:  $link);
+        }
+        return $link;
+    }
+
+    private function valida_data_action(array $accion_permitida): bool|array
     {
         $keys = array('adm_accion_descripcion','adm_accion_titulo','adm_seccion_descripcion','adm_accion_css',
             'adm_accion_es_status');
