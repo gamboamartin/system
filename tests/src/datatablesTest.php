@@ -307,6 +307,26 @@ class datatablesTest extends test {
         $this->assertEquals('%x%', $resultado[0]['x']['valor']);
         errores::$error = false;
     }
+
+    public function test_genera_accion(): void
+    {
+        errores::$error = false;
+        $datatables = new datatables();
+        $datatables = new liberator($datatables);
+
+        $i = 1;
+
+        $columns = array();
+        $adm_accion_grupo = array();
+        $adm_accion_grupo['adm_accion_descripcion'] = 'a';
+        $adm_accion_base = 'b';
+        $resultado = $datatables->genera_accion($adm_accion_base, $adm_accion_grupo, $columns, $i);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a',$resultado['b']['campos'][0]);
+        errores::$error = false;
+    }
+
     public function test_genera_column(): void
     {
         errores::$error = false;
