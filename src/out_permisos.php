@@ -29,9 +29,10 @@ class out_permisos{
         return $buttons;
     }
 
-    public function buttons_view(system $controler): array
+    public function buttons_view(system $controler, array $not_actions): array
     {
-        $acciones_permitidas = (new datatables())->acciones_permitidas(link: $controler->link, seccion: $controler->seccion);
+        $acciones_permitidas = (new datatables())->acciones_permitidas(link: $controler->link,
+            seccion: $controler->seccion, not_actions: $not_actions);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener acciones',data:  $acciones_permitidas);
         }
@@ -51,6 +52,10 @@ class out_permisos{
         return $buttons;
     }
 
+    /**
+     * @param array $acciones_permitidas
+     * @return int
+     */
     private function cols_btn_action(array $acciones_permitidas): int
     {
         $n_acciones = count($acciones_permitidas);
