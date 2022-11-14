@@ -3,6 +3,7 @@ namespace gamboamartin\system;
 
 use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
+use PDO;
 use stdClass;
 
 class out_permisos{
@@ -14,7 +15,7 @@ class out_permisos{
         $this->validacion = new validacion();
     }
 
-    public function buttons_permitidos(array $acciones_permitidas, int $cols, html_controler $html, array $registro, int $registro_id): array
+    private function buttons_permitidos(array $acciones_permitidas, int $cols, html_controler $html, array $registro, int $registro_id): array
     {
         $buttons = array();
         foreach ($acciones_permitidas as $accion_permitida){
@@ -28,7 +29,29 @@ class out_permisos{
         return $buttons;
     }
 
-    public function cols_btn_action(array $acciones_permitidas): int
+    public function buttons_view(system $controler): array
+    {
+        $acciones_permitidas = (new datatables())->acciones_permitidas(link: $controler->link, seccion: $controler->seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener acciones',data:  $acciones_permitidas);
+        }
+
+        $cols = $this->cols_btn_action(acciones_permitidas: $acciones_permitidas);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al calcular cols',data:  $cols);
+        }
+
+        $html = (new html_controler(html: $controler->html_base));
+
+        $buttons = $this->buttons_permitidos(acciones_permitidas: $acciones_permitidas,cols:  $cols,
+            html:  $html,registro:  $controler->registro, registro_id: $controler->registro_id);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar botones',data:  $buttons);
+        }
+        return $buttons;
+    }
+
+    private function cols_btn_action(array $acciones_permitidas): int
     {
         $n_acciones = count($acciones_permitidas);
 
