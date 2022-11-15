@@ -1378,6 +1378,26 @@ class html_controler{
         return $texts;
     }
 
+    private function th(string $name): string
+    {
+        return "<th>Id</th>";
+    }
+
+    public function ths(array $names): array|string
+    {
+
+        $ths = '';
+        foreach ($names as $name){
+            $th = $this->th(name: $name);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al integra th', data: $th);
+            }
+            $ths.=$th;
+        }
+        return $ths;
+
+    }
+
     private function valida_boton_link(array $accion_permitida, int $indice, int $registro_id, array $rows): bool|array
     {
         $keys = array('adm_accion_descripcion','adm_accion_titulo','adm_seccion_descripcion','adm_accion_css',
