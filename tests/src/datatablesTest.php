@@ -47,6 +47,24 @@ class datatablesTest extends test {
         errores::$error = false;
     }
 
+    public function test_acciones_columnas(): void
+    {
+        errores::$error = false;
+        $datatables = new datatables();
+        $datatables = new liberator($datatables);
+
+        $_SESSION['usuario_id'] = 2;
+        $_SESSION['grupo_id'] = 2;
+
+        $seccion = 'a';
+        $columns = array();
+        $resultado = $datatables->acciones_columnas($columns, $this->link, $seccion);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty($resultado);
+        errores::$error = false;
+    }
+
     public function test_acciones_permitidas(): void
     {
         errores::$error = false;

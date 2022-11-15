@@ -45,9 +45,16 @@ class datatables{
      * @param string $seccion Seccion en ejecucion
      * @param array $not_actions Acciones para exclusion
      * @return array
+     * @version 0.226.37
      */
     private function acciones_columnas(array $columns, PDO $link, string $seccion, array $not_actions = array()): array
     {
+
+        $valida = $this->valida_data_column(seccion: $seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
+        }
+
         $acciones_grupo = $this->acciones_permitidas(link: $link,seccion: $seccion, not_actions: $not_actions);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener acciones', data: $acciones_grupo);
@@ -57,7 +64,6 @@ class datatables{
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener accion base', data: $adm_accion_base);
         }
-
 
         $columns = $this->maqueta_accion_base_column(
             acciones_grupo: $acciones_grupo,adm_accion_base:  $adm_accion_base,columns:  $columns);
@@ -85,30 +91,19 @@ class datatables{
      */
     public function acciones_permitidas(PDO $link, string $seccion, array $not_actions = array()): array
     {
-        if(!isset($_SESSION)){
-            return $this->error->error(mensaje: 'Error no hay SESSION iniciada', data: array());
-        }
-        $keys = array('grupo_id');
-        $valida = $this->valida->valida_ids(keys: $keys,registro:  $_SESSION);
+        $valida = $this->valida_data_column(seccion: $seccion);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar SESSION', data: $valida);
-        }
-        $seccion = trim($seccion);
-        if($seccion === ''){
-            return $this->error->error(mensaje: 'Error seccion esta vacia', data: $seccion);
+            return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
         }
 
-        $filtro = array();
-        $filtro['adm_grupo.id'] = $_SESSION['grupo_id'];
-        $filtro['adm_seccion.descripcion'] = $seccion;
-        $filtro['adm_accion.es_lista'] = 'activo';
-        $filtro['adm_accion.status'] = 'activo';
-        $filtro['adm_grupo.status'] = 'activo';
+        $filtro = $this->filtro_accion_permitida(seccion: $seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener not in', data: $filtro);
+        }
 
-        $not_in = array();
-        if(count($not_actions) > 0){
-            $not_in['llave'] = 'adm_accion.descripcion';
-            $not_in['values'] = $not_actions;
+        $not_in = $this->not_in_accion(not_actions: $not_actions);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener not in', data: $not_in);
         }
 
         $r_accion_grupo = (new adm_accion_grupo($link))->filtro_and(filtro: $filtro, not_in: $not_in);
@@ -353,6 +348,17 @@ class datatables{
         $data->columns = $columns;
 
         return $data;
+    }
+
+    private function filtro_accion_permitida(string $seccion): array
+    {
+        $filtro = array();
+        $filtro['adm_grupo.id'] = $_SESSION['grupo_id'];
+        $filtro['adm_seccion.descripcion'] = $seccion;
+        $filtro['adm_accion.es_lista'] = 'activo';
+        $filtro['adm_accion.status'] = 'activo';
+        $filtro['adm_grupo.status'] = 'activo';
+        return $filtro;
     }
 
     /**
@@ -606,6 +612,16 @@ class datatables{
         return $column_obj;
     }
 
+    private function not_in_accion(array $not_actions): array
+    {
+        $not_in = array();
+        if(count($not_actions) > 0){
+            $not_in['llave'] = 'adm_accion.descripcion';
+            $not_in['values'] = $not_actions;
+        }
+        return $not_in;
+    }
+
     private function rendered(string|array $column): array
     {
         $rendered = [];
@@ -663,5 +679,23 @@ class datatables{
             return $this->error->error(mensaje: 'Error indice no puede venir vacia', data:  $indice);
         }
         return true;
+    }
+
+    private function valida_data_column(string $seccion): bool|array
+    {
+        if(!isset($_SESSION)){
+            return $this->error->error(mensaje: 'Error no hay SESSION iniciada', data: array());
+        }
+        $keys = array('grupo_id');
+        $valida = $this->valida->valida_ids(keys: $keys,registro:  $_SESSION);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar SESSION', data: $valida);
+        }
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(mensaje: 'Error seccion esta vacia', data: $seccion);
+        }
+        return true;
+
     }
 }
