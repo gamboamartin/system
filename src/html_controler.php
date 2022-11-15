@@ -180,8 +180,33 @@ class html_controler{
         return $dates;
     }
 
-    public function dates_template(mixed $params_select, stdClass $row_upd): array|string
+    /**
+     * Integra los datos para un template
+     * @param stdClass $params_select Parametros de select
+     * @param stdClass $row_upd Registro en proceso
+     * @return array|string
+     * @version 0.233.37
+     */
+    private function dates_template(stdClass $params_select, stdClass $row_upd): array|string
     {
+        $keys = array('cols','disabled','name','place_holder','value_vacio');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $params_select);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
+        }
+
+        $keys = array('cols');
+        $valida = $this->validacion->valida_numerics(keys: $keys,row:  $params_select);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
+        }
+
+        $keys = array('disabled','value_vacio');
+        $valida = $this->validacion->valida_bools(keys: $keys,row:  $params_select);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
+        }
+
         $valida = $this->directivas->valida_cols(cols: $params_select->cols);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar columnas', data: $valida);
@@ -682,6 +707,11 @@ class html_controler{
         }
 
         return $div;
+    }
+
+    private function integra_thead(string $ths): string
+    {
+        return "<thead><tr>$ths</tr></thead>";
     }
 
     /**
@@ -1407,7 +1437,21 @@ class html_controler{
         return "<th>$name</th>";
     }
 
-    public function ths(array $names): array|string
+    public function thead(array $names): array|string
+    {
+        $ths = $this->ths(names: $names);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integra ths', data: $ths);
+        }
+
+        $thead = $this->integra_thead(ths:$ths);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integra thead', data: $thead);
+        }
+        return $thead;
+    }
+
+    private function ths(array $names): array|string
     {
 
         $ths = '';

@@ -7,7 +7,6 @@ use config\views;
 use gamboamartin\errores\errores;
 use gamboamartin\template\directivas;
 use gamboamartin\template\html;
-use JsonException;
 use PDO;
 use stdClass;
 use Throwable;
@@ -46,7 +45,7 @@ class system extends controlador_base{
     public string $menu_lateral = '';
     public array $actions_number = array();
     public string $include_breadcrumb = '';
-    public string $ths = '';
+    public string $thead = '';
 
     /**
      * @param html_controler $html Html base
