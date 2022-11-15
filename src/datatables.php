@@ -107,7 +107,8 @@ class datatables{
 
         $not_in = array();
         if(count($not_actions) > 0){
-            $not_in['adm_accion.descripcion'] = $not_actions;
+            $not_in['llave'] = 'adm_accion.descripcion';
+            $not_in['values'] = $not_actions;
         }
 
         $r_accion_grupo = (new adm_accion_grupo($link))->filtro_and(filtro: $filtro, not_in: $not_in);
