@@ -335,9 +335,9 @@ class html_controler{
         return $alta_inputs;
     }
 
-    public function init_alta2(stdClass $row_upd, modelo $modelo, PDO $link, array $keys_selects = array()): array|stdClass
+    public function init_alta2(stdClass $row_upd, modelo $modelo, array $keys_selects = array()): array|stdClass
     {
-        $selects = $this->selects_alta2(modelo: $modelo, link: $link, keys_selects: $keys_selects);
+        $selects = $this->selects_alta2(modelo: $modelo, keys_selects: $keys_selects);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar selects', data: $selects);
         }
@@ -1103,8 +1103,40 @@ class html_controler{
         return $selects;
     }
 
-    private function select_aut2(PDO $link, modelo $modelo, mixed $params_select): array|stdClass|string
+    /**
+     * Genera un select
+     * @param modelo $modelo Modelo del select
+     * @param stdClass $params_select Parametros visuales
+     * @return array|stdClass|string
+     * @version 0.227.38
+     */
+    PUBLIC function select_aut2(modelo $modelo, stdClass $params_select): array|stdClass|string
     {
+        $keys = array('cols','con_registros','id_selected','disabled','extra_params_keys','filtro','label','not_in',
+            'required');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $params_select);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
+        }
+
+        $keys = array('cols','id_selected');
+        $valida = $this->validacion->valida_numerics(keys: $keys, row: $params_select);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
+        }
+
+        $keys = array('con_registros','disabled','required');
+        $valida = $this->validacion->valida_bools(keys: $keys, row: $params_select);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
+        }
+
+        $keys = array('extra_params_keys','filtro','not_in');
+        $valida = $this->validacion->valida_arrays(keys: $keys, row: $params_select);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
+        }
+
         $select  = $this->select_catalogo(cols: $params_select->cols, con_registros: $params_select->con_registros,
             id_selected: $params_select->id_selected, modelo: $modelo, disabled: $params_select->disabled,
             extra_params_keys: $params_select->extra_params_keys, filtro: $params_select->filtro,
@@ -1216,7 +1248,7 @@ class html_controler{
 
     }
 
-    protected function selects_alta2(modelo $modelo, PDO $link,array $keys_selects = array()): array|stdClass
+    protected function selects_alta2(modelo $modelo,array $keys_selects = array()): array|stdClass
     {
         $campos_view = $this->obtener_inputs($modelo->campos_view);
         if(errores::$error){
@@ -1245,7 +1277,7 @@ class html_controler{
                 return $this->error->error(mensaje: 'Error al generar select', data: $params_select);
             }
 
-            $select = $this->select_aut2(link: $link, modelo: $modelo,params_select: $params_select);
+            $select = $this->select_aut2(modelo: $modelo,params_select: $params_select);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar select', data: $select);
             }

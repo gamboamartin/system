@@ -185,6 +185,33 @@ class systemTest extends test {
         errores::$error = false;
     }
 
+    public function test_key_selects_txt(): void
+    {
+        errores::$error = false;
+        $_SESSION['grupo_id'] = 2;
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+        $html = new html();
+        $html_controler = new html_controler($html);
+
+        $modelo = new adm_accion($this->link);
+        $obj_link = new links_menu($this->link, -1);
+
+        $controler = new system(html: $html_controler, link: $this->link, modelo: $modelo, obj_link: $obj_link,
+            paths_conf: $this->paths_conf);
+
+
+        $controler = new liberator($controler);
+
+        errores::$error = false;
+        $keys_selects = array();
+
+        $resultado = $controler->key_selects_txt($keys_selects);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsArray($resultado);
+        errores::$error = false;
+    }
+
     public function test_modifica(): void
     {
         errores::$error = false;

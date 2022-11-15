@@ -354,8 +354,7 @@ class system extends controlador_base{
                 mensaje: 'Error controlador->inputs debe se run objeto',data: $this->inputs);
         }
 
-        $inputs = $this->html->init_alta2(row_upd: $this->row_upd, modelo: $this->modelo, link: $this->link,
-            keys_selects:$keys_selects);
+        $inputs = $this->html->init_alta2(row_upd: $this->row_upd, modelo: $this->modelo, keys_selects:$keys_selects);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al generar inputs', data: $inputs);
         }
@@ -515,6 +514,12 @@ class system extends controlador_base{
         return $row_upd;
     }
 
+    /**
+     * Debe ser operable y sobreescrito en controller de ejecucion
+     * @param array $keys_selects Conjunto de keys para select
+     * @return array
+     * @version 0.227.37
+     */
     protected function key_selects_txt(array $keys_selects): array
     {
 
