@@ -526,6 +526,25 @@ class html_controlerTest extends test {
 
     }
 
+    public function test_params_input2(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+
+
+        $html_controler = new html_controler($html_);
+        $html_controler = new liberator($html_controler);
+        $params = new stdClass();
+        $name = '';
+        $place_holder = '';
+        $resultado = $html_controler->params_input2($params, $name, $place_holder);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue( errores::$error);
+        errores::$error = false;
+
+    }
+
     public function test_params_select_col_6(): void
     {
         errores::$error = false;

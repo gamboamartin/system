@@ -905,6 +905,14 @@ class html_controler{
         return $data;
     }
 
+    /**
+     * Inicializa los parametros para un input
+     * @param stdClass $params Parametros precargados
+     * @param string $name Name input
+     * @param string $place_holder Label del input
+     * @return stdClass|array
+     * @version 0.228.37
+     */
     private function params_input2(stdClass $params, string $name,string $place_holder): stdClass|array
     {
         $data = new stdClass();
@@ -1255,13 +1263,19 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al obtener campos de la vista del modelo', data: $campos_view);
         }
 
-        $selects = new stdClass();
+        $selects = $this->selects_integra(campos_view: $campos_view, keys_selects: $keys_selects);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar selects', data: $selects);
+        }
 
+        return $selects;
+    }
+
+    private function selects_integra(array $campos_view, array $keys_selects): array|stdClass
+    {
+        $selects = new stdClass();
         foreach ($campos_view['selects'] as $item => $modelo){
 
-            /**
-             * refactoirzar
-             */
             if (array_key_exists($item, $keys_selects) && !is_object($keys_selects[$item])){
                 return $this->error->error(mensaje: 'Error $params debe ser un objeto', data: $keys_selects[$item]);
             }
@@ -1283,7 +1297,6 @@ class html_controler{
             }
             $selects->$item = $select;
         }
-
         return $selects;
     }
 
