@@ -94,6 +94,39 @@ class out_permisosTest extends test {
         errores::$error = false;
     }
 
+    public function test_valida_data_action(): void
+    {
+        errores::$error = false;
+        $_SESSION['grupo_id'] = 1;
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+        $out = new out_permisos();
+        $out = new liberator($out);
+
+        $accion_permitida = array();
+        $resultado = $out->valida_data_action($accion_permitida);
+        //print_r($resultado);exit;
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertEquals('Error al validar  accion_permitida',$resultado['mensaje_limpio']);
+
+        errores::$error = false;
+
+        $accion_permitida = array();
+        $accion_permitida['adm_accion_descripcion'] = 'a';
+        $accion_permitida['adm_accion_titulo'] = 'a';
+        $accion_permitida['adm_seccion_descripcion'] = 'a';
+        $accion_permitida['adm_accion_css'] = 'a';
+        $accion_permitida['adm_accion_es_status'] = 'a';
+        $resultado = $out->valida_data_action($accion_permitida);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+
+    }
+
 
 
 

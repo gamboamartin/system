@@ -3,7 +3,6 @@ namespace gamboamartin\system;
 
 use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
-use PDO;
 use stdClass;
 
 class out_permisos{
@@ -53,6 +52,7 @@ class out_permisos{
     }
 
     /**
+     *
      * @param array $acciones_permitidas
      * @return int
      */
@@ -64,6 +64,17 @@ class out_permisos{
         if($cols < 3){
             $cols = 3;
         }
+
+        if($n_acciones === 3){
+            $cols = 4;
+        }
+        if($n_acciones === 2){
+            $cols = 6;
+        }
+        if($n_acciones === 1){
+            $cols = 12;
+        }
+
         return $cols;
     }
 
@@ -160,6 +171,12 @@ class out_permisos{
         return $link;
     }
 
+    /**
+     * Valida los datos de una accion
+     * @param array $accion_permitida registro de accion
+     * @return bool|array
+     * @version 0.223.37
+     */
     private function valida_data_action(array $accion_permitida): bool|array
     {
         $keys = array('adm_accion_descripcion','adm_accion_titulo','adm_seccion_descripcion','adm_accion_css',
