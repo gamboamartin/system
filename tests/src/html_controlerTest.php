@@ -2,6 +2,7 @@
 namespace tests\src;
 use gamboamartin\administrador\models\adm_accion;
 use gamboamartin\administrador\models\adm_menu;
+use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\administrador\models\adm_seccion_pertenece;
 use gamboamartin\administrador\models\adm_usuario;
 use gamboamartin\controllers\controlador_adm_session;
@@ -759,6 +760,27 @@ class html_controlerTest extends test {
         $this->assertStringContainsStringIgnoringCase("l selectpicker color-secondary  adm_secci", $resultado->adm_seccion_id);
         $this->assertStringContainsStringIgnoringCase("m_seccion_id' data-live-search='true' id='ad", $resultado->adm_seccion_id);
         $this->assertStringContainsStringIgnoringCase("dm_seccion_id' name='adm_seccion_id' required ><option value='", $resultado->adm_seccion_id);
+        errores::$error = false;
+    }
+
+    public function test_selects_integra(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
+
+
+        $campos_view = array();
+        $keys_selects = array();
+
+        $campos_view['selects'] = array();
+        $campos_view['selects']['a'] = new adm_seccion($this->link);
+
+        $resultado = $html->selects_integra($campos_view, $keys_selects);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase("m-6'><div class='controls'><select class='form-control selectpicker color-secondar", $resultado->a);
         errores::$error = false;
     }
 

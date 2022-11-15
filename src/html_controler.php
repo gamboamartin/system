@@ -1271,14 +1271,38 @@ class html_controler{
         return $selects;
     }
 
+    /**
+     * Integra los selects para views
+     * @param array $campos_view Campos precargados
+     * @param array $keys_selects Selectores params
+     * @return array|stdClass
+     * @version 0.232.37
+     */
     private function selects_integra(array $campos_view, array $keys_selects): array|stdClass
     {
         $selects = new stdClass();
+
+        if(!isset($campos_view['selects'])){
+            $campos_view['selects'] = array();
+        }
+
         foreach ($campos_view['selects'] as $item => $modelo){
+            $item = trim($item);
+            if($item === ''){
+                return $this->error->error(mensaje: 'Error item esta vacio', data: $item);
+            }
+            if(is_numeric($item)){
+                return $this->error->error(mensaje: 'Error item es un numero', data: $item);
+            }
 
             if (array_key_exists($item, $keys_selects) && !is_object($keys_selects[$item])){
                 return $this->error->error(mensaje: 'Error $params debe ser un objeto', data: $keys_selects[$item]);
             }
+
+            if(!is_object($modelo)){
+                return $this->error->error(mensaje: 'Error modelo no es un objeto valido', data: $modelo);
+            }
+
 
             $params_select = new stdClass();
 
