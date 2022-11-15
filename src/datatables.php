@@ -120,15 +120,28 @@ class datatables{
     }
 
     /**
-     * @param array $acciones_grupo
-     * @param string $adm_accion_base
-     * @param array $columns
+     * Integra las columnas para datatables
+     * @param array $acciones_grupo Acciones
+     * @param string $adm_accion_base Accion
+     * @param array $columns Columnas datatables
      * @return array
+     * @version 0.224.37
      */
     private function columnas_accion(array $acciones_grupo, string $adm_accion_base, array $columns): array
     {
         $i = 0;
         foreach ($acciones_grupo as $adm_accion_grupo){
+            if(!is_array($adm_accion_grupo)){
+                return $this->error->error(
+                    mensaje: 'Error adm_accion_grupo debe ser un array', data: $adm_accion_grupo);
+            }
+
+            $keys = array('adm_accion_descripcion');
+            $valida = $this->valida->valida_existencia_keys(keys: $keys,registro:  $adm_accion_grupo);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al validar adm_accion_grupo ', data: $valida);
+            }
+
             $columns = $this->genera_accion(
                 adm_accion_base: $adm_accion_base,adm_accion_grupo:  $adm_accion_grupo,columns:  $columns,i:  $i);
             if(errores::$error){

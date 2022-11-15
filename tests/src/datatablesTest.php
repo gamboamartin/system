@@ -166,6 +166,25 @@ class datatablesTest extends test {
         errores::$error = false;
     }
 
+    public function test_columnas_accion(): void
+    {
+        errores::$error = false;
+        $datatables = new datatables();
+        $datatables = new liberator($datatables);
+
+        $acciones_grupo = array();
+        $acciones_grupo[0]['adm_accion_descripcion'] = 'a';
+        $acciones_grupo[1]['adm_accion_descripcion'] = 'a';
+
+        $adm_accion_base = 'v';
+        $columns = array();
+        $resultado = $datatables->columnas_accion($acciones_grupo, $adm_accion_base, $columns);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("a", $resultado['v']['campos'][0]);
+        errores::$error = false;
+    }
+
     public function test_columns(): void
     {
         errores::$error = false;
