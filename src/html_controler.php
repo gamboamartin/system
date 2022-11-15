@@ -1380,7 +1380,7 @@ class html_controler{
 
     private function th(string $name): string
     {
-        return "<th>Id</th>";
+        return "<th>$name</th>";
     }
 
     public function ths(array $names): array|string
