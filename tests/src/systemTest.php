@@ -2,6 +2,7 @@
 namespace tests\src;
 
 use gamboamartin\administrador\models\adm_accion;
+use gamboamartin\administrador\models\adm_mes;
 use gamboamartin\errores\errores;
 use gamboamartin\system\html_controler;
 use gamboamartin\system\links_menu;
@@ -50,6 +51,41 @@ class systemTest extends test {
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase("<div |class|><div |class|><input type='text' name='codigo' value=''",$resultado);
+        errores::$error = false;
+    }
+
+    public function test_alta_bd(): void
+    {
+        errores::$error = false;
+        $_SESSION['grupo_id'] = 2;
+        $_SESSION['usuario_id'] = 2;
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_mes';
+        $html = new html();
+        $html_controler = new html_controler($html);
+
+        $modelo = new adm_mes($this->link);
+        $obj_link = new links_menu($this->link, -1);
+
+        $controler = new system(html: $html_controler, link: $this->link, modelo: $modelo, obj_link: $obj_link,
+            paths_conf: $this->paths_conf);
+
+
+        //$controler = new liberator($controler);
+
+        errores::$error = false;
+        $del = $modelo->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $del);
+            print_r($error);
+            exit;
+        }
+        $_POST = array();
+        $_POST['codigo'] = '1';
+        $_POST['descripcion'] = '1';
+        $resultado = $controler->alta_bd(false);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
         errores::$error = false;
     }
 

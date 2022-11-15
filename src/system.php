@@ -46,6 +46,7 @@ class system extends controlador_base{
     public string $menu_lateral = '';
     public array $actions_number = array();
     public string $include_breadcrumb = '';
+    public string $ths = '';
 
     /**
      * @param html_controler $html Html base
@@ -157,11 +158,10 @@ class system extends controlador_base{
      * @param bool $header Si header mostrara el resultado en el navegador
      * @param bool $ws Mostrara el resultado en forma de json
      * @return array|stdClass
-     * @throws JsonException
+     * @version 0.230.37
      */
     public function alta_bd(bool $header, bool $ws = false): array|stdClass
     {
-
 
         $transaccion_previa = false;
         if($this->link->inTransaction()){
@@ -203,8 +203,6 @@ class system extends controlador_base{
             $this->link->commit();
         }
 
-
-
         if($header){
             if($id_retorno === -1) {
                 $id_retorno = $r_alta_bd->registro_id;
@@ -214,7 +212,13 @@ class system extends controlador_base{
         }
         if($ws){
             header('Content-Type: application/json');
-            echo json_encode($r_alta_bd, JSON_THROW_ON_ERROR);
+            try {
+                echo json_encode($r_alta_bd, JSON_THROW_ON_ERROR);
+            }
+            catch (Throwable $e){
+                $error = (new errores())->error(mensaje: 'Error al maquetar JSON' , data: $e);
+                print_r($error);
+            }
             exit;
         }
         $r_alta_bd->siguiente_view = $siguiente_view;
