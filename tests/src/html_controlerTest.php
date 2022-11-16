@@ -820,6 +820,22 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_selects_alta2(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
+
+
+        $modelo = new adm_accion($this->link);
+
+        $resultado = $html->selects_alta2($modelo);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_selects_integra(): void
     {
         errores::$error = false;
