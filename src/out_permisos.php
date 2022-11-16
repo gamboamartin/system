@@ -108,11 +108,13 @@ class out_permisos{
      * @param string $key_id key de valor para registro id
      * @param array $row registro en proceso
      * @param array $rows conjunto de registros
+     * @param array $params Extraparams para link
      * @return array
      * @version 0.167.34
      */
     private function integra_acciones_permitidas(
-        array $acciones_permitidas, html_controler $html, int $indice, string $key_id, array $row, array $rows): array
+        array $acciones_permitidas, html_controler $html, int $indice, string $key_id, array $row, array $rows,
+        array $params = array()): array
     {
 
         if($indice < 0){
@@ -140,9 +142,13 @@ class out_permisos{
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al validar  accion_permitida',data:  $valida);
             }
+            $valida = $html->valida_boton_data_accion(accion_permitida: $accion_permitida);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al validar accion_permitida',data:  $valida);
+            }
 
-            $rows = $html->boton_link_permitido(
-                accion_permitida: $accion_permitida,indice:  $indice,registro_id:  $row[$key_id],rows:  $rows);
+            $rows = $html->boton_link_permitido(accion_permitida: $accion_permitida,indice:  $indice,
+                registro_id:  $row[$key_id],rows:  $rows, params: $params);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al integrar link',data:  $rows);
             }

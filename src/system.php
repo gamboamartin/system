@@ -777,10 +777,11 @@ class system extends controlador_base{
      * @param string $key_id Registro id
      * @param array $rows Conjunto de registros
      * @param string $seccion Seccion a integrar acciones
+     * @param array $not_actions Acciones para omitir en lista
      * @return array
      * @version 0.173.34
      */
-    protected function rows_con_permisos(string $key_id, array $rows, string $seccion): array
+    protected function rows_con_permisos(string $key_id, array $rows, string $seccion, array $not_actions = array()): array
     {
 
         if(!isset($_SESSION)){
@@ -796,7 +797,8 @@ class system extends controlador_base{
             return $this->errores->error(mensaje: 'Error seccion esta vacia', data: $seccion);
         }
 
-        $acciones_permitidas = (new datatables())->acciones_permitidas(link: $this->link, seccion: $seccion);
+        $acciones_permitidas = (new datatables())->acciones_permitidas(link: $this->link, seccion: $seccion,
+            not_actions: $not_actions);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al obtener acciones',data:  $acciones_permitidas);
         }

@@ -97,7 +97,7 @@ class html_controlerTest extends test {
         $accion_permitida['adm_accion_descripcion'] = 'a';
         $accion_permitida['adm_accion_titulo'] = 'b';
         $accion_permitida['adm_seccion_descripcion'] = 'c';
-        $accion_permitida['adm_accion_css'] = 'd';
+        $accion_permitida['adm_accion_css'] = 'danger';
         $accion_permitida['adm_accion_es_status'] = 'inactivo';
         $indice = 1;
         $registro_id = 1;
@@ -105,9 +105,10 @@ class html_controlerTest extends test {
         $rows[1] = array();
 
         $resultado = $html->boton_link_permitido($accion_permitida, $indice, $registro_id, $rows);
+
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<a role='button' href='index.php?seccion=c&accion=a&registro_id=1&session_id=1' class='btn btn-d col-sm-12'>b</a>", $resultado[1]['acciones']['a']);
+        $this->assertEquals("<a role='button' href='index.php?seccion=c&accion=a&registro_id=1&session_id=1' class='btn btn-danger col-sm-12'>b</a>", $resultado[1]['acciones']['a']);
         errores::$error = false;
     }
 
@@ -805,6 +806,33 @@ class html_controlerTest extends test {
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase("m-6'><div class='controls'><select class='form-control selectpicker color-secondar", $resultado->a);
+        errores::$error = false;
+    }
+
+    public function test_style_btn(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        //$html = new liberator($html);
+
+        $_SESSION['grupo_id'] = 2;
+
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+        $accion_permitida = array();
+        $accion_permitida['adm_accion_css'] = 'info';
+        $accion_permitida['adm_accion_es_status'] = 'inactivo';
+        $accion_permitida['adm_accion_descripcion'] = 'a';
+        $accion_permitida['adm_seccion_descripcion'] = 'a';
+
+        $row = array();
+
+        $resultado = $html->style_btn($accion_permitida, $row);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("info", $resultado);
         errores::$error = false;
     }
 

@@ -62,13 +62,16 @@ class html_controler{
     public function boton_link_permitido(array $accion_permitida, int $indice, int $registro_id, array $rows,
                                          array $params = array()): array
     {
-
-
         $valida = $this->valida_boton_link(
             accion_permitida: $accion_permitida,indice:  $indice,registro_id:  $registro_id,rows:  $rows);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar datos',data:  $valida);
         }
+        $valida = $this->valida_boton_data_accion(accion_permitida: $accion_permitida);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar accion_permitida',data:  $valida);
+        }
+
 
         $style = $this->style_btn(accion_permitida: $accion_permitida, row: $rows[$indice]);
         if(errores::$error){
@@ -1356,7 +1359,21 @@ class html_controler{
         return $selects;
     }
 
-    public function style_btn(array $accion_permitida, array $row){
+    /**
+     * Obtiene el estilo de un boton
+     * @param array $accion_permitida Accion del boton
+     * @param array $row Registro en proceso
+     * @return array|string
+     * @version 0.237.37
+     */
+    public function style_btn(array $accion_permitida, array $row):array|string{
+
+        $valida = $this->valida_boton_data_accion(accion_permitida: $accion_permitida);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar accion_permitida',data:  $valida);
+        }
+
+
         $style = $accion_permitida['adm_accion_css'];
         $es_status = $accion_permitida['adm_accion_es_status'];
         $accion = $accion_permitida['adm_accion_descripcion'];
@@ -1478,6 +1495,26 @@ class html_controler{
         }
         return $ths;
 
+    }
+
+    public function valida_boton_data_accion(array $accion_permitida): bool|array
+    {
+        $keys = array('adm_accion_css','adm_accion_es_status','adm_accion_descripcion','adm_seccion_descripcion');
+        $valida = $this->validacion->valida_existencia_keys(keys:$keys,registro:  $accion_permitida);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar $accion_permitida',data:  $valida);
+        }
+        $valida = $this->validacion->valida_estilo_css(style: $accion_permitida['adm_accion_css']);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener style',data:  $valida);
+        }
+
+        $keys = array('adm_accion_es_status');
+        $valida = $this->validacion->valida_statuses(keys:$keys,registro:  $accion_permitida);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar $accion_permitida',data:  $valida);
+        }
+        return true;
     }
 
     private function valida_boton_link(array $accion_permitida, int $indice, int $registro_id, array $rows): bool|array
