@@ -224,11 +224,13 @@ class systemTest extends test {
 
         $_GET['length'] = 15;
         $_GET['start'] = 20;
-        $_GET['search']['value'] = 42;
+        $_GET['search']['value'] = 1;
         $resultado = $controler->get_data(header:false);
+
+
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(0,$resultado['recordsTotal']);
-        $this->assertCount(0,$resultado['data']);
+        $this->assertEquals(14,$resultado['recordsTotal']);
+        $this->assertCount(14,$resultado['data']);
 
         errores::$error = false;
 

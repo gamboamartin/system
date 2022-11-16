@@ -176,8 +176,6 @@ class init{
         return $controler->keys_row_lista;
     }
 
-    
-
     /**
      * Genera un key para un campo
      * @version 0.20.5
@@ -255,7 +253,41 @@ class init{
         return ucwords($name_lista);
     }
 
+    private function retornos(string $accion, string $seccion, int $registro_id = -1): stdClass
+    {
+        $next_seccion = $seccion;
+        $next_accion = $accion;
+        $id_retorno = $registro_id;
 
+        $data = new stdClass();
+        $data->next_seccion = $next_seccion;
+        $data->next_accion = $next_accion;
+        $data->id_retorno = $id_retorno;
+        return $data;
+
+    }
+
+    public function retornos_get(string $accion, string $seccion, int $id_retorno = -1): array|stdClass
+    {
+
+        $retornos_init = $this->retornos(accion: $accion, seccion: $seccion, registro_id: $id_retorno);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar retornos',data:  $retornos_init);
+        }
+
+        if(isset($_GET['next_seccion'])){
+            $retornos_init->next_seccion = $_GET['next_seccion'];
+        }
+        if(isset($_GET['next_accion'])){
+            $retornos_init->next_accion = $_GET['next_accion'];
+        }
+        if(isset($_GET['id_retorno'])){
+            $retornos_init->id_retorno = $_GET['id_retorno'];
+        }
+
+        return $retornos_init;
+
+    }
 
     /**
      * Asigna un valor a sun row id para su uso en selects

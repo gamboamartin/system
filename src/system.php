@@ -314,9 +314,16 @@ class system extends controlador_base{
                 header:  $header, ws: $ws);
         }
 
+        $header_retorno = $this->header_retorno(accion: $siguiente_view, seccion: $this->tabla, id_retorno: -1);
+        if(errores::$error){
+
+            return $this->retorno_error(mensaje: 'Error al maquetar retorno', data: $header_retorno,
+                header:  $header, ws: $ws);
+        }
+
         if($header){
-            $this->retorno_base(registro_id:-1, result: $r_del,
-                siguiente_view: $siguiente_view,ws:  $ws);
+            header('Location:' . $header_retorno);
+            exit;
         }
         if($ws){
             header('Content-Type: application/json');
@@ -426,6 +433,18 @@ class system extends controlador_base{
             exit;
         }
         return $salida;
+    }
+
+    protected function header_retorno(string $accion, string $seccion, int $id_retorno = -1): array|string
+    {
+        $retornos = (new init())->retornos_get(accion: $accion,seccion:  $seccion, id_retorno: $id_retorno);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al obtener retornos data',data:  $retornos);
+        }
+
+        $header_retorno = "index.php?seccion=$retornos->next_seccion&accion=$retornos->next_accion";
+        $header_retorno .= "&session_id=$this->session_id&registro_id=$retornos->id_retorno";
+        return $header_retorno;
     }
 
     protected function inputs(array $keys_selects): array|stdClass
