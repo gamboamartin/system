@@ -350,6 +350,33 @@ class datatables{
         return $data;
     }
 
+    /**
+     * Obtiene draw para datatable
+     * @return int|array
+     * @version 0.239.37
+     */
+    private function draw(): int|array
+    {
+        $draw = mt_rand(1,999);
+        if (isset ( $_GET['draw'] )) {
+            $draw = $_GET['draw'];
+        }
+        if(!is_numeric($draw)){
+            return $this->error->error(mensaje: 'Error draw debe ser un numero', data: $draw);
+        }
+
+        return $draw;
+    }
+
+    private function filtro(){
+        $filtro  = array();
+        if (isset($_GET['data'])){
+            $filtro = $_GET['data'];
+        }
+        return $filtro;
+    }
+
+
     private function filtro_accion_permitida(string $seccion): array
     {
         $filtro = array();
@@ -496,7 +523,7 @@ class datatables{
         return $data;
     }
 
-    public function genera_filtro_especial_datatable(array $datatable): array
+    private function genera_filtro_especial_datatable(array $datatable): array
     {
         $filtro_especial = array();
         if(isset($_GET['search']) && $_GET['search']['value'] !== '' ) {
@@ -647,6 +674,60 @@ class datatables{
             $not_in['values'] = $not_actions;
         }
         return $not_in;
+    }
+
+    private function n_rows_for_page(){
+        $n_rows_for_page = 10;
+        if (isset ( $_GET['length'] )) {
+            $n_rows_for_page = $_GET['length'];
+        }
+        return $n_rows_for_page;
+    }
+
+    private function pagina(int $n_rows_for_page): int
+    {
+        $pagina = 1;
+        if (isset ( $_GET['start'] )) {
+            $pagina = (int)($_GET['start'] /  $n_rows_for_page) + 1;
+        }
+        if($pagina <= 0){
+            $pagina = 1;
+        }
+        return $pagina;
+    }
+
+    public function params(array $datatable): array|stdClass
+    {
+        $draw = (new datatables())->draw();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener draw', data: $draw);
+        }
+        $n_rows_for_page = $this->n_rows_for_page();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener n_rows_for_page', data: $n_rows_for_page);
+        }
+
+        $pagina = $this->pagina(n_rows_for_page: $n_rows_for_page);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener pagina', data: $pagina);
+        }
+        $filtro = $this->filtro();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener filtro', data: $filtro);
+        }
+
+        $filtro_especial = $this->genera_filtro_especial_datatable(datatable: $datatable);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener filtro_especial', data: $filtro_especial);
+        }
+
+        $data = new stdClass();
+        $data->draw = $draw;
+        $data->n_rows_for_page = $n_rows_for_page;
+        $data->pagina = $pagina;
+        $data->filtro = $filtro;
+        $data->filtro_especial = $filtro_especial;
+        return $data;
     }
 
     private function rendered(string|array $column): array

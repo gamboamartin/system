@@ -357,38 +357,14 @@ class system extends controlador_base{
 
     public function get_data(bool $header, bool $ws = false){
 
-        /**
-         * REFCATORIZAR
-         */
-        $draw = mt_rand(1,999);
-        if (isset ( $_GET['draw'] )) {
-            $draw = $_GET['draw'];
-        }
-        $n_rows_for_page = 10;
-        if (isset ( $_GET['length'] )) {
-            $n_rows_for_page = $_GET['length'];
-        }
 
-        $pagina = 1;
-        if (isset ( $_GET['start'] )) {
-            $pagina = (int)($_GET['start'] /  $n_rows_for_page) + 1;
-        }
-        if($pagina <= 0){
-            $pagina = 1;
-        }
-
-        $filtro  = array();
-        if (isset($_GET['data'])){
-            $filtro = $_GET['data'];
-        }
-
-        $filtro_especial = (new datatables())->genera_filtro_especial_datatable(datatable: $this->datatable);
+        $params = (new datatables())->params(datatable: $this->datatable);
         if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al obtener filtro_especial', data: $filtro_especial,header:  $header, ws: $ws);
+            return $this->retorno_error(mensaje: 'Error al obtener params', data: $params,header:  $header, ws: $ws);
         }
 
-        $data_result = $this->modelo->get_data_lista(filtro:$filtro,filtro_especial: $filtro_especial,
-            n_rows_for_page: $n_rows_for_page, pagina: $pagina);
+        $data_result = $this->modelo->get_data_lista(filtro:$params->filtro,filtro_especial: $params->filtro_especial,
+            n_rows_for_page: $params->n_rows_for_page, pagina: $params->pagina);
 
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al obtener data result', data: $data_result,header:  $header, ws: $ws);
@@ -407,13 +383,9 @@ class system extends controlador_base{
                 /**
                  * REFCATORIZAR
                  */
-                $accion = $adm_accion_grupo['adm_accion_descripcion'];
-                $titulo = $adm_accion_grupo['adm_accion_titulo'];
-                $seccion = $adm_accion_grupo['adm_seccion_descripcion'];
-                //$style = $adm_accion_grupo['adm_accion_css'];
+
+
                 $registro_id = $row[$this->seccion.'_id'];
-
-
 
                 $style = (new html_controler(html: $this->html_base))->style_btn(
                     accion_permitida: $adm_accion_grupo, row: $data_result['registros'][$key]);
@@ -421,14 +393,16 @@ class system extends controlador_base{
                     return $this->retorno_error(mensaje: 'Error al obtener style',data:  $style,header:  $header, ws: $ws);
                 }
 
-
-                $link_con_id = $this->html->button_href(accion: $accion,etiqueta:  $titulo,registro_id:  $registro_id,
-                    seccion:  $seccion,style:  $style, cols: 3 );
+                $link_con_id = $this->html->button_href(
+                    accion: $adm_accion_grupo['adm_accion_descripcion'],
+                    etiqueta:   $adm_accion_grupo['adm_accion_titulo'],registro_id:  $registro_id,
+                    seccion:  $adm_accion_grupo['adm_seccion_descripcion'],style:  $style, cols: 3 );
                 if(errores::$error){
                     return $this->retorno_error(mensaje: 'Error al asignar button', data: $link_con_id,
                         header:  $header, ws: $ws);
                 }
 
+                $accion = $adm_accion_grupo['adm_accion_descripcion'];
                 $links[$accion] = $link_con_id;
             }
 
@@ -437,7 +411,7 @@ class system extends controlador_base{
         }
 
         $salida = array(
-            "draw"         => $draw,
+            "draw"         => $params->draw,
             "recordsTotal"    => intval( $data_result['n_registros']),
             "recordsFiltered" => intval( $data_result['n_registros'] ),
             "data"            => $data_result['registros']);
@@ -746,10 +720,12 @@ class system extends controlador_base{
      * @param array $rows Conjunto de registros
      * @param string $seccion Seccion a integrar acciones
      * @param array $not_actions Acciones para omitir en lista
+     * @param array $params Para anexar var get
      * @return array
      * @version 0.173.34
      */
-    protected function rows_con_permisos(string $key_id, array $rows, string $seccion, array $not_actions = array()): array
+    protected function rows_con_permisos(
+        string $key_id, array $rows, string $seccion, array $not_actions = array(), array $params = array()): array
     {
 
         if(!isset($_SESSION)){
@@ -771,7 +747,8 @@ class system extends controlador_base{
             return $this->errores->error(mensaje: 'Error al obtener acciones',data:  $acciones_permitidas);
         }
         $rows = (new out_permisos())->genera_buttons_permiso(
-            acciones_permitidas: $acciones_permitidas, html: $this->html, key_id:  $key_id,rows:  $rows);
+            acciones_permitidas: $acciones_permitidas, html: $this->html, key_id:  $key_id,rows:  $rows,
+            params: $params);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al integrar link',data:  $rows);
         }

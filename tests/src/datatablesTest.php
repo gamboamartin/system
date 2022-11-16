@@ -326,6 +326,37 @@ class datatablesTest extends test {
 
     }
 
+    public function test_draw(): void
+    {
+        errores::$error = false;
+        $datatables = new datatables();
+        $datatables = new liberator($datatables);
+
+        $resultado = $datatables->draw();
+        $this->assertIsInt($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+
+        $_GET['draw'] = 'x';
+
+        $resultado = $datatables->draw();
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertEquals('Error draw debe ser un numero', $resultado['mensaje_limpio']);
+
+        errores::$error = false;
+
+        $_GET['draw'] = '1';
+
+        $resultado = $datatables->draw();
+        $this->assertIsInt($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(1,$resultado);
+
+        errores::$error = false;
+    }
+
     public function test_filtro_especial_datatable(): void
     {
         errores::$error = false;

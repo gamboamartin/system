@@ -14,12 +14,13 @@ class out_permisos{
         $this->validacion = new validacion();
     }
 
-    private function buttons_permitidos(array $acciones_permitidas, int $cols, html_controler $html, array $registro, int $registro_id): array
+    private function buttons_permitidos(
+        array $acciones_permitidas, int $cols, html_controler $html, array $params, array $registro, int $registro_id): array
     {
         $buttons = array();
         foreach ($acciones_permitidas as $accion_permitida){
-            $link = $this->link_btn_action(accion_permitida: $accion_permitida,cols:  $cols,
-                html:  $html, registro:  $registro, registro_id: $registro_id);
+            $link = $this->link_btn_action(accion_permitida: $accion_permitida, cols: $cols,
+                html: $html, params: $params, registro: $registro, registro_id: $registro_id);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar link',data:  $link);
             }
@@ -28,7 +29,7 @@ class out_permisos{
         return $buttons;
     }
 
-    public function buttons_view(system $controler, array $not_actions): array
+    public function buttons_view(system $controler, array $not_actions, array $params): array
     {
         $acciones_permitidas = (new datatables())->acciones_permitidas(link: $controler->link,
             seccion: $controler->seccion, not_actions: $not_actions);
@@ -43,8 +44,8 @@ class out_permisos{
 
         $html = (new html_controler(html: $controler->html_base));
 
-        $buttons = $this->buttons_permitidos(acciones_permitidas: $acciones_permitidas,cols:  $cols,
-            html:  $html,registro:  $controler->registro, registro_id: $controler->registro_id);
+        $buttons = $this->buttons_permitidos(acciones_permitidas: $acciones_permitidas, cols: $cols,
+            html: $html, params: $params, registro: $controler->registro, registro_id: $controler->registro_id);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar botones',data:  $buttons);
         }
@@ -157,8 +158,8 @@ class out_permisos{
         return $rows;
     }
 
-    private function link_btn_action(array $accion_permitida, int $cols, html_controler $html, array $registro,
-                                     int $registro_id, array $params = array()): array|string
+    private function link_btn_action(array $accion_permitida, int $cols, html_controler $html, array $params,
+                                     array $registro, int $registro_id): array|string
     {
         $valida = $this->valida_data_action(accion_permitida: $accion_permitida);
         if(errores::$error){
