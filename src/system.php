@@ -224,6 +224,25 @@ class system extends controlador_base{
         return $r_alta_bd;
     }
 
+    private function data_link(array $adm_accion_grupo, array $data_result, string $key, int $registro_id): array|stdClass
+    {
+        $style = (new html_controler(html: $this->html_base))->style_btn(
+            accion_permitida: $adm_accion_grupo, row: $data_result['registros'][$key]);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al obtener style',data:  $style);
+        }
+
+
+        $data_link = (new datatables())->database_link(adm_accion_grupo: $adm_accion_grupo,
+            html: (new html_controler(html: $this->html_base)),registro_id:  $registro_id, style: $style);
+
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al obtener data para link', data: $data_link);
+        }
+
+        return $data_link;
+    }
+
     private function datatable_columnDefs_init(array $columns, array $columndefs): array
     {
         $index_header = array();
@@ -393,15 +412,8 @@ class system extends controlador_base{
 
                 $registro_id = $row[$this->seccion.'_id'];
 
-                $style = (new html_controler(html: $this->html_base))->style_btn(
-                    accion_permitida: $adm_accion_grupo, row: $data_result['registros'][$key]);
-                if(errores::$error){
-                    return $this->retorno_error(mensaje: 'Error al obtener style',data:  $style,header:  $header, ws: $ws);
-                }
-
-
-                $data_link = (new datatables())->database_link(adm_accion_grupo: $adm_accion_grupo,
-                    html: (new html_controler(html: $this->html_base)),registro_id:  $registro_id, style: $style);
+                $data_link = $this->data_link(
+                    adm_accion_grupo: $adm_accion_grupo, data_result: $data_result, key: $key,registro_id:  $registro_id);
 
                 if(errores::$error){
                     return $this->retorno_error(mensaje: 'Error al obtener data para link', data: $data_link,

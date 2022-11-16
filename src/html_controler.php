@@ -1057,6 +1057,7 @@ class html_controler{
         return $params_select;
     }
 
+
     /**
      * Retornos hidden
      * @param int $registro_id Registro id a retornar
@@ -1503,13 +1504,8 @@ class html_controler{
             /**
              * REFCATORIZAR
              */
-            $params_select = new stdClass();
 
-            if (array_key_exists($item, $keys_selects) ){
-                $params_select = $keys_selects[$item];
-            }
-
-            $params_select = $this->params_input2(params: $params_select,name: $item,place_holder: $item);
+            $params_select = $this->params_select_init(item:$item,keys_selects:  $keys_selects);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar select', data: $params_select);
             }
