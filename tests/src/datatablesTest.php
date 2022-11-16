@@ -330,7 +330,7 @@ class datatablesTest extends test {
     {
         errores::$error = false;
         $datatables = new datatables();
-        //$datatables = new liberator($datatables);
+        $datatables = new liberator($datatables);
 
         $column = 'x';
 

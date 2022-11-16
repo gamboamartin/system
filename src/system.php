@@ -223,8 +223,6 @@ class system extends controlador_base{
         $r_alta_bd->siguiente_view = $siguiente_view;
         return $r_alta_bd;
     }
-    
-
 
     private function datatable_columnDefs_init(array $columns, array $columndefs): array
     {
@@ -336,35 +334,7 @@ class system extends controlador_base{
 
         return $r_del;
     }
-    
-    private function filtros_especiales_datatable(array $filtro_especial, string $str): array
-    {
-        foreach ($this->datatable["filtro"] as $indice=>$column) {
 
-            $filtro_especial = (new datatables())->filtro_especial_datatable(
-                filtro_especial: $filtro_especial,indice:  $indice, column: $column, str: $str);
-            if(errores::$error){
-                return $this->errores->error(mensaje: 'Error al obtener filtro_especial', data: $filtro_especial);
-            }
-        }
-        return $filtro_especial;
-    }
-
-
-
-    private function genera_filtro_especial_datatable(): array
-    {
-        $filtro_especial = array();
-        if(isset($_GET['search']) && $_GET['search']['value'] !== '' ) {
-            $str = $_GET['search']['value'];
-            $filtro_especial = $this->filtros_especiales_datatable(filtro_especial: $filtro_especial,str:  $str);
-            if(errores::$error){
-                return $this->errores->error(mensaje: 'Error al obtener filtro_especial', data: $filtro_especial);
-            }
-        }
-        return $filtro_especial;
-    }
-    
     public function genera_inputs(array $keys_selects = array()): array|stdClass
     {
         if(!is_object($this->inputs)){
@@ -412,7 +382,7 @@ class system extends controlador_base{
             $filtro = $_GET['data'];
         }
 
-        $filtro_especial = $this->genera_filtro_especial_datatable();
+        $filtro_especial = (new datatables())->genera_filtro_especial_datatable(datatable: $this->datatable);
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al obtener filtro_especial', data: $filtro_especial,header:  $header, ws: $ws);
         }
@@ -453,7 +423,7 @@ class system extends controlador_base{
 
 
                 $link_con_id = $this->html->button_href(accion: $accion,etiqueta:  $titulo,registro_id:  $registro_id,
-                    seccion:  $seccion,style:  $style, cols: 3);
+                    seccion:  $seccion,style:  $style, cols: 3 );
                 if(errores::$error){
                     return $this->retorno_error(mensaje: 'Error al asignar button', data: $link_con_id,
                         header:  $header, ws: $ws);
@@ -498,8 +468,6 @@ class system extends controlador_base{
         }
         return $inputs;
     }
-
-
 
     /**
      * Integra el elemento a modificar en cambio de estatus
@@ -809,8 +777,6 @@ class system extends controlador_base{
         }
         return $rows;
     }
-
-
 
 
 }

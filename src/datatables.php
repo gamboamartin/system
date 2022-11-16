@@ -371,7 +371,7 @@ class datatables{
      * @version 0.155.33
      *
      */
-    PUBLIC function filtro_especial_datatable(array $filtro_especial, int $indice, string $column, string $str): array
+    private function filtro_especial_datatable(array $filtro_especial, int $indice, string $column, string $str): array
     {
         $str = trim($str);
         if($str === ''){
@@ -389,6 +389,19 @@ class datatables{
         $filtro_especial[$indice][$column]['valor'] = addslashes(trim("%$str%"));
         $filtro_especial[$indice][$column]['comparacion'] = "OR";
 
+        return $filtro_especial;
+    }
+
+    private function filtros_especiales_datatable(array $datatable, array $filtro_especial, string $str): array
+    {
+        foreach ($datatable["filtro"] as $indice=>$column) {
+
+            $filtro_especial = $this->filtro_especial_datatable(
+                filtro_especial: $filtro_especial,indice:  $indice, column: $column, str: $str);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al obtener filtro_especial', data: $filtro_especial);
+            }
+        }
         return $filtro_especial;
     }
 
@@ -481,6 +494,20 @@ class datatables{
         $data->datatable = $datatable;
         $data->index_button = $index_button;
         return $data;
+    }
+
+    public function genera_filtro_especial_datatable(array $datatable): array
+    {
+        $filtro_especial = array();
+        if(isset($_GET['search']) && $_GET['search']['value'] !== '' ) {
+            $str = $_GET['search']['value'];
+            $filtro_especial = $this->filtros_especiales_datatable(
+                datatable: $datatable, filtro_especial: $filtro_especial,str:  $str);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al obtener filtro_especial', data: $filtro_especial);
+            }
+        }
+        return $filtro_especial;
     }
 
     /**

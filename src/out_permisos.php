@@ -84,15 +84,16 @@ class out_permisos{
      * @param html_controler $html template
      * @param string $key_id Key de row
      * @param array $rows conjunto de registros
+     * @param array $params Parametros get extra
      * @return array
      * @version 0.172.34
      */
     public function genera_buttons_permiso(
-        array $acciones_permitidas, html_controler$html, string $key_id, array $rows): array
+        array $acciones_permitidas, html_controler$html, string $key_id, array $rows, array $params = array()): array
     {
         foreach ($rows as $indice=>$row){
             $rows = $this->integra_acciones_permitidas(acciones_permitidas: $acciones_permitidas, html: $html,
-                indice:  $indice,key_id:  $key_id, row: $row,rows:  $rows);
+                indice:  $indice,key_id:  $key_id, row: $row,rows:  $rows, params: $params);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al integrar link',data:  $rows);
             }
