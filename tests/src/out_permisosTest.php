@@ -127,6 +127,33 @@ class out_permisosTest extends test {
 
     }
 
+    public function test_valida_data_btn(): void
+    {
+        errores::$error = false;
+        $_SESSION['grupo_id'] = 1;
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+        $out = new out_permisos();
+        $out = new liberator($out);
+
+        $accion_permitida = array();
+        $accion_permitida['adm_accion_descripcion'] = 'a';
+        $accion_permitida['adm_accion_titulo'] = 'a';
+        $accion_permitida['adm_seccion_descripcion'] = 'a';
+        $accion_permitida['adm_accion_css'] = 'a';
+        $accion_permitida['adm_accion_es_status'] = 'a';
+        $key_id = 'a';
+        $row = array();
+        $row['a'] = '1';
+        $resultado = $out->valida_data_btn($accion_permitida, $key_id, $row);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+
+    }
+
 
 
 

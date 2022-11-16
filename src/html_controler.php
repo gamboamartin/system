@@ -55,10 +55,12 @@ class html_controler{
      * @param int $indice Indice de matriz de rows
      * @param int $registro_id Registro en proceso
      * @param array $rows registros
+     * @param array $params Extraparams
      * @return array
      * @version 0.165.34
      */
-    public function boton_link_permitido(array $accion_permitida, int $indice, int $registro_id, array $rows): array
+    public function boton_link_permitido(array $accion_permitida, int $indice, int $registro_id, array $rows,
+                                         array $params = array()): array
     {
 
 
@@ -78,7 +80,7 @@ class html_controler{
         $seccion = $accion_permitida['adm_seccion_descripcion'];
 
         $link = $this->button_href(accion: $accion, etiqueta: $etiqueta, registro_id:  $registro_id, seccion: $seccion,
-            style:  $style);
+            style:  $style, params: $params);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar link',data:  $link);
         }

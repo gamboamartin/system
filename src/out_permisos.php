@@ -189,8 +189,19 @@ class out_permisos{
         return true;
     }
 
+    /**
+     * @param mixed $accion_permitida Accion a validar
+     * @param string $key_id key a validar
+     * @param array|stdClass $row Registro en proceso
+     * @return bool|array
+     * @version 0.236.37
+     */
     private function valida_data_btn(mixed $accion_permitida, string $key_id, array|stdClass $row): bool|array
     {
+        $key_id = trim($key_id);
+        if($key_id === ''){
+            return $this->error->error(mensaje: 'Error key_id esta vacio',data:  $key_id);
+        }
         $keys = array($key_id);
         $valida = $this->validacion->valida_ids(keys: $keys, registro: $row);
         if(errores::$error){
