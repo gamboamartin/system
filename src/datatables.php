@@ -306,6 +306,24 @@ class datatables{
         return $columns;
     }
 
+    public function database_link(array $adm_accion_grupo, html_controler $html, int $registro_id, string $style): array|stdClass
+    {
+        $link_con_id = $html->button_href(accion: $adm_accion_grupo['adm_accion_descripcion'],
+            etiqueta:   $adm_accion_grupo['adm_accion_titulo'],registro_id:  $registro_id,
+            seccion:  $adm_accion_grupo['adm_seccion_descripcion'],style:  $style, cols: 3 );
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al asignar button', data: $link_con_id);
+        }
+        $accion = $adm_accion_grupo['adm_accion_descripcion'];
+
+        $data = new stdClass();
+        $data->link_con_id = $link_con_id;
+        $data->accion = $accion;
+
+        return $data;
+
+    }
+
     /**
      * Genera la estructura para datatables
      * @param array $columns Columnas

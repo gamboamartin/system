@@ -384,7 +384,6 @@ class system extends controlador_base{
                  * REFCATORIZAR
                  */
 
-
                 $registro_id = $row[$this->seccion.'_id'];
 
                 $style = (new html_controler(html: $this->html_base))->style_btn(
@@ -393,17 +392,16 @@ class system extends controlador_base{
                     return $this->retorno_error(mensaje: 'Error al obtener style',data:  $style,header:  $header, ws: $ws);
                 }
 
-                $link_con_id = $this->html->button_href(
-                    accion: $adm_accion_grupo['adm_accion_descripcion'],
-                    etiqueta:   $adm_accion_grupo['adm_accion_titulo'],registro_id:  $registro_id,
-                    seccion:  $adm_accion_grupo['adm_seccion_descripcion'],style:  $style, cols: 3 );
+
+                $data_link = (new datatables())->database_link(adm_accion_grupo: $adm_accion_grupo,
+                    html: (new html_controler(html: $this->html_base)),registro_id:  $registro_id, style: $style);
+
                 if(errores::$error){
-                    return $this->retorno_error(mensaje: 'Error al asignar button', data: $link_con_id,
+                    return $this->retorno_error(mensaje: 'Error al obtener data para link', data: $data_link,
                         header:  $header, ws: $ws);
                 }
 
-                $accion = $adm_accion_grupo['adm_accion_descripcion'];
-                $links[$accion] = $link_con_id;
+                $links[$data_link->accion] = $data_link->link_con_id;
             }
 
 

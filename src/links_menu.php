@@ -400,6 +400,7 @@ class links_menu{
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar si tengo permiso', data: $tengo_permiso);
         }
+
         $link_ancla = '';
         if($tengo_permiso) {
             $link_ancla = "./index.php?seccion=$seccion&accion=$accion&registro_id=$registro_id";

@@ -2,7 +2,10 @@
 namespace tests\src;
 
 use gamboamartin\administrador\models\adm_accion;
+use gamboamartin\administrador\models\adm_accion_grupo;
 use gamboamartin\administrador\models\adm_mes;
+use gamboamartin\administrador\models\adm_seccion;
+use gamboamartin\administrador\models\adm_seccion_pertenece;
 use gamboamartin\errores\errores;
 use gamboamartin\system\html_controler;
 use gamboamartin\system\links_menu;
@@ -109,13 +112,65 @@ class systemTest extends test {
 
         //$controler = new liberator($controler);
 
+
+        $_SESSION['usuario_id'] = 2;
+
+        $del = (new adm_accion_grupo($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_accion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_seccion_pertenece($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_seccion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $adm_seccion['id'] = 1;
+        $adm_seccion['descripcion'] = 'adm_accion';
+        $adm_seccion['adm_menu_id'] = 1;
+        $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
+        $adm_seccion['id'] = 10;
+        $adm_seccion['descripcion'] = 'adm_seccion';
+        $adm_seccion['adm_menu_id'] = 1;
+        $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
+
         errores::$error = false;
         $controler->columnas_lista_data_table[] = 'adm_accion_id';
         $resultado = $controler->get_data(header:false);
 
 
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(206,$resultado['recordsTotal']);
+        $this->assertEquals(14,$resultado['recordsTotal']);
         $this->assertCount(10,$resultado['data']);
 
         errores::$error = false;
@@ -124,7 +179,7 @@ class systemTest extends test {
         $resultado = $controler->get_data(header:false);
 
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(206,$resultado['recordsTotal']);
+        $this->assertEquals(14,$resultado['recordsTotal']);
         $this->assertCount(10,$resultado['data']);
 
         errores::$error = false;
@@ -134,9 +189,9 @@ class systemTest extends test {
         $resultado = $controler->get_data(header:false);
         //print_r($resultado);exit;
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(206,$resultado['recordsTotal']);
-        $this->assertCount(15,$resultado['data']);
-        $this->assertEquals(26,$resultado['data'][0]['adm_accion_id']);
+        $this->assertEquals(14,$resultado['recordsTotal']);
+        $this->assertCount(14,$resultado['data']);
+        $this->assertIsNumeric($resultado['data'][0]['adm_accion_id']);
 
 
         errores::$error = false;
@@ -150,9 +205,9 @@ class systemTest extends test {
 
 
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(50,$resultado['recordsTotal']);
-        $this->assertCount(15,$resultado['data']);
-        $this->assertEquals(20,$resultado['data'][0]['adm_accion_id']);
+        $this->assertEquals(14,$resultado['recordsTotal']);
+        $this->assertCount(14,$resultado['data']);
+        $this->assertIsNumeric($resultado['data'][0]['adm_accion_id']);
 
         errores::$error = false;
 
@@ -161,9 +216,9 @@ class systemTest extends test {
         $_GET['search']['value'] = 2;
         $resultado = $controler->get_data(header:false);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(50,$resultado['recordsTotal']);
-        $this->assertCount(15,$resultado['data']);
-        $this->assertEquals(5127,$resultado['data'][0]['adm_accion_id']);
+        $this->assertEquals(14,$resultado['recordsTotal']);
+        $this->assertCount(14,$resultado['data']);
+        $this->assertIsNumeric($resultado['data'][0]['adm_accion_id']);
 
         errores::$error = false;
 
@@ -172,22 +227,25 @@ class systemTest extends test {
         $_GET['search']['value'] = 42;
         $resultado = $controler->get_data(header:false);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(3,$resultado['recordsTotal']);
-        $this->assertCount(3,$resultado['data']);
-        $this->assertEquals(420,$resultado['data'][0]['adm_accion_id']);
+        $this->assertEquals(0,$resultado['recordsTotal']);
+        $this->assertCount(0,$resultado['data']);
 
         errores::$error = false;
 
+
+
+
+
         $_GET['length'] = 15;
         $_GET['start'] = 21;
-        $_GET['search']['value'] = 420;
+        $_GET['search']['value'] = 1;
 
         $resultado = $controler->get_data(header:false);
 
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(1,$resultado['recordsTotal']);
-        $this->assertCount(1,$resultado['data']);
-        $this->assertEquals(420,$resultado['data'][0]['adm_accion_id']);
+        $this->assertEquals(14,$resultado['recordsTotal']);
+        $this->assertCount(14,$resultado['data']);
+        $this->assertIsNumeric($resultado['data'][0]['adm_accion_id']);
 
         errores::$error = false;
 
@@ -214,7 +272,57 @@ class systemTest extends test {
 
         $key = 'visible';
 
+        $del = (new adm_accion_grupo($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_accion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_seccion_pertenece($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_seccion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $adm_seccion['id'] = 1;
+        $adm_seccion['descripcion'] = 'adm_accion';
+        $adm_seccion['adm_menu_id'] = 1;
+        $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
+        $adm_accion['id'] = 1;
+        $adm_accion['descripcion'] = 'test';
+        $adm_accion['titulo'] = 'test';
+        $adm_accion['adm_seccion_id'] = 1;
+        $alta = (new adm_accion($this->link))->alta_registro($adm_accion);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
         $resultado = $controler->integra_row_upd($key);
+
         $this->assertNotTrue(errores::$error);
         $this->assertIsArray($resultado);
         $this->assertEquals('inactivo',$resultado['visible']);
