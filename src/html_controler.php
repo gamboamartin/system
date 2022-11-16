@@ -1369,8 +1369,20 @@ class html_controler{
         return $style;
     }
 
+    /**
+     * Obtiene el estilo de un boton
+     * @param string $key_es_status Key del boton
+     * @param array $row Registro en proceso
+     * @return array|string
+     * @version 0.235.37
+     */
     private function style_btn_status(string $key_es_status, array $row): array|string
     {
+        $key_es_status = trim($key_es_status);
+        if($key_es_status === ''){
+            return $this->error->error(mensaje: 'Error key_es_status esta vacio',data:  $key_es_status);
+        }
+
         $keys = array($key_es_status);
         $valida = $this->validacion->valida_statuses(keys: $keys,registro:  $row);
         if(errores::$error){

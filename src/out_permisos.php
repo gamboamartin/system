@@ -150,7 +150,8 @@ class out_permisos{
         return $rows;
     }
 
-    private function link_btn_action(array $accion_permitida, int $cols, html_controler $html, array $registro, int $registro_id): array|string
+    private function link_btn_action(array $accion_permitida, int $cols, html_controler $html, array $registro,
+                                     int $registro_id, array $params = array()): array|string
     {
         $valida = $this->valida_data_action(accion_permitida: $accion_permitida);
         if(errores::$error){
@@ -164,7 +165,7 @@ class out_permisos{
 
         $link = $html->button_href(accion: $accion_permitida['adm_accion_descripcion'],
             etiqueta: $accion_permitida['adm_accion_titulo'], registro_id:  $registro_id,
-            seccion: $accion_permitida['adm_seccion_descripcion'], style:  $style, cols: $cols);
+            seccion: $accion_permitida['adm_seccion_descripcion'], style:  $style, cols: $cols, params: $params);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar link',data:  $link);
         }

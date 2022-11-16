@@ -808,6 +808,30 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_style_btn_status(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
+        $_SESSION['grupo_id'] = 2;
+        $_SESSION['usuario_id'] = 2;
+
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+
+        $key_es_status = 'a';
+        $row = array();
+        $row['a'] = 'activo';
+        $resultado = $html->style_btn_status($key_es_status, $row);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('success', $resultado);
+        errores::$error = false;
+
+    }
+
     public function test_values_selects(): void
     {
         errores::$error = false;
