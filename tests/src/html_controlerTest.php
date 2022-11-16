@@ -379,6 +379,35 @@ class html_controlerTest extends test {
 
     }
 
+    public function test_input_template(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
+
+
+        $_SESSION['usuario_id'] = 2;
+        $_SESSION['grupo_id'] = 2;
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+        $params_select = new stdClass();
+        $params_select->cols = '1';
+        $params_select->disabled = true;
+        $params_select->name = 'a';
+        $params_select->place_holder = 'a';
+        $params_select->value_vacio = false;
+        $params_select->required = false;
+        $row_upd = new stdClass();
+
+        $resultado = $html->input_template($params_select, $row_upd);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<div |class|><div |class|><input type='text' name='a' value='' |class| disabled  id='a' placeholder='a' /></div></div>",$resultado);
+        errores::$error = false;
+    }
+
     public function test_input_text_required(): void
     {
         errores::$error = false;
