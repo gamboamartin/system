@@ -170,7 +170,7 @@ class systemTest extends test {
 
 
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(14,$resultado['recordsTotal']);
+        $this->assertEquals(16,$resultado['recordsTotal']);
         $this->assertCount(10,$resultado['data']);
 
         errores::$error = false;
@@ -179,7 +179,7 @@ class systemTest extends test {
         $resultado = $controler->get_data(header:false);
 
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(14,$resultado['recordsTotal']);
+        $this->assertEquals(16,$resultado['recordsTotal']);
         $this->assertCount(10,$resultado['data']);
 
         errores::$error = false;
@@ -189,8 +189,8 @@ class systemTest extends test {
         $resultado = $controler->get_data(header:false);
         //print_r($resultado);exit;
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(14,$resultado['recordsTotal']);
-        $this->assertCount(14,$resultado['data']);
+        $this->assertEquals(16,$resultado['recordsTotal']);
+        $this->assertCount(1,$resultado['data']);
         $this->assertIsNumeric($resultado['data'][0]['adm_accion_id']);
 
 
@@ -244,8 +244,8 @@ class systemTest extends test {
 
 
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(7,$resultado['recordsTotal']);
-        $this->assertCount(7,$resultado['data']);
+        $this->assertEquals(8,$resultado['recordsTotal']);
+        $this->assertCount(8,$resultado['data']);
         $this->assertIsNumeric($resultado['data'][0]['adm_accion_id']);
 
         errores::$error = false;
@@ -294,8 +294,8 @@ class systemTest extends test {
         $_GET['search']['value'] = 1;
         $resultado = $controler->get_data(header:false);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(7,$resultado['recordsTotal']);
-        $this->assertCount(7,$resultado['data']);
+        $this->assertEquals(8,$resultado['recordsTotal']);
+        $this->assertCount(8,$resultado['data']);
         $this->assertIsNumeric($resultado['data'][0]['adm_accion_id']);
 
         errores::$error = false;
@@ -307,8 +307,8 @@ class systemTest extends test {
 
 
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(7,$resultado['recordsTotal']);
-        $this->assertCount(7,$resultado['data']);
+        $this->assertEquals(8,$resultado['recordsTotal']);
+        $this->assertCount(8,$resultado['data']);
 
         errores::$error = false;
 
@@ -323,8 +323,8 @@ class systemTest extends test {
         $resultado = $controler->get_data(header:false);
 
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(7,$resultado['recordsTotal']);
-        $this->assertCount(7,$resultado['data']);
+        $this->assertEquals(8,$resultado['recordsTotal']);
+        $this->assertCount(8,$resultado['data']);
         $this->assertIsNumeric($resultado['data'][0]['adm_accion_id']);
 
         errores::$error = false;

@@ -676,6 +676,28 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_params_select_init(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
+
+
+        $_SESSION['usuario_id'] = 2;
+        $_SESSION['grupo_id'] = 2;
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+        $item = 'a';
+        $keys_selects = array();
+
+        $resultado = $html->params_select_init($item, $keys_selects);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_retornos(): void
     {
         errores::$error = false;

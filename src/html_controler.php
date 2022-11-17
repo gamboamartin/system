@@ -161,20 +161,10 @@ class html_controler{
 
         foreach ($campos_view['dates'] as $item){
 
-            /**
-             * REFACTORIZAR
-             */
-            $params_select = new stdClass();
-
-            if (array_key_exists($item, $keys_selects) ){
-                $params_select = $keys_selects[$item];
-            }
-
-            $params_select = $this->params_input2(params: $params_select,name: $item,place_holder: $item);
+            $params_select = $this->params_select_init(item:$item,keys_selects:  $keys_selects);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar select', data: $params_select);
             }
-
             $date = $this->dates_template(params_select: $params_select,row_upd: $row_upd);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar input', data: $date);
@@ -933,16 +923,15 @@ class html_controler{
     }
 
 
-
     /**
      * Inicializa los parametros para un input
      * @param stdClass $data Data precargado
      * @param string $name Nombre del input
      * @param stdClass $params Parametros
-     * @return stdClass
+     * @return stdClass|array
      * @version 0.185.34
      */
-    private function params_base(stdClass $data, string $name, stdClass $params): stdClass
+    private function params_base(stdClass $data, string $name, stdClass $params): stdClass|array
     {
         $data->disabled = $params->disabled ?? false;
         $data->con_registros = $params->con_registros ?? true;
@@ -973,6 +962,7 @@ class html_controler{
      */
     private function params_input2(stdClass $params, string $name,string $place_holder): stdClass|array
     {
+
         $data = new stdClass();
         $data->cols = $params->cols ?? 6;
         $data->place_holder = $params->place_holder ?? $place_holder;
@@ -1041,14 +1031,20 @@ class html_controler{
         return $data;
     }
 
+    /**
+     * Integra los parametros para inputs
+     * @param string $item Row
+     * @param array $keys_selects keys con datos de inputs
+     * @return array|stdClass
+     * @version 0.245.37
+     */
     private function params_select_init(string $item, array $keys_selects): array|stdClass
     {
-        $params_select = new stdClass();
 
+        $params_select = new stdClass();
         if (array_key_exists($item, $keys_selects) ){
             $params_select = $keys_selects[$item];
         }
-
         $params_select = $this->params_input2(params: $params_select,name: $item,place_holder: $item);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $params_select);
