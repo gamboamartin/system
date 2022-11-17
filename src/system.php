@@ -45,7 +45,7 @@ class system extends controlador_base{
     public string $menu_lateral = '';
     public array $actions_number = array();
     public string $include_breadcrumb = '';
-    public string $thead = '';
+    public string $contenido_table = '';
 
     /**
      * @param html_controler $html Html base

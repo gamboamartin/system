@@ -725,10 +725,7 @@ class html_controler{
         return $div;
     }
 
-    private function integra_thead(string $ths): string
-    {
-        return "<thead><tr>$ths</tr></thead>";
-    }
+
 
     /**
      * Asigna los keys necesarios para un select
@@ -1458,6 +1455,7 @@ class html_controler{
         return $style;
     }
 
+
     private function text_item(string $item, array $keys_selects, stdClass $row_upd, stdClass $texts): array|stdClass
     {
         $params_select = $this->params_select_init(item: $item, keys_selects: $keys_selects);
@@ -1516,39 +1514,11 @@ class html_controler{
         return $texts;
     }
 
-    private function th(string $name): string
-    {
-        return "<th>$name</th>";
-    }
 
-    public function thead(array $names): array|string
-    {
-        $ths = $this->ths(names: $names);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al integra ths', data: $ths);
-        }
 
-        $thead = $this->integra_thead(ths:$ths);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al integra thead', data: $thead);
-        }
-        return $thead;
-    }
 
-    private function ths(array $names): array|string
-    {
 
-        $ths = '';
-        foreach ($names as $name){
-            $th = $this->th(name: $name);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al integra th', data: $th);
-            }
-            $ths.=$th;
-        }
-        return $ths;
 
-    }
 
     public function valida_boton_data_accion(array $accion_permitida): bool|array
     {
