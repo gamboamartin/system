@@ -26,48 +26,9 @@ class datatablesTest extends test {
         $this->paths_conf->views = '/var/www/html/system/config/views.php';
     }
 
-    public function test_accion_base(): void
-    {
-        errores::$error = false;
-        $datatables = new datatables();
-        $datatables = new liberator($datatables);
-        $_SESSION['grupo_id'] = 1;
 
-        $acciones_grupo = array();
 
-        $resultado = $datatables->accion_base($acciones_grupo);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEmpty($resultado);
 
-        errores::$error = false;
-        $acciones_grupo = array();
-        $acciones_grupo['a']['adm_accion_descripcion'] = 'x';
-
-        $resultado = $datatables->accion_base($acciones_grupo);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('x',$resultado);
-        errores::$error = false;
-    }
-
-    public function test_acciones_columnas(): void
-    {
-        errores::$error = false;
-        $datatables = new datatables();
-        $datatables = new liberator($datatables);
-
-        $_SESSION['usuario_id'] = 2;
-        $_SESSION['grupo_id'] = 2;
-
-        $seccion = 'a';
-        $columns = array();
-        $resultado = $datatables->acciones_columnas($columns, $this->link, $seccion);
-        $this->assertIsArray($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEmpty($resultado);
-        errores::$error = false;
-    }
 
     public function test_acciones_permitidas(): void
     {
@@ -79,6 +40,7 @@ class datatablesTest extends test {
         $seccion = 'a';
 
         $resultado = $datatables->acciones_permitidas($link, $seccion);
+
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEmpty($resultado);
@@ -228,24 +190,7 @@ class datatablesTest extends test {
         errores::$error = false;
     }
 
-    public function test_columnas_accion(): void
-    {
-        errores::$error = false;
-        $datatables = new datatables();
-        $datatables = new liberator($datatables);
 
-        $acciones_grupo = array();
-        $acciones_grupo[0]['adm_accion_descripcion'] = 'a';
-        $acciones_grupo[1]['adm_accion_descripcion'] = 'a';
-
-        $adm_accion_base = 'v';
-        $columns = array();
-        $resultado = $datatables->columnas_accion($acciones_grupo, $adm_accion_base, $columns);
-        $this->assertIsArray($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals("a", $resultado['v']['campos'][0]);
-        errores::$error = false;
-    }
 
     public function test_columns(): void
     {
@@ -370,74 +315,6 @@ class datatablesTest extends test {
 
     }
 
-    public function test_draw(): void
-    {
-        errores::$error = false;
-        $datatables = new datatables();
-        $datatables = new liberator($datatables);
-
-        $resultado = $datatables->draw();
-        $this->assertIsInt($resultado);
-        $this->assertNotTrue(errores::$error);
-
-        errores::$error = false;
-
-        $_GET['draw'] = 'x';
-
-        $resultado = $datatables->draw();
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertEquals('Error draw debe ser un numero', $resultado['mensaje_limpio']);
-
-        errores::$error = false;
-
-        $_GET['draw'] = '1';
-
-        $resultado = $datatables->draw();
-        $this->assertIsInt($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals(1,$resultado);
-
-        errores::$error = false;
-    }
-
-    public function test_filtro_especial_datatable(): void
-    {
-        errores::$error = false;
-        $datatables = new datatables();
-        $datatables = new liberator($datatables);
-
-        $column = 'x';
-
-        $str = 'x';
-        $indice = 0;
-        $filtro_especial = array();
-        $resultado = $datatables->filtro_especial_datatable($filtro_especial, $indice, $column, $str);
-
-        $this->assertIsArray($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('%x%', $resultado[0]['x']['valor']);
-        errores::$error = false;
-    }
-
-    public function test_genera_accion(): void
-    {
-        errores::$error = false;
-        $datatables = new datatables();
-        $datatables = new liberator($datatables);
-
-        $i = 1;
-
-        $columns = array();
-        $adm_accion_grupo = array();
-        $adm_accion_grupo['adm_accion_descripcion'] = 'a';
-        $adm_accion_base = 'b';
-        $resultado = $datatables->genera_accion($adm_accion_base, $adm_accion_grupo, $columns, $i);
-        $this->assertIsArray($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('a',$resultado['b']['campos'][0]);
-        errores::$error = false;
-    }
 
     public function test_genera_column(): void
     {
@@ -456,38 +333,9 @@ class datatablesTest extends test {
         errores::$error = false;
     }
 
-    public function test_init_datatable(): void
-    {
-        errores::$error = false;
-        $datatables = new datatables();
-        $datatables = new liberator($datatables);
 
-        $filtro = array();
 
-        $resultado = $datatables->init_datatable($filtro);
-        $this->assertIsArray($resultado);
-        $this->assertIsArray($resultado['columns']);
-        $this->assertIsArray($resultado['columnDefs']);
-        $this->assertIsArray($resultado['filtro']);
-        $this->assertNotTrue(errores::$error);
-        errores::$error = false;
-    }
 
-    public function test_integra_accion(): void
-    {
-        errores::$error = false;
-        $datatables = new datatables();
-        $datatables = new liberator($datatables);
-        $_SESSION['grupo_id'] = 1;
-        $adm_accion = 'b';
-        $adm_accion_base = 'a';
-        $columns = array();
-
-        $resultado = $datatables->integra_accion($adm_accion, $adm_accion_base, $columns);
-        $this->assertIsArray($resultado);
-        $this->assertNotTrue(errores::$error);
-        errores::$error = false;
-    }
 
     public function test_integra_titulo(): void
     {
@@ -536,25 +384,7 @@ class datatablesTest extends test {
         errores::$error = false;
     }
 
-    public function test_maqueta_accion_base_column(): void
-    {
-        errores::$error = false;
-        $datatables = new datatables();
-        $datatables = new liberator($datatables);
 
-        $acciones_grupo = array();
-        $acciones_grupo[] = '';
-
-        $adm_accion_base = 'a';
-        $columns = array();
-
-        $resultado = $datatables->maqueta_accion_base_column($acciones_grupo, $adm_accion_base, $columns);
-
-        $this->assertIsArray($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('Acciones', $resultado['a']['titulo']);
-        errores::$error = false;
-    }
 
     public function test_maqueta_column_obj(): void
     {

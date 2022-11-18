@@ -2,6 +2,9 @@
 namespace gamboamartin\system;
 use gamboamartin\administrador\models\adm_accion_grupo;
 use gamboamartin\errores\errores;
+use gamboamartin\system\datatables\acciones;
+use gamboamartin\system\datatables\filtros;
+use gamboamartin\system\datatables\validacion_dt;
 use gamboamartin\template\html;
 use gamboamartin\validacion\validacion;
 use PDO;
@@ -15,72 +18,6 @@ class datatables{
         $this->valida = new validacion();
     }
 
-    /**
-     * Asigna la primer accion de un datatable
-     * @param array $acciones_grupo Conjunto de permisos
-     * @return string|array
-     * @version 0.154.33
-     */
-    private function accion_base(array $acciones_grupo): string|array
-    {
-        $adm_accion_base = '';
-        foreach ($acciones_grupo as $adm_accion_grupo){
-            if(!is_array($adm_accion_grupo)){
-                return $this->error->error(mensaje: 'Error adm_accion_grupo debe ser un array', data: $adm_accion_grupo);
-            }
-            $keys = array('adm_accion_descripcion');
-            $valida = $this->valida->valida_existencia_keys(keys:$keys,registro:  $adm_accion_grupo);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al validar accion', data: $valida);
-            }
-            $adm_accion_base = $adm_accion_grupo['adm_accion_descripcion'];
-            break;
-        }
-        return $adm_accion_base;
-    }
-
-    /**
-     * Genera los datos para datatables
-     * @param array $columns columnas de tipo controller
-     * @param PDO $link Conexion a la base de datos
-     * @param string $seccion Seccion en ejecucion
-     * @param array $not_actions Acciones para exclusion
-     * @return array
-     * @version 0.226.37
-     */
-    private function acciones_columnas(array $columns, PDO $link, string $seccion, array $not_actions = array()): array
-    {
-
-        $valida = $this->valida_data_column(seccion: $seccion);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
-        }
-
-        $acciones_grupo = $this->acciones_permitidas(link: $link,seccion: $seccion, not_actions: $not_actions);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener acciones', data: $acciones_grupo);
-        }
-
-        $adm_accion_base = $this->accion_base(acciones_grupo: $acciones_grupo);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener accion base', data: $adm_accion_base);
-        }
-
-        $columns = $this->maqueta_accion_base_column(
-            acciones_grupo: $acciones_grupo,adm_accion_base:  $adm_accion_base,columns:  $columns);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al maquetar accion base', data: $columns);
-
-        }
-
-        $columns = $this->columnas_accion(
-            acciones_grupo: $acciones_grupo,adm_accion_base:  $adm_accion_base,columns:  $columns);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al maquetar acciones ', data: $columns);
-
-        }
-        return $columns;
-    }
 
     /**
      * Obtiene las acciones permitidas de un grupo de usuario
@@ -92,12 +29,12 @@ class datatables{
      */
     public function acciones_permitidas(PDO $link, string $seccion, array $not_actions = array()): array
     {
-        $valida = $this->valida_data_column(seccion: $seccion);
+        $valida = (new validacion_dt())->valida_data_column(seccion: $seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
         }
 
-        $filtro = $this->filtro_accion_permitida(seccion: $seccion);
+        $filtro = (new filtros())->filtro_accion_permitida(seccion: $seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener not in', data: $filtro);
         }
@@ -116,38 +53,6 @@ class datatables{
         return $r_accion_grupo->registros;
     }
 
-    /**
-     * Integra las columnas para datatables
-     * @param array $acciones_grupo Acciones
-     * @param string $adm_accion_base Accion
-     * @param array $columns Columnas datatables
-     * @return array
-     * @version 0.224.37
-     */
-    private function columnas_accion(array $acciones_grupo, string $adm_accion_base, array $columns): array
-    {
-        $i = 0;
-        foreach ($acciones_grupo as $adm_accion_grupo){
-            if(!is_array($adm_accion_grupo)){
-                return $this->error->error(
-                    mensaje: 'Error adm_accion_grupo debe ser un array', data: $adm_accion_grupo);
-            }
-
-            $keys = array('adm_accion_descripcion');
-            $valida = $this->valida->valida_existencia_keys(keys: $keys,registro:  $adm_accion_grupo);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al validar adm_accion_grupo ', data: $valida);
-            }
-
-            $columns = $this->genera_accion(
-                adm_accion_base: $adm_accion_base,adm_accion_grupo:  $adm_accion_grupo,columns:  $columns,i:  $i);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al maquetar accion ', data: $columns);
-            }
-            $i++;
-        }
-        return $columns;
-    }
 
     private function column_datable_init(stdClass $datatables, array $rows_lista, string $seccion): array
     {
@@ -172,7 +77,7 @@ class datatables{
      */
     private function column_init(array|string $column, string $indice): stdClass|array
     {
-        $valida = $this->valida_base(column: $column,indice:  $indice);
+        $valida = (new validacion_dt())->valida_base(column: $column,indice:  $indice);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar datos', data:  $valida);
         }
@@ -223,7 +128,7 @@ class datatables{
 
         foreach ($columns as $indice => $column){
 
-            $valida = $this->valida_base(column: $column,indice:  $indice);
+            $valida = (new validacion_dt())->valida_base(column: $column,indice:  $indice);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al validar datos', data:  $valida);
             }
@@ -265,7 +170,7 @@ class datatables{
     private function columns_defs(array|string $column, string $indice, int $targets, string $type): stdClass|array
     {
 
-        $valida = $this->valida_base(column: $column,indice:  $indice);
+        $valida = (new validacion_dt())->valida_base(column: $column,indice:  $indice);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar datos', data:  $valida);
         }
@@ -299,7 +204,7 @@ class datatables{
 
         }
 
-        $columns = $this->acciones_columnas(columns: $columns, link: $link, seccion: $seccion);
+        $columns = (new acciones())->acciones_columnas(columns: $columns, link: $link, seccion: $seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al maquetar acciones ', data: $columns);
 
@@ -356,7 +261,7 @@ class datatables{
     public function datatable(array $columns, array $filtro = array(),string $identificador = ".datatable",
                               array $data = array()): array
     {
-        $datatable = $this->init_datatable(filtro:$filtro,identificador: $identificador, data: $data);
+        $datatable = (new \gamboamartin\system\datatables\init())->init_datatable(filtro:$filtro,identificador: $identificador, data: $data);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar datatable', data:  $datatable);
         }
@@ -370,7 +275,7 @@ class datatables{
 
     public function datatable_base_init(stdClass $datatables, PDO $link, array $rows_lista, string $seccion): array|stdClass
     {
-        $filtro = $this->init_filtro_datatables(datatables: $datatables, rows_lista: $rows_lista,seccion: $seccion);
+        $filtro = (new \gamboamartin\system\datatables\init())->init_filtro_datatables(datatables: $datatables, rows_lista: $rows_lista,seccion: $seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar filtro', data: $filtro);
         }
@@ -388,128 +293,7 @@ class datatables{
         return $data;
     }
 
-    /**
-     * Obtiene draw para datatable
-     * @return int|array
-     * @version 0.239.37
-     */
-    private function draw(): int|array
-    {
-        $draw = mt_rand(1,999);
-        if (isset ( $_GET['draw'] )) {
-            $draw = $_GET['draw'];
-        }
-        if(!is_numeric($draw)){
-            return $this->error->error(mensaje: 'Error draw debe ser un numero', data: $draw);
-        }
 
-        return $draw;
-    }
-
-    private function filtro(){
-        $filtro  = array();
-        if (isset($_GET['data'])){
-            $filtro = $_GET['data'];
-        }
-        return $filtro;
-    }
-
-
-    private function filtro_accion_permitida(string $seccion): array
-    {
-        $filtro = array();
-        $filtro['adm_grupo.id'] = $_SESSION['grupo_id'];
-        $filtro['adm_seccion.descripcion'] = $seccion;
-        $filtro['adm_accion.es_lista'] = 'activo';
-        $filtro['adm_accion.status'] = 'activo';
-        $filtro['adm_grupo.status'] = 'activo';
-        return $filtro;
-    }
-
-    /**
-     * Maqueta un filtro especial para datatables
-     * @param array $filtro_especial Filtro precargado
-     * @param int $indice Indice de column filtro
-     * @param string $column Columna
-     * @param string $str dato para filtrar
-     * @return array
-     * @version 0.155.33
-     *
-     */
-    private function filtro_especial_datatable(array $filtro_especial, int $indice, string $column, string $str): array
-    {
-        $str = trim($str);
-        if($str === ''){
-            return $this->error->error(mensaje: 'Error str esta vacio', data: $str);
-        }
-
-        if($indice < 0 ){
-            return $this->error->error(mensaje: 'Error indice debe ser mayor o igual a 0', data: $indice);
-        }
-        $column = trim($column);
-        if($column === ''){
-            return $this->error->error(mensaje: 'Error column esta vacio', data: $column);
-        }
-        $filtro_especial[$indice][$column]['operador'] = 'LIKE';
-        $filtro_especial[$indice][$column]['valor'] = addslashes(trim("%$str%"));
-        $filtro_especial[$indice][$column]['comparacion'] = "OR";
-
-        return $filtro_especial;
-    }
-
-    private function filtros_especiales_datatable(array $datatable, array $filtro_especial, string $str): array
-    {
-        foreach ($datatable["filtro"] as $indice=>$column) {
-
-            $filtro_especial = $this->filtro_especial_datatable(
-                filtro_especial: $filtro_especial,indice:  $indice, column: $column, str: $str);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al obtener filtro_especial', data: $filtro_especial);
-            }
-        }
-        return $filtro_especial;
-    }
-
-    /**
-     * Integra una accion para columnas datatable
-     * @param string $adm_accion_base Accion a integrar
-     * @param array $adm_accion_grupo Permiso
-     * @param array $columns Columnas para datatables
-     * @param int $i Indice de registros
-     * @return array
-     * @version 0.221.37
-     */
-    private function genera_accion(string $adm_accion_base, array $adm_accion_grupo, array $columns, int $i): array
-    {
-        $keys = array('adm_accion_descripcion');
-        $valida = $this->valida->valida_existencia_keys(keys: $keys,registro:  $adm_accion_grupo);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar adm_accion_grupo ', data: $valida);
-        }
-        if($i<0){
-            return $this->error->error(mensaje: 'Error i debe ser mayor o igual a 0 ', data: $i);
-        }
-
-        $adm_accion = $adm_accion_grupo['adm_accion_descripcion'];
-        if($i > 0){
-
-            $adm_accion_base = trim($adm_accion_base);
-            if($adm_accion_base === ''){
-                return $this->error->error(mensaje: 'Error adm_accion_base esta vacia', data:  $adm_accion_base);
-            }
-            $adm_accion = trim($adm_accion);
-            if($adm_accion === ''){
-                return $this->error->error(mensaje: 'Error adm_accion esta vacia', data:  $adm_accion);
-            }
-
-            $columns = $this->integra_accion(adm_accion: $adm_accion,adm_accion_base:  $adm_accion_base,columns:  $columns);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al maquetar accion ', data: $columns);
-            }
-
-        }
-        return $columns;
-    }
 
     /**
      * Genera una columna para datatable
@@ -523,7 +307,7 @@ class datatables{
      */
     private function genera_column(array|string $column, array $columns, array $datatable, string $indice, int $index_button): array|stdClass
     {
-        $valida = $this->valida_base(column: $column,indice:  $indice);
+        $valida = (new validacion_dt())->valida_base(column: $column,indice:  $indice);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar datos', data:  $valida);
         }
@@ -561,73 +345,6 @@ class datatables{
         return $data;
     }
 
-    private function genera_filtro_especial_datatable(array $datatable): array
-    {
-        $filtro_especial = array();
-        if(isset($_GET['search']) && $_GET['search']['value'] !== '' ) {
-            $str = $_GET['search']['value'];
-            $filtro_especial = $this->filtros_especiales_datatable(
-                datatable: $datatable, filtro_especial: $filtro_especial,str:  $str);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al obtener filtro_especial', data: $filtro_especial);
-            }
-        }
-        return $filtro_especial;
-    }
-
-    /**
-     * Inicializa datatables
-     * @param array $filtro Filtro
-     * @param string $identificador
-     * @param array $data
-     * @return array
-     * @version 0.151.33
-     */
-    private function init_datatable(array $filtro,string $identificador = ".datatable", array $data = array()): array
-    {
-        $datatable["columns"] = array();
-        $datatable["columnDefs"] = array();
-        $datatable['filtro'] = $filtro;
-        $datatable['identificador'] = $identificador;
-        $datatable['data'] = $data;
-        return $datatable;
-    }
-
-    private function init_filtro_datatables(stdClass $datatables, array $rows_lista, string $seccion): array
-    {
-        $filtro = array();
-        if(!isset($datatables->filtro)){
-            foreach ($rows_lista as $key_row_lista){
-                $filtro[] = $seccion.'.'.$key_row_lista;
-            }
-        }
-        else{
-            $filtro = $datatables->filtro;
-        }
-        return $filtro;
-    }
-
-    /**
-     * Integra una columna de accion a datatable
-     * @param string $adm_accion Accion
-     * @param string $adm_accion_base Accion base
-     * @param array $columns Columnas de datatable
-     * @return array
-     * @version 0.198.36
-     */
-    private function integra_accion(string $adm_accion, string $adm_accion_base, array $columns): array
-    {
-        $adm_accion_base = trim($adm_accion_base);
-        if($adm_accion_base === ''){
-            return $this->error->error(mensaje: 'Error adm_accion_base esta vacia', data:  $adm_accion_base);
-        }
-        $adm_accion = trim($adm_accion);
-        if($adm_accion === ''){
-            return $this->error->error(mensaje: 'Error adm_accion esta vacia', data:  $adm_accion);
-        }
-        $columns[$adm_accion_base]['campos'][] = $adm_accion;
-        return $columns;
-    }
 
     /**
      * Integra el titulo en ele objeto de columna a generar
@@ -655,30 +372,6 @@ class datatables{
     }
 
     /**
-     * Maqueta los elementos para un row
-     * @param array $acciones_grupo Acciones permitidas
-     * @param string $adm_accion_base accion
-     * @param array $columns Columnas precargadas
-     * @return array
-     * @version 0.170.34
-     */
-    private function maqueta_accion_base_column(array $acciones_grupo, string $adm_accion_base, array $columns): array
-    {
-
-        if(count($acciones_grupo) > 0){
-            $adm_accion_base = trim($adm_accion_base);
-            if($adm_accion_base === ''){
-                return $this->error->error(mensaje: 'Error adm_accion_base esta vacia', data:  $adm_accion_base);
-            }
-            $columns[$adm_accion_base]['titulo'] = 'Acciones';
-            $columns[$adm_accion_base]['type'] = 'button';
-            $columns[$adm_accion_base]['campos'] = array();
-        }
-
-        return $columns;
-    }
-
-    /**
      * Maqueta una columna a integrar
      * @param array|string $column Columna
      * @param string $indice Key
@@ -687,7 +380,7 @@ class datatables{
      */
     private function maqueta_column_obj(array|string $column, string $indice): array|stdClass
     {
-        $valida = $this->valida_base(column: $column,indice:  $indice);
+        $valida = (new validacion_dt())->valida_base(column: $column,indice:  $indice);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar datos', data:  $valida);
         }
@@ -714,47 +407,27 @@ class datatables{
         return $not_in;
     }
 
-    private function n_rows_for_page(){
-        $n_rows_for_page = 10;
-        if (isset ( $_GET['length'] )) {
-            $n_rows_for_page = $_GET['length'];
-        }
-        return $n_rows_for_page;
-    }
-
-    private function pagina(int $n_rows_for_page): int
-    {
-        $pagina = 1;
-        if (isset ( $_GET['start'] )) {
-            $pagina = (int)($_GET['start'] /  $n_rows_for_page) + 1;
-        }
-        if($pagina <= 0){
-            $pagina = 1;
-        }
-        return $pagina;
-    }
-
     public function params(array $datatable): array|stdClass
     {
-        $draw = (new datatables())->draw();
+        $draw = (new \gamboamartin\system\datatables\init())->draw();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener draw', data: $draw);
         }
-        $n_rows_for_page = $this->n_rows_for_page();
+        $n_rows_for_page = (new \gamboamartin\system\datatables\init())->n_rows_for_page();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener n_rows_for_page', data: $n_rows_for_page);
         }
 
-        $pagina = $this->pagina(n_rows_for_page: $n_rows_for_page);
+        $pagina = (new \gamboamartin\system\datatables\init())->pagina(n_rows_for_page: $n_rows_for_page);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener pagina', data: $pagina);
         }
-        $filtro = $this->filtro();
+        $filtro = (new filtros())->filtro();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener filtro', data: $filtro);
         }
 
-        $filtro_especial = $this->genera_filtro_especial_datatable(datatable: $datatable);
+        $filtro_especial = (new filtros())->genera_filtro_especial_datatable(datatable: $datatable);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener filtro_especial', data: $filtro_especial);
         }
@@ -807,41 +480,7 @@ class datatables{
         return $type;
     }
 
-    private function valida_base(array|string $column, string $indice): bool|array
-    {
-        if(is_string($column)){
-            $column = trim($column);
-            if($column === ''){
-                return $this->error->error(mensaje: 'Error column no puede venir vacia', data:  $column);
-            }
-        }
-        if(is_array($column)){
-            if(count($column) === 0){
-                return $this->error->error(mensaje: 'Error column no puede venir vacia', data:  $column);
-            }
-        }
-        $indice = trim($indice);
-        if($indice === ''){
-            return $this->error->error(mensaje: 'Error indice no puede venir vacia', data:  $indice);
-        }
-        return true;
-    }
 
-    private function valida_data_column(string $seccion): bool|array
-    {
-        if(!isset($_SESSION)){
-            return $this->error->error(mensaje: 'Error no hay SESSION iniciada', data: array());
-        }
-        $keys = array('grupo_id');
-        $valida = $this->valida->valida_ids(keys: $keys,registro:  $_SESSION);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar SESSION', data: $valida);
-        }
-        $seccion = trim($seccion);
-        if($seccion === ''){
-            return $this->error->error(mensaje: 'Error seccion esta vacia', data: $seccion);
-        }
-        return true;
 
-    }
+
 }

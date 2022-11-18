@@ -94,6 +94,39 @@ class out_permisosTest extends test {
         errores::$error = false;
     }
 
+    public function test_link_btn_action(): void
+    {
+        errores::$error = false;
+        $_SESSION['grupo_id'] = 1;
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+        $html = new html();
+        $html_controler = new html_controler($html);
+
+
+        $out = new out_permisos();
+        $out = new liberator($out);
+
+        $accion_permitida = array();
+        $accion_permitida['adm_accion_descripcion'] = 'a';
+        $accion_permitida['adm_accion_titulo'] = 'b';
+        $accion_permitida['adm_seccion_descripcion'] = 'c';
+        $accion_permitida['adm_accion_css'] = 'light';
+        $accion_permitida['adm_accion_es_status'] = 'activo';
+        $cols = -1;
+        $params = array();
+        $registro = array();
+        $registro['c_a'] = 'activo';
+        $registro_id = -1;
+
+
+        $resultado = $out->link_btn_action($accion_permitida, $cols, $html_controler, $params, $registro, $registro_id);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<a role='button' href='index.php?seccion=c&accion=a&registro_id=-1&session_id=1' class='btn btn-success col-sm--1'>b</a>",$resultado);
+        errores::$error = false;
+    }
+
     public function test_valida_data_action(): void
     {
         errores::$error = false;
@@ -106,7 +139,7 @@ class out_permisosTest extends test {
 
         $accion_permitida = array();
         $resultado = $out->valida_data_action($accion_permitida);
-        //print_r($resultado);exit;
+
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
         $this->assertEquals('Error al validar  accion_permitida',$resultado['mensaje_limpio']);
@@ -117,9 +150,10 @@ class out_permisosTest extends test {
         $accion_permitida['adm_accion_descripcion'] = 'a';
         $accion_permitida['adm_accion_titulo'] = 'a';
         $accion_permitida['adm_seccion_descripcion'] = 'a';
-        $accion_permitida['adm_accion_css'] = 'a';
+        $accion_permitida['adm_accion_css'] = 'danger';
         $accion_permitida['adm_accion_es_status'] = 'a';
         $resultado = $out->valida_data_action($accion_permitida);
+        //print_r($resultado);exit;
         $this->assertIsBool($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertTrue($resultado);
@@ -141,7 +175,7 @@ class out_permisosTest extends test {
         $accion_permitida['adm_accion_descripcion'] = 'a';
         $accion_permitida['adm_accion_titulo'] = 'a';
         $accion_permitida['adm_seccion_descripcion'] = 'a';
-        $accion_permitida['adm_accion_css'] = 'a';
+        $accion_permitida['adm_accion_css'] = 'info';
         $accion_permitida['adm_accion_es_status'] = 'a';
         $key_id = 'a';
         $row = array();
