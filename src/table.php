@@ -260,7 +260,7 @@ class table{
         return "<tr>$td</tr>";
     }
 
-    private function trs_rows(int $cols_actions, array $class_css_td, $id_css_td, array $keys_data, string $key_actions, array $rows): string
+    private function trs_rows(int $cols_actions, array $class_css_td, $id_css_td, array $keys_data, string $key_actions, array $rows): string|array
     {
         $trs = '';
         foreach ($rows as $row){
