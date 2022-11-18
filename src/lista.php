@@ -1,5 +1,7 @@
 <?php
 namespace gamboamartin\system;
+use base\controller\controler;
+use base\orm\modelo;
 use config\generales;
 use gamboamartin\errores\errores;
 use gamboamartin\template\html;
@@ -14,7 +16,7 @@ class lista{
         $this->validacion = new validacion();
     }
 
-    public function columnas_lista(array $keys_row_lista): array
+    private function columnas_lista(array $keys_row_lista): array
     {
         $columnas = array();
         foreach ($keys_row_lista as $key_row_lista){
@@ -26,6 +28,35 @@ class lista{
             $columnas[] = $key_row_lista->campo;
         }
         return $columnas;
+    }
+
+    private function rows_lista(array $keys_row_lista, modelo $modelo): array|stdClass
+    {
+        $columnas = $this->columnas_lista(keys_row_lista: $keys_row_lista);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar columnas para lista', data:  $columnas);
+        }
+
+        $registros = $modelo->registros(columnas:$columnas,return_obj: true);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener registros', data:  $registros);
+        }
+        return $registros;
+    }
+
+    public function rows_view_lista(system $controler): array
+    {
+        $registros = $this->rows_lista(keys_row_lista: $controler->keys_row_lista, modelo: $controler->modelo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener registros', data:  $registros);
+        }
+
+        $registros_view = (new actions())->registros_view_actions(acciones: $controler->acciones, link: $controler->link,
+            obj_link: $controler->obj_link,registros:  $registros, seccion:  $controler->seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al asignar link', data:  $registros_view);
+        }
+        return $registros_view;
     }
 
     /**

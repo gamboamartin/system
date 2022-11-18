@@ -38,7 +38,7 @@ class listaTest extends test {
 
 
         $controler = new lista();
-        //$controler = new liberator($controler);
+        $controler = new liberator($controler);
         $keys_row_lista = array();
 
         $resultado = $controler->columnas_lista($keys_row_lista);

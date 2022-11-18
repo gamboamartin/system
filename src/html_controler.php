@@ -1362,6 +1362,9 @@ class html_controler{
         }
 
         foreach ($campos_view['selects'] as $item => $modelo){
+            /**
+             * REFACTORIZAR
+             */
             $item = trim($item);
             if($item === ''){
                 return $this->error->error(mensaje: 'Error item esta vacio', data: $item);
@@ -1455,6 +1458,21 @@ class html_controler{
         return $style;
     }
 
+    private function text_input_integra(string $item, array $keys_selects, stdClass $row_upd, stdClass $texts): array|stdClass
+    {
+        $params_select = $this->params_select_init(item:$item,keys_selects:  $keys_selects);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar select', data: $params_select);
+        }
+
+        $input = $this->input_template(params_select: $params_select,row_upd: $row_upd);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar input', data: $input);
+        }
+        $texts->$item = $input;
+        return $texts;
+    }
+
 
     private function text_item(string $item, array $keys_selects, stdClass $row_upd, stdClass $texts): array|stdClass
     {
@@ -1492,32 +1510,28 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al obtener campos de la vista del modelo', data: $campos_view);
         }
 
-        $texts = new stdClass();
-
-        foreach ($campos_view['inputs'] as $item){
-            /**
-             * REFCATORIZAR
-             */
-
-            $params_select = $this->params_select_init(item:$item,keys_selects:  $keys_selects);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar select', data: $params_select);
-            }
-
-            $input = $this->input_template(params_select: $params_select,row_upd: $row_upd);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar input', data: $input);
-            }
-            $texts->$item = $input;
+        $texts = $this->texts_integra(campos_view: $campos_view,keys_selects:  $keys_selects,row_upd:  $row_upd);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar input', data: $texts);
         }
 
         return $texts;
     }
 
+    private function texts_integra(array $campos_view, array $keys_selects, stdClass $row_upd): array|stdClass
+    {
+        $texts = new stdClass();
 
+        foreach ($campos_view['inputs'] as $item){
 
+            $texts = $this->text_input_integra(item: $item,keys_selects:  $keys_selects,row_upd:  $row_upd,texts:  $texts);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar input', data: $texts);
+            }
 
-
+        }
+        return $texts;
+    }
 
 
     public function valida_boton_data_accion(array $accion_permitida): bool|array

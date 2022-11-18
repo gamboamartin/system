@@ -332,14 +332,13 @@ class systemTest extends test {
 
     }
 
-    public function test_integra_row_upd(): void
+
+    public function test_key_selects_txt(): void
     {
         errores::$error = false;
+        $_SESSION['grupo_id'] = 2;
         $_GET['session_id'] = 1;
         $_GET['seccion'] = 'adm_accion';
-        $_GET['registro_id'] = 1;
-        $_SESSION['usuario_id'] = 2;
-        $_SESSION['grupo_id'] = 2;
         $html = new html();
         $html_controler = new html_controler($html);
 
@@ -348,9 +347,41 @@ class systemTest extends test {
 
         $controler = new system(html: $html_controler, link: $this->link, modelo: $modelo, obj_link: $obj_link,
             paths_conf: $this->paths_conf);
+
+
         $controler = new liberator($controler);
 
-        $key = 'visible';
+        errores::$error = false;
+        $keys_selects = array();
+
+        $resultado = $controler->key_selects_txt($keys_selects);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsArray($resultado);
+        errores::$error = false;
+    }
+
+    public function test_modifica(): void
+    {
+        errores::$error = false;
+        $_SESSION['grupo_id'] = 2;
+        $_GET['session_id'] = 1;
+        $_GET['registro_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+        $html = new html();
+        $html_controler = new html_controler($html);
+
+        $modelo = new adm_accion($this->link);
+        $obj_link = new links_menu($this->link, -1);
+
+        $controler = new system(html: $html_controler, link: $this->link, modelo: $modelo, obj_link: $obj_link,
+            paths_conf: $this->paths_conf);
+
+
+        //$controler = new liberator($controler);
+
+        errores::$error = false;
+
+        $_SESSION['usuario_id'] = 2;
 
         $del = (new adm_accion_grupo($this->link))->elimina_todo();
         if(errores::$error){
@@ -401,63 +432,9 @@ class systemTest extends test {
             exit;
         }
 
-        $resultado = $controler->integra_row_upd($key);
-
-        $this->assertNotTrue(errores::$error);
-        $this->assertIsArray($resultado);
-        $this->assertEquals('inactivo',$resultado['visible']);
-        errores::$error = false;
-    }
-
-    public function test_key_selects_txt(): void
-    {
-        errores::$error = false;
-        $_SESSION['grupo_id'] = 2;
-        $_GET['session_id'] = 1;
-        $_GET['seccion'] = 'adm_accion';
-        $html = new html();
-        $html_controler = new html_controler($html);
-
-        $modelo = new adm_accion($this->link);
-        $obj_link = new links_menu($this->link, -1);
-
-        $controler = new system(html: $html_controler, link: $this->link, modelo: $modelo, obj_link: $obj_link,
-            paths_conf: $this->paths_conf);
-
-
-        $controler = new liberator($controler);
-
-        errores::$error = false;
-        $keys_selects = array();
-
-        $resultado = $controler->key_selects_txt($keys_selects);
-        $this->assertNotTrue(errores::$error);
-        $this->assertIsArray($resultado);
-        errores::$error = false;
-    }
-
-    public function test_modifica(): void
-    {
-        errores::$error = false;
-        $_SESSION['grupo_id'] = 2;
-        $_GET['session_id'] = 1;
-        $_GET['registro_id'] = 1;
-        $_GET['seccion'] = 'adm_accion';
-        $html = new html();
-        $html_controler = new html_controler($html);
-
-        $modelo = new adm_accion($this->link);
-        $obj_link = new links_menu($this->link, -1);
-
-        $controler = new system(html: $html_controler, link: $this->link, modelo: $modelo, obj_link: $obj_link,
-            paths_conf: $this->paths_conf);
-
-
-        //$controler = new liberator($controler);
-
-        errores::$error = false;
         $controler->columnas_lista_data_table[] = 'adm_accion_id';
         $resultado = $controler->modifica(false);
+
         $this->assertNotTrue(errores::$error);
         $this->assertIsObject($resultado);
 
@@ -491,33 +468,7 @@ class systemTest extends test {
         $this->assertNotTrue(errores::$error);
         errores::$error = false;
     }
-
-    public function test_row_upd_status(): void
-    {
-        errores::$error = false;
-        $_GET['session_id'] = 1;
-        $_GET['seccion'] = 'adm_accion';
-        $_SESSION['usuario_id'] = 2;
-        $_SESSION['grupo_id'] = 2;
-        $html = new html();
-        $html_controler = new html_controler($html);
-
-        $modelo = new adm_accion($this->link);
-        $obj_link = new links_menu($this->link ,-1);
-
-        $controler = new system(html: $html_controler, link: $this->link, modelo: $modelo, obj_link: $obj_link,
-            paths_conf: $this->paths_conf);
-        $controler = new liberator($controler);
-
-        $key = 'a';
-        $registro = new stdClass();
-        $registro->a = 'activo';
-        $resultado = $controler->row_upd_status($key, $registro);
-        $this->assertNotTrue(errores::$error);
-        $this->assertIsArray($resultado);
-        $this->assertEquals('inactivo',$resultado['a']);
-        errores::$error = false;
-    }
+    
 
     public function test_rows_con_permisos(): void
     {

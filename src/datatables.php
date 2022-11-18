@@ -2,6 +2,7 @@
 namespace gamboamartin\system;
 use gamboamartin\administrador\models\adm_accion_grupo;
 use gamboamartin\errores\errores;
+use gamboamartin\template\html;
 use gamboamartin\validacion\validacion;
 use PDO;
 use stdClass;
@@ -304,6 +305,25 @@ class datatables{
 
         }
         return $columns;
+    }
+
+    public function data_link(array $adm_accion_grupo, array $data_result, html $html_base, string $key, int $registro_id): array|stdClass
+    {
+        $style = (new html_controler(html: $html_base))->style_btn(
+            accion_permitida: $adm_accion_grupo, row: $data_result['registros'][$key]);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener style',data:  $style);
+        }
+
+
+        $data_link = (new datatables())->database_link(adm_accion_grupo: $adm_accion_grupo,
+            html: (new html_controler(html: $html_base)),registro_id:  $registro_id, style: $style);
+
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener data para link', data: $data_link);
+        }
+
+        return $data_link;
     }
 
     public function database_link(array $adm_accion_grupo, html_controler $html, int $registro_id, string $style): array|stdClass

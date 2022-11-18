@@ -1,6 +1,7 @@
 <?php
 namespace gamboamartin\system;
 use base\controller\controlador_base;
+use base\controller\controler;
 use base\orm\modelo;
 use config\generales;
 use config\views;
@@ -224,25 +225,6 @@ class system extends controlador_base{
         return $r_alta_bd;
     }
 
-    private function data_link(array $adm_accion_grupo, array $data_result, string $key, int $registro_id): array|stdClass
-    {
-        $style = (new html_controler(html: $this->html_base))->style_btn(
-            accion_permitida: $adm_accion_grupo, row: $data_result['registros'][$key]);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al obtener style',data:  $style);
-        }
-
-
-        $data_link = (new datatables())->database_link(adm_accion_grupo: $adm_accion_grupo,
-            html: (new html_controler(html: $this->html_base)),registro_id:  $registro_id, style: $style);
-
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al obtener data para link', data: $data_link);
-        }
-
-        return $data_link;
-    }
-
     private function datatable_columnDefs_init(array $columns, array $columndefs): array
     {
         $index_header = array();
@@ -412,8 +394,8 @@ class system extends controlador_base{
 
                 $registro_id = $row[$this->seccion.'_id'];
 
-                $data_link = $this->data_link(
-                    adm_accion_grupo: $adm_accion_grupo, data_result: $data_result, key: $key,registro_id:  $registro_id);
+                $data_link = (new datatables())->data_link(adm_accion_grupo: $adm_accion_grupo,
+                    data_result: $data_result, html_base: $this->html_base, key: $key,registro_id:  $registro_id);
 
                 if(errores::$error){
                     return $this->retorno_error(mensaje: 'Error al obtener data para link', data: $data_link,
@@ -473,37 +455,6 @@ class system extends controlador_base{
     }
 
     /**
-     * Integra el elemento a modificar en cambio de estatus
-     * @param string $key Key a integrar
-     * @return array
-     * @version 0.182.34
-     */
-    private function integra_row_upd(string $key): array
-    {
-        if($this->registro_id<=0){
-            return $this->errores->error(mensaje: 'Error this->registro_id debe ser mayor a 0',
-                data:  $this->registro_id);
-        }
-        $key = trim($key);
-        if($key === ''){
-            return $this->errores->error(mensaje: 'Error key esta vacio', data:  $key);
-        }
-
-        $registro = $this->modelo->registro(registro_id: $this->registro_id, columnas_en_bruto: true, retorno_obj: true);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al obtener adm_accion',data:  $registro);
-        }
-
-
-
-        $row_upd = $this->row_upd_status(key: $key,registro:  $registro);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al obtener row upd',data:  $row_upd);
-        }
-        return $row_upd;
-    }
-
-    /**
      * Debe ser operable y sobreescrito en controller de ejecucion
      * @param array $keys_selects Conjunto de keys para select
      * @return array
@@ -525,7 +476,7 @@ class system extends controlador_base{
     {
 
 
-        $registros_view = $this->rows_view_lista();
+        $registros_view = (new lista())->rows_view_lista(controler: $this);
         if(errores::$error){
             return $this->retorno_error(
                 mensaje: 'Error al generar rows para lista', data:  $registros_view, header: $header, ws: $ws);
@@ -673,10 +624,9 @@ class system extends controlador_base{
         return true;
     }
 
-
     protected function row_upd(string $key): array|stdClass
     {
-        $row_upd = $this->integra_row_upd(key: $key);
+        $row_upd = (new row())->integra_row_upd(key: $key, modelo: $this->modelo, registro_id: $this->registro_id);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al obtener row upd',data:  $row_upd);
         }
@@ -686,61 +636,6 @@ class system extends controlador_base{
             return $this->errores->error(mensaje: 'Error al modificar adm_accion',data:  $upd);
         }
         return $upd;
-    }
-
-    /**
-     * Integra el valor a modificar de tipo status
-     * @param string $key Key del valor a ajustar
-     * @param stdClass $registro Registro en proceso
-     * @return array
-     * @version 0.181.34
-     */
-    private function row_upd_status(string $key, stdClass $registro): array
-    {
-        $key = trim($key);
-        if($key === ''){
-            return $this->errores->error(mensaje: 'Error key esta vacio', data:  $key);
-        }
-        $keys = array($key);
-        $valida = $this->validacion->valida_statuses(keys: $keys,registro:  $registro);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al validar registro', data:  $valida);
-        }
-
-        $row_upd[$key] = 'inactivo';
-        if($registro->$key === 'inactivo'){
-            $row_upd[$key] = 'activo';
-        }
-        return $row_upd;
-    }
-
-    private function rows_lista(): array|stdClass
-    {
-        $columnas = (new lista())->columnas_lista(keys_row_lista: $this->keys_row_lista);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al generar columnas para lista', data:  $columnas);
-        }
-
-        $registros = $this->modelo->registros(columnas:$columnas,return_obj: true);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al obtener registros', data:  $registros);
-        }
-        return $registros;
-    }
-
-    private function rows_view_lista(): array
-    {
-        $registros = $this->rows_lista();
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al obtener registros', data:  $registros);
-        }
-
-        $registros_view = (new actions())->registros_view_actions(acciones: $this->acciones, link: $this->link,
-            obj_link: $this->obj_link,registros:  $registros, seccion:  $this->seccion);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al asignar link', data:  $registros_view);
-        }
-        return $registros_view;
     }
 
     /**
