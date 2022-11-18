@@ -468,7 +468,7 @@ class systemTest extends test {
         $this->assertNotTrue(errores::$error);
         errores::$error = false;
     }
-    
+
 
     public function test_rows_con_permisos(): void
     {
