@@ -196,28 +196,7 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
-    public function test_genera_values_selects(): void
-    {
-        errores::$error = false;
-        $html_ = new html();
-        $html = new html_controler($html_);
-        $html = new liberator($html);
 
-        $keys = new stdClass();
-        $keys->id = 'a';
-        $keys->descripcion_select = 'b';
-        $registros = array();
-        $registros[0]['a'] = 'x';
-        $registros[0]['b'] = 'd';
-        $resultado = $html->genera_values_selects($keys, $registros);
-        $this->assertIsArray($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals("x", $resultado['x']['a']);
-        $this->assertEquals("d", $resultado['x']['b']);
-        $this->assertEquals("d", $resultado['x']['descripcion_select']);
-
-        errores::$error = false;
-    }
 
     /**
      */
@@ -244,29 +223,7 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
-    public function test_init_data_select(): void
-    {
-        errores::$error = false;
-        $html_ = new html();
-        $html = new html_controler($html_);
-        $html = new liberator($html);
 
-        $con_registros = true;
-        $modelo = new adm_usuario($this->link);
-        $extra_params_keys = array('adm_grupo_descripcion');
-        $key_descripcion_select = 'adm_usuario_id';
-        $key_id = '';
-        $label = '';
-        $resultado = $html->init_data_select(con_registros:$con_registros,modelo: $modelo,
-            extra_params_keys:$extra_params_keys,key_descripcion_select:$key_descripcion_select,key_id:$key_id,
-            label:$label);
-        $this->assertIsObject($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('adm_usuario_id',$resultado->id);
-        $this->assertEquals('adm_usuario_id',$resultado->descripcion_select);
-        $this->assertEquals('2',$resultado->values[2]['adm_usuario_id']);
-        errores::$error = false;
-    }
 
     public function test_input_codigo(): void
     {
@@ -429,38 +386,9 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
-    public function test_keys_base(): void
-    {
-        errores::$error = false;
-        $html_ = new html();
-        $html = new html_controler($html_);
-        $html = new liberator($html);
 
-        $tabla = 'a';
 
-        $resultado = $html->keys_base($tabla);
 
-        $this->assertIsObject($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('a_id', $resultado->id);
-        $this->assertEquals('a_descripcion_select', $resultado->descripcion_select);
-        errores::$error = false;
-    }
-
-    public function test_label(): void
-    {
-        errores::$error = false;
-        $html_ = new html();
-        $html = new html_controler($html_);
-        $html = new liberator($html);
-
-        $tabla = 'a_';
-        $resultado = $html->label($tabla);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('A',$resultado);
-        errores::$error = false;
-    }
 
     public function test_menu_lateral_title(): void
     {
@@ -556,147 +484,10 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
-    public function test_params_base(): void
-    {
-        errores::$error = false;
-        $html_ = new html();
-        $html = new html_controler($html_);
-        $html = new liberator($html);
 
 
-        $data = new stdClass();
-        $params = new stdClass();
-        $name = '';
-        $resultado = $html->params_base($data, $name, $params);
-        $this->assertIsObject($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals(true, $resultado->con_registros);
-        $this->assertEquals(-1, $resultado->id_selected);
-        $this->assertEquals(true, $resultado->required);
-        $this->assertEquals(false, $resultado->disabled);
-        $this->assertEquals(false, $resultado->value_vacio);
-        $this->assertIsObject( $resultado->row_upd);
-        $this->assertIsArray( $resultado->filtro);
-        $this->assertEmpty( $resultado->filtro);
-        $this->assertIsArray( $resultado->not_in);
-        $this->assertEmpty( $resultado->not_in);
-        $this->assertEmpty( $resultado->name);
-        $this->assertIsArray( $resultado->extra_params_keys);
-        $this->assertEmpty( $resultado->extra_params_keys);
-
-        errores::$error = false;
-
-        $data = new stdClass();
-        $params = new stdClass();
-        $params->disabled = true;
-        $params->extra_params_keys = array('x'=>'d');
-        $name = '';
-        $resultado = $html->params_base($data, $name, $params);
-        $this->assertIsArray( $resultado->extra_params_keys);
-        $this->assertNotEmpty( $resultado->extra_params_keys);
-
-        errores::$error = false;
-
-        $data = new stdClass();
-        $params = new stdClass();
-        $params->disabled = true;
-        $params->extra_params_keys = array('x'=>'d');
-        $params->filtro = array('x'=>'d');
-        $name = '';
-        $resultado = $html->params_base($data, $name, $params);
-        $this->assertIsArray( $resultado->extra_params_keys);
-        $this->assertNotEmpty( $resultado->extra_params_keys);
-        $this->assertIsArray( $resultado->filtro);
-        $this->assertNotEmpty( $resultado->filtro);
-
-        errores::$error = false;
-
-    }
-
-    public function test_params_input2(): void
-    {
-        errores::$error = false;
-        $html_ = new html();
-        $html = new html_controler($html_);
 
 
-        $html_controler = new html_controler($html_);
-        $html_controler = new liberator($html_controler);
-        $params = new stdClass();
-        $name = '';
-        $place_holder = '';
-        $resultado = $html_controler->params_input2($params, $name, $place_holder);
-        $this->assertIsObject( $resultado);
-        $this->assertNotTrue( errores::$error);
-        errores::$error = false;
-
-    }
-
-    public function test_params_select_col_6(): void
-    {
-        errores::$error = false;
-        $html_ = new html();
-        $html = new html_controler($html_);
-
-
-        $html_controler = new html_controler($html_);
-        $html_controler = new liberator($html_controler);
-        $params = new stdClass();
-        $label = '__a__';
-        $resultado = $html_controler->params_select_col_6($params, $label);
-        $this->assertIsObject($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals(6, $resultado->cols);
-        $this->assertEquals(true, $resultado->con_registros);
-        $this->assertEquals(-1, $resultado->id_selected);
-        $this->assertEquals(' a ', $resultado->label);
-        $this->assertEquals(true, $resultado->required);
-        errores::$error = false;
-    }
-
-    public function test_params_select(): void
-    {
-        errores::$error = false;
-        $html_ = new html();
-        $html = new html_controler($html_);
-        $html = new liberator($html);
-
-
-        $name_model = 'a';
-        $params = new stdClass();
-        $resultado = $html->params_select($name_model, $params);
-
-        $this->assertIsObject($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals(12, $resultado->cols);
-        $this->assertEquals(true, $resultado->con_registros);
-        $this->assertEquals(-1, $resultado->id_selected);
-        $this->assertEquals('A', $resultado->label);
-        $this->assertEquals(true, $resultado->required);
-        errores::$error = false;
-    }
-
-    public function test_params_select_init(): void
-    {
-        errores::$error = false;
-        $html_ = new html();
-        $html = new html_controler($html_);
-        $html = new liberator($html);
-
-
-        $_SESSION['usuario_id'] = 2;
-        $_SESSION['grupo_id'] = 2;
-        $_GET['session_id'] = 1;
-        $_GET['seccion'] = 'adm_accion';
-
-        $item = 'a';
-        $keys_selects = array();
-
-        $resultado = $html->params_select_init($item, $keys_selects);
-        $this->assertIsObject($resultado);
-        $this->assertNotTrue(errores::$error);
-        errores::$error = false;
-    }
 
     public function test_retornos(): void
     {
@@ -717,30 +508,7 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
-    public function test_rows_select(): void
-    {
-        errores::$error = false;
-        $html_ = new html();
-        $html = new html_controler($html_);
-        $html = new liberator($html);
 
-        $modelo = new adm_accion($this->link);
-        $keys = new stdClass();
-        $keys->id = 'adm_accion_id';
-        $keys->descripcion_select = 'adm_accion_descripcion';
-        $extra_params_keys = array();
-        $extra_params_keys[] = 'adm_seccion_descripcion';
-
-        $resultado = $html->rows_select(keys:$keys, modelo:$modelo,extra_params_keys:$extra_params_keys);
-
-        $this->assertIsArray($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertIsNumeric( $resultado[0]['adm_accion_id']);
-        $this->assertEquals('lista', $resultado[0]['adm_accion_descripcion']);
-        $this->assertEquals('adm_seccion', $resultado[0]['adm_seccion_descripcion']);
-
-        errores::$error = false;
-    }
 
     public function test_select_aut(): void
     {
@@ -959,34 +727,31 @@ class html_controlerTest extends test {
 
     }
 
-    public function test_values_selects(): void
+    public function test_text_input_integra(): void
     {
         errores::$error = false;
         $html_ = new html();
         $html = new html_controler($html_);
         $html = new liberator($html);
 
-        $keys = new stdClass();
-        $keys->id = 'adm_accion_id';
-        $keys->descripcion_select = 'adm_accion_descripcion';
+        $_SESSION['grupo_id'] = 2;
 
-        $con_registros = true;
-        $modelo = new adm_accion($this->link);
-        $extra_params_keys = array();
-        $resultado = $html->values_selects($con_registros, $keys, $modelo,$extra_params_keys);
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
 
-        $this->assertIsArray($resultado);
+        $item = 'a';
+        $keys_selects = array();
+        $row_upd = new stdClass();
+        $texts = new stdClass();
+
+        $resultado = $html->text_input_integra($item, $keys_selects, $row_upd, $texts);
+        $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-
-        foreach ($resultado as $key=>$res){
-
-            $this->assertIsNumeric( $res['adm_accion_id']);
-            $this->assertIsString( $res['adm_accion_descripcion']);
-            $this->assertIsString( $res['descripcion_select']);
-        }
-
+        $this->assertEquals("<div |class|><div |class|><input type='text' name='a' value='' |class|  required id='a' placeholder='a' /></div></div>",$resultado->a);
         errores::$error = false;
     }
+
+
 
 }
 

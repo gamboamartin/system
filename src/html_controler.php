@@ -6,6 +6,8 @@ use base\orm\modelo;
 use base\orm\modelo_base;
 use config\generales;
 use gamboamartin\errores\errores;
+use gamboamartin\system\html_controler\params;
+use gamboamartin\system\html_controler\select;
 use gamboamartin\template\directivas;
 use gamboamartin\template\html;
 use gamboamartin\validacion\validacion;
@@ -161,7 +163,7 @@ class html_controler{
 
         foreach ($campos_view['dates'] as $item){
 
-            $params_select = $this->params_select_init(item:$item,keys_selects:  $keys_selects);
+            $params_select = (new params())->params_select_init(item:$item,keys_selects:  $keys_selects);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar select', data: $params_select);
             }
@@ -274,44 +276,6 @@ class html_controler{
     }
 
     /**
-     * Asigna los values de un select
-     * @refactorizar Refactorizar
-     * @param stdClass $keys Keys para asignacion basica
-     * @param array $registros Conjunto de registros a integrar
-     * @return array
-     * @version 0.48.32
-     * @verfuncion 0.1.0
-     * @fecha 2022-08-02 18:12
-     * @author mgamboa
-     */
-    private function genera_values_selects(stdClass $keys, array $registros): array
-    {
-        $keys_valida = array('id','descripcion_select');
-        $valida = (new validacion())->valida_existencia_keys(keys: $keys_valida, registro: $keys);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar keys',data:  $valida);
-        }
-        $values = array();
-        foreach ($registros as $registro){
-            /**
-             * REFACTORIZAR
-             */
-            if(!is_array($registro)){
-                return $this->error->error(mensaje: 'Error registro debe ser un array',data:  $registro);
-            }
-            $keys_valida = array($keys->id,$keys->descripcion_select);
-            $valida = (new validacion())->valida_existencia_keys(keys: $keys_valida, registro: $registro);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al validar registro',data:  $valida);
-            }
-
-            $values[$registro[$keys->id]] = $registro;
-            $values[$registro[$keys->id]]['descripcion_select'] = $registro[$keys->descripcion_select];
-        }
-        return $values;
-    }
-
-    /**
      * Genera un input de tipo hidden
      * @param string $name Nombre del input
      * @param string $value Valor del input
@@ -381,58 +345,6 @@ class html_controler{
         return $fields;
     }
 
-    /**
-     * Inicializa los datos de un select
-     * @refactorizar Refactorizar metodo
-     * @param bool $con_registros Si no con registros integra el select vacio para ser llenado posterior con ajax
-     * @param modelo $modelo Modelo en ejecucion para la asignacion de datos
-     * @param array $extra_params_keys Keys de extra params para ser cargados en un select
-     * @param array $filtro Filtro para obtencion de datos para options
-     * @param string $key_descripcion_select key del registro para mostrar en un select
-     * @param string $key_id key Id de value para option
-     * @param string $label Etiqueta a mostrar
-     * @param string $name Nombre del input
-     * @param array $not_in Omite resultado de options
-     * @return array|stdClass
-     * @version 0.52.32
-     * @version 0.55.32
-     * @verfuncion 0.1.0
-     * @verfuncion 0.2.0 Se integra filtro
-     * @fecha 2022-08-03 09:55
-     * @author mgamboa
-     */
-    private function init_data_select(bool $con_registros, modelo $modelo, array $extra_params_keys = array(),
-                                      array $filtro = array(), string $key_descripcion_select= '', string $key_id = '',
-                                      string $label = '', string $name = '', array $not_in = array()): array|stdClass
-    {
-
-        $keys = $this->keys_base(tabla: $modelo->tabla, key_descripcion_select: $key_descripcion_select,
-            key_id: $key_id, name: $name);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar keys',data:  $keys);
-        }
-
-        $values = $this->values_selects(con_registros: $con_registros, keys: $keys,modelo: $modelo,
-            extra_params_keys: $extra_params_keys, filtro: $filtro, not_in: $not_in);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener valores',data:  $values);
-        }
-
-        /**
-         * REFACTORIZAR
-         */
-        $label_ =$label;
-        if($label_ === '') {
-            $label_ = $this->label(tabla: $modelo->tabla);
-            if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al obtener label', data: $label_);
-            }
-        }
-
-        $keys->values = $values;
-        $keys->label = $label_;
-        return $keys;
-    }
 
     /**
      * Genera un input de tipo codigo
@@ -650,25 +562,7 @@ class html_controler{
     private function input_template(stdClass $params_select, stdClass $row_upd): array|string
     {
 
-        $keys = array('cols','disabled','name','place_holder','required','value_vacio');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $params_select);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
-        }
-
-        $keys = array('cols');
-        $valida = $this->validacion->valida_numerics(keys: $keys,row:  $params_select);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
-        }
-
-        $valida = $this->directivas->valida_cols(cols: $params_select->cols);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar columnas', data: $valida);
-        }
-
-        $keys = array('disabled','required','value_vacio');
-        $valida = $this->validacion->valida_bools(keys: $keys,row:  $params_select);
+        $valida = $this->valida_params(params_select: $params_select);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
         }
@@ -727,68 +621,6 @@ class html_controler{
 
 
 
-    /**
-     * Asigna los keys necesarios para un select
-     * @param string $tabla Tabla del select
-     * @param string $key_descripcion_select base de descripcion
-     * @param string $key_id identificador key
-     * @param string $name Name del input
-     * @return stdClass|array obj->id, obj->descripcion_select
-     * @version 0.2.5
-     * @verfuncion 0.2.0 Se carga name
-     */
-    private function keys_base(string $tabla, string $key_descripcion_select = '', string $key_id = '',
-                               string $name = ''): stdClass|array
-    {
-        $tabla = trim($tabla);
-        if($tabla === ''){
-            return $this->error->error(mensaje: 'Error tabla esta vacia',data:  $tabla);
-        }
-        if($key_id === '') {
-            $key_id = $tabla . '_id';
-        }
-        $name = trim($name);
-        if($name === ''){
-            $name = $key_id;
-        }
-        if($key_descripcion_select === '') {
-            $key_descripcion_select = $tabla.'_descripcion_select';
-        }
-
-
-        $data = new stdClass();
-        $data->id = $key_id;
-        $data->descripcion_select = $key_descripcion_select;
-        $data->name = $name;
-
-        return $data;
-    }
-
-    /**
-     * Genera un label valido para se mostrado en front
-     * @param string $tabla Tabla o estructura para generar etiqueta
-     * @return string|array
-     * @version 0.50.32
-     * @verfuncion 0.1.0
-     * @fecha 2022-08-03 09:22
-     * @author mgamboa
-     */
-    private function label(string $tabla): string|array
-    {
-        $tabla = trim($tabla);
-        if($tabla === ''){
-            return $this->error->error(mensaje: 'Error tabla esta vacia', data: $tabla);
-        }
-        $label = str_replace('_', ' ', $tabla);
-
-        $label = trim($label);
-        if($label === ''){
-            return $this->error->error(mensaje: 'Error $label esta vacio', data: $label);
-        }
-
-
-        return ucwords($label);
-    }
 
     /**
      * Genera un menu lateral con titulo
@@ -919,138 +751,6 @@ class html_controler{
         return trim($campo['type']);
     }
 
-
-    /**
-     * Inicializa los parametros para un input
-     * @param stdClass $data Data precargado
-     * @param string $name Nombre del input
-     * @param stdClass $params Parametros
-     * @return stdClass|array
-     * @version 0.185.34
-     */
-    private function params_base(stdClass $data, string $name, stdClass $params): stdClass|array
-    {
-        $data->disabled = $params->disabled ?? false;
-        $data->con_registros = $params->con_registros ?? true;
-        $data->id_selected = $params->id_selected ?? -1;
-        $data->required = $params->required ?? true;
-        $data->row_upd = $params->row_upd ?? new stdClass();
-        $data->value_vacio = $params->value_vacio ?? false;
-        $data->filtro = $params->filtro ?? array();
-        $data->not_in = $params->not_in ?? array();
-        $data->name = $params->name ?? $name;
-
-        $data->extra_params_keys = array();
-        if(isset($params->extra_params_keys) ){
-            $data->extra_params_keys = $params->extra_params_keys;
-        }
-
-
-        return $data;
-    }
-
-    /**
-     * Inicializa los parametros para un input
-     * @param stdClass $params Parametros precargados
-     * @param string $name Name input
-     * @param string $place_holder Label del input
-     * @return stdClass|array
-     * @version 0.228.37
-     */
-    private function params_input2(stdClass $params, string $name,string $place_holder): stdClass|array
-    {
-
-        $data = new stdClass();
-        $data->cols = $params->cols ?? 6;
-        $data->place_holder = $params->place_holder ?? $place_holder;
-        $data->label = $params->label ?? str_replace('_',' ', strtoupper($place_holder));
-
-        $data = $this->params_base(data: $data, name: $name ,params:  $params);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al inicializar params', data: $data);
-        }
-
-        return $data;
-    }
-
-    /**
-     * Inicializa los parametros de un select
-     * @param string $name_model Nombre del modelo
-     * @param stdClass $params Parametros inicializados
-     * @return stdClass|array
-     * @version 0.95.32
-     */
-    private function params_select(string $name_model, stdClass $params): stdClass|array
-    {
-        $name_model = trim($name_model);
-        if($name_model === ''){
-            return $this->error->error(mensaje: 'Error $name_model esta vacio', data: $name_model);
-        }
-        $data = new stdClass();
-
-        $data->cols = $params->cols ?? 12;
-        $data->place_holder = $params->place_holder ?? $name_model;
-        $data->label = $params->label ?? str_replace('_',' ', strtoupper($name_model));
-
-        $data = $this->params_base(data: $data, name : $name_model,params:  $params);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al inicializar params', data: $data);
-        }
-
-        return $data;
-    }
-
-    /**
-     * Ajusta los parametros
-     * @param stdClass $params Parametros precargados
-     * @param string $label Etiqueta a mostrar en input
-     * @return stdClass|array
-     * @version 0.212.37
-     */
-    private function params_select_col_6(stdClass $params, string $label): stdClass|array
-    {
-        $label = trim($label);
-        if($label === ''){
-            return $this->error->error(mensaje: 'Error label esta vacio', data: $label);
-        }
-        $data = new stdClass();
-        $data->cols = $params->cols ?? 6;
-        $data->label = $params->label ?? str_replace('_',' ', $label);
-
-        $data->label = str_replace('  ', ' ', $data->label);
-
-        $data = $this->params_base(data: $data,name:  $label,params:  $params);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al inicializar params', data: $data);
-        }
-
-
-        return $data;
-    }
-
-    /**
-     * Integra los parametros para inputs
-     * @param string $item Row
-     * @param array $keys_selects keys con datos de inputs
-     * @return array|stdClass
-     * @version 0.245.37
-     */
-    private function params_select_init(string $item, array $keys_selects): array|stdClass
-    {
-
-        $params_select = new stdClass();
-        if (array_key_exists($item, $keys_selects) ){
-            $params_select = $keys_selects[$item];
-        }
-        $params_select = $this->params_input2(params: $params_select,name: $item,place_holder: $item);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar select', data: $params_select);
-        }
-
-        return $params_select;
-    }
-
-
     /**
      * Retornos hidden
      * @param int $registro_id Registro id a retornar
@@ -1085,54 +785,6 @@ class html_controler{
 
 
     /**
-     * Obtiene los registros para un select
-     * @param stdClass $keys Keys para obtencion de campos
-     * @param modelo $modelo Modelo del select
-     * @param array $extra_params_keys Datos a integrar para extra params
-     * @param array $filtro Filtro de datos para filtro and
-     * @param array $not_in Omite resultados para options
-     * @return array
-     * @version 0.47.32
-     * @version 0.53.32
-     * @verfuncion 0.1.0 UT fin
-     * @verfuncion 0.2.0 Se integra param filtro
-     * @fecha 2022-08-02 17:32
-     * @fecha 2022-08-02 17:32
-     * @author mgamboa
-     */
-    private function rows_select(stdClass $keys, modelo $modelo, array $extra_params_keys = array(),
-                                 array $filtro = array(), array $not_in = array()): array
-    {
-        $keys_val = array('id','descripcion_select');
-        $valida = (new validacion())->valida_existencia_keys(keys: $keys_val,registro:  $keys);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar keys',data:  $valida);
-        }
-
-        $columnas[] = $keys->id;
-        $columnas[] = $keys->descripcion_select;
-
-        foreach ($extra_params_keys as $key){
-            /**
-             * REFACTORIZAR
-             */
-            $key = trim($key);
-            if($key === ''){
-                return $this->error->error(mensaje: 'Error el key de extra params esta vacio',data:  $extra_params_keys);
-            }
-            $columnas[] = $key;
-        }
-
-        $filtro[$modelo->tabla.'.status'] = 'activo';
-        $registros = $modelo->filtro_and(columnas: $columnas, filtro: $filtro, not_in: $not_in);
-
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener registros',data:  $registros);
-        }
-        return $registros->registros;
-    }
-
-    /**
      * Genera un select automatico conforme a params
      * @param PDO $link Conexion a la BD
      * @param string $name_model Nombre del modelo
@@ -1152,7 +804,7 @@ class html_controler{
             return $this->error->error(mensaje: 'Error $name_model esta vacio', data: $name_model);
         }
 
-        $params_select = $this->params_select(name_model: $name_model, params: $params);
+        $params_select = (new params())->params_select(name_model: $name_model, params: $params);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al maquetar params', data: $params_select);
         }
@@ -1257,7 +909,7 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al validar cols', data: $valida);
         }
 
-        $init = $this->init_data_select(con_registros: $con_registros, modelo: $modelo,
+        $init = (new select())->init_data_select(con_registros: $con_registros, modelo: $modelo,
             extra_params_keys: $extra_params_keys, filtro:$filtro, key_descripcion_select: $key_descripcion_select,
             key_id: $key_id, label: $label, name: $name, not_in: $not_in);
         if(errores::$error){
@@ -1388,7 +1040,7 @@ class html_controler{
                 $params_select = $keys_selects[$item];
             }
 
-            $params_select = $this->params_select_col_6(params: $params_select,label: $item);
+            $params_select = (new params())->params_select_col_6(params: $params_select,label: $item);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar select', data: $params_select);
             }
@@ -1458,11 +1110,34 @@ class html_controler{
         return $style;
     }
 
+    /**
+     * Integra los inputs de tipo text para una view
+     * @param string $item Name input
+     * @param array $keys_selects Params inputs
+     * @param stdClass $row_upd Registro en proceso
+     * @param stdClass $texts inputs precargados
+     * @return array|stdClass
+     * @version 0.251.37
+     */
     private function text_input_integra(string $item, array $keys_selects, stdClass $row_upd, stdClass $texts): array|stdClass
     {
-        $params_select = $this->params_select_init(item:$item,keys_selects:  $keys_selects);
+
+        $item = trim($item);
+        if($item === ''){
+            return $this->error->error(mensaje: 'Error item esta vacio', data: $item);
+        }
+        if(is_numeric($item)){
+            return $this->error->error(mensaje: 'Error item debe ser un texto', data: $item);
+        }
+
+        $params_select = (new params())->params_select_init(item:$item,keys_selects:  $keys_selects);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $params_select);
+        }
+
+        $valida = $this->valida_params(params_select: $params_select);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
         }
 
         $input = $this->input_template(params_select: $params_select,row_upd: $row_upd);
@@ -1476,7 +1151,7 @@ class html_controler{
 
     private function text_item(string $item, array $keys_selects, stdClass $row_upd, stdClass $texts): array|stdClass
     {
-        $params_select = $this->params_select_init(item: $item, keys_selects: $keys_selects);
+        $params_select = (new params())->params_select_init(item: $item, keys_selects: $keys_selects);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar params', data: $params_select);
         }
@@ -1523,6 +1198,14 @@ class html_controler{
         $texts = new stdClass();
 
         foreach ($campos_view['inputs'] as $item){
+
+            $item = trim($item);
+            if($item === ''){
+                return $this->error->error(mensaje: 'Error item esta vacio', data: $item);
+            }
+            if(is_numeric($item)){
+                return $this->error->error(mensaje: 'Error item debe ser un texto', data: $item);
+            }
 
             $texts = $this->text_input_integra(item: $item,keys_selects:  $keys_selects,row_upd:  $row_upd,texts:  $texts);
             if(errores::$error){
@@ -1582,49 +1265,32 @@ class html_controler{
         return true;
     }
 
-    /**
-     * Genera los values para ser utilizados en los selects options
-     * @param bool $con_registros si con registros muestra todos los registros
-     * @param stdClass $keys Keys para obtencion de campos
-     * @param modelo $modelo Modelo para asignacion de datos
-     * @param array $extra_params_keys Keys para asignacion de extra params para ser utilizado en javascript
-     * @param array $filtro Filtro para obtencion de datos del select
-     * @param array $not_in Omite resultados para options
-     * @return array
-     * @version 0.49.31
-     * @version 0.54.32
-     * @verfuncion 0.1.0
-     * @verfuncion 0.2.0 Se integra filtro
-     * @fecha 2022-08-03 09:04
-     * @fecha 2022-08-03 14:50
-     * @author mgamboa
-     */
-    private function values_selects( bool $con_registros, stdClass $keys, modelo $modelo,
-                                     array $extra_params_keys = array(), array $filtro = array(),
-                                     array $not_in = array()): array
+    private function valida_params(stdClass $params_select): bool|array
     {
-        $keys_valida = array('id','descripcion_select');
-        $valida = (new validacion())->valida_existencia_keys(keys: $keys_valida, registro: $keys);
+        $keys = array('cols','disabled','name','place_holder','required','value_vacio');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $params_select);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar keys',data:  $valida);
+            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
         }
 
-        $registros = array();
-        if($con_registros) {
-            $registros = $this->rows_select(keys: $keys, modelo: $modelo, extra_params_keys: $extra_params_keys,
-                filtro:$filtro, not_in: $not_in);
-            if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al obtener registros', data: $registros);
-            }
-        }
-
-        $values = $this->genera_values_selects(keys: $keys,registros: $registros);
+        $keys = array('cols');
+        $valida = $this->validacion->valida_numerics(keys: $keys,row:  $params_select);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar valores',data:  $values);
+            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
         }
 
-        return $values;
+        $valida = $this->directivas->valida_cols(cols: $params_select->cols);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar columnas', data: $valida);
+        }
+
+        $keys = array('disabled','required','value_vacio');
+        $valida = $this->validacion->valida_bools(keys: $keys,row:  $params_select);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
+        }
+
+        return true;
     }
-
 
 }

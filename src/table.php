@@ -64,6 +64,7 @@ class table{
         return $css_html;
     }
 
+
     private function contenido_table(array $class_css_td , array $childrens, int $cols_actions,
                                      stdClass $data_view, array $id_css_td ): array|string
     {
