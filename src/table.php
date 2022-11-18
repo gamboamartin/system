@@ -64,7 +64,8 @@ class table{
         return $css_html;
     }
 
-    public function contenido_table(array $childrens, int $cols_actions, stdClass $data_view, array $class_css_td = array(), array $id_css_td = array()): array|string
+    private function contenido_table(array $class_css_td , array $childrens, int $cols_actions,
+                                     stdClass $data_view, array $id_css_td ): array|string
     {
         $thead = $this->thead(names: $data_view->names);
         if(errores::$error){
@@ -98,6 +99,38 @@ class table{
         }
         return trim($txt);
 
+    }
+
+    public function table(array $childrens, int $cols_actions, stdClass $data_view, array $class_css_table = array(),
+                          array $class_css_td = array(), array $id_css_table = array(), array $id_css_td = array()): array|string
+    {
+        $contenido_table = $this->contenido_table(class_css_td: $class_css_td, childrens: $childrens,
+            cols_actions: $cols_actions, data_view: $data_view, id_css_td: $id_css_td);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar contenido table', data: $contenido_table);
+        }
+        $table = $this->table_genera(contenido_table: $contenido_table,class_css:  $class_css_table,id_css:  $id_css_table);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar table', data: $table);
+        }
+
+        return $table;
+
+    }
+
+    public function table_genera(string $contenido_table, array $class_css, array $id_css): array|string
+    {
+        $css_html = $this->atributos_css(class_css: $class_css,id_css:  $id_css);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar css', data: $css_html);
+        }
+
+        $css_html = $this->limpia_txt(txt: $css_html);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al limpiar css_html', data: $css_html);
+        }
+
+        return "<table $css_html >$contenido_table</table>";
     }
 
     private function tbody(array $class_css_td ,int $cols_actions, array $id_css_td, string $key_actions, array $keys_data, array $rows): array|string
