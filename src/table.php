@@ -1,6 +1,7 @@
 <?php
 namespace gamboamartin\system;
 use gamboamartin\errores\errores;
+use gamboamartin\validacion\validacion;
 use stdClass;
 
 class table{
@@ -170,8 +171,14 @@ class table{
 
     private function tds(array $class_css,array $id_css, array $keys, array $row): array|string
     {
+        $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $row, valida_vacio: false);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar $row', data: $valida);
+        }
+
         $tds = '';
         foreach($keys as $key){
+
             $value = $row[$key];
             $td = $this->td(class_css: $class_css, id_css: $id_css, value: $value);
             if(errores::$error){
@@ -185,6 +192,11 @@ class table{
 
     private function tds_row(array $acciones, array $class_css_td, int $cols,array $id_css_td, array $keys, array $row): string
     {
+        $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $row, valida_vacio: false);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar $row', data: $valida);
+        }
+
         $tds_data = $this->tds(class_css: $class_css_td, id_css: $id_css_td, keys: $keys, row: $row);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar tds', data: $tds_data);
@@ -235,6 +247,11 @@ class table{
 
     private function tr_row(array $acciones, array $class_css_td, int $cols_actions, array $id_css_td, array $keys, array $row): string
     {
+        $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $row, valida_vacio: false);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar $row', data: $valida);
+        }
+
         $td = $this->tds_row(acciones: $acciones, class_css_td: $class_css_td, cols: $cols_actions,
             id_css_td: $id_css_td, keys: $keys, row: $row);
         if(errores::$error){
@@ -247,6 +264,11 @@ class table{
     {
         $trs = '';
         foreach ($rows as $row){
+            $valida = (new validacion())->valida_existencia_keys(keys: $keys_data,registro:  $row, valida_vacio: false);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al validar $row', data: $valida);
+            }
+
             $acciones = $row[$key_actions];
 
             $tr = $this->tr_row(acciones: $acciones, class_css_td: $class_css_td,
