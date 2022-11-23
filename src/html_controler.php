@@ -1193,8 +1193,25 @@ class html_controler{
         return $texts;
     }
 
+    /**
+     * Integra los inputs de tipo text
+     * @param array $campos_view Campos de modelo
+     * @param array $keys_selects Parametros
+     * @param stdClass $row_upd Registro en proceso
+     * @return array|stdClass
+     * @version 0.524.37
+     */
     private function texts_integra(array $campos_view, array $keys_selects, stdClass $row_upd): array|stdClass
     {
+
+        $keys = array('inputs');
+        $valida = $this->validacion->valida_existencia_keys(keys:$keys,registro:  $campos_view);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar campos_view', data: $valida);
+        }
+
+
+
         $texts = new stdClass();
 
         foreach ($campos_view['inputs'] as $item){
