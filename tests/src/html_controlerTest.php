@@ -144,29 +144,7 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
-    public function test_dates_template(): void
-    {
-        errores::$error = false;
-        $html_ = new html();
-        $html = new html_controler($html_);
-        $html = new liberator($html);
 
-
-        $params_select =new stdClass();
-        $row_upd = new stdClass();
-
-        $params_select->cols = '1';
-        $params_select->disabled = true;
-        $params_select->name = 'a';
-        $params_select->place_holder = 'a';
-        $params_select->value_vacio = false;
-
-        $resultado = $html->dates_template($params_select, $row_upd);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='date' name='a' value='' |class| disabled required id='a' placeholder='a' /></div></div>", $resultado);
-        errores::$error = false;
-    }
 
     /**
      */
@@ -336,34 +314,7 @@ class html_controlerTest extends test {
 
     }
 
-    public function test_input_template(): void
-    {
-        errores::$error = false;
-        $html_ = new html();
-        $html = new html_controler($html_);
-        $html = new liberator($html);
 
-
-        $_SESSION['usuario_id'] = 2;
-        $_SESSION['grupo_id'] = 2;
-        $_GET['session_id'] = 1;
-        $_GET['seccion'] = 'adm_accion';
-
-        $params_select = new stdClass();
-        $params_select->cols = '1';
-        $params_select->disabled = true;
-        $params_select->name = 'a';
-        $params_select->place_holder = 'a';
-        $params_select->value_vacio = false;
-        $params_select->required = false;
-        $row_upd = new stdClass();
-
-        $resultado = $html->input_template($params_select, $row_upd);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='text' name='a' value='' |class| disabled  id='a' placeholder='a' /></div></div>",$resultado);
-        errores::$error = false;
-    }
 
     public function test_input_text_required(): void
     {
@@ -727,31 +678,9 @@ class html_controlerTest extends test {
 
     }
 
-    public function test_text_input_integra(): void
-    {
-        errores::$error = false;
-        $html_ = new html();
-        $html = new html_controler($html_);
-        $html = new liberator($html);
 
-        $_SESSION['grupo_id'] = 2;
 
-        $_GET['session_id'] = 1;
-        $_GET['seccion'] = 'adm_accion';
-
-        $item = 'a';
-        $keys_selects = array();
-        $row_upd = new stdClass();
-        $texts = new stdClass();
-
-        $resultado = $html->text_input_integra($item, $keys_selects, $row_upd, $texts);
-        $this->assertIsObject($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='text' name='a' value='' |class|  required id='a' placeholder='a' /></div></div>",$resultado->a);
-        errores::$error = false;
-    }
-
-    public function test_texts_integra(): void
+    public function test_texts_alta2(): void
     {
         errores::$error = false;
         $html_ = new html();
@@ -764,17 +693,18 @@ class html_controlerTest extends test {
         $_GET['seccion'] = 'adm_accion';
 
 
-        $keys_selects = array();
+        $modelo = new adm_seccion($this->link);
         $row_upd = new stdClass();
-        $campos_view = array();
-        $campos_view['inputs'][] = 'x';
 
-        $resultado = $html->texts_integra($campos_view, $keys_selects, $row_upd);
+
+        $resultado = $html->texts_alta2($modelo, $row_upd);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='text' name='x' value='' |class|  required id='x' placeholder='x' /></div></div>",$resultado->x);
+
         errores::$error = false;
     }
+
+
 
 
 

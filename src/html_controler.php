@@ -8,6 +8,8 @@ use config\generales;
 use gamboamartin\errores\errores;
 use gamboamartin\system\html_controler\params;
 use gamboamartin\system\html_controler\select;
+use gamboamartin\system\html_controler\template;
+use gamboamartin\system\html_controler\texts;
 use gamboamartin\template\directivas;
 use gamboamartin\template\html;
 use gamboamartin\validacion\validacion;
@@ -167,7 +169,7 @@ class html_controler{
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar select', data: $params_select);
             }
-            $date = $this->dates_template(params_select: $params_select,row_upd: $row_upd);
+            $date = (new template())->dates_template(directivas: $this->directivas, params_select: $params_select,row_upd: $row_upd);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar input', data: $date);
             }
@@ -175,53 +177,6 @@ class html_controler{
         }
 
         return $dates;
-    }
-
-    /**
-     * Integra los datos para un template
-     * @param stdClass $params_select Parametros de select
-     * @param stdClass $row_upd Registro en proceso
-     * @return array|string
-     * @version 0.233.37
-     */
-    private function dates_template(stdClass $params_select, stdClass $row_upd): array|string
-    {
-        $keys = array('cols','disabled','name','place_holder','value_vacio');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $params_select);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
-        }
-
-        $keys = array('cols');
-        $valida = $this->validacion->valida_numerics(keys: $keys,row:  $params_select);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
-        }
-
-        $keys = array('disabled','value_vacio');
-        $valida = $this->validacion->valida_bools(keys: $keys,row:  $params_select);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
-        }
-
-        $valida = $this->directivas->valida_cols(cols: $params_select->cols);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar columnas', data: $valida);
-        }
-
-        $html =$this->directivas->fecha_required(disabled: $params_select->disabled, name: $params_select->name,
-            place_holder: $params_select->place_holder,  row_upd: $row_upd,
-            value_vacio: $params_select->value_vacio);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar input', data: $html);
-        }
-
-        $div = $this->directivas->html->div_group(cols: $params_select->cols,html:  $html);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al integrar div', data: $div);
-        }
-
-        return $div;
     }
 
     private function file_items(array $campos_view, array $keys_selects, stdClass $row_upd): array|stdClass
@@ -552,35 +507,7 @@ class html_controler{
         return $controler->inputs;
     }
 
-    /**
-     * Genera un input de tipo template
-     * @param stdClass $params_select Parametros de input
-     * @param stdClass $row_upd Registro en proceso
-     * @return array|string
-     * @version 0.243.37
-     */
-    private function input_template(stdClass $params_select, stdClass $row_upd): array|string
-    {
 
-        $valida = $this->valida_params(params_select: $params_select);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
-        }
-
-        $html =$this->directivas->input_text(disabled: $params_select->disabled, name: $params_select->name,
-            place_holder: $params_select->place_holder, required: $params_select->required, row_upd: $row_upd,
-            value_vacio: $params_select->value_vacio);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar input', data: $html);
-        }
-
-        $div = $this->directivas->html->div_group(cols: $params_select->cols,html:  $html);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al integrar div', data: $div);
-        }
-
-        return $div;
-    }
 
     /**
      * Genera un input text required
@@ -1110,45 +1037,6 @@ class html_controler{
         return $style;
     }
 
-    /**
-     * Integra los inputs de tipo text para una view
-     * @param string $item Name input
-     * @param array $keys_selects Params inputs
-     * @param stdClass $row_upd Registro en proceso
-     * @param stdClass $texts inputs precargados
-     * @return array|stdClass
-     * @version 0.251.37
-     */
-    private function text_input_integra(string $item, array $keys_selects, stdClass $row_upd, stdClass $texts): array|stdClass
-    {
-
-        $item = trim($item);
-        if($item === ''){
-            return $this->error->error(mensaje: 'Error item esta vacio', data: $item);
-        }
-        if(is_numeric($item)){
-            return $this->error->error(mensaje: 'Error item debe ser un texto', data: $item);
-        }
-
-        $params_select = (new params())->params_select_init(item:$item,keys_selects:  $keys_selects);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar select', data: $params_select);
-        }
-
-        $valida = $this->valida_params(params_select: $params_select);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
-        }
-
-        $input = $this->input_template(params_select: $params_select,row_upd: $row_upd);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar input', data: $input);
-        }
-        $texts->$item = $input;
-        return $texts;
-    }
-
-
     private function text_item(string $item, array $keys_selects, stdClass $row_upd, stdClass $texts): array|stdClass
     {
         $params_select = (new params())->params_select_init(item: $item, keys_selects: $keys_selects);
@@ -1178,6 +1066,14 @@ class html_controler{
         return new stdClass();
     }
 
+    /**
+     * Integra los inputs de tipo text
+     * @param modelo $modelo Modelo en ejecucion para uso campos view
+     * @param stdClass $row_upd Registro en proceso
+     * @param array $keys_selects Params de inputs
+     * @return array|stdClass
+     * @version 0.255.37
+     */
     protected function texts_alta2(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
     {
         $campos_view = $this->obtener_inputs($modelo->campos_view);
@@ -1185,51 +1081,12 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al obtener campos de la vista del modelo', data: $campos_view);
         }
 
-        $texts = $this->texts_integra(campos_view: $campos_view,keys_selects:  $keys_selects,row_upd:  $row_upd);
+        $texts = (new texts())->texts_integra(campos_view: $campos_view, directivas: $this->directivas,
+            keys_selects:  $keys_selects,row_upd:  $row_upd);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar input', data: $texts);
         }
 
-        return $texts;
-    }
-
-    /**
-     * Integra los inputs de tipo text
-     * @param array $campos_view Campos de modelo
-     * @param array $keys_selects Parametros
-     * @param stdClass $row_upd Registro en proceso
-     * @return array|stdClass
-     * @version 0.524.37
-     */
-    private function texts_integra(array $campos_view, array $keys_selects, stdClass $row_upd): array|stdClass
-    {
-
-        $keys = array('inputs');
-        $valida = $this->validacion->valida_existencia_keys(keys:$keys,registro:  $campos_view);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar campos_view', data: $valida);
-        }
-
-
-
-        $texts = new stdClass();
-
-        foreach ($campos_view['inputs'] as $item){
-
-            $item = trim($item);
-            if($item === ''){
-                return $this->error->error(mensaje: 'Error item esta vacio', data: $item);
-            }
-            if(is_numeric($item)){
-                return $this->error->error(mensaje: 'Error item debe ser un texto', data: $item);
-            }
-
-            $texts = $this->text_input_integra(item: $item,keys_selects:  $keys_selects,row_upd:  $row_upd,texts:  $texts);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar input', data: $texts);
-            }
-
-        }
         return $texts;
     }
 
@@ -1282,32 +1139,6 @@ class html_controler{
         return true;
     }
 
-    private function valida_params(stdClass $params_select): bool|array
-    {
-        $keys = array('cols','disabled','name','place_holder','required','value_vacio');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $params_select);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
-        }
 
-        $keys = array('cols');
-        $valida = $this->validacion->valida_numerics(keys: $keys,row:  $params_select);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
-        }
-
-        $valida = $this->directivas->valida_cols(cols: $params_select->cols);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar columnas', data: $valida);
-        }
-
-        $keys = array('disabled','required','value_vacio');
-        $valida = $this->validacion->valida_bools(keys: $keys,row:  $params_select);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
-        }
-
-        return true;
-    }
 
 }

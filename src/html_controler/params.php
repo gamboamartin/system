@@ -1,6 +1,7 @@
 <?php
 namespace gamboamartin\system\html_controler;
 use gamboamartin\errores\errores;
+use gamboamartin\template\directivas;
 use gamboamartin\validacion\validacion;
 use stdClass;
 
@@ -141,5 +142,33 @@ class params{
         }
 
         return $params_select;
+    }
+
+    public function valida_params(directivas $directivas, stdClass $params_select): bool|array
+    {
+        $keys = array('cols','disabled','name','place_holder','required','value_vacio');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $params_select);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
+        }
+
+        $keys = array('cols');
+        $valida = $this->validacion->valida_numerics(keys: $keys,row:  $params_select);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
+        }
+
+        $valida = $directivas->valida_cols(cols: $params_select->cols);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar columnas', data: $valida);
+        }
+
+        $keys = array('disabled','required','value_vacio');
+        $valida = $this->validacion->valida_bools(keys: $keys,row:  $params_select);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
+        }
+
+        return true;
     }
 }
