@@ -13,7 +13,8 @@
     "autoload": {
         "psr-4": {
           "config\\": "config/",
-          "gamboamartin\\system\\": "src/"
+          "gamboamartin\\system\\": "src/",
+          "tests\\": "tests/"
         }
     },
     "require": {

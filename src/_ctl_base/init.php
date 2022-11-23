@@ -2,6 +2,7 @@
 namespace gamboamartin\system\_ctl_base;
 use base\controller\controler;
 use gamboamartin\errores\errores;
+use gamboamartin\validacion\validacion;
 use stdClass;
 
 class init{
@@ -111,8 +112,26 @@ class init{
         return $data_init;
     }
 
-    private function init_param_get(stdClass $data_init, string $key): stdClass
+    /**
+     * Inicializa un objeto conforme el key recibido en GET
+     * @param stdClass $data_init Datos de controller para view
+     * @param string $key Key a verificar e integrar
+     * @return stdClass|array
+     * @version 0.257.37
+     */
+    private function init_param_get(stdClass $data_init, string $key): stdClass|array
     {
+        $key = trim($key);
+        if($key === ''){
+            return $this->error->error(mensaje: 'Error key esta vacio', data: $key);
+        }
+
+        $keys = array($key);
+        $valida = (new validacion())->valida_existencia_keys(keys:$keys,registro:  $_GET);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar GET', data: $valida);
+        }
+
         $data_init->$key = $_GET[$key];
         return $data_init;
     }

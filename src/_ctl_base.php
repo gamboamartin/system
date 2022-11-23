@@ -8,12 +8,7 @@
  */
 namespace gamboamartin\system;
 
-use gamboamartin\cat_sat\controllers\_ctl_base\init;
 use gamboamartin\errores\errores;
-use gamboamartin\system\html_controler;
-use gamboamartin\system\out_permisos;
-use gamboamartin\system\system;
-use gamboamartin\system\table;
 use gamboamartin\validacion\validacion;
 use stdClass;
 
@@ -155,7 +150,7 @@ class _ctl_base extends system{
     {
 
         if(count($params) === 0){
-            $params = (new init())->params(controler: $this,params:  $params);
+            $params = (new \gamboamartin\system\_ctl_base\init())->params(controler: $this,params:  $params);
             if(errores::$error){
                 return $this->errores->error(mensaje: 'Error al asignar params', data: $params);
             }

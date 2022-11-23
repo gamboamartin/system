@@ -1,19 +1,14 @@
 <?php
-namespace tests\controllers;
+namespace tests\src\datatables;
 
-use gamboamartin\administrador\models\adm_accion;
-use gamboamartin\administrador\models\adm_accion_grupo;
-use gamboamartin\administrador\models\adm_seccion;
-use gamboamartin\administrador\models\adm_seccion_pertenece;
-use gamboamartin\administrador\models\adm_sistema;
+
 use gamboamartin\errores\errores;
-use gamboamartin\system\actions;
-use gamboamartin\system\datatables\acciones;
+
 use gamboamartin\system\datatables\init;
-use gamboamartin\system\links_menu;
+
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use JsonException;
+
 use stdClass;
 
 
