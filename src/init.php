@@ -253,8 +253,26 @@ class init{
         return ucwords($name_lista);
     }
 
-    private function retornos(string $accion, string $seccion, int $registro_id = -1): stdClass
+    /**
+     * Inicializa los datos de retorno
+     * @param string $accion Accion a integrar
+     * @param string $seccion Seccion a integrar
+     * @param int $registro_id Id en proceso
+     * @return stdClass|array
+     * @version 0.257.38
+     */
+    private function retornos(string $accion, string $seccion, int $registro_id = -1): stdClass|array
     {
+        $accion = trim($accion);
+        $seccion = trim($seccion);
+
+        if($accion === ''){
+            return $this->error->error(mensaje: 'Error accion esta vacia',data:  $accion);
+        }
+        if($seccion === ''){
+            return $this->error->error(mensaje: 'Error seccion esta vacia',data:  $seccion);
+        }
+
         $next_seccion = $seccion;
         $next_accion = $accion;
         $id_retorno = $registro_id;
@@ -269,6 +287,15 @@ class init{
 
     public function retornos_get(string $accion, string $seccion, int $id_retorno = -1): array|stdClass
     {
+        $accion = trim($accion);
+        $seccion = trim($seccion);
+
+        if($accion === ''){
+            return $this->error->error(mensaje: 'Error accion esta vacia',data:  $accion);
+        }
+        if($seccion === ''){
+            return $this->error->error(mensaje: 'Error seccion esta vacia',data:  $seccion);
+        }
 
         $retornos_init = $this->retornos(accion: $accion, seccion: $seccion, registro_id: $id_retorno);
         if(errores::$error){

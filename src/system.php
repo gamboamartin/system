@@ -431,6 +431,16 @@ class system extends controlador_base{
 
     protected function header_retorno(string $accion, string $seccion, int $id_retorno = -1): array|string
     {
+        $accion = trim($accion);
+        $seccion = trim($seccion);
+
+        if($accion === ''){
+            return $this->errores->error(mensaje: 'Error accion esta vacia',data:  $accion);
+        }
+        if($seccion === ''){
+            return $this->errores->error(mensaje: 'Error seccion esta vacia',data:  $seccion);
+        }
+
         $retornos = (new init())->retornos_get(accion: $accion,seccion:  $seccion, id_retorno: $id_retorno);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al obtener retornos data',data:  $retornos);

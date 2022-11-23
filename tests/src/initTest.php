@@ -327,6 +327,29 @@ class initTest extends test {
 
     }
 
+    public function test_retornos(): void
+    {
+        errores::$error = false;
+
+        $_GET['session_id']  = 1;
+        $_GET['seccion']  = 'adm_menu';
+        $_SESSION['grupo_id'] = 1;
+
+        $init = new init();
+        $init = new liberator($init);
+
+
+        $accion = 'a';
+        $seccion = 'v';
+        $resultado = $init->retornos($accion, $seccion);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('v',$resultado->next_seccion);
+        $this->assertEquals('a',$resultado->next_accion);
+        $this->assertEquals(-1,$resultado->id_retorno);
+        errores::$error = false;
+    }
+
     public function test_row_value_id(): void
     {
         errores::$error = false;
