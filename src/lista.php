@@ -1,10 +1,7 @@
 <?php
 namespace gamboamartin\system;
-use base\controller\controler;
 use base\orm\modelo;
-use config\generales;
 use gamboamartin\errores\errores;
-use gamboamartin\template\html;
 use gamboamartin\validacion\validacion;
 use stdClass;
 
@@ -16,6 +13,12 @@ class lista{
         $this->validacion = new validacion();
     }
 
+    /**
+     * Integra las columnas para una view de lista
+     * @param array $keys_row_lista Datos desde controller
+     * @return array
+     * @version 0.258.38
+     */
     private function columnas_lista(array $keys_row_lista): array
     {
         $columnas = array();
@@ -30,6 +33,13 @@ class lista{
         return $columnas;
     }
 
+    /**
+     * Integra los registros para una lista
+     * @param array $keys_row_lista Datos desde controller
+     * @param modelo $modelo Modelo en ejecucion
+     * @return array|stdClass
+     * @version 0.258.38
+     */
     private function rows_lista(array $keys_row_lista, modelo $modelo): array|stdClass
     {
         $columnas = $this->columnas_lista(keys_row_lista: $keys_row_lista);

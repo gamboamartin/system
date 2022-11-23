@@ -125,5 +125,25 @@ class listaTest extends test {
         errores::$error = false;
     }
 
+    public function test_rows_lista(): void
+    {
+        errores::$error = false;
+        $_SESSION['grupo_id'] = 2;
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+        $html = new html();
+
+
+        $controler = new lista();
+        $controler = new liberator($controler);
+        $keys_row_lista = array();
+        $modelo = new adm_accion($this->link);
+
+        $resultado = $controler->rows_lista($keys_row_lista, $modelo);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
 }
 
