@@ -24,7 +24,7 @@ class links_menu{
         $this->session_id = (new generales())->session_id;
 
         $secciones = (new adm_seccion_pertenece(link: $link))->secciones_paquete();
-        if($this->session_id === ''){
+        if(errores::$error){
             $error = $this->error->error(mensaje: 'Error obtener secciones del paquete', data: $secciones);
             print_r($error);
             die('Error');

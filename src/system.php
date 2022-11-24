@@ -104,7 +104,7 @@ class system extends controlador_base{
             datatables: $datatables,link: $this->link,rows_lista: $this->rows_lista,seccion: $this->seccion);
         if(errores::$error){
             $error = $this->errores->error(mensaje: 'Error al maquetar datos para tables ', data: $data_for_datable);
-            var_dump($error);
+            print_r($error);
             die('Error');
         }
 

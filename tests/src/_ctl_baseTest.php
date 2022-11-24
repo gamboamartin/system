@@ -1,0 +1,110 @@
+<?php
+namespace tests\controllers;
+
+use gamboamartin\administrador\models\adm_accion;
+use gamboamartin\administrador\models\adm_accion_grupo;
+use gamboamartin\administrador\models\adm_seccion;
+use gamboamartin\administrador\models\adm_seccion_pertenece;
+use gamboamartin\administrador\models\adm_sistema;
+use gamboamartin\errores\errores;
+use gamboamartin\system\_ctl_base;
+use gamboamartin\system\actions;
+use gamboamartin\system\html_controler;
+use gamboamartin\system\links_menu;
+use gamboamartin\template\html;
+use gamboamartin\test\liberator;
+use gamboamartin\test\test;
+use JsonException;
+use stdClass;
+
+
+class _ctl_baseTest extends test {
+    public errores $errores;
+    private stdClass $paths_conf;
+    public function __construct(?string $name = null, array $data = [], $dataName = '')
+    {
+        parent::__construct($name, $data, $dataName);
+        $this->errores = new errores();
+        $this->paths_conf = new stdClass();
+        $this->paths_conf->generales = '/var/www/html/cat_sat/config/generales.php';
+        $this->paths_conf->database = '/var/www/html/cat_sat/config/database.php';
+        $this->paths_conf->views = '/var/www/html/cat_sat/config/views.php';
+    }
+
+    public function test_input_retornos(): void
+    {
+        errores::$error = false;
+
+        $_SESSION['usuario_id'] = 2;
+        $_SESSION['grupo_id'] = 2;
+        $_GET['session_id'] = mt_rand(1,99999999);
+        $_GET['seccion'] = 'adm_accion';
+
+
+        $del = (new adm_sistema($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al del', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_seccion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al del', $del);
+            print_r($error);
+            exit;
+        }
+
+
+        $seccion_ins['id'] = 1;
+        $seccion_ins['descripcion'] = 'adm_accion';
+        $seccion_ins['adm_menu_id'] = 1;
+        $alta = (new adm_seccion($this->link))->alta_registro($seccion_ins);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
+        $sistema_ins['id'] = 1;
+        $sistema_ins['descripcion'] = 'system';
+
+        $alta = (new adm_sistema($this->link))->alta_registro($sistema_ins);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
+
+        $accion_ins['id'] = 1;
+        $accion_ins['adm_seccion_id'] = 1;
+        $accion_ins['adm_sistema_id'] = 1;
+        $alta = (new adm_seccion_pertenece($this->link))->alta_registro($accion_ins);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
+        $html = new html();
+        $html_controler = new html_controler($html);
+        $modelo = new adm_accion($this->link);
+        $link_obj = new links_menu($this->link, -1);
+
+        errores::$error = false;
+
+        $ctl = new _ctl_base(html: $html_controler, link: $this->link,modelo: $modelo,obj_link: $link_obj,paths_conf: $this->paths_conf);
+        $ctl = new liberator($ctl);
+
+
+        errores::$error = false;
+        $resultado = $ctl->input_retornos();
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
+}
+

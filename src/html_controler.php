@@ -247,6 +247,7 @@ class html_controler{
         if($value === ''){
             return $this->error->error(mensaje: 'Error value esta vacio',data:  $value);
         }
+        
         return "<input type='hidden' name='$name' value='$value'>";
     }
 
@@ -687,6 +688,7 @@ class html_controler{
      */
     public function retornos(int $registro_id, string $tabla): array|stdClass
     {
+
         $tabla = trim($tabla);
         if($tabla === ''){
             return $this->error->error(mensaje: 'Error tabla esta vacia',data:  $tabla);
@@ -695,6 +697,7 @@ class html_controler{
         if($registro_id === ''){
             return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0',data:  $registro_id);
         }
+
         $hidden_id_retorno = $this->hidden(name: 'id_retorno', value: $registro_id);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener hidden_id_retorno',data:  $hidden_id_retorno);

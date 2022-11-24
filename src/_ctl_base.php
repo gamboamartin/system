@@ -23,7 +23,6 @@ class _ctl_base extends system{
     /**
      * Integra los campos view de una vista para alta y modifica Metodo para sobreescribir
      * @return array
-     * @version 0.73.1
      */
     protected function campos_view(): array
     {
@@ -182,7 +181,6 @@ class _ctl_base extends system{
     /**
      * Inicializa loe elementos para un alta
      * @return array|stdClass|string
-     * @version 0.73.1
      */
     protected function init_alta(): array|stdClass|string
     {
@@ -203,7 +201,6 @@ class _ctl_base extends system{
     /**
      * Inicializa los elementos de datos de un children para una view
      * @return array|stdClass
-     * @version 0.101.4
      */
     protected function init_data_children(): array|stdClass
     {
@@ -225,7 +222,6 @@ class _ctl_base extends system{
     /**
      * Inicializa upd base view
      * @return array|stdClass|string
-     * @version 0.74.1
      */
     protected function init_modifica(): array|stdClass|string
     {
@@ -249,7 +245,6 @@ class _ctl_base extends system{
      * Debe star sobreescrito en el controlador integrando todos los selects necesarios
      * @param stdClass $registro
      * @return stdClass|array
-     * @version 0.103.5
      */
     protected function inputs_children(stdClass $registro): stdClass|array
     {
@@ -257,7 +252,12 @@ class _ctl_base extends system{
         return new stdClass();
     }
 
-    protected function input_retornos(): array|stdClass
+    /**
+     * Genera los input para retornos despues de transaccion
+     * @return array|stdClass
+     * @version 0.259.38
+     */
+    private function input_retornos(): array|stdClass
     {
         $retornos = (new html_controler(html: $this->html_base))->retornos(registro_id: $this->registro_id,tabla:  $this->tabla);
         if(errores::$error){
@@ -286,7 +286,6 @@ class _ctl_base extends system{
      * @param int|null $id_selected Identificador para selected
      * @param string $label Etiqueta a mostrar
      * @return array
-     * @version 0.78.1
      */
     protected function key_select(int $cols, bool $con_registros, array $filtro,string $key, array $keys_selects,
                                   int|null $id_selected, string $label): array
@@ -314,6 +313,15 @@ class _ctl_base extends system{
         $keys_selects[$key]->id_selected = $id_selected;
         $keys_selects[$key]->filtro = $filtro;
         return $keys_selects;
+    }
+
+    protected function seccion_retorno(){
+        $seccion_retorno = $this->tabla;
+        if(isset($_POST['seccion_retorno'])){
+            $seccion_retorno = $_POST['seccion_retorno'];
+            unset($_POST['seccion_retorno']);
+        }
+        return $seccion_retorno;
     }
 
 }
