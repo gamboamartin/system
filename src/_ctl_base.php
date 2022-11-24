@@ -198,6 +198,15 @@ class _ctl_base extends system{
         return $r_template;
     }
 
+    protected function id_retorno(){
+        $id_retorno = -1;
+        if(isset($_POST['id_retorno'])){
+            $id_retorno = $_POST['id_retorno'];
+            unset($_POST['id_retorno']);
+        }
+        return $id_retorno;
+    }
+
     /**
      * Inicializa los elementos de datos de un children para una view
      * @return array|stdClass
