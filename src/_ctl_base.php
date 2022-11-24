@@ -178,6 +178,24 @@ class _ctl_base extends system{
         return $data;
     }
 
+    protected function data_retorno(): array|stdClass
+    {
+        $seccion_retorno = $this->seccion_retorno();
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al obtener seccion retorno', data: $seccion_retorno);
+        }
+
+        $id_retorno = $this->id_retorno();
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al obtener id retorno', data: $id_retorno);
+        }
+        $data = new stdClass();
+        $data->seccion_retorno = $seccion_retorno;
+        $data->id_retorno = $id_retorno;
+
+        return $data;
+    }
+
     /**
      * Inicializa loe elementos para un alta
      * @return array|stdClass|string
@@ -198,7 +216,7 @@ class _ctl_base extends system{
         return $r_template;
     }
 
-    protected function id_retorno(){
+    private function id_retorno(){
         $id_retorno = -1;
         if(isset($_POST['id_retorno'])){
             $id_retorno = $_POST['id_retorno'];
@@ -324,7 +342,7 @@ class _ctl_base extends system{
         return $keys_selects;
     }
 
-    protected function seccion_retorno(){
+    private function seccion_retorno(){
         $seccion_retorno = $this->tabla;
         if(isset($_POST['seccion_retorno'])){
             $seccion_retorno = $_POST['seccion_retorno'];
