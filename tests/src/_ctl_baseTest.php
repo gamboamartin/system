@@ -88,6 +88,63 @@ class _ctl_baseTest extends test {
         errores::$error = false;
     }
 
+    public function test_init_data_children(): void
+    {
+        errores::$error = false;
+
+        $_SESSION['usuario_id'] = 2;
+        $_SESSION['grupo_id'] = 2;
+        $_GET['session_id'] = mt_rand(1,99999999);
+        $_GET['seccion'] = 'adm_accion';
+
+
+        $html = new html();
+        $html_controler = new html_controler($html);
+        $modelo = new adm_accion($this->link);
+        $link_obj = new links_menu($this->link, -1);
+
+        errores::$error = false;
+
+        $ctl = new _ctl_base(html: $html_controler, link: $this->link,modelo: $modelo,obj_link: $link_obj,paths_conf: $this->paths_conf);
+        $ctl = new liberator($ctl);
+        errores::$error = false;
+
+        $del = (new adm_seccion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al del', $del);
+            print_r($error);
+            exit;
+        }
+
+        $adm_seccion['id'] = 1;
+        $adm_seccion['descripcion'] = 'test';
+        $adm_seccion['adm_menu_id'] = 1;
+        $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
+        $adm_accion['id'] = 1;
+        $adm_accion['adm_seccion_id'] = 1;
+        $adm_accion['descripcion'] = 'test';
+        $alta = (new adm_accion($this->link))->alta_registro($adm_accion);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
+        $ctl->registro_id = 1;
+        $resultado = $ctl->init_data_children();
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(1,$resultado->adm_accion_id);
+        errores::$error = false;
+
+    }
+
     public function test_input_retornos(): void
     {
         errores::$error = false;

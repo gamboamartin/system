@@ -196,26 +196,6 @@ class systemTest extends test {
 
         errores::$error = false;
 
-        $del = (new adm_accion_grupo($this->link))->elimina_todo();
-        if(errores::$error){
-            $error = (new errores())->error('Error al eliminar', $del);
-            print_r($error);
-            exit;
-        }
-
-        $del = (new adm_accion($this->link))->elimina_todo();
-        if(errores::$error){
-            $error = (new errores())->error('Error al eliminar', $del);
-            print_r($error);
-            exit;
-        }
-
-        $del = (new adm_seccion_pertenece($this->link))->elimina_todo();
-        if(errores::$error){
-            $error = (new errores())->error('Error al eliminar', $del);
-            print_r($error);
-            exit;
-        }
 
         $del = (new adm_seccion($this->link))->elimina_todo();
         if(errores::$error){
@@ -235,6 +215,16 @@ class systemTest extends test {
             exit;
         }
 
+        $adm_accion['id'] = 1;
+        $adm_accion['adm_seccion_id'] = 10;
+        $adm_accion['descripcion'] = 'test';
+        $alta = (new adm_accion($this->link))->alta_registro($adm_accion);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
         $_GET['length'] = 15;
         $_GET['start'] = 0;
         $_GET['search']['value'] = 1;
@@ -244,8 +234,8 @@ class systemTest extends test {
 
 
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(8,$resultado['recordsTotal']);
-        $this->assertCount(8,$resultado['data']);
+        $this->assertEquals(9,$resultado['recordsTotal']);
+        $this->assertCount(9,$resultado['data']);
         $this->assertIsNumeric($resultado['data'][0]['adm_accion_id']);
 
         errores::$error = false;

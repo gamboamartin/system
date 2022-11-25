@@ -179,7 +179,7 @@ class _ctl_base extends system{
         return $data;
     }
 
-    protected function data_retorno(): array|stdClass
+    private function data_retorno(): array|stdClass
     {
         $seccion_retorno = $this->seccion_retorno();
         if(errores::$error){
@@ -195,6 +195,21 @@ class _ctl_base extends system{
         $data->id_retorno = $id_retorno;
 
         return $data;
+    }
+
+    protected function data_retorno_base(): array|stdClass
+    {
+        $siguiente_view = (new actions())->init_alta_bd();
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al obtener siguiente view', data: $siguiente_view);
+        }
+
+        $data_retorno = $this->data_retorno();
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al obtener datos de retorno', data: $data_retorno);
+        }
+        $data_retorno->siguiente_view = $siguiente_view;
+        return $data_retorno;
     }
 
     /**
@@ -229,6 +244,7 @@ class _ctl_base extends system{
     /**
      * Inicializa los elementos de datos de un children para una view
      * @return array|stdClass
+     * @version 0.264.38
      */
     protected function init_data_children(): array|stdClass
     {
