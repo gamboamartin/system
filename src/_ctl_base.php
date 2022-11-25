@@ -23,7 +23,7 @@ class _ctl_base extends system{
     /**
      * Integra los campos view de una vista para alta y modifica Metodo para sobreescribir
      * @return array
-     * @version
+     * @version 0.262.38
      */
     protected function campos_view(): array
     {
@@ -33,7 +33,7 @@ class _ctl_base extends system{
     /**
      * Integra los elementos base de una view
      * @return array|$this
-     * @version 0.73.1
+     * @version 0.263.38
      */
     private function base(): array|static
     {
@@ -365,6 +365,7 @@ class _ctl_base extends system{
             }
             exit;
         }
+        return $result;
     }
 
     private function seccion_retorno(){
