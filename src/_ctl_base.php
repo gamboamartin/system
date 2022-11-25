@@ -323,6 +323,12 @@ class _ctl_base extends system{
         return $this->inputs;
     }
 
+    private function integra_key_to_select(string $key, string $key_val, array $keys_selects, string|bool|array $value ): array
+    {
+        $keys_selects[$key]->$key_val = $value;
+        return $keys_selects;
+    }
+
     /**
      * Integra los parametros de un key para select
      * @param int $cols N cols css
@@ -346,20 +352,70 @@ class _ctl_base extends system{
             return $this->errores->error(mensaje: 'Error al validar cols',data:  $valida);
         }
 
-        $label = trim($label);
-        if($label === ''){
-            $label = trim($key);
-            $label = str_replace('_', ' ', $label);
-            $label = ucwords($label);
+        $label = $this->label_init(key: $key,label:  $label);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al generar label',data:  $label);
         }
 
+
         $keys_selects[$key] = new stdClass();
-        $keys_selects[$key]->cols = $cols;
-        $keys_selects[$key]->con_registros = $con_registros;
-        $keys_selects[$key]->label = $label;
-        $keys_selects[$key]->id_selected = $id_selected;
-        $keys_selects[$key]->filtro = $filtro;
+
+        $keys_selects = $this->integra_key_to_select(key: $key,key_val:  'cols',keys_selects:  $keys_selects,value:  $cols);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al integrar keys',data:  $keys_selects);
+        }
+
+        $keys_selects = $this->integra_key_to_select(key: $key,key_val:  'con_registros',keys_selects:  $keys_selects,value:  $con_registros);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al integrar keys',data:  $keys_selects);
+        }
+
+        $keys_selects = $this->integra_key_to_select(key: $key,key_val:  'label',keys_selects:  $keys_selects,value:  $label);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al integrar keys',data:  $keys_selects);
+        }
+
+        $keys_selects = $this->integra_key_to_select(key: $key,key_val:  'id_selected',keys_selects:  $keys_selects,value:  $id_selected);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al integrar keys',data:  $keys_selects);
+        }
+
+        $keys_selects = $this->integra_key_to_select(key: $key,key_val:  'filtro',keys_selects:  $keys_selects,value:  $filtro);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al integrar keys',data:  $keys_selects);
+        }
+
+
         return $keys_selects;
+    }
+
+    /**
+     * Genera un label para input
+     * @param string $key Key del campo
+     * @return string|array
+     * @version 0.270.38
+     */
+    private function label(string $key): string |array
+    {
+        $key = trim($key);
+        if($key === ''){
+            return $this->errores->error(mensaje: 'Error key esta vacio',data:  $key);
+        }
+        $label = trim($key);
+        $label = str_replace('_', ' ', $label);
+        return ucwords($label);
+    }
+
+    private function label_init(string $key, string $label): array|string
+    {
+        $label = trim($label);
+        if($label === ''){
+            $label = $this->label(key: $key);
+            if(errores::$error){
+                return $this->errores->error(mensaje: 'Error al generar label',data:  $label);
+            }
+        }
+        return $label;
     }
 
     protected function retorno(
