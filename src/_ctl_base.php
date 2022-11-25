@@ -11,7 +11,7 @@ namespace gamboamartin\system;
 use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
 use stdClass;
-
+use Throwable;
 
 
 class _ctl_base extends system{
@@ -23,6 +23,7 @@ class _ctl_base extends system{
     /**
      * Integra los campos view de una vista para alta y modifica Metodo para sobreescribir
      * @return array
+     * @version
      */
     protected function campos_view(): array
     {
@@ -340,6 +341,30 @@ class _ctl_base extends system{
         $keys_selects[$key]->id_selected = $id_selected;
         $keys_selects[$key]->filtro = $filtro;
         return $keys_selects;
+    }
+
+    protected function retorno(
+        stdClass $data_retorno, bool $header, int $registro_id, mixed $result, string $siguiente_view, bool $ws){
+        if($header){
+            if($data_retorno->id_retorno === -1) {
+                $data_retorno->id_retorno = $registro_id;
+            }
+
+            $this->retorno_base(registro_id:$data_retorno->id_retorno, result: $result, siguiente_view: $siguiente_view,
+                ws:  $ws,seccion_retorno: $data_retorno->seccion_retorno);
+
+        }
+        if($ws){
+            header('Content-Type: application/json');
+            try {
+                echo json_encode($result, JSON_THROW_ON_ERROR);
+            }
+            catch (Throwable $e){
+                $error = $this->errores->error(mensaje: 'Error al dar salida json', data: $e);
+                print_r($error);
+            }
+            exit;
+        }
     }
 
     private function seccion_retorno(){
