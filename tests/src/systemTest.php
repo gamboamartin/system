@@ -247,26 +247,7 @@ class systemTest extends test {
 
         errores::$error = false;
 
-        $del = (new adm_accion_grupo($this->link))->elimina_todo();
-        if(errores::$error){
-            $error = (new errores())->error('Error al eliminar', $del);
-            print_r($error);
-            exit;
-        }
 
-        $del = (new adm_accion($this->link))->elimina_todo();
-        if(errores::$error){
-            $error = (new errores())->error('Error al eliminar', $del);
-            print_r($error);
-            exit;
-        }
-
-        $del = (new adm_seccion_pertenece($this->link))->elimina_todo();
-        if(errores::$error){
-            $error = (new errores())->error('Error al eliminar', $del);
-            print_r($error);
-            exit;
-        }
 
         $del = (new adm_seccion($this->link))->elimina_todo();
         if(errores::$error){
