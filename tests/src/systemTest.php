@@ -215,6 +215,13 @@ class systemTest extends test {
             exit;
         }
 
+        $del = (new adm_accion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
         $adm_accion['id'] = 1;
         $adm_accion['adm_seccion_id'] = 10;
         $adm_accion['descripcion'] = 'test';
@@ -234,8 +241,8 @@ class systemTest extends test {
 
 
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(9,$resultado['recordsTotal']);
-        $this->assertCount(9,$resultado['data']);
+        $this->assertEquals(1,$resultado['recordsTotal']);
+        $this->assertCount(1,$resultado['data']);
         $this->assertIsNumeric($resultado['data'][0]['adm_accion_id']);
 
         errores::$error = false;
@@ -284,8 +291,8 @@ class systemTest extends test {
         $_GET['search']['value'] = 1;
         $resultado = $controler->get_data(header:false);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(8,$resultado['recordsTotal']);
-        $this->assertCount(8,$resultado['data']);
+        $this->assertEquals(1,$resultado['recordsTotal']);
+        $this->assertCount(1,$resultado['data']);
         $this->assertIsNumeric($resultado['data'][0]['adm_accion_id']);
 
         errores::$error = false;
@@ -297,8 +304,8 @@ class systemTest extends test {
 
 
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(8,$resultado['recordsTotal']);
-        $this->assertCount(8,$resultado['data']);
+        $this->assertEquals(1,$resultado['recordsTotal']);
+        $this->assertCount(1,$resultado['data']);
 
         errores::$error = false;
 
@@ -313,8 +320,8 @@ class systemTest extends test {
         $resultado = $controler->get_data(header:false);
 
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(8,$resultado['recordsTotal']);
-        $this->assertCount(8,$resultado['data']);
+        $this->assertEquals(1,$resultado['recordsTotal']);
+        $this->assertCount(1,$resultado['data']);
         $this->assertIsNumeric($resultado['data'][0]['adm_accion_id']);
 
         errores::$error = false;

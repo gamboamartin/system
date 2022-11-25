@@ -266,6 +266,7 @@ class _ctl_base extends system{
     /**
      * Inicializa upd base view
      * @return array|stdClass|string
+     * @version 0.267.38
      */
     protected function init_modifica(): array|stdClass|string
     {
