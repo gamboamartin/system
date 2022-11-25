@@ -289,6 +289,7 @@ class _ctl_base extends system{
      * Debe star sobreescrito en el controlador integrando todos los selects necesarios
      * @param stdClass $registro
      * @return stdClass|array
+     * @version 0.265.38
      */
     protected function inputs_children(stdClass $registro): stdClass|array
     {
@@ -360,13 +361,13 @@ class _ctl_base extends system{
     }
 
     protected function retorno(
-        stdClass $data_retorno, bool $header, int $registro_id, mixed $result, string $siguiente_view, bool $ws){
+        stdClass $data_retorno, bool $header, int $registro_id, mixed $result, bool $ws){
         if($header){
             if($data_retorno->id_retorno === -1) {
                 $data_retorno->id_retorno = $registro_id;
             }
 
-            $this->retorno_base(registro_id:$data_retorno->id_retorno, result: $result, siguiente_view: $siguiente_view,
+            $this->retorno_base(registro_id:$data_retorno->id_retorno, result: $result, siguiente_view: $data_retorno->siguiente_view,
                 ws:  $ws,seccion_retorno: $data_retorno->seccion_retorno);
 
         }
