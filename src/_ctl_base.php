@@ -407,8 +407,19 @@ class _ctl_base extends system{
         return ucwords($label);
     }
 
+    /**
+     * Inicializa un elemento label
+     * @param string $key Key de input
+     * @param string $label Etiqueta de input
+     * @return array|string
+     * @version 0.272.38
+     */
     private function label_init(string $key, string $label): array|string
     {
+        $key = trim($key);
+        if($key === ''){
+            return $this->errores->error(mensaje: 'Error key esta vacio',data:  $key);
+        }
         $label = trim($label);
         if($label === ''){
             $label = $this->label(key: $key);
