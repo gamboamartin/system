@@ -323,7 +323,8 @@ class _ctl_base extends system{
         return $this->inputs;
     }
 
-    private function integra_key_to_select(string $key, string $key_val, array $keys_selects, string|bool|array $value ): array
+    private function integra_key_to_select(
+        string $key, string $key_val, array $keys_selects, string|bool|array|null $value ): array
     {
         $keys_selects[$key]->$key_val = $value;
         return $keys_selects;
