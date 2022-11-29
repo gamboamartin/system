@@ -179,6 +179,31 @@ class html_controler{
         return $dates;
     }
 
+    protected function emails_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
+    {
+        $campos_view = $this->obtener_inputs($modelo->campos_view);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener campos de la vista del modelo', data: $campos_view);
+        }
+
+        $emails = new stdClass();
+
+        foreach ($campos_view['emails'] as $item){
+
+            $params_select = (new params())->params_select_init(item:$item,keys_selects:  $keys_selects);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar select', data: $params_select);
+            }
+            $date = (new template())->emails_template(directivas: $this->directivas, params_select: $params_select,row_upd: $row_upd);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar input', data: $date);
+            }
+            $emails->$item = $date;
+        }
+
+        return $emails;
+    }
+
     private function file_items(array $campos_view, array $keys_selects, stdClass $row_upd): array|stdClass
     {
         $texts = new stdClass();
@@ -294,7 +319,17 @@ class html_controler{
 
         $passwords = $this->passwords_alta(modelo: $modelo,row_upd: $row_upd,keys_selects: $keys_selects);
         if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al generar dates', data: $dates);
+            return $this->error->error(mensaje: 'Error al generar passwords', data: $dates);
+        }
+
+        $telefonos = $this->telefonos_alta(modelo: $modelo,row_upd: $row_upd,keys_selects: $keys_selects);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar telefonos', data: $dates);
+        }
+
+        $emails = $this->emails_alta(modelo: $modelo,row_upd: $row_upd,keys_selects: $keys_selects);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar emails', data: $dates);
         }
 
         $fields = array();
@@ -303,6 +338,8 @@ class html_controler{
         $fields['files'] = $files;
         $fields['dates'] = $dates;
         $fields['passwords'] = $passwords;
+        $fields['telefonos'] = $telefonos;
+        $fields['emails'] = $emails;
 
         return $fields;
     }
@@ -1074,6 +1111,31 @@ class html_controler{
             $style = 'success';
         }
         return $style;
+    }
+
+    protected function telefonos_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
+    {
+        $campos_view = $this->obtener_inputs($modelo->campos_view);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener campos de la vista del modelo', data: $campos_view);
+        }
+
+        $telefonos = new stdClass();
+
+        foreach ($campos_view['telefonos'] as $item){
+
+            $params_select = (new params())->params_select_init(item:$item,keys_selects:  $keys_selects);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar select', data: $params_select);
+            }
+            $date = (new template())->telefonos_template(directivas: $this->directivas, params_select: $params_select,row_upd: $row_upd);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar input', data: $date);
+            }
+            $telefonos->$item = $date;
+        }
+
+        return $telefonos;
     }
 
     private function text_item(string $item, array $keys_selects, stdClass $row_upd, stdClass $texts): array|stdClass

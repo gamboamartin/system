@@ -15,6 +15,29 @@ class template{
         $this->validacion = new validacion();
     }
 
+    public function emails_template(directivas $directivas, stdClass $params_select, stdClass $row_upd): array|string
+    {
+
+        $valida = $this->valida_input_base(directivas: $directivas,params_select:  $params_select);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
+        }
+
+        $html =$directivas->email_required(disabled: $params_select->disabled, name: $params_select->name,
+            place_holder: $params_select->place_holder,  row_upd: $row_upd,
+            value_vacio: $params_select->value_vacio);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar input', data: $html);
+        }
+
+        $div = $directivas->html->div_group(cols: $params_select->cols,html:  $html);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar div', data: $div);
+        }
+
+        return $div;
+    }
+
     /**
      * Integra los datos para un template
      * @param directivas $directivas Directiva de html
@@ -25,28 +48,11 @@ class template{
      */
     public function dates_template(directivas $directivas, stdClass $params_select, stdClass $row_upd): array|string
     {
-        $keys = array('cols','disabled','name','place_holder','value_vacio');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $params_select);
+        $valida = $this->valida_input_base(directivas: $directivas,params_select:  $params_select);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
         }
 
-        $keys = array('cols');
-        $valida = $this->validacion->valida_numerics(keys: $keys,row:  $params_select);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
-        }
-
-        $keys = array('disabled','value_vacio');
-        $valida = $this->validacion->valida_bools(keys: $keys,row:  $params_select);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
-        }
-
-        $valida = $directivas->valida_cols(cols: $params_select->cols);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar columnas', data: $valida);
-        }
 
         $html =$directivas->fecha_required(disabled: $params_select->disabled, name: $params_select->name,
             place_holder: $params_select->place_holder,  row_upd: $row_upd,
@@ -96,8 +102,62 @@ class template{
 
     public function passwords_template(directivas $directivas, stdClass $params_select, stdClass $row_upd): array|string
     {
+        $valida = $this->valida_input_base(directivas: $directivas,params_select:  $params_select);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
+        }
+
+        $html =$directivas->input_password(disabled: $params_select->disabled, name: $params_select->name,
+            place_holder: $params_select->place_holder,  row_upd: $row_upd,
+            value_vacio: $params_select->value_vacio);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar input', data: $html);
+        }
+
+        $div = $directivas->html->div_group(cols: $params_select->cols,html:  $html);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar div', data: $div);
+        }
+
+        return $div;
+    }
+
+    public function telefonos_template(directivas $directivas, stdClass $params_select, stdClass $row_upd): array|string
+    {
+
+        $valida = $this->valida_input_base(directivas: $directivas,params_select:  $params_select);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
+        }
+
+        $html =$directivas->input_telefono(disabled: $params_select->disabled, name: $params_select->name,
+            place_holder: $params_select->place_holder,  row_upd: $row_upd,
+            value_vacio: $params_select->value_vacio);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar input', data: $html);
+        }
+
+        $div = $directivas->html->div_group(cols: $params_select->cols,html:  $html);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar div', data: $div);
+        }
+
+        return $div;
+    }
+
+    private function valida_base(mixed $params_select): bool|array
+    {
         $keys = array('cols','disabled','name','place_holder','value_vacio');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $params_select);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
+        }
+        return true;
+    }
+
+    private function valida_input(mixed $params_select): bool|array
+    {
+        $valida = $this->valida_base(params_select: $params_select);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
         }
@@ -114,24 +174,22 @@ class template{
             return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
         }
 
+        return true;
+    }
+
+    private function valida_input_base(directivas $directivas, mixed $params_select): bool|array
+    {
+        $valida = $this->valida_input(params_select: $params_select);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
+        }
+
+
         $valida = $directivas->valida_cols(cols: $params_select->cols);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar columnas', data: $valida);
         }
-
-        $html =$directivas->input_password(disabled: $params_select->disabled, name: $params_select->name,
-            place_holder: $params_select->place_holder,  row_upd: $row_upd,
-            value_vacio: $params_select->value_vacio);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar input', data: $html);
-        }
-
-        $div = $directivas->html->div_group(cols: $params_select->cols,html:  $html);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al integrar div', data: $div);
-        }
-
-        return $div;
+        return true;
     }
 
 }
