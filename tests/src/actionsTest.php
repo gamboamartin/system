@@ -150,6 +150,38 @@ class actionsTest extends test {
 
     }
 
+    public function test_genera_link_row(): void
+    {
+        errores::$error = false;
+        $act = new actions();
+        $act = new liberator($act);
+
+        $_SESSION['usuario_id'] = 2;
+        $_SESSION['grupo_id'] = 2;
+        $_GET['session_id'] = 1;
+
+        $accion = 'b';
+        $link = $this->link;
+        $obj_link = new links_menu($this->link, -1);
+        $registros = array();
+        $registros_view = array();
+        $seccion = 'a';
+        $style = 'a';
+        $style_status = '';
+
+        $registros[0] = new stdClass();
+        $registros[0]->a_id = 1;
+
+
+        $resultado = $act->genera_link_row($accion, $link, $obj_link, $registros, $registros_view, $seccion,
+            $style, $style_status);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+
+    }
+
     public function test_init_alta_bd(): void
     {
         errores::$error = false;

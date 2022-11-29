@@ -72,6 +72,14 @@ class actions{
         if($seccion === ''){
             return $this->error->error(mensaje: 'Error la seccion esta vacia', data:  $seccion);
         }
+        $accion = trim($accion);
+        if($accion === ''){
+            return $this->error->error(mensaje: 'Error no $accion esta vacio', data:  $accion);
+        }
+        $style = trim($style);
+        if($style === ''){
+            return $this->error->error(mensaje: 'Error  $style esta vacio', data:  $style);
+        }
 
         $key_id = $this->key_id(seccion: $seccion);
         if(errores::$error){
@@ -118,23 +126,34 @@ class actions{
 
     /**
      * @param string $accion Accion a ejecutar en el boton
-     * @param PDO $link
+     * @param PDO $link Conexion a base de datos
      * @param links_menu $obj_link Objeto para generacion de links
-     * @param array $registros
+     * @param array $registros Registros en proceso
      * @param array $registros_view Registros de  salida para view
      * @param string $seccion Seccion en ejecucion
      * @param string $style Estilos para botones
-     * @param bool $style_status
+     * @param bool $style_status Estilo de botones de tipo status
      * @return array
+     * @version 0.281.38
      */
     private function genera_link_row(string $accion, PDO $link, links_menu $obj_link, array $registros, array $registros_view,
                                      string $seccion, string $style, bool $style_status): array
     {
 
-        /**
-         * REFACTORIZAR
-         */
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(mensaje: 'Error la seccion esta vacia', data:  $seccion);
+        }
+        $accion = trim($accion);
+        if($accion === ''){
+            return $this->error->error(mensaje: 'Error no $accion esta vacio', data:  $accion);
+        }
+
         foreach ($registros as $indice=>$row){
+
+            if(!is_object($row)){
+                return $this->error->error(mensaje: 'Error row debe ser un objeto', data:  $row);
+            }
 
             if($style_status){
                 $style = $this->style(accion: $accion, row: $row, seccion: $seccion);
@@ -143,6 +162,12 @@ class actions{
                 }
 
             }
+
+            $style = trim($style);
+            if($style === ''){
+                return $this->error->error(mensaje: 'Error  $style esta vacio', data:  $style);
+            }
+
             $registros_view = $this->asigna_link_rows(accion: $accion,indice:  $indice, link: $link,obj_link:  $obj_link,
                 registros_view: $registros_view,row:  $row, seccion: $seccion, style: $style);
             if(errores::$error){
