@@ -30,6 +30,23 @@ class _ctl_base extends system{
         return array();
     }
 
+    protected function campos_view_base(array $init_data, stdClass $keys): array
+    {
+        $selects = (new \base\controller\init())->select_key_input($init_data, selects: $keys->selects);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar select',data:  $selects);
+        }
+        $keys->selects = $selects;
+
+        $campos_view = (new \base\controller\init())->model_init_campos_template(
+            campos_view: array(),keys:  $keys, link: $this->link);
+
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+        }
+        return $campos_view;
+    }
+
     /**
      * Integra los elementos base de una view
      * @return array|$this
