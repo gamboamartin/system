@@ -59,10 +59,19 @@ class init{
     /**
      * Inicializa loe elementos para un retorno
      * @param controler $controler Controlador en ejecucion
-     * @return stdClass
+     * @return stdClass|array
+     * @version 0.273.38
      */
-    private function init_data_retornos(controler $controler): stdClass
+    private function init_data_retornos(controler $controler): stdClass|array
     {
+        $controler->tabla = trim($controler->tabla);
+        if($controler->tabla === ''){
+            return $this->error->error(mensaje: 'Error $controler->tabla esta vacio', data: $controler->tabla);
+        }
+        $controler->accion = trim($controler->accion);
+        if($controler->accion === ''){
+            return $this->error->error(mensaje: 'Error $controler->accion esta vacio', data: $controler->accion);
+        }
         $next_seccion = $controler->tabla;
         $next_accion = $controler->accion;
         $id_retorno = $controler->registro_id;

@@ -2,6 +2,8 @@
 namespace tests\src\_ctl_base;
 
 
+use gamboamartin\controllers\controlador_adm_grupo;
+use gamboamartin\controllers\controlador_adm_seccion;
 use gamboamartin\errores\errores;
 use gamboamartin\system\_ctl_base;
 
@@ -22,6 +24,24 @@ class initTest extends test {
         $this->paths_conf->generales = '/var/www/html/cat_sat/config/generales.php';
         $this->paths_conf->database = '/var/www/html/cat_sat/config/database.php';
         $this->paths_conf->views = '/var/www/html/cat_sat/config/views.php';
+    }
+
+    public function test_init_data_retornos(): void
+    {
+        errores::$error = false;
+        $ctl = new _ctl_base\init();
+        $ctl = new liberator($ctl);
+
+        $controler = new controlador_adm_seccion(link: $this->link,paths_conf: $this->paths_conf);
+        $controler->accion = 'test';
+        $resultado = $ctl->init_data_retornos($controler);
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('adm_seccion', $resultado->next_seccion);
+        $this->assertEquals('test', $resultado->next_accion);
+        $this->assertEquals('-1', $resultado->id_retorno);
+        errores::$error = false;
     }
 
     public function test_init_param_get(): void
