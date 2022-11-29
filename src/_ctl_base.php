@@ -466,6 +466,33 @@ class _ctl_base extends system{
         return $label;
     }
 
+    protected function out_alta_bd(bool $header, stdClass $data_retorno, stdClass $result, bool $ws){
+        if($header){
+
+            if($data_retorno->id_retorno === -1) {
+                $data_retorno->id_retorno = $result->registro_id;
+            }
+            $this->retorno_base(
+                registro_id:$data_retorno->id_retorno, result: $result,
+                siguiente_view: $data_retorno->siguiente_view, ws:  $ws,seccion_retorno: $data_retorno->seccion_retorno);
+
+        }
+        if($ws){
+            header('Content-Type: application/json');
+            try {
+                echo json_encode($result, JSON_THROW_ON_ERROR);
+            }
+            catch (Throwable $e){
+                $error = (new errores())->error(mensaje: 'Error al maquetar JSON' , data: $e);
+                print_r($error);
+            }
+            exit;
+        }
+        $result->siguiente_view = $data_retorno->siguiente_view;
+
+        return $result;
+    }
+
     protected function retorno(
         stdClass $data_retorno, bool $header, int $registro_id, mixed $result, bool $ws){
         if($header){
