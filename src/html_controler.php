@@ -292,11 +292,17 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al generar dates', data: $dates);
         }
 
+        $passwords = $this->passwords_alta(modelo: $modelo,row_upd: $row_upd,keys_selects: $keys_selects);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar dates', data: $dates);
+        }
+
         $fields = array();
         $fields['selects'] = $selects;
         $fields['inputs'] = $texts;
         $fields['files'] = $files;
         $fields['dates'] = $dates;
+        $fields['passwords'] = $passwords;
 
         return $fields;
     }
@@ -612,6 +618,7 @@ class html_controler{
         $inputs = array();
         $files = array();
         $dates = array();
+        $passwords = array();
 
         foreach ($campos_view as $item => $campo){
             $tipo_input = $this->obtener_tipo_input(campo: $campo);
@@ -634,13 +641,17 @@ class html_controler{
                 case 'files':
                     $files[] = $item;
                     break;
+                case 'passwords':
+                    $passwords[] = $item;
+                    break;
                 case 'dates':
                     $dates[] = $item;
                     break;
+
             }
 
         }
-        return ['selects' => $selects,'inputs' => $inputs,'files' => $files,'dates' => $dates];
+        return ['selects' => $selects,'inputs' => $inputs,'files' => $files,'dates' => $dates,'passwords'=>$passwords];
     }
 
     /**
@@ -677,6 +688,31 @@ class html_controler{
             return $this->error->error(mensaje: 'Error type debe ser un string', data: $campo);
         }
         return trim($campo['type']);
+    }
+
+    protected function passwords_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
+    {
+        $campos_view = $this->obtener_inputs($modelo->campos_view);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener campos de la vista del modelo', data: $campos_view);
+        }
+
+        $passwords = new stdClass();
+
+        foreach ($campos_view['passwords'] as $item){
+
+            $params_select = (new params())->params_select_init(item:$item,keys_selects:  $keys_selects);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar select', data: $params_select);
+            }
+            $date = (new template())->passwords_template(directivas: $this->directivas, params_select: $params_select,row_upd: $row_upd);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar input', data: $date);
+            }
+            $passwords->$item = $date;
+        }
+
+        return $passwords;
     }
 
     /**
