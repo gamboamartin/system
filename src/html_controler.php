@@ -656,6 +656,8 @@ class html_controler{
         $files = array();
         $dates = array();
         $passwords = array();
+        $telefonos = array();
+        $emails = array();
 
         foreach ($campos_view as $item => $campo){
             $tipo_input = $this->obtener_tipo_input(campo: $campo);
@@ -681,6 +683,12 @@ class html_controler{
                 case 'passwords':
                     $passwords[] = $item;
                     break;
+                case 'telefonos':
+                    $telefonos[] = $item;
+                    break;
+                case 'emails':
+                    $emails[] = $item;
+                    break;
                 case 'dates':
                     $dates[] = $item;
                     break;
@@ -688,7 +696,8 @@ class html_controler{
             }
 
         }
-        return ['selects' => $selects,'inputs' => $inputs,'files' => $files,'dates' => $dates,'passwords'=>$passwords];
+        return ['selects' => $selects,'inputs' => $inputs,'files' => $files,'dates' => $dates,'passwords'=>$passwords,
+            'telefonos'=>$telefonos,'emails'=>$emails];
     }
 
     /**
