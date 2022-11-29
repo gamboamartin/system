@@ -47,6 +47,7 @@ class system extends controlador_base{
     public array $actions_number = array();
     public string $include_breadcrumb = '';
     public string $contenido_table = '';
+    protected bool $lista_get_data = false;
 
     /**
      * @param html_controler $html Html base
@@ -485,16 +486,19 @@ class system extends controlador_base{
     public function lista(bool $header, bool $ws = false): array
     {
 
+        $this->registros = array();
 
-        $registros_view = (new lista())->rows_view_lista(controler: $this);
-        if(errores::$error){
-            return $this->retorno_error(
-                mensaje: 'Error al generar rows para lista', data:  $registros_view, header: $header, ws: $ws);
+        if(!$this->lista_get_data) {
+            $registros_view = (new lista())->rows_view_lista(controler: $this);
+            if (errores::$error) {
+                return $this->retorno_error(
+                    mensaje: 'Error al generar rows para lista', data: $registros_view, header: $header, ws: $ws);
+            }
+
+            $this->registros = $registros_view;
+            $n_registros = count($registros_view);
+            $this->n_registros = $n_registros;
         }
-
-        $this->registros = $registros_view;
-        $n_registros = count($registros_view);
-        $this->n_registros = $n_registros;
 
         $include_lista_row = (new generales())->path_base."templates/listas/$this->seccion/row.php";
         if(!file_exists($include_lista_row)){
