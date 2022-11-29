@@ -148,11 +148,11 @@ class html_controler{
     }
 
     /**
-     * @refactorizar Refactoriza
-     * @param modelo $modelo
-     * @param stdClass $row_upd
-     * @param array $keys_selects
+     * @param modelo $modelo Modelo en ejecucion
+     * @param stdClass $row_upd Registro en proceso
+     * @param array $keys_selects Parametros de inputs
      * @return array|stdClass
+     * @version 2.279.38
      */
     protected function dates_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
     {
@@ -164,6 +164,11 @@ class html_controler{
         $dates = new stdClass();
 
         foreach ($campos_view['dates'] as $item){
+
+            $item = trim($item);
+            if(is_numeric($item)){
+                return $this->error->error(mensaje: 'Error item debe ser un string no un numero', data: $item);
+            }
 
             $params_select = (new params())->params_select_init(item:$item,keys_selects:  $keys_selects);
             if(errores::$error){
@@ -660,6 +665,24 @@ class html_controler{
         $emails = array();
 
         foreach ($campos_view as $item => $campo){
+
+            $es_campo_valido = false;
+            if(is_object($campo)){
+                $es_campo_valido = true;
+            }
+            if(is_array($campo)){
+                $es_campo_valido = true;
+            }
+            if(!$es_campo_valido){
+                return $this->error->error(mensaje: 'Error el campo debe ser un array o stdclass', data: $campo);
+            }
+            if (!isset($campo['type'])){
+                return $this->error->error(mensaje: 'Error no existe key type', data: $campo);
+            }
+            if(!is_string($campo['type'])){
+                return $this->error->error(mensaje: 'Error type debe ser un string', data: $campo);
+            }
+
             $tipo_input = $this->obtener_tipo_input(campo: $campo);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al obtener el tipo de input', data: $tipo_input);
@@ -727,6 +750,9 @@ class html_controler{
      */
     protected function obtener_tipo_input(array|stdClass $campo): string|array
     {
+        if(is_object($campo)){
+            $campo = (array)$campo;
+        }
         if (!isset($campo['type'])){
             return $this->error->error(mensaje: 'Error no existe key type', data: $campo);
         }

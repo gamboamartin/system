@@ -24,6 +24,10 @@ class params{
      */
     private function params_base(stdClass $data, string $name, stdClass $params): stdClass|array
     {
+        $name = trim($name);
+        if(is_numeric($name)){
+            return $this->error->error(mensaje: 'Error name debe ser un string no un numero', data: $name);
+        }
         $data->disabled = $params->disabled ?? false;
         $data->con_registros = $params->con_registros ?? true;
         $data->id_selected = $params->id_selected ?? -1;
@@ -53,6 +57,11 @@ class params{
      */
     private function params_input2(stdClass $params, string $name,string $place_holder): stdClass|array
     {
+
+        $name = trim($name);
+        if(is_numeric($name)){
+            return $this->error->error(mensaje: 'Error name debe ser un string no un numero', data: $name);
+        }
 
         $data = new stdClass();
         $data->cols = $params->cols ?? 6;
@@ -131,6 +140,11 @@ class params{
      */
     public function params_select_init(string $item, array $keys_selects): array|stdClass
     {
+
+        $item = trim($item);
+        if(is_numeric($item)){
+            return $this->error->error(mensaje: 'Error item debe ser un string no un numero', data: $item);
+        }
 
         $params_select = new stdClass();
         if (array_key_exists($item, $keys_selects) ){
