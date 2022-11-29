@@ -323,9 +323,28 @@ class _ctl_base extends system{
         return $this->inputs;
     }
 
-    private function integra_key_to_select(
-        string $key, string $key_val, array $keys_selects, string|bool|array|null $value ): array
+    /**
+     * Integra un elemento para select de template
+     * @param string $key Campo a integrar
+     * @param string $key_val Key para asignar value
+     * @param array $keys_selects Conjunto de parametros
+     * @param string|bool|array|null $value Valor
+     * @return array
+     * @version 0.275.38
+     */
+    private function integra_key_to_select(string $key, string $key_val, array $keys_selects, string|bool|array|null $value ): array
     {
+        $key = trim($key);
+        if($key === ''){
+            return $this->errores->error(mensaje: 'Error key esta vacio',data:  $key);
+        }
+        $key_val = trim($key_val);
+        if($key_val === ''){
+            return $this->errores->error(mensaje: 'Error key_val esta vacio',data:  $key_val);
+        }
+        if(!isset($keys_selects[$key])){
+            $keys_selects[$key] = new stdClass();
+        }
         $keys_selects[$key]->$key_val = $value;
         return $keys_selects;
     }
