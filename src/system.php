@@ -1,7 +1,6 @@
 <?php
 namespace gamboamartin\system;
 use base\controller\controlador_base;
-use base\controller\controler;
 use base\orm\modelo;
 use config\generales;
 use config\views;

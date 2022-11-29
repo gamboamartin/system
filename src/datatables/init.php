@@ -50,11 +50,28 @@ class init{
         return $datatable;
     }
 
+    /**
+     * Inicializa los filtros para datatables de listas
+     * @param stdClass $datatables Estructura de datatables
+     * @param array $rows_lista Registros de lista
+     * @param string $seccion Seccion en ejecucion
+     * @return array
+     * @version 0.284.38
+     */
     public function init_filtro_datatables(stdClass $datatables, array $rows_lista, string $seccion): array
     {
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(mensaje: 'Error seccion esta vacia', data: $seccion);
+        }
         $filtro = array();
         if(!isset($datatables->filtro)){
             foreach ($rows_lista as $key_row_lista){
+                $key_row_lista = trim($key_row_lista);
+                if($key_row_lista === ''){
+                    return $this->error->error(mensaje: 'Error key_row_lista esta vacia', data: $key_row_lista);
+                }
+
                 $filtro[] = $seccion.'.'.$key_row_lista;
             }
         }

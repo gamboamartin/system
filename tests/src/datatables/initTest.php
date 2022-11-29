@@ -72,5 +72,26 @@ class initTest extends test {
         $this->assertNotTrue(errores::$error);
         errores::$error = false;
     }
+
+    public function test_init_filtro_datatables(): void
+    {
+        errores::$error = false;
+        $datatables = new init();
+        //$datatables = new liberator($datatables);
+
+        $datatables_d = new stdClass();
+        $rows_lista = array();
+        $seccion = 'a';
+
+        $datatables_d->filtro = array();
+        $datatables_d->filtro[] = 'x';
+
+        $resultado = $datatables->init_filtro_datatables($datatables_d, $rows_lista, $seccion);
+        $this->assertIsArray($resultado);
+
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+
+    }
 }
 
