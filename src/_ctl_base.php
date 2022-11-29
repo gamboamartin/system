@@ -215,6 +215,11 @@ class _ctl_base extends system{
         return $data;
     }
 
+    /**
+     * Obtiene los datos de retorno
+     * @return array|stdClass
+     * @version 0.287.38
+     */
     private function data_retorno(): array|stdClass
     {
         $seccion_retorno = $this->seccion_retorno();
