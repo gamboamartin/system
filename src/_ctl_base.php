@@ -491,7 +491,12 @@ class _ctl_base extends system{
         return $result;
     }
 
-    private function seccion_retorno(){
+    /**
+     * Obtiene la seccion de retorno
+     * @return string
+     * @version 0.282.38
+     */
+    private function seccion_retorno():string{
         $seccion_retorno = $this->tabla;
         if(isset($_POST['seccion_retorno'])){
             $seccion_retorno = $_POST['seccion_retorno'];
