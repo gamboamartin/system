@@ -432,6 +432,11 @@ class _ctl_base extends system{
 
         foreach ($keys_params as $key_val){
 
+            if($key_val === 'id_selected'){
+                if(is_null($id_selected)){
+                    $id_selected = -1;
+                }
+            }
             if(!isset($$key_val)){
                 return $this->errores->error(mensaje: 'Error key val no es una variable valida',data:  $key_val);
             }
