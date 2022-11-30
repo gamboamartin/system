@@ -69,6 +69,29 @@ class template{
         return $div;
     }
 
+    public function fechas_template(directivas $directivas, stdClass $params_select, stdClass $row_upd): array|string
+    {
+
+        $valida = $this->valida_input_base(directivas: $directivas,params_select:  $params_select);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
+        }
+
+        $html =$directivas->fecha_required(disabled: $params_select->disabled, name: $params_select->name,
+            place_holder: $params_select->place_holder,  row_upd: $row_upd,
+            value_vacio: $params_select->value_vacio);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar input', data: $html);
+        }
+
+        $div = $directivas->html->div_group(cols: $params_select->cols,html:  $html);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar div', data: $div);
+        }
+
+        return $div;
+    }
+
     /**
      * Genera un input de tipo template
      * @param directivas $directivas Directivas html

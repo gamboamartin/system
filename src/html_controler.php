@@ -209,6 +209,31 @@ class html_controler{
         return $emails;
     }
 
+    protected function fechas_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
+    {
+        $campos_view = $this->obtener_inputs($modelo->campos_view);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener campos de la vista del modelo', data: $campos_view);
+        }
+
+        $fechas = new stdClass();
+
+        foreach ($campos_view['fechas'] as $item){
+
+            $params_select = (new params())->params_select_init(item:$item,keys_selects:  $keys_selects);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar select', data: $params_select);
+            }
+            $fecha = (new template())->fechas_template(directivas: $this->directivas, params_select: $params_select,row_upd: $row_upd);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar input', data: $fecha);
+            }
+            $fechas->$item = $fecha;
+        }
+
+        return $fechas;
+    }
+
     private function file_items(array $campos_view, array $keys_selects, stdClass $row_upd): array|stdClass
     {
         $texts = new stdClass();
@@ -336,6 +361,10 @@ class html_controler{
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar emails', data: $dates);
         }
+        $fechas = $this->fechas_alta(modelo: $modelo,row_upd: $row_upd,keys_selects: $keys_selects);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar emails', data: $dates);
+        }
 
         $fields = array();
         $fields['selects'] = $selects;
@@ -345,6 +374,7 @@ class html_controler{
         $fields['passwords'] = $passwords;
         $fields['telefonos'] = $telefonos;
         $fields['emails'] = $emails;
+        $fields['fechas'] = $fechas;
 
         return $fields;
     }
@@ -663,6 +693,7 @@ class html_controler{
         $passwords = array();
         $telefonos = array();
         $emails = array();
+        $fechas = array();
 
         foreach ($campos_view as $item => $campo){
 
@@ -712,6 +743,9 @@ class html_controler{
                 case 'emails':
                     $emails[] = $item;
                     break;
+                case 'fechas':
+                    $fechas[] = $item;
+                    break;
                 case 'dates':
                     $dates[] = $item;
                     break;
@@ -720,7 +754,7 @@ class html_controler{
 
         }
         return ['selects' => $selects,'inputs' => $inputs,'files' => $files,'dates' => $dates,'passwords'=>$passwords,
-            'telefonos'=>$telefonos,'emails'=>$emails];
+            'telefonos'=>$telefonos,'emails'=>$emails,'fechas'=>$fechas];
     }
 
     /**
