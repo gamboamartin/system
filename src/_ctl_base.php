@@ -406,6 +406,7 @@ class _ctl_base extends system{
      * @param int|null $id_selected Identificador para selected
      * @param string $label Etiqueta a mostrar
      * @return array
+     * @version 0.288.38
      */
     protected function key_select(int $cols, bool $con_registros, array $filtro,string $key, array $keys_selects,
                                   int|null $id_selected, string $label): array
@@ -427,34 +428,27 @@ class _ctl_base extends system{
 
         $keys_selects[$key] = new stdClass();
 
-        $keys_selects = $this->integra_key_to_select(key: $key,key_val:  'cols',keys_selects:  $keys_selects,value:  $cols);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al integrar keys',data:  $keys_selects);
+        $keys_params = array('cols','con_registros','label','id_selected','filtro');
+
+        foreach ($keys_params as $key_val){
+
+            if(!isset($$key_val)){
+                return $this->errores->error(mensaje: 'Error key val no es una variable valida',data:  $key_val);
+            }
+
+            $keys_selects = $this->integra_key_to_select(key: $key,key_val:  $key_val,keys_selects:  $keys_selects,
+                value:  $$key_val);
+            if(errores::$error){
+                return $this->errores->error(mensaje: 'Error al integrar keys',data:  $keys_selects);
+            }
         }
 
-        $keys_selects = $this->integra_key_to_select(key: $key,key_val:  'con_registros',keys_selects:  $keys_selects,value:  $con_registros);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al integrar keys',data:  $keys_selects);
-        }
-
-        $keys_selects = $this->integra_key_to_select(key: $key,key_val:  'label',keys_selects:  $keys_selects,value:  $label);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al integrar keys',data:  $keys_selects);
-        }
-
-        $keys_selects = $this->integra_key_to_select(key: $key,key_val:  'id_selected',keys_selects:  $keys_selects,value:  $id_selected);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al integrar keys',data:  $keys_selects);
-        }
-
-        $keys_selects = $this->integra_key_to_select(key: $key,key_val:  'filtro',keys_selects:  $keys_selects,value:  $filtro);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al integrar keys',data:  $keys_selects);
-        }
 
 
         return $keys_selects;
     }
+
+
 
     /**
      * Genera un label para input
