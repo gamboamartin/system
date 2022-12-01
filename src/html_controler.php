@@ -1233,11 +1233,33 @@ class html_controler{
         return $telefonos;
     }
 
+    /**
+     * @param string $item Key de input
+     * @param array $keys_selects Parametros
+     * @param stdClass $row_upd Registro en proceso
+     * @param stdClass $texts Inputs
+     * @return array|stdClass
+     * @version 0.291.39
+     */
     private function text_item(string $item, array $keys_selects, stdClass $row_upd, stdClass $texts): array|stdClass
     {
+        $item = trim($item);
+        if(is_numeric($item)){
+            return $this->error->error(mensaje: 'Error item debe ser un string no un numero', data: $item);
+        }
+        if($item === ''){
+            return $this->error->error(mensaje: 'Error item esta vacio', data: $item);
+        }
+
         $params_select = (new params())->params_select_init(item: $item, keys_selects: $keys_selects);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar params', data: $params_select);
+        }
+
+        $keys = array('name','place_holder');
+        $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $params_select);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
         }
 
         $input = $this->file_template(params_select: $params_select,row_upd: $row_upd);

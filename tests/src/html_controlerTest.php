@@ -491,11 +491,6 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
-
-
-
-
-
     public function test_retornos(): void
     {
         errores::$error = false;
@@ -514,8 +509,6 @@ class html_controlerTest extends test {
         $this->assertEquals("<input type='hidden' name='seccion_retorno' value='a'>",$resultado->hidden_seccion_retorno);
         errores::$error = false;
     }
-
-
 
     public function test_select_aut(): void
     {
@@ -734,7 +727,33 @@ class html_controlerTest extends test {
 
     }
 
+    /**
+     */
+    public function test_text_item(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
 
+        $_SESSION['grupo_id'] = 2;
+
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+
+
+        $item = 'a';
+        $keys_selects = array();
+        $row_upd = new stdClass();
+        $texts = new stdClass();
+        $resultado = $html->text_item($item, $keys_selects, $row_upd, $texts);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<div |class|><div |class|><input type='file' name='a' value='' class = 'form-control'  required id='a'/></div></div>", $resultado->a);
+
+        errores::$error = false;
+    }
 
     public function test_texts_alta2(): void
     {
