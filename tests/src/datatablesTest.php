@@ -52,11 +52,14 @@ class datatablesTest extends test {
         $seccion = 'a';
 
         $resultado = $datatables->acciones_permitidas($link, $seccion);
+
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEmpty($resultado);
 
         errores::$error = false;
+
+        unset($_SESSION);
 
         $_SESSION['grupo_id'] = 2;
         $_SESSION['usuario_id'] = 2;
@@ -101,7 +104,20 @@ class datatablesTest extends test {
             exit;
         }
 
+
+        $adm_accion['descripcion'] = 'xxx';
+        $adm_accion['adm_seccion_id'] = '10';
+        $adm_accion['es_lista'] = 'activo';
+        $alta = (new adm_accion($this->link))->alta_registro($adm_accion);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
         $resultado = $datatables->acciones_permitidas($link, $seccion);
+
+
 
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);

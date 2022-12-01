@@ -199,6 +199,37 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_file_template(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        //$html = new liberator($html);
+
+        $_SESSION['grupo_id'] = 2;
+
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+
+        $row_upd = new stdClass();
+        $params_select = new stdClass();
+
+        $params_select->cols = '1';
+        $params_select->disabled = '';
+        $params_select->name = '1';
+        $params_select->place_holder = '1';
+        $params_select->required = '';
+        $params_select->value_vacio = '';
+
+        $resultado = $html->file_template($params_select, $row_upd);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<div |class|><div |class|><input type='file' name='1' value='' class = 'form-control'   id='1'/></div></div>",$resultado);
+        errores::$error = false;
+
+    }
+
 
 
     /**

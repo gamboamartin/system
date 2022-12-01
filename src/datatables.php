@@ -39,6 +39,7 @@ class datatables{
             return $this->error->error(mensaje: 'Error al obtener not in', data: $filtro);
         }
 
+
         $not_in = $this->not_in_accion(not_actions: $not_actions);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener not in', data: $not_in);

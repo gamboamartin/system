@@ -263,12 +263,38 @@ class html_controler{
         return $texts;
     }
 
-    public function file_template(mixed $params_select, stdClass $row_upd): array|string
+    /**
+     * Integra un input de tipo FILE
+     * @param stdClass $params_select Parametros de input
+     * @param stdClass $row_upd Registro en proceso
+     * @return array|string
+     * @version 0.290.39
+     */
+    public function file_template(stdClass $params_select, stdClass $row_upd): array|string
     {
+        $keys = array('cols','disabled','name','place_holder','required','value_vacio');
+        $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $params_select, valida_vacio: false);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
+        }
+
+        $keys = array('cols');
+        $valida = (new validacion())->valida_ids(keys: $keys,registro:  $params_select);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
+        }
+
+        $keys = array('name','place_holder');
+        $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $params_select);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
+        }
+
         $valida = $this->directivas->valida_cols(cols: $params_select->cols);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar columnas', data: $valida);
         }
+
 
         $html =$this->directivas->input_file(disabled: $params_select->disabled, name: $params_select->name,
             place_holder: $params_select->place_holder, required: $params_select->required, row_upd: $row_upd,
