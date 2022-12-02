@@ -2,22 +2,21 @@
 namespace gamboamartin\system\html_controler;
 use gamboamartin\errores\errores;
 use gamboamartin\template\directivas;
-use gamboamartin\validacion\validacion;
 use stdClass;
 
 
 class template{
     protected errores $error;
-    protected validacion $validacion;
+    protected validacion_html $validacion;
 
     public function __construct(){
         $this->error = new errores();
-        $this->validacion = new validacion();
+        $this->validacion = new validacion_html();
     }
 
     private function base_template(directivas $directivas, mixed $params_select, stdClass $row_upd): array|string
     {
-        $valida = $this->valida_input_base(directivas: $directivas,params_select:  $params_select);
+        $valida = $this->validacion->valida_input_base(directivas: $directivas,params_select:  $params_select);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
         }
@@ -41,7 +40,7 @@ class template{
     public function emails_template(directivas $directivas, stdClass $params_select, stdClass $row_upd): array|string
     {
 
-        $valida = $this->valida_input_base(directivas: $directivas,params_select:  $params_select);
+        $valida = $this->validacion->valida_input_base(directivas: $directivas,params_select:  $params_select);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
         }
@@ -101,7 +100,7 @@ class template{
     public function input_template(directivas $directivas, stdClass $params_select, stdClass $row_upd): array|string
     {
 
-        $valida = (new params())->valida_params(directivas: $directivas, params_select: $params_select);
+        $valida = $this->validacion->valida_params(directivas: $directivas, params_select: $params_select);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
         }
@@ -123,7 +122,7 @@ class template{
 
     public function passwords_template(directivas $directivas, stdClass $params_select, stdClass $row_upd): array|string
     {
-        $valida = $this->valida_input_base(directivas: $directivas,params_select:  $params_select);
+        $valida = $this->validacion->valida_input_base(directivas: $directivas,params_select:  $params_select);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
         }
@@ -146,7 +145,7 @@ class template{
     public function telefonos_template(directivas $directivas, stdClass $params_select, stdClass $row_upd): array|string
     {
 
-        $valida = $this->valida_input_base(directivas: $directivas,params_select:  $params_select);
+        $valida = $this->validacion->valida_input_base(directivas: $directivas,params_select:  $params_select);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
         }
@@ -166,68 +165,10 @@ class template{
         return $div;
     }
 
-    /**
-     * Valida los elementos basicos de un input para template
-     * @param mixed $params_select Parametros de html
-     * @return bool|array
-     * @version 0.294.39
-     */
-    private function valida_base(mixed $params_select): bool|array
-    {
-        $es_param_valido = false;
-        if(is_array($params_select)){
-            $es_param_valido = true;
-        }
-        if(is_object($params_select)){
-            $es_param_valido = true;
-        }
-        if(!$es_param_valido){
-            return $this->error->error(
-                mensaje: 'Error params_select debe ser un array u objeto', data: $es_param_valido);
-        }
-        $keys = array('cols','disabled','name','place_holder','value_vacio');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $params_select);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
-        }
-        return true;
-    }
-
-    private function valida_input(mixed $params_select): bool|array
-    {
-        $valida = $this->valida_base(params_select: $params_select);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
-        }
-
-        $keys = array('cols');
-        $valida = $this->validacion->valida_numerics(keys: $keys,row:  $params_select);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
-        }
-
-        $keys = array('disabled','value_vacio');
-        $valida = $this->validacion->valida_bools(keys: $keys,row:  $params_select);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
-        }
-
-        return true;
-    }
-
-    private function valida_input_base(directivas $directivas, mixed $params_select): bool|array
-    {
-        $valida = $this->valida_input(params_select: $params_select);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
-        }
 
 
-        $valida = $directivas->valida_cols(cols: $params_select->cols);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar columnas', data: $valida);
-        }
-        return true;
-    }
+
+
+
 
 }

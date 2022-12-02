@@ -9,11 +9,11 @@ use stdClass;
 
 class texts{
     protected errores $error;
-    protected validacion $validacion;
+    protected validacion_html $validacion;
 
     public function __construct(){
         $this->error = new errores();
-        $this->validacion = new validacion();
+        $this->validacion = new validacion_html();
     }
 
     /**
@@ -43,7 +43,7 @@ class texts{
             return $this->error->error(mensaje: 'Error al generar select', data: $params_select);
         }
 
-        $valida = (new params())->valida_params(directivas: $directivas, params_select: $params_select);
+        $valida = $this->validacion->valida_params(directivas: $directivas, params_select: $params_select);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
         }

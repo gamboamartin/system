@@ -10,6 +10,7 @@ use gamboamartin\system\html_controler\params;
 use gamboamartin\system\html_controler\select;
 use gamboamartin\system\html_controler\template;
 use gamboamartin\system\html_controler\texts;
+use gamboamartin\system\html_controler\validacion_html;
 use gamboamartin\template\directivas;
 use gamboamartin\template\html;
 use gamboamartin\validacion\validacion;
@@ -22,13 +23,13 @@ class html_controler{
     public directivas $directivas;
     protected errores $error;
     public html $html_base;
-    protected validacion $validacion;
+    protected validacion_html $validacion;
 
     public function __construct(html $html){
         $this->directivas = new directivas(html: $html);
         $this->error = new errores();
         $this->html_base = $html;
-        $this->validacion = new validacion();
+        $this->validacion = new validacion_html();
     }
 
     /**
@@ -66,7 +67,7 @@ class html_controler{
     public function boton_link_permitido(array $accion_permitida, int $indice, int $registro_id, array $rows,
                                          array $params = array()): array
     {
-        $valida = $this->valida_boton_link(
+        $valida = $this->validacion->valida_boton_link(
             accion_permitida: $accion_permitida,indice:  $indice,registro_id:  $registro_id,rows:  $rows);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar datos',data:  $valida);
@@ -966,7 +967,7 @@ class html_controler{
      * @return array|stdClass|string
      * @version 0.227.38
      */
-    PUBLIC function select_aut2(modelo $modelo, stdClass $params_select): array|stdClass|string
+    private function select_aut2(modelo $modelo, stdClass $params_select): array|stdClass|string
     {
         $keys = array('cols','con_registros','id_selected','disabled','extra_params_keys','filtro','label','not_in',
             'required');
@@ -1359,33 +1360,7 @@ class html_controler{
         return true;
     }
 
-    private function valida_boton_link(array $accion_permitida, int $indice, int $registro_id, array $rows): bool|array
-    {
-        $keys = array('adm_accion_descripcion','adm_accion_titulo','adm_seccion_descripcion','adm_accion_css',
-            'adm_accion_es_status');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $accion_permitida);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar  accion_permitida',data:  $valida);
-        }
 
-        $keys = array('adm_accion_es_status');
-        $valida = $this->validacion->valida_statuses(keys: $keys,registro:  $accion_permitida);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar  accion_permitida',data:  $valida);
-        }
-
-        if($indice < 0){
-            return $this->error->error(mensaje: 'Error indice debe ser mayor o igual a 0',data:  $indice);
-        }
-
-        if($registro_id <= 0){
-            return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0',data:  $registro_id);
-        }
-        if(!isset($rows[$indice])){
-            return $this->error->error(mensaje: 'Error no existe el registro en proceso',data:  $rows);
-        }
-        return true;
-    }
 
 
 

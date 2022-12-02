@@ -27,24 +27,7 @@ class templateTest extends test {
         $this->paths_conf->views = '/var/www/html/cat_sat/config/views.php';
     }
 
-    public function test_valida_base(): void
-    {
-        errores::$error = false;
-        $tm = new template();
-        $tm = new liberator($tm);
-        $params_select = new stdClass();
-        $params_select->cols = 13;
-        $params_select->disabled = 13;
-        $params_select->name = 13;
-        $params_select->place_holder = 13;
-        $params_select->value_vacio = 13;
-        $resultado = $tm->valida_base($params_select);
 
-        $this->assertIsBool($resultado);
-        $this->assertNotTrue(errores::$error);
-
-        errores::$error = false;
-    }
 
 
 }
