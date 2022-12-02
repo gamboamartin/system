@@ -67,6 +67,11 @@ class validacion_html extends validacion{
         return true;
     }
 
+    /**
+     * Valida los elementos de un input
+     * @param mixed $params_select Conjunto de parametros a validar
+     * @return bool|array
+     */
     private function valida_input(mixed $params_select): bool|array
     {
         $valida = $this->valida_base_html(params_select: $params_select);

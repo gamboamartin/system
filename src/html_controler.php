@@ -15,7 +15,6 @@ use gamboamartin\template\directivas;
 use gamboamartin\template\html;
 use gamboamartin\validacion\validacion;
 
-
 use PDO;
 use stdClass;
 
