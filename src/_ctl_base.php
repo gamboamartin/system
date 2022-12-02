@@ -238,6 +238,10 @@ class _ctl_base extends system{
         return $data;
     }
 
+    /**
+     * Genera los datos de retorno despues de una transaccion de controller
+     * @return array|stdClass
+     */
     protected function data_retorno_base(): array|stdClass
     {
         $siguiente_view = (new actions())->init_alta_bd();
