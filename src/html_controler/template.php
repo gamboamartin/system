@@ -15,6 +15,29 @@ class template{
         $this->validacion = new validacion();
     }
 
+    private function base_template(directivas $directivas, mixed $params_select, stdClass $row_upd): array|string
+    {
+        $valida = $this->valida_input_base(directivas: $directivas,params_select:  $params_select);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
+        }
+
+
+        $html =$directivas->fecha_required(disabled: $params_select->disabled, name: $params_select->name,
+            place_holder: $params_select->place_holder,  row_upd: $row_upd,
+            value_vacio: $params_select->value_vacio);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar input', data: $html);
+        }
+
+        $div = $directivas->html->div_group(cols: $params_select->cols,html:  $html);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar div', data: $div);
+        }
+
+        return $div;
+    }
+
     public function emails_template(directivas $directivas, stdClass $params_select, stdClass $row_upd): array|string
     {
 
@@ -48,20 +71,7 @@ class template{
      */
     public function dates_template(directivas $directivas, stdClass $params_select, stdClass $row_upd): array|string
     {
-        $valida = $this->valida_input_base(directivas: $directivas,params_select:  $params_select);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
-        }
-
-
-        $html =$directivas->fecha_required(disabled: $params_select->disabled, name: $params_select->name,
-            place_holder: $params_select->place_holder,  row_upd: $row_upd,
-            value_vacio: $params_select->value_vacio);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar input', data: $html);
-        }
-
-        $div = $directivas->html->div_group(cols: $params_select->cols,html:  $html);
+        $div = $this->base_template(directivas: $directivas,params_select:  $params_select, row_upd: $row_upd);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al integrar div', data: $div);
         }
@@ -72,19 +82,7 @@ class template{
     public function fechas_template(directivas $directivas, stdClass $params_select, stdClass $row_upd): array|string
     {
 
-        $valida = $this->valida_input_base(directivas: $directivas,params_select:  $params_select);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
-        }
-
-        $html =$directivas->fecha_required(disabled: $params_select->disabled, name: $params_select->name,
-            place_holder: $params_select->place_holder,  row_upd: $row_upd,
-            value_vacio: $params_select->value_vacio);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar input', data: $html);
-        }
-
-        $div = $directivas->html->div_group(cols: $params_select->cols,html:  $html);
+        $div = $this->base_template(directivas: $directivas,params_select:  $params_select, row_upd: $row_upd);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al integrar div', data: $div);
         }
@@ -168,8 +166,25 @@ class template{
         return $div;
     }
 
+    /**
+     * Valida los elementos basicos de un input para template
+     * @param mixed $params_select Parametros de html
+     * @return bool|array
+     * @version 0.294.39
+     */
     private function valida_base(mixed $params_select): bool|array
     {
+        $es_param_valido = false;
+        if(is_array($params_select)){
+            $es_param_valido = true;
+        }
+        if(is_object($params_select)){
+            $es_param_valido = true;
+        }
+        if(!$es_param_valido){
+            return $this->error->error(
+                mensaje: 'Error params_select debe ser un array u objeto', data: $es_param_valido);
+        }
         $keys = array('cols','disabled','name','place_holder','value_vacio');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $params_select);
         if(errores::$error){
