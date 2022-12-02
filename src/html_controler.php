@@ -234,18 +234,39 @@ class html_controler{
         return $fechas;
     }
 
+    /**
+     * Genera un input de tipo file
+     * @param array $campos_view campos de modelos para views
+     * @param array $keys_selects parametros de selectores
+     * @param stdClass $row_upd Registro en proceso
+     * @return array|stdClass
+     * @version 0.292.39
+     */
     private function file_items(array $campos_view, array $keys_selects, stdClass $row_upd): array|stdClass
     {
-        $texts = new stdClass();
+        if(!isset($campos_view['files'])){
+            $campos_view['files'] = array();
+        }
 
+        if(!is_array($campos_view['files'])){
+            return $this->error->error(mensaje: 'Error campos_view[files] debe ser un array', data: $campos_view);
+        }
+        $files = new stdClass();
         foreach ($campos_view['files'] as $item){
+            $item = trim($item);
+            if(is_numeric($item)){
+                return $this->error->error(mensaje: 'Error item debe ser un string no un numero', data: $item);
+            }
+            if($item === ''){
+                return $this->error->error(mensaje: 'Error item esta vacio', data: $item);
+            }
 
-            $texts = $this->text_item(item: $item,keys_selects:  $keys_selects,row_upd:  $row_upd, texts: $texts);
+            $files = $this->text_item(item: $item,keys_selects:  $keys_selects,row_upd:  $row_upd, texts: $files);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar input', data: $texts);
+                return $this->error->error(mensaje: 'Error al generar input', data: $files);
             }
         }
-        return $texts;
+        return $files;
     }
 
     protected function files_alta2(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass

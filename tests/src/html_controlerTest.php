@@ -199,6 +199,32 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_file_items(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
+
+        $_SESSION['grupo_id'] = 2;
+
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+        $campos_view = array();
+        $keys_selects = array();
+        $row_upd = new stdClass();
+
+        $campos_view['files'] = array();
+        $campos_view['files'][] = 'a';
+
+        $resultado = $html->file_items($campos_view, $keys_selects, $row_upd);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<div |class|><div |class|><input type='file' name='a' value='' class = 'form-control'  required id='a'/></div></div>",$resultado->a);
+        errores::$error = false;
+    }
+
     public function test_file_template(): void
     {
         errores::$error = false;
