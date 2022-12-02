@@ -2,6 +2,7 @@
 namespace tests\src;
 use gamboamartin\administrador\models\adm_accion;
 use gamboamartin\administrador\models\adm_accion_grupo;
+use gamboamartin\administrador\models\adm_dia;
 use gamboamartin\administrador\models\adm_menu;
 use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\administrador\models\adm_seccion_pertenece;
@@ -254,6 +255,30 @@ class html_controlerTest extends test {
         $this->assertEquals("<div |class|><div |class|><input type='file' name='1' value='' class = 'form-control'   id='1'/></div></div>",$resultado);
         errores::$error = false;
 
+    }
+
+    public function test_files_alta2(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
+
+        $_SESSION['grupo_id'] = 2;
+
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+
+        $row_upd = new stdClass();
+
+        $modelo = new adm_dia($this->link);
+
+        $resultado = $html->files_alta2($modelo, $row_upd);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
     }
 
 

@@ -269,19 +269,28 @@ class html_controler{
         return $files;
     }
 
+    /**
+     * Genera los inputs de tipo file
+     * @param modelo $modelo Modelo en ejecucion
+     * @param stdClass $row_upd Registro en proceso
+     * @param array $keys_selects Parametros de inputs
+     * @return array|stdClass
+     * @version 0.293.39
+     */
+
     protected function files_alta2(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
     {
-        $campos_view = $this->obtener_inputs($modelo->campos_view);
+        $campos_view = $this->obtener_inputs(campos_view: $modelo->campos_view);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener campos de la vista del modelo', data: $campos_view);
         }
 
-        $texts = $this->file_items(campos_view: $campos_view,keys_selects:  $keys_selects,row_upd:  $row_upd);
+        $files = $this->file_items(campos_view: $campos_view,keys_selects:  $keys_selects,row_upd:  $row_upd);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar input', data: $texts);
+            return $this->error->error(mensaje: 'Error al generar input', data: $files);
         }
 
-        return $texts;
+        return $files;
     }
 
     /**
