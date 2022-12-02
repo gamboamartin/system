@@ -95,6 +95,12 @@ class validacion_html extends validacion{
         return true;
     }
 
+    /**
+     * Valida un input base
+     * @param directivas $directivas Directivas en ejecucion
+     * @param mixed $params_select parametros de input
+     * @return bool|array
+     */
     public function valida_input_base(directivas $directivas, mixed $params_select): bool|array
     {
         $valida = $this->valida_input(params_select: $params_select);
