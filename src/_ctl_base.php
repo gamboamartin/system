@@ -134,6 +134,10 @@ class _ctl_base extends system{
         return $this->childrens;
     }
 
+    /**
+     * Genera los datos de un children para view de controller
+     * @return array|stdClass
+     */
     protected function children_base(): array|stdClass
     {
         $registro = $this->init_data_children();
