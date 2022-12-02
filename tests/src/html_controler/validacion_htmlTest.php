@@ -40,6 +40,26 @@ class validacion_htmlTest extends test {
         errores::$error = false;
     }
 
+    public function test_valida_input(): void
+    {
+        errores::$error = false;
+        $val = new validacion_html();
+        $val = new liberator($val);
+        $params_select = new stdClass();
+        $params_select->cols = 13;
+        $params_select->disabled = true;
+        $params_select->name = 13;
+        $params_select->place_holder = 13;
+        $params_select->value_vacio = false;
+        $resultado = $val->valida_input($params_select);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+
+    }
+
+
 
 }
 

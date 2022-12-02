@@ -71,6 +71,7 @@ class validacion_html extends validacion{
      * Valida los elementos de un input
      * @param mixed $params_select Conjunto de parametros a validar
      * @return bool|array
+     * @version 0.299.39
      */
     private function valida_input(mixed $params_select): bool|array
     {
