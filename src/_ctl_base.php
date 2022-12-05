@@ -137,6 +137,7 @@ class _ctl_base extends system{
     /**
      * Genera los datos de un children para view de controller
      * @return array|stdClass
+     * @version 0.309.39
      */
     protected function children_base(): array|stdClass
     {
@@ -147,14 +148,12 @@ class _ctl_base extends system{
 
         $inputs = $this->inputs_children(registro: $registro);
         if(errores::$error){
-            return $this->errores->error(
-                mensaje: 'Error al generar inputs',data:  $inputs);
+            return $this->errores->error(mensaje: 'Error al generar inputs',data:  $inputs);
         }
 
         $retornos = $this->input_retornos();
         if(errores::$error){
-            return $this->errores->error(
-                mensaje: 'Error al obtener retornos',data:  $retornos);
+            return $this->errores->error(mensaje: 'Error al obtener retornos',data:  $retornos);
         }
 
         return $inputs;
