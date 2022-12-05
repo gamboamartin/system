@@ -89,6 +89,12 @@ class table{
         return "<thead><tr>$ths</tr></thead>";
     }
 
+    /**
+     * Limpia un valor de tipo txt
+     * @param string $txt texto a limpiar
+     * @return string
+     * @version 0.311.40
+     */
     private function limpia_txt(string $txt): string
     {
         $txt = trim($txt);

@@ -29,6 +29,27 @@ class tableTest extends test {
         $this->paths_conf->views = '/var/www/html/system/config/views.php';
     }
 
+    public function test_limpia_txt(): void
+    {
+        errores::$error = false;
+        $_SESSION['grupo_id'] = 2;
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+
+        $tb = new table();
+        $tb = new liberator($tb);
+
+        $txt = '     xb    ';
+        $resultado = $tb->limpia_txt($txt);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('xb', $resultado);
+
+        errores::$error = false;
+
+    }
+
     public function test_value_null(): void
     {
         errores::$error = false;
