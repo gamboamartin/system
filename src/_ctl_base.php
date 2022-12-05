@@ -374,6 +374,11 @@ class _ctl_base extends system{
             return $this->errores->error(mensaje: 'Error al obtener hidden_input_id',data:  $hidden_input_id);
         }
 
+        if(!is_object($this->inputs)){
+            $this->inputs = new stdClass();
+        }
+
+
         $this->inputs->hidden_row_id = $hidden_input_id;
         $this->inputs->hidden_seccion_retorno = $retornos->hidden_seccion_retorno;
         $this->inputs->hidden_id_retorno = $retornos->hidden_id_retorno;
