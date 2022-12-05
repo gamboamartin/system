@@ -430,6 +430,24 @@ class datatablesTest extends test {
         errores::$error = false;
     }
 
+    public function test_titulo_column_datatable(): void
+    {
+        errores::$error = false;
+        $datatables = new datatables();
+        $datatables = new liberator($datatables);
+        $_SESSION['grupo_id'] = 1;
+
+        $columns = array();
+        $key_row_lista = 'a';
+        $seccion = 'f';
+
+        $resultado = $datatables->titulo_column_datatable($columns, $key_row_lista, $seccion);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('A', $resultado['f_a']['titulo']);
+        errores::$error = false;
+    }
+
     public function test_type(): void
     {
         errores::$error = false;

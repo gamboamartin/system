@@ -57,6 +57,10 @@ class datatables{
 
     private function column_datable_init(stdClass $datatables, array $rows_lista, string $seccion): array
     {
+        if($seccion === ''){
+            return $this->error->error(
+                mensaje: 'Error seccion debe ser un string con datos', data:  $seccion);
+        }
         if(isset($datatables->columns)){
             $columns = $datatables->columns;
         }
@@ -149,6 +153,10 @@ class datatables{
 
     private function columns_datatable(array $rows_lista, string $seccion): array
     {
+        if($seccion === ''){
+            return $this->error->error(
+                mensaje: 'Error seccion debe ser un string con datos', data:  $seccion);
+        }
         $columns = array();
         foreach ($rows_lista as $key_row_lista){
             $columns = $this->titulo_column_datatable(columns: $columns,key_row_lista:  $key_row_lista, seccion: $seccion);
@@ -199,6 +207,11 @@ class datatables{
 
     private function columns_dt(stdClass $datatables, PDO $link, array $rows_lista, string $seccion): array
     {
+        if($seccion === ''){
+            return $this->error->error(
+                mensaje: 'Error seccion debe ser un string con datos', data:  $seccion);
+        }
+
         $columns = $this->column_datable_init(datatables: $datatables,rows_lista: $rows_lista,seccion: $seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al maquetar columns ', data: $columns);
@@ -276,6 +289,11 @@ class datatables{
 
     public function datatable_base_init(stdClass $datatables, PDO $link, array $rows_lista, string $seccion): array|stdClass
     {
+        if($seccion === ''){
+            return $this->error->error(
+                mensaje: 'Error seccion debe ser un string con datos', data:  $seccion);
+        }
+
         $filtro = (new \gamboamartin\system\datatables\init())->init_filtro_datatables(datatables: $datatables, rows_lista: $rows_lista,seccion: $seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar filtro', data: $filtro);
@@ -458,8 +476,26 @@ class datatables{
         return $rendered;
     }
 
+    /**
+     * Genera los titulos para datatables
+     * @param array $columns Columnas a mostrar
+     * @param string $key_row_lista Keys de campos a mostrar
+     * @param string $seccion Seccion en ejecucion
+     * @return array
+     * @version 0.304.39
+     */
     private function titulo_column_datatable(array $columns, string $key_row_lista, string $seccion): array
     {
+        $key_row_lista = trim($key_row_lista);
+        if($key_row_lista === ''){
+            return $this->error->error(
+                mensaje: 'Error $key_row_lista debe ser un string con datos', data:  $key_row_lista);
+        }
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(
+                mensaje: 'Error seccion debe ser un string con datos', data:  $seccion);
+        }
         $titulo = str_replace('_', ' ', $key_row_lista);
         $titulo = ucwords( $titulo);
         $columns[$seccion."_$key_row_lista"]["titulo"] = $titulo;
