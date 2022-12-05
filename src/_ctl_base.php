@@ -245,6 +245,8 @@ class _ctl_base extends system{
     /**
      * Genera los datos de retorno despues de una transaccion de controller
      * @return array|stdClass
+     * Retorna despues de transaccion con header
+     * @version 0.305.39
      */
     protected function data_retorno_base(): array|stdClass
     {
