@@ -234,6 +234,24 @@ class datatablesTest extends test {
         errores::$error = false;
     }
 
+    public function test_columns_datatable(): void
+    {
+        errores::$error = false;
+        $datatables = new datatables();
+        $datatables = new liberator($datatables);
+
+        $rows_lista = array();
+        $seccion = 'a';
+        $rows_lista[] = 'a';
+
+        $resultado = $datatables->columns_datatable($rows_lista, $seccion);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("A", $resultado['a_a']['titulo']);
+
+        errores::$error = false;
+    }
+
     /**
      */
     public function test_columns_defs(): void
