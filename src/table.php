@@ -298,6 +298,19 @@ class table{
     {
         $trs = '';
         foreach ($rows as $row){
+
+            foreach ($keys_data as $key_data){
+                if(is_object($row)){
+                    $row = (array)$row;
+                }
+                if(!is_null($row[$key_data])){
+                    $row[$key_data] = '';
+                }
+                if(!isset($row[$key_data])){
+                    $row[$key_data] = '';
+                }
+            }
+
             $valida = (new validacion())->valida_existencia_keys(keys: $keys_data,registro:  $row, valida_vacio: false);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al validar $row', data: $valida);
@@ -316,6 +329,12 @@ class table{
 
     }
 
+    /**
+     * Si el elemento es null lo deja en vacio
+     * @param string|null $value Valor a inicializar
+     * @return string
+     * @version 0.310.39
+     */
     private function value_null(string|null $value): string
     {
         if(is_null($value)){
