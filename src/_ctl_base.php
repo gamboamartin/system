@@ -90,7 +90,7 @@ class _ctl_base extends system{
         return $this;
     }
 
-    protected function contenido_children(stdClass $data_view, string $next_accion): array|string
+    public function contenido_children(stdClass $data_view, string $next_accion): array|string
     {
 
         $params = array();
