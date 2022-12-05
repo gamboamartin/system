@@ -303,7 +303,7 @@ class table{
                 if(is_object($row)){
                     $row = (array)$row;
                 }
-                if(!is_null($row[$key_data])){
+                if(is_null($row[$key_data])){
                     $row[$key_data] = '';
                 }
                 if(!isset($row[$key_data])){
