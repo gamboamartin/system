@@ -17,7 +17,7 @@ use stdClass;
 
 class _ctl_parent_sin_codigo extends _ctl_parent {
 
-    protected _ctl_parent_sin_codigo $parent_ctl;
+    public _ctl_parent_sin_codigo $parent_ctl;
 
     public function __construct(html_controler $html, PDO $link, modelo $modelo, links_menu $obj_link,
                                 stdClass $datatables = new stdClass(), array $filtro_boton_lista = array(),
