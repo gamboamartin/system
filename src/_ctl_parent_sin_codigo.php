@@ -10,11 +10,28 @@ namespace gamboamartin\system;
 
 
 
+use base\orm\modelo;
 use gamboamartin\errores\errores;
+use PDO;
 use stdClass;
 
 class _ctl_parent_sin_codigo extends _ctl_parent {
 
+    protected _ctl_parent_sin_codigo $parent_ctl;
+
+    public function __construct(html_controler $html, PDO $link, modelo $modelo, links_menu $obj_link,
+                                stdClass $datatables = new stdClass(), array $filtro_boton_lista = array(),
+                                string $campo_busca = 'registro_id', string $valor_busca_fault = '',
+                                stdClass $paths_conf = new stdClass())
+    {
+        parent::__construct(html: $html,link:  $link,modelo:  $modelo,obj_link:  $obj_link,datatables:  $datatables,
+            filtro_boton_lista:  $filtro_boton_lista,campo_busca:  $campo_busca,valor_busca_fault:  $valor_busca_fault,
+            paths_conf:  $paths_conf);
+
+
+        $this->parent_ctl = $this;
+
+    }
 
 
     public function alta(bool $header, bool $ws = false): array|string
