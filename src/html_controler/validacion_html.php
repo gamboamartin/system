@@ -100,6 +100,7 @@ class validacion_html extends validacion{
      * @param directivas $directivas Directivas en ejecucion
      * @param mixed $params_select parametros de input
      * @return bool|array
+     * @version 0.315.40
      */
     public function valida_input_base(directivas $directivas, mixed $params_select): bool|array
     {
