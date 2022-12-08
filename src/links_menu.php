@@ -285,12 +285,26 @@ class links_menu{
         return $this->links;
     }
 
-    private function link(PDO $link, string $seccion, string $accion,int $registro_id): string|array
+    /**
+     * @param string $accion
+     * @param PDO $link
+     * @param int $registro_id
+     * @param string $seccion
+     * @return string|array
+     */
+    private function link(string $accion, PDO $link, int $registro_id, string $seccion): string|array
     {
+
+        $params = new stdClass();
+        $params->accion = $accion;
+        $params->link = $link;
+        $params->registro_id = $registro_id;
+        $params->seccion = $seccion;
 
         $seccion = trim($seccion);
         if($seccion === ''){
-            return $this->error->error(mensaje: 'Error seccion esta vacia', data:$seccion);
+
+            return $this->error->error(mensaje: 'Error seccion esta vacia', data:$params);
         }
 
         $tengo_permiso = (new adm_usuario(link: $link))->tengo_permiso(adm_accion: $accion, adm_seccion: $seccion);
@@ -434,7 +448,7 @@ class links_menu{
 
     private function link_init(PDO $link, string $seccion, string $accion,int $registro_id): array|stdClass
     {
-        $link = $this->link(link: $link, seccion: $seccion,accion: $accion,registro_id: $registro_id);
+        $link = $this->link(accion: $accion, link: $link, registro_id: $registro_id, seccion: $seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar link', data: $link);
         }
