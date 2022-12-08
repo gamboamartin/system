@@ -293,25 +293,20 @@ class links_menu{
     }
 
     /**
-     * @param string $accion
-     * @param PDO $link
-     * @param int $registro_id
-     * @param string $seccion
+     * Genera un link basado en datos de controler
+     * @param string $accion Accion a ejecutar
+     * @param PDO $link Conexion a base de datos
+     * @param int $registro_id Registro en proceso
+     * @param string $seccion Seccion a ejecutar
      * @return string|array
      */
     private function link(string $accion, PDO $link, int $registro_id, string $seccion): string|array
     {
 
-        $params = new stdClass();
-        $params->accion = $accion;
-        $params->link = $link;
-        $params->registro_id = $registro_id;
-        $params->seccion = $seccion;
-
         $seccion = trim($seccion);
         if($seccion === ''){
 
-            return $this->error->error(mensaje: 'Error seccion esta vacia', data:$params);
+            return $this->error->error(mensaje: 'Error seccion esta vacia', data:$seccion);
         }
 
         $tengo_permiso = (new adm_usuario(link: $link))->tengo_permiso(adm_accion: $accion, adm_seccion: $seccion);
@@ -455,16 +450,10 @@ class links_menu{
 
     private function link_init(PDO $link, string $seccion, string $accion,int $registro_id): array|stdClass
     {
-        $params = new stdClass();
-        $params->accion = $accion;
-        $params->link = $link;
-        $params->registro_id = $registro_id;
-        $params->seccion = $seccion;
-
         $seccion = trim($seccion);
         if($seccion === ''){
 
-            return $this->error->error(mensaje: 'Error seccion esta vacia', data:$params);
+            return $this->error->error(mensaje: 'Error seccion esta vacia', data:$seccion);
         }
 
         $link = $this->link(accion: $accion, link: $link, registro_id: $registro_id, seccion: $seccion);
