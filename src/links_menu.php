@@ -188,6 +188,13 @@ class links_menu{
 
         if ($acciones->n_registros > 0){
             foreach ($acciones->registros as $registro){
+                $seccion = trim($controler->seccion);
+                if($seccion === ''){
+                    $tabla = $controler->tabla;
+                    $tabla = trim($tabla);
+                    $controler->seccion = $tabla;
+                }
+
                 $accion = $registro['adm_accion_descripcion'];
                 $init = $this->link_init(link: $controler->link, seccion: $controler->seccion, accion: $accion,
                     registro_id: $controler->registro_id);
