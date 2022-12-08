@@ -448,6 +448,18 @@ class links_menu{
 
     private function link_init(PDO $link, string $seccion, string $accion,int $registro_id): array|stdClass
     {
+        $params = new stdClass();
+        $params->accion = $accion;
+        $params->link = $link;
+        $params->registro_id = $registro_id;
+        $params->seccion = $seccion;
+
+        $seccion = trim($seccion);
+        if($seccion === ''){
+
+            return $this->error->error(mensaje: 'Error seccion esta vacia', data:$params);
+        }
+
         $link = $this->link(accion: $accion, link: $link, registro_id: $registro_id, seccion: $seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar link', data: $link);
