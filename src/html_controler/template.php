@@ -120,6 +120,15 @@ class template{
         return $div;
     }
 
+
+    /**
+     * Genera los inputs dentro de un password template
+     * @param directivas $directivas Directiva de html
+     * @param stdClass $params_select Parametros
+     * @param stdClass $row_upd registro en proceso
+     * @return array|string
+     * @version 0.321.40
+     */
     public function passwords_template(directivas $directivas, stdClass $params_select, stdClass $row_upd): array|string
     {
         $valida = $this->validacion->valida_input_base(directivas: $directivas,params_select:  $params_select);

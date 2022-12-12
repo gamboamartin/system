@@ -79,6 +79,33 @@ class templateTest extends test {
         errores::$error = false;
     }
 
+    public function test_passwords_template(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new template();
+        // $html = new liberator($html);
+
+
+        $params_select =new stdClass();
+        $row_upd = new stdClass();
+
+        $params_select->cols = '1';
+        $params_select->disabled = false;
+        $params_select->name = 'a';
+        $params_select->place_holder = 'f';
+        $params_select->value_vacio = true;
+
+        $directivas = new directivas($html_);
+
+        $resultado = $html->passwords_template($directivas, $params_select, $row_upd);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<div |class|><div |class|><input type='password' name='a' value='' class='form-control'   required id='a' placeholder='f' /></div></div>",$resultado);
+        errores::$error = false;
+
+    }
+
 
 
 
