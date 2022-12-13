@@ -637,7 +637,7 @@ class system extends controlador_base{
         return true;
     }
 
-    protected function row_upd(string $key): array|stdClass
+    public function row_upd(string $key): array|stdClass
     {
         $row_upd = (new row())->integra_row_upd(key: $key, modelo: $this->modelo, registro_id: $this->registro_id);
         if(errores::$error){
