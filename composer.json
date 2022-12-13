@@ -20,14 +20,14 @@
     "require": {
       "gamboa.martin/test": "dev-main",
       "gamboa.martin/errores": "^1.0.0",
-      "gamboa.martin/administrador": "^3.0.0",
+      "gamboa.martin/administrador": "^4.0.0",
       "gamboa.martin/calculo": "dev-main",
       "gamboa.martin/validacion": "dev-main",
       "gamboa.martin/base_modelos": "dev-main",
       "gamboa.martin/compresor": "dev-main",
       "gamboa.martin/configuraciones": "dev-main",
       "gamboa.martin/plugins": "dev-main",
-      "gamboa.martin/template": "^1.0.0",
+      "gamboa.martin/template": "^2.0.0",
       "ext-mysqli": "*",
       "ext-pdo": "*"
     },
