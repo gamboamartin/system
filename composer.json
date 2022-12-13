@@ -27,7 +27,7 @@
       "gamboa.martin/compresor": "dev-main",
       "gamboa.martin/configuraciones": "dev-main",
       "gamboa.martin/plugins": "dev-main",
-      "gamboa.martin/template": "dev-main",
+      "gamboa.martin/template": "^1.0.0",
       "ext-mysqli": "*",
       "ext-pdo": "*"
     },
