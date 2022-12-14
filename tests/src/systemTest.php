@@ -170,8 +170,8 @@ class systemTest extends test {
 
 
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(16,$resultado['recordsTotal']);
-        $this->assertCount(10,$resultado['data']);
+        $this->assertEquals(2,$resultado['recordsTotal']);
+        $this->assertCount(2,$resultado['data']);
 
         errores::$error = false;
 
@@ -179,8 +179,8 @@ class systemTest extends test {
         $resultado = $controler->get_data(header:false);
 
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(16,$resultado['recordsTotal']);
-        $this->assertCount(10,$resultado['data']);
+        $this->assertEquals(2,$resultado['recordsTotal']);
+        $this->assertCount(2,$resultado['data']);
 
         errores::$error = false;
 
@@ -189,8 +189,8 @@ class systemTest extends test {
         $resultado = $controler->get_data(header:false);
         //print_r($resultado);exit;
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(16,$resultado['recordsTotal']);
-        $this->assertCount(1,$resultado['data']);
+        $this->assertEquals(2,$resultado['recordsTotal']);
+        $this->assertCount(2,$resultado['data']);
         $this->assertIsNumeric($resultado['data'][0]['adm_accion_id']);
 
 

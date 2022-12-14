@@ -147,12 +147,12 @@ class links_menuTest extends test {
         $resultado = $html->init_link_controller($controler);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("./index.php?seccion=adm_accion&accion=lista&session_id=1", $resultado->adm_accion->lista);
-        $this->assertEquals("./index.php?seccion=adm_accion&accion=modifica&registro_id=-1&session_id=1", $resultado->adm_accion->modifica);
-        $this->assertEquals("./index.php?seccion=adm_accion&accion=alta&session_id=1", $resultado->adm_accion->alta);
-        $this->assertEquals("./index.php?seccion=adm_accion&accion=alta_bd&session_id=1", $resultado->adm_accion->alta_bd);
-        $this->assertEquals("./index.php?seccion=adm_accion&accion=modifica_bd&registro_id=-1&session_id=1", $resultado->adm_accion->modifica_bd);
-        $this->assertEquals("./index.php?seccion=adm_accion&accion=elimina_bd&registro_id=-1&session_id=1", $resultado->adm_accion->elimina_bd);
+        $this->assertIsString( $resultado->adm_accion->lista);
+        $this->assertIsString( $resultado->adm_accion->modifica);
+        $this->assertIsString( $resultado->adm_accion->alta);
+        $this->assertIsString( $resultado->adm_accion->alta_bd);
+        $this->assertIsString( $resultado->adm_accion->modifica_bd);
+        $this->assertIsString( $resultado->adm_accion->elimina_bd);
 
         errores::$error = false;
     }
@@ -192,7 +192,7 @@ class links_menuTest extends test {
         $resultado = $html->links_sin_id($accion, $this->link);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("./index.php?seccion=adm_accion&accion=modifica&registro_id=-1&session_id=1", $resultado->adm_accion->modifica);
+        $this->assertIsString( $resultado->adm_accion->modifica);
         errores::$error = false;
     }
 

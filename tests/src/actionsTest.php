@@ -2,6 +2,7 @@
 namespace tests\controllers;
 
 use gamboamartin\administrador\models\adm_accion;
+use gamboamartin\administrador\models\adm_accion_basica;
 use gamboamartin\administrador\models\adm_accion_grupo;
 use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\administrador\models\adm_seccion_pertenece;
@@ -52,9 +53,13 @@ class actionsTest extends test {
         errores::$error = false;
         $act = new actions();
         $act = new liberator($act);
+
+
         $_GET['session_id'] = 1;
         $_SESSION['usuario_id'] = 2;
         $_SESSION['grupo_id'] = 2;
+
+
         $seccion = 'adm_seccion';
         $obj_link = new links_menu($this->link, -1);
         $row = new stdClass();
@@ -101,6 +106,26 @@ class actionsTest extends test {
             exit;
         }
 
+        $del = (new adm_accion_basica($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $adm_accion_basica['id'] = 1;
+        $adm_accion_basica['descripcion'] = 'elimina_bd';
+        $adm_accion_basica['muestra_icono_btn'] = 'activo';
+        $adm_accion_basica['muestra_titulo_btn'] = 'activo';
+        $adm_accion_basica['es_lista'] = 'activo';
+
+        $alta = (new adm_accion_basica($this->link))->alta_registro($adm_accion_basica);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
         $adm_seccion['id'] = 13;
         $adm_seccion['descripcion'] = 'adm_seccion';
         $adm_seccion['adm_menu_id'] = 1;
@@ -123,8 +148,6 @@ class actionsTest extends test {
         }
 
 
-
-
         $registro = array();
         $registro['id'] = 1;
         $registro['adm_sistema_id'] = 2;
@@ -136,15 +159,17 @@ class actionsTest extends test {
             exit;
         }
 
+        $_SESSION['permite'][2]['adm_seccion']['elimina_bd'] = 1;
 
         $resultado = $act->asigna_link_rows(accion: $accion,indice:  $indice, link: $this->link,
             obj_link:  $obj_link,registros_view:  $registros_view,row:  $row,seccion:  $seccion, style: $style);
 
 
+
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals(1, $resultado[0]->adm_seccion_id);
-        $this->assertEquals('./index.php?seccion=adm_seccion&accion=elimina_bd&registro_id=1&session_id=1', $resultado[0]->link_elimina_bd);
+        $this->assertEquals('', $resultado[0]->link_elimina_bd);
         $this->assertEquals('a', $resultado[0]->elimina_bd_style);
         errores::$error = false;
 
@@ -309,7 +334,7 @@ class actionsTest extends test {
 
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('./index.php?seccion=adm_menu&accion=elimina_bd&registro_id=1&session_id=1', $resultado);
+        $this->assertEquals('', $resultado);
         errores::$error = false;
     }
 
@@ -372,7 +397,7 @@ class actionsTest extends test {
         $resultado = $act->retorno_alta_bd($this->link, -1, $seccion, $siguiente_view);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('./index.php?seccion=adm_accion_grupo&accion=modifica&registro_id=-1&session_id=1', $resultado);
+        $this->assertEquals('', $resultado);
         errores::$error = false;
     }
 

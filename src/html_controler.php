@@ -902,6 +902,19 @@ class html_controler{
         return trim($campo['type']);
     }
 
+    private function passwords(string $item, array $keys_selects, stdClass $passwords, stdClass $row_upd){
+        $params_select = (new params())->params_select_init(item:$item,keys_selects:  $keys_selects);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar select', data: $params_select);
+        }
+        $date = (new template())->passwords_template(directivas: $this->directivas, params_select: $params_select,row_upd: $row_upd);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar input', data: $date);
+        }
+        $passwords->$item = $date;
+        return $passwords;
+    }
+
     protected function passwords_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
     {
         $campos_view = $this->obtener_inputs($modelo->campos_view);
@@ -909,21 +922,22 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al obtener campos de la vista del modelo', data: $campos_view);
         }
 
+        $passwords = $this->passwords_campos(campos_view: $campos_view, keys_selects: $keys_selects,row_upd:  $row_upd);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar passwords', data: $passwords);
+        }
+        return $passwords;
+    }
+
+    private function passwords_campos(array $campos_view, array $keys_selects, stdClass $row_upd){
         $passwords = new stdClass();
 
         foreach ($campos_view['passwords'] as $item){
-
-            $params_select = (new params())->params_select_init(item:$item,keys_selects:  $keys_selects);
+            $passwords = $this->passwords(item: $item,keys_selects:  $keys_selects,passwords:  $passwords,row_upd:  $row_upd);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar select', data: $params_select);
+                return $this->error->error(mensaje: 'Error al generar passwords', data: $passwords);
             }
-            $date = (new template())->passwords_template(directivas: $this->directivas, params_select: $params_select,row_upd: $row_upd);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar input', data: $date);
-            }
-            $passwords->$item = $date;
         }
-
         return $passwords;
     }
 

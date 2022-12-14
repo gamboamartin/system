@@ -218,6 +218,7 @@ class actions{
             return $this->error->error(mensaje: 'Error al validar si tengo permiso', data:  $tengo_permiso);
         }
 
+
         $links_menu = new stdClass();
         $links_menu->links = new stdClass();
         $links_menu->links->$seccion = new stdClass();
