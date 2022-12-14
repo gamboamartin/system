@@ -260,7 +260,8 @@ class datatables{
         return $data_link;
     }
 
-    public function database_link(array $adm_accion_grupo, html_controler $html, int $registro_id, string $style): array|stdClass
+    public function database_link(array $adm_accion_grupo, html_controler $html, int $registro_id, string $style,
+                                  array $styles = array('margin-left'=>'2px', 'margin-bottom'=>'2px') ): array|stdClass
     {
 
         $icon = $adm_accion_grupo['adm_accion_icono'];
@@ -272,11 +273,11 @@ class datatables{
             return $this->error->error(mensaje: 'Error al asignar data_icon', data: $data_icon);
         }
 
-
         $link_con_id = $html->button_href(accion: $adm_accion_grupo['adm_accion_descripcion'],
             etiqueta:   $adm_accion_grupo['adm_accion_titulo'],registro_id:  $registro_id,
             seccion:  $adm_accion_grupo['adm_seccion_descripcion'],style:  $style, cols: -1,icon: $icon,
-            muestra_icono_btn: $data_icon->muestra_icono_btn,muestra_titulo_btn: $data_icon->muestra_titulo_btn );
+            muestra_icono_btn: $data_icon->muestra_icono_btn,muestra_titulo_btn: $data_icon->muestra_titulo_btn,
+            styles: $styles );
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al asignar button', data: $link_con_id);
         }
