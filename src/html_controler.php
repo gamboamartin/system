@@ -31,13 +31,25 @@ class html_controler{
         $this->validacion = new validacion_html();
     }
 
-    private function a_role(int $cols, string $etiqueta_html, string $icon_html, string $link, string $role, string $style): string
+    private function a_role(int $cols, string $etiqueta_html, string $icon_html, string $link, string $role,
+                            string $style, array $styles): string
     {
         $cols_html = "col-sm-$cols";
         if($cols === -1){
             $cols_html = '';
         }
-        return "<a role='$role' href='$link' class='btn btn-$style $cols_html'>$icon_html$etiqueta_html</a>";
+
+        $propiedades = '';
+
+        foreach ($styles as $propiedad=>$valor){
+            $propiedades.= $propiedad.': '.$valor.'; ';
+        }
+        $style_custom = '';
+        if($propiedades!==''){
+            $style_custom = "style='$propiedades'";
+        }
+
+        return "<a role='$role' href='$link' class='btn btn-$style $cols_html' $style_custom>$icon_html$etiqueta_html</a>";
     }
 
     /**
@@ -107,7 +119,7 @@ class html_controler{
 
         $link = $this->button_href(accion: $accion, etiqueta: $etiqueta, registro_id: $registro_id, seccion: $seccion,
             style: $style, cols: -1, icon: $icon, muestra_icono_btn: $data_icon->muestra_icono_btn,
-            muestra_titulo_btn: $data_icon->muestra_titulo_btn, params: $params);
+            muestra_titulo_btn: $data_icon->muestra_titulo_btn, params: $params, styles: array('margin-right'=>'2px'));
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar link',data:  $link);
         }
@@ -142,13 +154,14 @@ class html_controler{
      * @param bool $muestra_titulo_btn Si true entonces muestra etiqueta definido en etiqueta
      * @param array $params extra-params
      * @param string $role Role de link , button, submit etc
+     * @param array $styles Propiedades css custom
      * @return string|array
      * @version 0.164.34
      */
     public function button_href(string $accion, string $etiqueta, int $registro_id, string $seccion, string $style,
                                 int $cols = 12, string $icon = '', bool $muestra_icono_btn = false,
                                 bool $muestra_titulo_btn = true, array $params = array(),
-                                string $role = 'button'): string|array
+                                string $role = 'button', array $styles = array()): string|array
     {
 
         $valida = $this->html_base->valida_input(accion: $accion,etiqueta:  $etiqueta, seccion: $seccion,style:  $style);
@@ -183,7 +196,7 @@ class html_controler{
         }
 
         $a = $this->a_role(cols: $cols,etiqueta_html:  $params_btn->etiqueta_html,icon_html:  $params_btn->icon_html,
-            link:  $link, role: $role,style:  $style);
+            link:  $link, role: $role,style:  $style, styles: $styles);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar a', data: $a);
         }

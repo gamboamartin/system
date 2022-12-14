@@ -98,10 +98,10 @@ class out_permisosTest extends test {
 
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<a role='button' href='index.php?seccion=c&accion=a&registro_id=1&session_id=1' class='btn btn-info '>b</a>",$resultado[0]['acciones']['a']);
-        $this->assertEquals("<a role='button' href='index.php?seccion=y&accion=b&registro_id=1&session_id=1' class='btn btn-danger '>x</a>",$resultado[0]['acciones']['b']);
-        $this->assertEquals("<a role='button' href='index.php?seccion=dd&accion=r&registro_id=1&session_id=1' class='btn btn-success '>ff</a>",$resultado[0]['acciones']['r']);
-        $this->assertEquals("<a role='button' href='index.php?seccion=dd&accion=rs&registro_id=1&session_id=1' class='btn btn-danger '>ff</a>",$resultado[0]['acciones']['rs']);
+        $this->assertEquals("<a role='button' href='index.php?seccion=c&accion=a&registro_id=1&session_id=1' class='btn btn-info ' style='margin-right: 2px; '>b</a>",$resultado[0]['acciones']['a']);
+        $this->assertEquals("<a role='button' href='index.php?seccion=y&accion=b&registro_id=1&session_id=1' class='btn btn-danger ' style='margin-right: 2px; '>x</a>",$resultado[0]['acciones']['b']);
+        $this->assertEquals("<a role='button' href='index.php?seccion=dd&accion=r&registro_id=1&session_id=1' class='btn btn-success ' style='margin-right: 2px; '>ff</a>",$resultado[0]['acciones']['r']);
+        $this->assertEquals("<a role='button' href='index.php?seccion=dd&accion=rs&registro_id=1&session_id=1' class='btn btn-danger ' style='margin-right: 2px; '>ff</a>",$resultado[0]['acciones']['rs']);
         errores::$error = false;
     }
 
@@ -139,7 +139,7 @@ class out_permisosTest extends test {
 
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<a role='button' href='index.php?seccion=c&accion=a&registro_id=-1&session_id=1' class='btn btn-success '>b</a>",$resultado);
+        $this->assertEquals("<a role='button' href='index.php?seccion=c&accion=a&registro_id=-1&session_id=1' class='btn btn-success ' >b</a>",$resultado);
         errores::$error = false;
     }
 
