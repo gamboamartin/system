@@ -5,6 +5,7 @@ use gamboamartin\errores\errores;
 use gamboamartin\system\datatables\acciones;
 use gamboamartin\system\datatables\filtros;
 use gamboamartin\system\datatables\validacion_dt;
+use gamboamartin\system\html_controler\params;
 use gamboamartin\template\html;
 use gamboamartin\validacion\validacion;
 use PDO;
@@ -238,6 +239,8 @@ class datatables{
         return $columns;
     }
 
+
+
     public function data_link(array $adm_accion_grupo, array $data_result, html $html_base, string $key, int $registro_id): array|stdClass
     {
         $style = (new html_controler(html: $html_base))->style_btn(
@@ -262,21 +265,18 @@ class datatables{
 
         $icon = $adm_accion_grupo['adm_accion_icono'];
 
-        $muestra_icono_btn = false;
-        if($adm_accion_grupo['adm_accion_muestra_icono_btn'] === 'activo'){
-            $muestra_icono_btn = true;
-        }
 
-        $muestra_titulo_btn = false;
-        if($adm_accion_grupo['adm_accion_muestra_titulo_btn'] === 'activo'){
-            $muestra_titulo_btn = true;
+
+        $data_icon = (new params())->data_icon(adm_accion: $adm_accion_grupo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al asignar data_icon', data: $data_icon);
         }
 
 
         $link_con_id = $html->button_href(accion: $adm_accion_grupo['adm_accion_descripcion'],
             etiqueta:   $adm_accion_grupo['adm_accion_titulo'],registro_id:  $registro_id,
             seccion:  $adm_accion_grupo['adm_seccion_descripcion'],style:  $style, cols: 3,icon: $icon,
-            muestra_icono_btn: $muestra_icono_btn,muestra_titulo_btn: $muestra_titulo_btn );
+            muestra_icono_btn: $data_icon->muestra_icono_btn,muestra_titulo_btn: $data_icon->muestra_titulo_btn );
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al asignar button', data: $link_con_id);
         }

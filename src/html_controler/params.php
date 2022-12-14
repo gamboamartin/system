@@ -14,6 +14,23 @@ class params{
         $this->validacion = new validacion();
     }
 
+    public function data_icon(array $adm_accion): stdClass
+    {
+        $muestra_icono_btn = false;
+        if($adm_accion['adm_accion_muestra_icono_btn'] === 'activo'){
+            $muestra_icono_btn = true;
+        }
+
+        $muestra_titulo_btn = false;
+        if($adm_accion['adm_accion_muestra_titulo_btn'] === 'activo'){
+            $muestra_titulo_btn = true;
+        }
+        $data = new stdClass();
+        $data->muestra_icono_btn = $muestra_icono_btn;
+        $data->muestra_titulo_btn = $muestra_titulo_btn;
+        return $data;
+    }
+
     /**
      * Inicializa los parametros para un input
      * @param stdClass $data Data precargado

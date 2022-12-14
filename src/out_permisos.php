@@ -2,6 +2,7 @@
 namespace gamboamartin\system;
 
 use gamboamartin\errores\errores;
+use gamboamartin\system\html_controler\params;
 use gamboamartin\validacion\validacion;
 use stdClass;
 
@@ -191,20 +192,19 @@ class out_permisos{
 
         $icon = $accion_permitida['adm_accion_icono'];
 
-        $muestra_icono_btn = false;
-        if($accion_permitida['adm_accion_muestra_icono_btn'] === 'activo'){
-            $muestra_icono_btn = true;
+
+
+        $data_icon = (new params())->data_icon(adm_accion: $accion_permitida);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al asignar data_icon', data: $data_icon);
         }
 
-        $muestra_titulo_btn = false;
-        if($accion_permitida['adm_accion_muestra_titulo_btn'] === 'activo'){
-            $muestra_titulo_btn = true;
-        }
 
         $link = $html->button_href(accion: $accion_permitida['adm_accion_descripcion'],
             etiqueta: $accion_permitida['adm_accion_titulo'], registro_id: $registro_id,
             seccion: $accion_permitida['adm_seccion_descripcion'], style: $style, cols: $cols, icon: $icon,
-            muestra_icono_btn: $muestra_icono_btn, muestra_titulo_btn: $muestra_titulo_btn, params: $params);
+            muestra_icono_btn: $data_icon->muestra_icono_btn, muestra_titulo_btn: $data_icon->muestra_titulo_btn,
+            params: $params);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar link',data:  $link);
         }
