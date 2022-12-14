@@ -42,14 +42,20 @@ class validacion_html extends validacion{
     public function valida_boton_link(array $accion_permitida, int $indice, int $registro_id, array $rows): bool|array
     {
         $keys = array('adm_accion_descripcion','adm_accion_titulo','adm_seccion_descripcion','adm_accion_css',
-            'adm_accion_es_status');
+            'adm_accion_es_status','adm_accion_muestra_icono_btn','adm_accion_muestra_titulo_btn');
         $valida = $this->valida_existencia_keys(keys: $keys,registro:  $accion_permitida);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar  accion_permitida',data:  $valida);
         }
 
-        $keys = array('adm_accion_es_status');
+        $keys = array('adm_accion_es_status','adm_accion_muestra_icono_btn','adm_accion_muestra_titulo_btn');
         $valida = $this->valida_statuses(keys: $keys,registro:  $accion_permitida);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar  accion_permitida',data:  $valida);
+        }
+
+        $keys = array('adm_accion_icono');
+        $valida = $this->valida_existencia_keys(keys: $keys,registro:  $accion_permitida,valida_vacio: false);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar  accion_permitida',data:  $valida);
         }

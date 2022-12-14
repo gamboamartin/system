@@ -55,6 +55,9 @@ class out_permisosTest extends test {
         $acciones_permitidas[0]['adm_seccion_descripcion'] = 'c';
         $acciones_permitidas[0]['adm_accion_css'] = 'info';
         $acciones_permitidas[0]['adm_accion_es_status'] = 'inactivo';
+        $acciones_permitidas[0]['adm_accion_muestra_icono_btn'] = 'inactivo';
+        $acciones_permitidas[0]['adm_accion_muestra_titulo_btn'] = 'activo';
+        $acciones_permitidas[0]['adm_accion_icono'] = '';
 
 
         $acciones_permitidas[1]['adm_accion_descripcion'] = 'b';
@@ -62,18 +65,27 @@ class out_permisosTest extends test {
         $acciones_permitidas[1]['adm_seccion_descripcion'] = 'y';
         $acciones_permitidas[1]['adm_accion_css'] = 'danger';
         $acciones_permitidas[1]['adm_accion_es_status'] = 'inactivo';
+        $acciones_permitidas[1]['adm_accion_muestra_icono_btn'] = 'inactivo';
+        $acciones_permitidas[1]['adm_accion_muestra_titulo_btn'] = 'activo';
+        $acciones_permitidas[1]['adm_accion_icono'] = '';
 
         $acciones_permitidas[2]['adm_accion_descripcion'] = 'r';
         $acciones_permitidas[2]['adm_accion_titulo'] = 'ff';
         $acciones_permitidas[2]['adm_seccion_descripcion'] = 'dd';
         $acciones_permitidas[2]['adm_accion_css'] = 'warning';
         $acciones_permitidas[2]['adm_accion_es_status'] = 'activo';
+        $acciones_permitidas[2]['adm_accion_muestra_icono_btn'] = 'inactivo';
+        $acciones_permitidas[2]['adm_accion_muestra_titulo_btn'] = 'activo';
+        $acciones_permitidas[2]['adm_accion_icono'] = '';
 
         $acciones_permitidas[3]['adm_accion_descripcion'] = 'rs';
         $acciones_permitidas[3]['adm_accion_titulo'] = 'ff';
         $acciones_permitidas[3]['adm_seccion_descripcion'] = 'dd';
         $acciones_permitidas[3]['adm_accion_css'] = 'link';
         $acciones_permitidas[3]['adm_accion_es_status'] = 'activo';
+        $acciones_permitidas[3]['adm_accion_muestra_icono_btn'] = 'inactivo';
+        $acciones_permitidas[3]['adm_accion_muestra_titulo_btn'] = 'activo';
+        $acciones_permitidas[3]['adm_accion_icono'] = '';
 
 
         $rows[0] = array();
@@ -82,7 +94,6 @@ class out_permisosTest extends test {
 
 
         $resultado = $out->integra_acciones_permitidas($acciones_permitidas, $html_controler, $indice, $key_id, $row, $rows);
-
 
 
         $this->assertIsArray($resultado);
@@ -105,7 +116,7 @@ class out_permisosTest extends test {
 
 
         $out = new out_permisos();
-        $out = new liberator($out);
+        //$out = new liberator($out);
 
         $accion_permitida = array();
         $accion_permitida['adm_accion_descripcion'] = 'a';
@@ -113,6 +124,9 @@ class out_permisosTest extends test {
         $accion_permitida['adm_seccion_descripcion'] = 'c';
         $accion_permitida['adm_accion_css'] = 'light';
         $accion_permitida['adm_accion_es_status'] = 'activo';
+        $accion_permitida['adm_accion_icono'] = '';
+        $accion_permitida['adm_accion_muestra_icono_btn'] = 'inactivo';
+        $accion_permitida['adm_accion_muestra_titulo_btn'] = 'activo';
         $cols = -1;
         $params = array();
         $registro = array();
@@ -120,7 +134,9 @@ class out_permisosTest extends test {
         $registro_id = -1;
 
 
-        $resultado = $out->link_btn_action($accion_permitida, $cols, $html_controler, $params, $registro, $registro_id);
+        $resultado = $out->link_btn_action(accion_permitida: $accion_permitida,cols:  $cols, html: $html_controler,
+            params:  $params,registro:  $registro,registro_id:  $registro_id);
+
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("<a role='button' href='index.php?seccion=c&accion=a&registro_id=-1&session_id=1' class='btn btn-success col-sm--1'>b</a>",$resultado);
@@ -152,8 +168,11 @@ class out_permisosTest extends test {
         $accion_permitida['adm_seccion_descripcion'] = 'a';
         $accion_permitida['adm_accion_css'] = 'danger';
         $accion_permitida['adm_accion_es_status'] = 'a';
+        $accion_permitida['adm_accion_muestra_icono_btn'] = 'activo';
+        $accion_permitida['adm_accion_muestra_titulo_btn'] = 'activo';
+        $accion_permitida['adm_accion_icono'] = '';
         $resultado = $out->valida_data_action($accion_permitida);
-        //print_r($resultado);exit;
+
         $this->assertIsBool($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertTrue($resultado);
@@ -177,10 +196,14 @@ class out_permisosTest extends test {
         $accion_permitida['adm_seccion_descripcion'] = 'a';
         $accion_permitida['adm_accion_css'] = 'info';
         $accion_permitida['adm_accion_es_status'] = 'a';
+        $accion_permitida['adm_accion_muestra_icono_btn'] = 'a';
+        $accion_permitida['adm_accion_muestra_titulo_btn'] = 'a';
+        $accion_permitida['adm_accion_icono'] = 'a';
         $key_id = 'a';
         $row = array();
         $row['a'] = '1';
         $resultado = $out->valida_data_btn($accion_permitida, $key_id, $row);
+
         $this->assertIsBool($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertTrue($resultado);

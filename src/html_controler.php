@@ -91,8 +91,21 @@ class html_controler{
         $etiqueta = $accion_permitida['adm_accion_titulo'];
         $seccion = $accion_permitida['adm_seccion_descripcion'];
 
-        $link = $this->button_href(accion: $accion, etiqueta: $etiqueta, registro_id:  $registro_id, seccion: $seccion,
-            style:  $style, params: $params);
+        $icon = $accion_permitida['adm_accion_icono'];
+
+        $muestra_icono_btn = false;
+        if($accion_permitida['adm_accion_muestra_icono_btn'] === 'activo'){
+            $muestra_icono_btn = true;
+        }
+
+        $muestra_titulo_btn = false;
+        if($accion_permitida['adm_accion_muestra_titulo_btn'] === 'activo'){
+            $muestra_titulo_btn = true;
+        }
+
+        $link = $this->button_href(accion: $accion, etiqueta: $etiqueta, registro_id: $registro_id, seccion: $seccion,
+            style: $style, icon: $icon, muestra_icono_btn: $muestra_icono_btn, muestra_titulo_btn: $muestra_titulo_btn,
+            params: $params);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar link',data:  $link);
         }

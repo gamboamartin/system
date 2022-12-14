@@ -132,12 +132,16 @@ class html_controlerTest extends test {
         $accion_permitida['adm_seccion_descripcion'] = 'c';
         $accion_permitida['adm_accion_css'] = 'danger';
         $accion_permitida['adm_accion_es_status'] = 'inactivo';
+        $accion_permitida['adm_accion_muestra_icono_btn'] = 'inactivo';
+        $accion_permitida['adm_accion_muestra_titulo_btn'] = 'activo';
+        $accion_permitida['adm_accion_icono'] = ' ';
         $indice = 1;
         $registro_id = 1;
         $rows = array();
         $rows[1] = array();
 
         $resultado = $html->boton_link_permitido($accion_permitida, $indice, $registro_id, $rows);
+
 
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);

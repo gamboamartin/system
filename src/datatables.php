@@ -259,9 +259,24 @@ class datatables{
 
     public function database_link(array $adm_accion_grupo, html_controler $html, int $registro_id, string $style): array|stdClass
     {
+
+        $icon = $adm_accion_grupo['adm_accion_icono'];
+
+        $muestra_icono_btn = false;
+        if($adm_accion_grupo['adm_accion_muestra_icono_btn'] === 'activo'){
+            $muestra_icono_btn = true;
+        }
+
+        $muestra_titulo_btn = false;
+        if($adm_accion_grupo['adm_accion_muestra_titulo_btn'] === 'activo'){
+            $muestra_titulo_btn = true;
+        }
+
+
         $link_con_id = $html->button_href(accion: $adm_accion_grupo['adm_accion_descripcion'],
             etiqueta:   $adm_accion_grupo['adm_accion_titulo'],registro_id:  $registro_id,
-            seccion:  $adm_accion_grupo['adm_seccion_descripcion'],style:  $style, cols: 3 );
+            seccion:  $adm_accion_grupo['adm_seccion_descripcion'],style:  $style, cols: 3,icon: $icon,
+            muestra_icono_btn: $muestra_icono_btn,muestra_titulo_btn: $muestra_titulo_btn );
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al asignar button', data: $link_con_id);
         }

@@ -2,6 +2,7 @@
 namespace tests\src;
 
 use gamboamartin\administrador\models\adm_accion;
+use gamboamartin\administrador\models\adm_accion_basica;
 use gamboamartin\administrador\models\adm_accion_grupo;
 use gamboamartin\administrador\models\adm_mes;
 use gamboamartin\administrador\models\adm_seccion;
@@ -139,6 +140,25 @@ class systemTest extends test {
         $del = (new adm_seccion($this->link))->elimina_todo();
         if(errores::$error){
             $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_accion_basica($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $adm_accion_basica['id'] = 1;
+        $adm_accion_basica['descripcion'] = 'lista';
+        $adm_accion_basica['muestra_icono_btn'] = 'inactivo';
+        $adm_accion_basica['muestra_titulo_btn'] = 'activo';
+
+        $alta = (new adm_accion_basica($this->link))->alta_registro($adm_accion_basica);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
             print_r($error);
             exit;
         }
