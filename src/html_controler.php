@@ -165,7 +165,13 @@ class html_controler{
             muestra_titulo_btn:  $muestra_titulo_btn,params:  $params);
 
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar parametros de btn', data: $params_btn);
+            $params_error = array();
+            $params_error['accion'] = $accion;
+            $params_error['seccion'] = $seccion;
+            $params_error['muestra_titulo_btn'] = $muestra_titulo_btn;
+            $params_error['icon'] = $icon;
+            return $this->error->error(mensaje: 'Error al generar parametros de btn', data: $params_btn,
+                params: $params_error);
         }
 
         $link = $this->link_a(accion: $accion, params_get: $params_btn->params_get, registro_id: $registro_id,
