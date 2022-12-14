@@ -185,11 +185,11 @@ class table{
         return $td;
     }
 
-    private function td_actions(array $acciones, array $class_css, int $cols, array $id_css): array|string
+    private function td_actions(bool $aplica_div, array $acciones, array $class_css, int $cols, array $id_css): array|string
     {
         $divs = '';
         foreach ($acciones as $link){
-            $div = $this->td_contenido_link(cols: $cols,link:  $link);
+            $div = $this->td_contenido_link(aplica_div: $aplica_div, cols: $cols,link:  $link);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar div', data: $div);
             }
@@ -204,9 +204,13 @@ class table{
         return $td;
     }
 
-    private function td_contenido_link(int $cols, string $link): string
+    private function td_contenido_link(bool $aplica_div, int $cols, string $link): string
     {
-        return "<div class='col-md-$cols'>$link</div>";
+        $html = $link;
+        if($aplica_div){
+            $html = "<div class='col-md-$cols'>$link</div>";
+        }
+        return $html;
     }
 
     private function tds(array $class_css,array $id_css, array $keys, array $row): array|string
@@ -241,7 +245,8 @@ class table{
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar tds', data: $tds_data);
         }
-        $td_action = $this->td_actions(acciones: $acciones, class_css: $class_css_td, cols: $cols, id_css: $id_css_td);
+        $td_action = $this->td_actions(aplica_div: false, acciones: $acciones, class_css: $class_css_td, cols: $cols,
+            id_css: $id_css_td);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar td_action', data: $tds_data);
         }
