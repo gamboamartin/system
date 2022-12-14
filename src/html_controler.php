@@ -117,13 +117,18 @@ class html_controler{
      * @param string $seccion Seccion a ejecutar
      * @param string $style Stilo del boton
      * @param int $cols N columnas css
+     * @param string $icon Icono a mostrar en boton
+     * @param bool $muestra_icono_btn Si true entonces muestra icono definido en icon
+     * @param bool $muestra_titulo_btn Si true entonces muestra etiqueta definido en etiqueta
      * @param array $params extra-params
-     * @param string $role
+     * @param string $role Role de link , button, submit etc
      * @return string|array
      * @version 0.164.34
      */
-    public function button_href(string $accion, string $etiqueta, int $registro_id, string $seccion,
-                                string $style, int $cols = 12, array $params = array(), string $role = 'button'): string|array
+    public function button_href(string $accion, string $etiqueta, int $registro_id, string $seccion, string $style,
+                                int $cols = 12, string $icon = '', bool $muestra_icono_btn = false,
+                                bool $muestra_titulo_btn = true, array $params = array(),
+                                string $role = 'button'): string|array
     {
 
         $valida = $this->html_base->valida_input(accion: $accion,etiqueta:  $etiqueta, seccion: $seccion,style:  $style);
@@ -142,9 +147,30 @@ class html_controler{
             $params_get .= "&$key=$value";
         }
 
+        $icon_html = '';
+        if($muestra_icono_btn){
+            $icon = trim($icon);
+            if($icon === ''){
+                return $this->error->error(mensaje: 'Error si muestra_icono_btn entonces icon no puede venir vacio',
+                    data: $icon);
+            }
+            $icon_html = "<span class='$icon'></span>";
+        }
+
+        $etiqueta_html = '';
+        if($muestra_titulo_btn){
+            $etiqueta = trim($etiqueta);
+            if($etiqueta === ''){
+                return $this->error->error(
+                    mensaje: 'Error si muestra_titulo_btn entonces etiqueta no puede venir vacio', data: $etiqueta);
+            }
+            $etiqueta_html = $etiqueta;
+        }
+
+
         $link = "index.php?seccion=$seccion&accion=$accion&registro_id=$registro_id&session_id=$session_id";
         $link .= $params_get;
-        return "<a role='$role' href='$link' class='btn btn-$style col-sm-$cols'>$etiqueta</a>";
+        return "<a role='$role' href='$link' class='btn btn-$style col-sm-$cols'>$icon_html$etiqueta_html</a>";
     }
 
     /**
