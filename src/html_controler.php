@@ -31,6 +31,11 @@ class html_controler{
         $this->validacion = new validacion_html();
     }
 
+    private function a_role(int $cols, string $etiqueta_html, string $icon_html, string $link, string $role, string $style): string
+    {
+        return "<a role='$role' href='$link' class='btn btn-$style col-sm-$cols'>$icon_html$etiqueta_html</a>";
+    }
+
     /**
      * Genera los inputs base de un alta de cualquier controller que herede
      * @param system $controler Controlador en ejecucion
@@ -142,35 +147,27 @@ class html_controler{
             return $this->error->error(mensaje: 'Error la $session_id esta vacia', data: $session_id);
         }
 
-        $params_get = '';
-        foreach ($params as $key=>$value){
-            $params_get .= "&$key=$value";
+
+        $params_btn = $this->params_btn(icon: $icon,etiqueta:  $etiqueta,muestra_icono_btn:  $muestra_icono_btn,
+            muestra_titulo_btn:  $muestra_titulo_btn,params:  $params);
+
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar parametros de btn', data: $params_btn);
         }
 
-        $icon_html = '';
-        if($muestra_icono_btn){
-            $icon = trim($icon);
-            if($icon === ''){
-                return $this->error->error(mensaje: 'Error si muestra_icono_btn entonces icon no puede venir vacio',
-                    data: $icon);
-            }
-            $icon_html = "<span class='$icon'></span>";
+        $link = $this->link_a(accion: $accion, params_get: $params_btn->params_get, registro_id: $registro_id,
+            seccion:  $seccion,session_id:  $session_id);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar link', data: $link);
         }
 
-        $etiqueta_html = '';
-        if($muestra_titulo_btn){
-            $etiqueta = trim($etiqueta);
-            if($etiqueta === ''){
-                return $this->error->error(
-                    mensaje: 'Error si muestra_titulo_btn entonces etiqueta no puede venir vacio', data: $etiqueta);
-            }
-            $etiqueta_html = $etiqueta;
+        $a = $this->a_role(cols: $cols,etiqueta_html:  $params_btn->etiqueta_html,icon_html:  $params_btn->icon_html,
+            link:  $link, role: $role,style:  $style);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar a', data: $a);
         }
 
-
-        $link = "index.php?seccion=$seccion&accion=$accion&registro_id=$registro_id&session_id=$session_id";
-        $link .= $params_get;
-        return "<a role='$role' href='$link' class='btn btn-$style col-sm-$cols'>$icon_html$etiqueta_html</a>";
+        return $a;
     }
 
     /**
@@ -233,6 +230,20 @@ class html_controler{
         }
 
         return $emails;
+    }
+
+    private function etiqueta_html(string $etiqueta, bool $muestra_titulo_btn): array|string
+    {
+        $etiqueta_html = '';
+        if($muestra_titulo_btn){
+            $etiqueta = trim($etiqueta);
+            if($etiqueta === ''){
+                return $this->error->error(
+                    mensaje: 'Error si muestra_titulo_btn entonces etiqueta no puede venir vacio', data: $etiqueta);
+            }
+            $etiqueta_html = $etiqueta;
+        }
+        return $etiqueta_html;
     }
 
     protected function fechas_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
@@ -405,6 +416,20 @@ class html_controler{
         $alta_inputs->texts = $texts;
 
         return $alta_inputs;
+    }
+
+    private function icon_html(string $icon, bool $muestra_icono_btn): array|string
+    {
+        $icon_html = '';
+        if($muestra_icono_btn){
+            $icon = trim($icon);
+            if($icon === ''){
+                return $this->error->error(mensaje: 'Error si muestra_icono_btn entonces icon no puede venir vacio',
+                    data: $icon);
+            }
+            $icon_html = "<span class='$icon'></span>";
+        }
+        return $icon_html;
     }
 
     public function init_alta2(stdClass $row_upd, modelo $modelo, array $keys_selects = array()): array|stdClass
@@ -757,6 +782,13 @@ class html_controler{
         return $div;
     }
 
+    private function link_a(string $accion, string $params_get, int $registro_id, string $seccion, string $session_id): string
+    {
+        $link = "index.php?seccion=$seccion&accion=$accion&registro_id=$registro_id&session_id=$session_id";
+        $link .= $params_get;
+        return $link;
+    }
+
 
 
 
@@ -926,6 +958,35 @@ class html_controler{
             return $this->error->error(mensaje: 'Error type debe ser un string', data: $campo);
         }
         return trim($campo['type']);
+    }
+
+    private function params_btn(string $icon, string $etiqueta, bool $muestra_icono_btn, bool $muestra_titulo_btn, array $params){
+        $params_get = $this->params_get(params: $params);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar params_get', data: $params_get);
+        }
+        $icon_html = $this->icon_html(icon: $icon,muestra_icono_btn:  $muestra_icono_btn);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar icon_html', data: $icon_html);
+        }
+        $etiqueta_html = $this->etiqueta_html(etiqueta: $etiqueta,muestra_titulo_btn:  $muestra_titulo_btn);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar etiqueta_html', data: $etiqueta_html);
+        }
+        $data = new stdClass();
+        $data->params_get = $params_get;
+        $data->icon_html = $icon_html;
+        $data->etiqueta_html = $etiqueta_html;
+        return $data;
+    }
+
+    private function params_get(array $params): string
+    {
+        $params_get = '';
+        foreach ($params as $key=>$value){
+            $params_get .= "&$key=$value";
+        }
+        return $params_get;
     }
 
     private function passwords(string $item, array $keys_selects, stdClass $passwords, stdClass $row_upd){
