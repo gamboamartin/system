@@ -33,6 +33,25 @@ class paramsTest extends test {
         $this->paths_conf->views = '/var/www/html/system/config/views.php';
     }
 
+    public function test_data_icon(): void
+    {
+        errores::$error = false;
+
+        $html = new params();
+        //$html = new liberator($html);
+
+
+        $adm_accion = array();
+        $adm_accion['adm_accion_muestra_icono_btn'] = 'activo';
+        $adm_accion['adm_accion_muestra_titulo_btn'] = 'inactivo';
+        $resultado = $html->data_icon($adm_accion);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado->muestra_icono_btn);
+        $this->assertFalse($resultado->muestra_titulo_btn);
+        errores::$error = false;
+    }
+
     public function test_params_base(): void
     {
         errores::$error = false;

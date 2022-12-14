@@ -14,8 +14,25 @@ class params{
         $this->validacion = new validacion();
     }
 
-    public function data_icon(array $adm_accion): stdClass
+    /**
+     * Carga los elementos de un icono
+     * @param array $adm_accion Accion a integrar
+     * @return stdClass|array
+     * @version 2.8.0
+     */
+    public function data_icon(array $adm_accion): stdClass|array
     {
+        $keys = array('adm_accion_muestra_icono_btn','adm_accion_muestra_titulo_btn');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $adm_accion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar adm_accion', data: $valida);
+        }
+
+        $valida = $this->validacion->valida_statuses(keys: $keys, registro: $adm_accion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar adm_accion', data: $valida);
+        }
+
         $muestra_icono_btn = false;
         if($adm_accion['adm_accion_muestra_icono_btn'] === 'activo'){
             $muestra_icono_btn = true;
