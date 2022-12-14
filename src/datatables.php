@@ -275,7 +275,7 @@ class datatables{
 
         $link_con_id = $html->button_href(accion: $adm_accion_grupo['adm_accion_descripcion'],
             etiqueta:   $adm_accion_grupo['adm_accion_titulo'],registro_id:  $registro_id,
-            seccion:  $adm_accion_grupo['adm_seccion_descripcion'],style:  $style, cols: 3,icon: $icon,
+            seccion:  $adm_accion_grupo['adm_seccion_descripcion'],style:  $style, cols: -1,icon: $icon,
             muestra_icono_btn: $data_icon->muestra_icono_btn,muestra_titulo_btn: $data_icon->muestra_titulo_btn );
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al asignar button', data: $link_con_id);

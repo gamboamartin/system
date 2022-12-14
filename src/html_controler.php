@@ -33,7 +33,11 @@ class html_controler{
 
     private function a_role(int $cols, string $etiqueta_html, string $icon_html, string $link, string $role, string $style): string
     {
-        return "<a role='$role' href='$link' class='btn btn-$style col-sm-$cols'>$icon_html$etiqueta_html</a>";
+        $cols_html = "col-sm-$cols";
+        if($cols === -1){
+            $cols_html = '';
+        }
+        return "<a role='$role' href='$link' class='btn btn-$style $cols_html'>$icon_html$etiqueta_html</a>";
     }
 
     /**
@@ -102,9 +106,8 @@ class html_controler{
 
 
         $link = $this->button_href(accion: $accion, etiqueta: $etiqueta, registro_id: $registro_id, seccion: $seccion,
-            style: $style, icon: $icon, muestra_icono_btn: $data_icon->muestra_icono_btn,
-            muestra_titulo_btn: $data_icon->muestra_titulo_btn,
-            params: $params);
+            style: $style, cols: -1, icon: $icon, muestra_icono_btn: $data_icon->muestra_icono_btn,
+            muestra_titulo_btn: $data_icon->muestra_titulo_btn, params: $params);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar link',data:  $link);
         }

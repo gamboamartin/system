@@ -177,7 +177,7 @@ class out_permisos{
      * @version 0.253.37
      */
 
-    PUBLIC function link_btn_action(array $accion_permitida, int $cols, html_controler $html, array $params,
+    private function link_btn_action(array $accion_permitida, int $cols, html_controler $html, array $params,
                                      array $registro, int $registro_id): array|string
     {
         $valida = $this->valida_data_action(accion_permitida: $accion_permitida);
