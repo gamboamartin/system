@@ -111,7 +111,43 @@ class _ctl_baseTest extends test {
 
         errores::$error = false;
 
+        $del = (new adm_seccion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $adm_seccion['id'] = 1;
+        $adm_seccion['descripcion'] = 'test';
+        $adm_seccion['adm_menu_id'] = 1;
+        $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_accion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $adm_accion['id'] = 1;
+        $adm_accion['descripcion'] = 'test';
+        $adm_accion['adm_seccion_id'] = 1;
+        $adm_accion['muestra_icono_btn'] = 'inactivo';
+        $alta = (new adm_accion($this->link))->alta_registro($adm_accion);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
         $resultado = $ctl->children_base();
+
         $this->assertIsObject($ctl->inputs);
         $this->assertIsObject($resultado);
         $this->assertFalse(errores::$error);
@@ -286,6 +322,7 @@ class _ctl_baseTest extends test {
         $adm_accion['id'] = 1;
         $adm_accion['adm_seccion_id'] = 1;
         $adm_accion['descripcion'] = 'test';
+        $adm_accion['muestra_icono_btn'] = 'inactivo';
         $alta = (new adm_accion($this->link))->alta_registro($adm_accion);
         if(errores::$error){
             $error = (new errores())->error('Error al insertar', $alta);
@@ -336,6 +373,7 @@ class _ctl_baseTest extends test {
         $adm_accion['id'] = 1;
         $adm_accion['adm_seccion_id'] = 1;
         $adm_accion['descripcion'] = 'test';
+        $adm_accion['muestra_icono_btn'] = 'inactivo';
         $alta = (new adm_accion($this->link))->alta_registro($adm_accion);
         if(errores::$error){
             $error = (new errores())->error('Error al insertar', $alta);

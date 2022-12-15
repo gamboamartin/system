@@ -115,7 +115,7 @@ class actionsTest extends test {
 
         $adm_accion_basica['id'] = 1;
         $adm_accion_basica['descripcion'] = 'elimina_bd';
-        $adm_accion_basica['muestra_icono_btn'] = 'activo';
+        $adm_accion_basica['muestra_icono_btn'] = 'inactivo';
         $adm_accion_basica['muestra_titulo_btn'] = 'activo';
         $adm_accion_basica['es_lista'] = 'activo';
 

@@ -18,15 +18,15 @@
         }
     },
     "require": {
-      "gamboa.martin/test": "dev-main",
+      "gamboa.martin/test": "^1.0.0",
       "gamboa.martin/errores": "^1.0.0",
-      "gamboa.martin/administrador": "^4.0.0",
-      "gamboa.martin/calculo": "dev-main",
-      "gamboa.martin/validacion": "dev-main",
-      "gamboa.martin/base_modelos": "dev-main",
-      "gamboa.martin/compresor": "dev-main",
-      "gamboa.martin/configuraciones": "dev-main",
-      "gamboa.martin/plugins": "dev-main",
+      "gamboa.martin/administrador": "^5.0.0",
+      "gamboa.martin/calculo": "^1.0.0",
+      "gamboa.martin/validacion": "^1.0.0",
+      "gamboa.martin/base_modelos": "^1.0.0",
+      "gamboa.martin/compresor": "^1.0.0",
+      "gamboa.martin/configuraciones": "^1.0.0",
+      "gamboa.martin/plugins": "^1.0.0",
       "gamboa.martin/template": "^2.0.0",
       "ext-mysqli": "*",
       "ext-pdo": "*"
