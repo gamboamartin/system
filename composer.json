@@ -20,14 +20,14 @@
     "require": {
       "gamboa.martin/test": "^1.0.0",
       "gamboa.martin/errores": "^1.0.0",
-      "gamboa.martin/administrador": "^5.0.0",
+      "gamboa.martin/administrador": "^6.0.0",
       "gamboa.martin/calculo": "^1.0.0",
       "gamboa.martin/validacion": "^1.0.0",
       "gamboa.martin/base_modelos": "^1.0.0",
       "gamboa.martin/compresor": "^1.0.0",
       "gamboa.martin/configuraciones": "^1.0.0",
       "gamboa.martin/plugins": "^1.0.0",
-      "gamboa.martin/template": "^2.0.0",
+      "gamboa.martin/template": "^3.0.0",
       "ext-mysqli": "*",
       "ext-pdo": "*"
     },
