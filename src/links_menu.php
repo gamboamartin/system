@@ -476,7 +476,12 @@ class links_menu{
             return $this->error->error(mensaje: 'Error al obtener link de lista', data: $lista_cstp);
         }
 
-        $lista_cstp.="&session_id=$this->session_id";
+        $adm_menu_id = -1;
+        if(isset($_GET['adm_menu_id'])){
+            $adm_menu_id = $_GET['adm_menu_id'];
+        }
+
+        $lista_cstp.="&session_id=$this->session_id%adm_menu_id=$adm_menu_id";
         return $lista_cstp;
     }
 
