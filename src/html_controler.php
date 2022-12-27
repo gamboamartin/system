@@ -818,7 +818,11 @@ class html_controler{
 
     private function link_a(string $accion, string $params_get, int $registro_id, string $seccion, string $session_id): string
     {
-        $link = "index.php?seccion=$seccion&accion=$accion&registro_id=$registro_id&session_id=$session_id";
+        $adm_menu_id = -1;
+        if(isset($_GET['adm_menu_id'])){
+            $adm_menu_id = $_GET['adm_menu_id'];
+        }
+        $link = "index.php?seccion=$seccion&accion=$accion&registro_id=$registro_id&session_id=$session_id&adm_menu_id=$adm_menu_id";
         $link .= $params_get;
         return $link;
     }
