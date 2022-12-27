@@ -631,11 +631,16 @@ class links_menu{
      * Genera un link de tipo lista validando el permiso de acceso
      * @param PDO $link Conexion a la base de datos
      * @param string $seccion Seccion del link
-     * @return string
+     * @return string|array
+     * @version 3.3.1
      */
-    private function lista(pdo $link, string $seccion): string
+    private function lista(pdo $link, string $seccion): string|array
     {
 
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(mensaje: 'Error la seccion esta vacia', data: $seccion);
+        }
         $tengo_permiso = (new adm_usuario(link: $link))->tengo_permiso(adm_accion: 'lista', adm_seccion: $seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar si tengo permiso', data: $tengo_permiso);

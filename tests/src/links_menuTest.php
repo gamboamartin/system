@@ -196,6 +196,22 @@ class links_menuTest extends test {
         errores::$error = false;
     }
 
+    #[NoReturn] public function test_lista(): void
+    {
+        errores::$error = false;
+        $_SESSION['usuario_id'] = 2;
+        $_GET['session_id'] = 1;
+        $html = new links_menu($this->link, -1);
+        $html = new liberator($html);
+
+        $link = $this->link;
+        $seccion = 'a';
+        $resultado = $html->lista($link, $seccion);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     /**
      * @throws JsonException
      */
