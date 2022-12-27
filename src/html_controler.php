@@ -816,6 +816,14 @@ class html_controler{
         return $div;
     }
 
+    /**
+     * @param string $accion Accion en ejecucion
+     * @param string $params_get Parametros extra get
+     * @param int $registro_id Registro en proceso
+     * @param string $seccion Seccion en proceso
+     * @param string $session_id Session
+     * @return string
+     */
     private function link_a(string $accion, string $params_get, int $registro_id, string $seccion, string $session_id): string
     {
         $adm_menu_id = -1;
