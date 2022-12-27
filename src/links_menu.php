@@ -627,8 +627,12 @@ class links_menu{
         return $this->links;
     }
 
-
-
+    /**
+     * Genera un link de tipo lista validando el permiso de acceso
+     * @param PDO $link Conexion a la base de datos
+     * @param string $seccion Seccion del link
+     * @return string
+     */
     private function lista(pdo $link, string $seccion): string
     {
 
