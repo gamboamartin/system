@@ -69,7 +69,11 @@ class links_menu{
         }
         $link_alta = '';
         if($tengo_permiso){
-            $link_alta = "./index.php?seccion=$seccion&accion=alta";
+            $adm_menu_id = -1;
+            if(isset($_GET['adm_menu_id'])){
+                $adm_menu_id = $_GET['adm_menu_id'];
+            }
+            $link_alta = "./index.php?seccion=$seccion&accion=alta&adm_menu_id=$adm_menu_id";
         }
 
 
@@ -97,7 +101,11 @@ class links_menu{
 
         $liga = '';
         if($tengo_permiso){
-            $liga = "./index.php?seccion=$seccion&accion=alta_bd";
+            $adm_menu_id = -1;
+            if(isset($_GET['adm_menu_id'])){
+                $adm_menu_id = $_GET['adm_menu_id'];
+            }
+            $liga = "./index.php?seccion=$seccion&accion=alta_bd&adm_menu_id=$adm_menu_id";
         }
         return $liga;
     }
@@ -156,7 +164,11 @@ class links_menu{
 
         $liga = '';
         if($tengo_permiso){
-            $liga = "./index.php?seccion=$seccion&accion=elimina_bd&registro_id=$registro_id";
+            $adm_menu_id = -1;
+            if(isset($_GET['adm_menu_id'])){
+                $adm_menu_id = $_GET['adm_menu_id'];
+            }
+            $liga = "./index.php?seccion=$seccion&accion=elimina_bd&registro_id=$registro_id&adm_menu_id=$adm_menu_id";
         }
 
         return $liga;
@@ -316,7 +328,11 @@ class links_menu{
 
         $liga = '';
         if($tengo_permiso){
-            $liga = "./index.php?seccion=$seccion&accion=$accion&registro_id=$registro_id&session_id=$this->session_id";
+            $adm_menu_id = -1;
+            if(isset($_GET['adm_menu_id'])){
+                $adm_menu_id = $_GET['adm_menu_id'];
+            }
+            $liga = "./index.php?seccion=$seccion&accion=$accion&registro_id=$registro_id&session_id=$this->session_id&adm_menu_id=$adm_menu_id";
         }
 
         return $liga;
@@ -352,7 +368,11 @@ class links_menu{
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al obtener link de alta', data: $alta);
             }
-            $alta.="&session_id=$this->session_id";
+            $adm_menu_id = -1;
+            if(isset($_GET['adm_menu_id'])){
+                $adm_menu_id = $_GET['adm_menu_id'];
+            }
+            $alta.="&session_id=$this->session_id&adm_menu_id=$adm_menu_id";
         }
 
         return $alta;
@@ -377,8 +397,11 @@ class links_menu{
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al obtener link de alta_bd', data: $alta_bd);
             }
-
-            $alta_bd .= "&session_id=$this->session_id";
+            $adm_menu_id = -1;
+            if(isset($_GET['adm_menu_id'])){
+                $adm_menu_id = $_GET['adm_menu_id'];
+            }
+            $alta_bd .= "&session_id=$this->session_id&adm_menu_id=$adm_menu_id";
         }
         return $alta_bd;
     }
@@ -419,7 +442,11 @@ class links_menu{
 
         $link_ancla = '';
         if($tengo_permiso) {
-            $link_ancla = "./index.php?seccion=$seccion&accion=$accion&registro_id=$registro_id";
+            $adm_menu_id = -1;
+            if(isset($_GET['adm_menu_id'])){
+                $adm_menu_id = $_GET['adm_menu_id'];
+            }
+            $link_ancla = "./index.php?seccion=$seccion&accion=$accion&registro_id=$registro_id&adm_menu_id=$adm_menu_id";
             $link_ancla.="&session_id=$this->session_id$vars_get";
         }
 
@@ -440,8 +467,11 @@ class links_menu{
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al obtener link de elimina', data: $elimina);
             }
-
-            $elimina.="&session_id=$this->session_id";
+            $adm_menu_id = -1;
+            if(isset($_GET['adm_menu_id'])){
+                $adm_menu_id = $_GET['adm_menu_id'];
+            }
+            $elimina.="&session_id=$this->session_id&adm_menu_id=$adm_menu_id";
         }
 
 
@@ -502,7 +532,11 @@ class links_menu{
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al obtener link de modifica', data: $modifica);
             }
-            $modifica.="&session_id=$this->session_id";
+            $adm_menu_id = -1;
+            if(isset($_GET['adm_menu_id'])){
+                $adm_menu_id = $_GET['adm_menu_id'];
+            }
+            $modifica.="&session_id=$this->session_id&adm_menu_id=$adm_menu_id";
         }
 
 
@@ -522,8 +556,11 @@ class links_menu{
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al obtener link de modifica_bd', data: $modifica);
             }
-
-            $modifica .= "&session_id=$this->session_id";
+            $adm_menu_id = -1;
+            if(isset($_GET['adm_menu_id'])){
+                $adm_menu_id = $_GET['adm_menu_id'];
+            }
+            $modifica .= "&session_id=$this->session_id&adm_menu_id=$adm_menu_id";
         }
         return $modifica;
     }
@@ -568,9 +605,12 @@ class links_menu{
             return $this->error->error(mensaje: 'Error al generar eliminas bd', data: $eliminas_bd);
         }
 
-
+        $adm_menu_id = -1;
+        if(isset($_GET['adm_menu_id'])){
+            $adm_menu_id = $_GET['adm_menu_id'];
+        }
         $this->links->adm_session = new stdClass();
-        $this->links->adm_session->inicio = "./index.php?seccion=adm_session&accion=inicio";
+        $this->links->adm_session->inicio = "./index.php?seccion=adm_session&accion=inicio&adm_menu_id=$adm_menu_id";
         $this->links->adm_session->inicio.="&session_id=$this->session_id";
 
         $this->links->adm_session->logout = "./index.php?seccion=adm_session&accion=logout";
@@ -647,7 +687,11 @@ class links_menu{
         }
         $lista = '';
         if($tengo_permiso) {
-            $lista = "./index.php?seccion=$seccion&accion=lista";
+            $adm_menu_id = -1;
+            if(isset($_GET['adm_menu_id'])){
+                $adm_menu_id = $_GET['adm_menu_id'];
+            }
+            $lista = "./index.php?seccion=$seccion&accion=lista&adm_menu_id=$adm_menu_id";
         }
 
         return $lista;
@@ -685,7 +729,11 @@ class links_menu{
 
         $liga = '';
         if($tengo_permiso){
-            $liga = "./index.php?seccion=$seccion&accion=modifica&registro_id=$registro_id";
+            $adm_menu_id = -1;
+            if(isset($_GET['adm_menu_id'])){
+                $adm_menu_id = $_GET['adm_menu_id'];
+            }
+            $liga = "./index.php?seccion=$seccion&accion=modifica&registro_id=$registro_id&adm_menu_id=$adm_menu_id";
         }
 
         return $liga;
@@ -699,7 +747,11 @@ class links_menu{
         }
         $modifica_bd = '';
         if($tengo_permiso) {
-            $modifica_bd = "./index.php?seccion=$seccion&accion=modifica_bd&registro_id=$registro_id";
+            $adm_menu_id = -1;
+            if(isset($_GET['adm_menu_id'])){
+                $adm_menu_id = $_GET['adm_menu_id'];
+            }
+            $modifica_bd = "./index.php?seccion=$seccion&accion=modifica_bd&registro_id=$registro_id&adm_menu_id=$adm_menu_id";
         }
 
         return $modifica_bd;
