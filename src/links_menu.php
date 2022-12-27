@@ -481,7 +481,7 @@ class links_menu{
             $adm_menu_id = $_GET['adm_menu_id'];
         }
 
-        $lista_cstp.="&session_id=$this->session_id%adm_menu_id=$adm_menu_id";
+        $lista_cstp.="&session_id=$this->session_id&adm_menu_id=$adm_menu_id";
         return $lista_cstp;
     }
 
