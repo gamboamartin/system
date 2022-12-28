@@ -1035,7 +1035,16 @@ class html_controler{
         return $params_get;
     }
 
-    private function passwords(string $item, array $keys_selects, stdClass $passwords, stdClass $row_upd){
+    /**
+     * Integra los inputs de tipo password
+     * @param string $item Campo
+     * @param array $keys_selects Params de inputs
+     * @param stdClass $passwords inputs previamente cargados
+     * @param stdClass $row_upd Registro en proceso
+     * @return array|stdClass
+     */
+    private function passwords(string $item, array $keys_selects, stdClass $passwords, stdClass $row_upd): array|stdClass
+    {
         $params_select = (new params())->params_select_init(item:$item,keys_selects:  $keys_selects);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $params_select);
