@@ -159,6 +159,14 @@ class _ctl_base extends system{
         return $inputs;
     }
 
+    /**
+     * 
+     * @param string $namespace_model
+     * @param string $name_model_children
+     * @param array $params
+     * @param int $registro_id
+     * @return array
+     */
     protected function childrens(string $namespace_model, string $name_model_children, array $params, int $registro_id): array
     {
         $this->key_id_filter = $this->tabla.'.id';
