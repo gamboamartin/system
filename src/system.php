@@ -446,7 +446,12 @@ class system extends controlador_base{
             return $this->errores->error(mensaje: 'Error al obtener retornos data',data:  $retornos);
         }
 
-        $header_retorno = "index.php?seccion=$retornos->next_seccion&accion=$retornos->next_accion";
+        $adm_menu_id = -1;
+        if(isset($_GET['adm_menu_id'])){
+            $adm_menu_id = $_GET['adm_menu_id'];
+        }
+
+        $header_retorno = "index.php?seccion=$retornos->next_seccion&accion=$retornos->next_accion&adm_menu_id=$adm_menu_id";
         $header_retorno .= "&session_id=$this->session_id&registro_id=$retornos->id_retorno";
         return $header_retorno;
     }
