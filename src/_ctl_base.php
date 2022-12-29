@@ -160,7 +160,7 @@ class _ctl_base extends system{
     }
 
     /**
-     * 
+     *
      * @param string $namespace_model
      * @param string $name_model_children
      * @param array $params

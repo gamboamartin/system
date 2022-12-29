@@ -1042,9 +1042,18 @@ class html_controler{
      * @param stdClass $passwords inputs previamente cargados
      * @param stdClass $row_upd Registro en proceso
      * @return array|stdClass
+     * @version 3.9.1
      */
     private function passwords(string $item, array $keys_selects, stdClass $passwords, stdClass $row_upd): array|stdClass
     {
+        $item = trim($item);
+        if(is_numeric($item)){
+            return $this->error->error(mensaje: 'Error item debe ser un string no un numero', data: $item);
+        }
+        if($item === ''){
+            return $this->error->error(mensaje: 'Error item esta vacio', data: $item);
+        }
+
         $params_select = (new params())->params_select_init(item:$item,keys_selects:  $keys_selects);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $params_select);

@@ -547,6 +547,32 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_passwords(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
+
+        $_SESSION['grupo_id'] = 2;
+
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+
+
+        $item = 'a';
+        $keys_selects = array();
+        $passwords = new stdClass();
+        $row_upd = new stdClass();
+
+        $resultado = $html->passwords($item, $keys_selects, $passwords, $row_upd);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<div |class|><div |class|><input type='password' name='a' value='' class='form-control'   required id='a' placeholder='a' /></div></div>",$resultado->a);
+        errores::$error = false;
+    }
+
     public function test_retornos(): void
     {
         errores::$error = false;
