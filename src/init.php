@@ -285,6 +285,14 @@ class init{
 
     }
 
+    /**
+     * Inicializa las variables de retorno por GET despues de una transaccion
+     * @param string $accion Accion a retornar
+     * @param string $seccion Seccion a retornar
+     * @param int $id_retorno Id a retornar
+     * @return array|stdClass
+     *
+     */
     public function retornos_get(string $accion, string $seccion, int $id_retorno = -1): array|stdClass
     {
         $accion = trim($accion);
@@ -310,6 +318,10 @@ class init{
         }
         if(isset($_GET['id_retorno'])){
             $retornos_init->id_retorno = $_GET['id_retorno'];
+        }
+        $retornos_init->adm_menu_id = -1;
+        if(isset($_GET['adm_menu_id'])){
+            $retornos_init->adm_menu_id = $_GET['adm_menu_id'];
         }
 
         return $retornos_init;
