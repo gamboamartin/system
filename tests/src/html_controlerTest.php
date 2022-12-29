@@ -573,6 +573,29 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_passwords_campos(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
+
+        $_SESSION['grupo_id'] = 2;
+
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+        $campos_view['passwords'][] = 'a';
+        $keys_selects = array();
+        $row_upd = new stdClass();
+
+        $resultado = $html->passwords_campos($campos_view, $keys_selects, $row_upd);
+        $this->assertIsObject($resultado);
+        $this->assertFalse(errores::$error);
+        $this->assertEquals("<div |class|><div |class|><input type='password' name='a' value='' class='form-control'   required id='a' placeholder='a' /></div></div>",$resultado->a);
+        errores::$error = false;
+    }
+
     public function test_retornos(): void
     {
         errores::$error = false;

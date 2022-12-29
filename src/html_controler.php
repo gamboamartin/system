@@ -1086,13 +1086,25 @@ class html_controler{
      * @param array $keys_selects parametros de los inputs
      * @param stdClass $row_upd registro en proceso
      * @return array|stdClass
-     *
+     * 3.12.1
      */
     private function passwords_campos(array $campos_view, array $keys_selects, stdClass $row_upd): array|stdClass
     {
+        if(!isset($campos_view['passwords'])){
+            $campos_view['passwords'] = array();
+        }
+        if(!is_array($campos_view['passwords'])){
+            return $this->error->error(mensaje: 'Error campos_view[passwords] debe se run array', data: $campos_view);
+        }
         $passwords = new stdClass();
-
         foreach ($campos_view['passwords'] as $item){
+            $item = trim($item);
+            if(is_numeric($item)){
+                return $this->error->error(mensaje: 'Error item debe ser un string no un numero', data: $item);
+            }
+            if($item === ''){
+                return $this->error->error(mensaje: 'Error item esta vacio', data: $item);
+            }
             $passwords = $this->passwords(item: $item,keys_selects:  $keys_selects,passwords:  $passwords,row_upd:  $row_upd);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar passwords', data: $passwords);
