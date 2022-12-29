@@ -160,11 +160,11 @@ class _ctl_base extends system{
     }
 
     /**
-     *
-     * @param string $namespace_model
-     * @param string $name_model_children
-     * @param array $params
-     * @param int $registro_id
+     * Genera el conjunto de children paar templates views
+     * @param string $namespace_model paquete
+     * @param string $name_model_children modelo del children
+     * @param array $params parametros paar select
+     * @param int $registro_id registro en proceso
      * @return array
      */
     protected function childrens(string $namespace_model, string $name_model_children, array $params, int $registro_id): array
