@@ -1080,7 +1080,16 @@ class html_controler{
         return $passwords;
     }
 
-    private function passwords_campos(array $campos_view, array $keys_selects, stdClass $row_upd){
+    /**
+     * Genera los passwords inputs
+     * @param array $campos_view Campos de modelo
+     * @param array $keys_selects parametros de los inputs
+     * @param stdClass $row_upd registro en proceso
+     * @return array|stdClass
+     *
+     */
+    private function passwords_campos(array $campos_view, array $keys_selects, stdClass $row_upd): array|stdClass
+    {
         $passwords = new stdClass();
 
         foreach ($campos_view['passwords'] as $item){
