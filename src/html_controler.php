@@ -889,6 +889,28 @@ class html_controler{
         return $controler->inputs;
     }
 
+    private function name_model(string $name_model, stdClass $params): string|array
+    {
+        $name_model = trim($name_model);
+        if(isset($params->name_model)){
+            $name_model = $params->name_model;
+        }
+        $name_model = trim($name_model);
+        if($name_model === ''){
+            return $this->error->error(mensaje: 'Error $name_model esta vacio', data: $name_model);
+        }
+
+        return $name_model;
+    }
+
+    private function namespace_model(stdClass $params){
+        $namespace_model = '';
+        if(isset($params->namespace_model)){
+            $namespace_model = $params->namespace_model;
+        }
+        return $namespace_model;
+    }
+
     /**
      * @param array|stdClass $campos_view Campos definidos desde modelo
      * @return array|stdClass
@@ -1033,6 +1055,36 @@ class html_controler{
             $params_get .= "&$key=$value";
         }
         return $params_get;
+    }
+
+    private function params_select_info(string $name_model, stdClass $params){
+        $tabla = $name_model;
+
+
+        $name_model = $this->name_model(name_model: $name_model, params: $params);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar name_model', data: $name_model);
+        }
+        if($name_model === ''){
+            return $this->error->error(mensaje: 'Error $name_model esta vacio', data: $name_model);
+        }
+
+        if(is_numeric($name_model)){
+            return $this->error->error(mensaje: 'Error $name_model debe ser el nombre de un modelo valido',
+                data: $name_model);
+        }
+
+
+        $namespace_model = $this->namespace_model(params: $params);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar namespace_model', data: $namespace_model);
+        }
+
+        $data = new stdClass();
+        $data->tabla = $tabla;
+        $data->name_model = $name_model;
+        $data->namespace_model = $namespace_model;
+        return $data;
     }
 
     /**
@@ -1296,6 +1348,23 @@ class html_controler{
         return $select;
     }
 
+
+    private function selects(PDO $link, string $name_model, stdClass $params, stdClass $selects){
+        $data_params = $this->params_select_info(name_model: $name_model,params:  $params);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar parametros de info select', data: $data_params);
+        }
+
+
+        $selects  = $this->select_aut(link: $link,name_model:  $data_params->name_model,params:  $params, selects: $selects,
+            namespace_model: $data_params->namespace_model, tabla: $data_params->tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar select', data: $selects);
+        }
+
+        return $selects;
+    }
+
     /**
      * Genera selects en volumen con parametros
      * @param array $keys_selects conjunto de selects
@@ -1310,34 +1379,11 @@ class html_controler{
 
         foreach ($keys_selects as $name_model=>$params){
 
-            /**
-             * REFCATORIZAR LUNES GET NAME MODEL GET TABLA
-             */
             if(!is_object($params)){
                 return $this->error->error(mensaje: 'Error $params debe ser un objeto', data: $params);
             }
-            $tabla = $name_model;
-
-            if(isset($params->name_model)){
-                $name_model = $params->name_model;
-            }
-
-            $name_model = trim($name_model);
-            if($name_model === ''){
-                return $this->error->error(mensaje: 'Error $name_model esta vacio', data: $name_model);
-            }
-            if(is_numeric($name_model)){
-                return $this->error->error(mensaje: 'Error $name_model debe ser el nombre de un modelo valido',
-                    data: $name_model);
-            }
-
-            $namespace_model = '';
-            if(isset($params->namespace_model)){
-                $namespace_model = $params->namespace_model;
-            }
-
-            $selects  = $this->select_aut(link: $link,name_model:  $name_model,params:  $params, selects: $selects,
-                namespace_model: $namespace_model, tabla: $tabla);
+            
+            $selects  = $this->selects(link: $link, name_model: $name_model,params:  $params,selects:  $selects);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar select', data: $selects);
             }
