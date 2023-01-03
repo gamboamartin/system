@@ -19,13 +19,14 @@ class select{
      * @refactorizar Refactorizar
      * @param stdClass $keys Keys para asignacion basica
      * @param array $registros Conjunto de registros a integrar
+     * @param string $tabla Tabla del modelo en ejecucion
      * @return array
      * @version 0.48.32
      * @verfuncion 0.1.0
      * @fecha 2022-08-02 18:12
      * @author mgamboa
      */
-    private function genera_values_selects(stdClass $keys, array $registros): array
+    private function genera_values_selects(stdClass $keys, array $registros, string $tabla): array
     {
         $keys_valida = array('id','descripcion_select');
         $valida = (new validacion())->valida_existencia_keys(keys: $keys_valida, registro: $keys);
@@ -40,6 +41,21 @@ class select{
             if(!is_array($registro)){
                 return $this->error->error(mensaje: 'Error registro debe ser un array',data:  $registro);
             }
+
+            $key_descripcion_select = $tabla.'_descripcion_select';
+            $key_id = $tabla.'_id';
+            $key_descripcion = $tabla.'_descripcion';
+            if(!isset($registro[$keys->descripcion_select])){
+
+                $keys_val_row = array($key_id,$key_descripcion);
+                $valida = $this->validacion->valida_existencia_keys(keys: $keys_val_row, registro: $registro);
+                if(errores::$error){
+                    return $this->error->error(mensaje: 'Error al validar registro',data:  $valida);
+                }
+
+                $registro[$key_descripcion_select] = $registro[$key_id].' '.$registro[$key_descripcion];
+            }
+
             $keys_valida = array($keys->id,$keys->descripcion_select);
             $valida = (new validacion())->valida_existencia_keys(keys: $keys_valida, registro: $registro);
             if(errores::$error){
@@ -256,7 +272,7 @@ class select{
             }
         }
 
-        $values = $this->genera_values_selects(keys: $keys,registros: $registros);
+        $values = $this->genera_values_selects(keys: $keys,registros: $registros, tabla: $modelo->tabla);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al asignar valores',data:  $values);
         }

@@ -45,7 +45,10 @@ class selectTest extends test {
         $registros = array();
         $registros[0]['a'] = 'x';
         $registros[0]['b'] = 'd';
-        $resultado = $html->genera_values_selects($keys, $registros);
+        $registros[0]['a_id'] = 'd';
+        $registros[0]['a_descripcion'] = 'd';
+        $resultado = $html->genera_values_selects($keys, $registros,'a');
+       // print_r($resultado);exit;
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("x", $resultado['x']['a']);
@@ -59,7 +62,7 @@ class selectTest extends test {
     {
         errores::$error = false;
         $html = new select();
-        $html = new liberator($html);
+        //$html = new liberator($html);
 
         $con_registros = true;
         $modelo = new adm_usuario($this->link);
