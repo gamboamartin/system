@@ -1066,6 +1066,13 @@ class html_controler{
         return $passwords;
     }
 
+    /**
+     * Integra para front los passwords para alta
+     * @param modelo $modelo Modelo en ejecucion
+     * @param stdClass $row_upd Registro en proceso
+     * @param array $keys_selects Parametros para front
+     * @return array|stdClass
+     */
     protected function passwords_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
     {
         $campos_view = $this->obtener_inputs($modelo->campos_view);
