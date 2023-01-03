@@ -177,10 +177,12 @@ class selectTest extends test {
         $keys = new stdClass();
         $keys->id = 'adm_accion_id';
         $keys->descripcion_select = 'adm_accion_descripcion';
+        $keys->descripcion = 'adm_accion_descripcion';
         $extra_params_keys = array();
         $extra_params_keys[] = 'adm_seccion_descripcion';
 
         $resultado = $html->rows_select(keys:$keys, modelo:$modelo,extra_params_keys:$extra_params_keys);
+
 
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
@@ -201,6 +203,7 @@ class selectTest extends test {
         $keys = new stdClass();
         $keys->id = 'adm_accion_id';
         $keys->descripcion_select = 'adm_accion_descripcion';
+        $keys->descripcion = 'adm_accion_descripcion';
 
         $con_registros = true;
         $modelo = new adm_accion($this->link);

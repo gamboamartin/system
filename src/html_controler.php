@@ -1270,9 +1270,9 @@ class html_controler{
      */
     protected function select_catalogo(int $cols, bool $con_registros, int $id_selected, modelo $modelo,
                                        bool $disabled = false, array $extra_params_keys = array(),
-                                       array $filtro=array(), string $key_descripcion_select = '', string $key_id = '',
-                                       string $label = '', string $name = '', array $not_in = array(),
-                                       bool $required = false): array|string
+                                       array $filtro=array(), string $key_descripcion = '',
+                                       string $key_descripcion_select = '', string $key_id = '', string $label = '',
+                                       string $name = '', array $not_in = array(), bool $required = false): array|string
     {
 
         $valida = (new directivas(html:$this->html_base))->valida_cols(cols:$cols);
@@ -1281,8 +1281,9 @@ class html_controler{
         }
 
         $init = (new select())->init_data_select(con_registros: $con_registros, modelo: $modelo,
-            extra_params_keys: $extra_params_keys, filtro:$filtro, key_descripcion_select: $key_descripcion_select,
-            key_id: $key_id, label: $label, name: $name, not_in: $not_in);
+            extra_params_keys: $extra_params_keys, filtro:$filtro, key_descripcion: $key_descripcion,
+            key_descripcion_select: $key_descripcion_select, key_id: $key_id, label: $label, name: $name,
+            not_in: $not_in);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar datos', data: $init);
         }

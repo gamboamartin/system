@@ -48,6 +48,7 @@ class select{
      * @param modelo $modelo Modelo en ejecucion para la asignacion de datos
      * @param array $extra_params_keys Keys de extra params para ser cargados en un select
      * @param array $filtro Filtro para obtencion de datos para options
+     * @param string $key_descripcion Key de descripcion
      * @param string $key_descripcion_select key del registro para mostrar en un select
      * @param string $key_id key Id de value para option
      * @param string $label Etiqueta a mostrar
@@ -62,11 +63,12 @@ class select{
      * @author mgamboa
      */
     public function init_data_select(bool $con_registros, modelo $modelo, array $extra_params_keys = array(),
-                                      array $filtro = array(), string $key_descripcion_select= '', string $key_id = '',
-                                      string $label = '', string $name = '', array $not_in = array()): array|stdClass
+                                     array $filtro = array(), string $key_descripcion = '',
+                                     string $key_descripcion_select= '', string $key_id = '', string $label = '',
+                                     string $name = '', array $not_in = array()): array|stdClass
     {
 
-        $keys = $this->keys_base(tabla: $modelo->tabla, key_descripcion_select: $key_descripcion_select,
+        $keys = $this->keys_base(tabla: $modelo->tabla, key_descripcion: $key_descripcion, key_descripcion_select: $key_descripcion_select,
             key_id: $key_id, name: $name);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar keys',data:  $keys);
@@ -117,8 +119,8 @@ class select{
      * @version 0.2.5
      * @verfuncion 0.2.0 Se carga name
      */
-    private function keys_base(string $tabla, string $key_descripcion_select = '', string $key_id = '',
-                               string $name = ''): stdClass|array
+    private function keys_base(string $tabla, string $key_descripcion = '', string $key_descripcion_select = '',
+                               string $key_id = '', string $name = ''): stdClass|array
     {
         $tabla = trim($tabla);
         if($tabla === ''){
@@ -135,11 +137,17 @@ class select{
             $key_descripcion_select = $tabla.'_descripcion_select';
         }
 
+        $key_descripcion = trim($key_descripcion);
+        if($key_descripcion === ''){
+            $key_descripcion = $tabla.'_descripcion';
+        }
+
 
         $data = new stdClass();
         $data->id = $key_id;
         $data->descripcion_select = $key_descripcion_select;
         $data->name = $name;
+        $data->descripcion = $key_descripcion;
 
         return $data;
     }
@@ -150,7 +158,7 @@ class select{
      * @param stdClass $keys keys con key_id
      * @param array $registro Registro en proceso
      * @return array
-    
+
      */
     private function key_descripcion_select_default(string $key_descripcion, stdClass $keys, array $registro): array
     {
@@ -211,14 +219,15 @@ class select{
     private function rows_select(stdClass $keys, modelo $modelo, array $extra_params_keys = array(),
                                  array $filtro = array(), array $not_in = array()): array
     {
-        $keys_val = array('id','descripcion_select');
+        $keys_val = array('id','descripcion_select', 'descripcion');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys_val,registro:  $keys);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar keys',data:  $valida);
+            return $this->error->error(mensaje: 'Error al validar keys ',data:  $valida);
         }
 
         $columnas[] = $keys->id;
         $columnas[] = $keys->descripcion_select;
+        $columnas[] = $keys->descripcion;
 
         foreach ($extra_params_keys as $key){
             /**
@@ -302,7 +311,7 @@ class select{
                                      array $extra_params_keys = array(), array $filtro = array(),
                                      array $not_in = array()): array
     {
-        $keys_valida = array('id','descripcion_select');
+        $keys_valida = array('id','descripcion_select','descripcion');
         $valida = (new validacion())->valida_existencia_keys(keys: $keys_valida, registro: $keys);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar keys',data:  $valida);
