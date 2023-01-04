@@ -62,9 +62,9 @@ class system extends controlador_base{
      * @param stdClass $paths_conf
      */
     public function __construct(html_controler $html,PDO $link, modelo $modelo, links_menu $obj_link,
-                                stdClass $datatables = new stdClass(), array $filtro_boton_lista = array(),
-                                string $campo_busca = 'registro_id', string $valor_busca_fault = '',
-                                stdClass $paths_conf = new stdClass())
+                                array $datatables_custom_cols = array(), stdClass $datatables = new stdClass(),
+                                array $filtro_boton_lista = array(), string $campo_busca = 'registro_id',
+                                string $valor_busca_fault = '', stdClass $paths_conf = new stdClass())
     {
         $this->msj_con_html = false;
         parent::__construct(link: $link,modelo:  $modelo,filtro_boton_lista:  $filtro_boton_lista,
@@ -101,6 +101,9 @@ class system extends controlador_base{
             $this->include_breadcrumb = '';
         }
 
+        foreach ($datatables_custom_cols as $key=>$column){
+            $datatables->columns[$key] = $column;
+        }
 
         $data_for_datable = (new datatables())->datatable_base_init(
             datatables: $datatables,link: $this->link,rows_lista: $this->rows_lista,seccion: $this->seccion,
