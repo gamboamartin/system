@@ -363,7 +363,7 @@ class system extends controlador_base{
         return $inputs_asignados;
     }
 
-    public function get_data(bool $header, bool $ws = false){
+    public function get_data(bool $header, bool $ws = false, array $not_actions = array()){
 
 
         $params = (new datatables())->params(datatable: $this->datatable);
@@ -378,7 +378,8 @@ class system extends controlador_base{
             return $this->retorno_error(mensaje: 'Error al obtener data result', data: $data_result,header:  $header, ws: $ws);
         }
 
-        $acciones_permitidas = (new datatables())->acciones_permitidas(link:$this->link,seccion:  $this->tabla);
+        $acciones_permitidas = (new datatables())->acciones_permitidas(
+            link:$this->link,seccion:  $this->tabla, not_actions: $not_actions);
 
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al obtener data result', data: $acciones_permitidas,header:  $header, ws: $ws);
