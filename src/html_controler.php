@@ -816,6 +816,32 @@ class html_controler{
         return $div;
     }
 
+    private function integra_password_item(string $item, array $keys_selects, stdClass $passwords, stdClass $row_upd){
+        $item = $this->item(item: $item);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar item', data: $item);
+        }
+
+        $passwords = $this->passwords(item: $item,keys_selects:  $keys_selects,passwords:  $passwords,row_upd:  $row_upd);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar passwords', data: $passwords);
+        }
+
+        return $passwords;
+    }
+
+    private function item(string $item): array|string
+    {
+        $item = trim($item);
+        if(is_numeric($item)){
+            return $this->error->error(mensaje: 'Error item debe ser un string no un numero', data: $item);
+        }
+        if($item === ''){
+            return $this->error->error(mensaje: 'Error item esta vacio', data: $item);
+        }
+        return $item;
+    }
+
     /**
      * @param string $accion Accion en ejecucion
      * @param string $params_get Parametros extra get
@@ -834,9 +860,6 @@ class html_controler{
         $link .= $params_get;
         return $link;
     }
-
-
-
 
     /**
      * Genera un menu lateral con titulo
@@ -1087,6 +1110,18 @@ class html_controler{
         return $data;
     }
 
+    private function pass_item_init(array $campos_view): array
+    {
+        if(!isset($campos_view['passwords'])){
+            $campos_view['passwords'] = array();
+        }
+        if(!is_array($campos_view['passwords'])){
+            return $this->error->error(mensaje: 'Error campos_view[passwords] debe se run array', data: $campos_view);
+        }
+        return $campos_view;
+
+    }
+
     /**
      * Integra los inputs de tipo password
      * @param string $item Campo
@@ -1110,7 +1145,8 @@ class html_controler{
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $params_select);
         }
-        $date = (new template())->passwords_template(directivas: $this->directivas, params_select: $params_select,row_upd: $row_upd);
+        $date = (new template())->passwords_template(directivas: $this->directivas, params_select: $params_select,
+            row_upd: $row_upd);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar input', data: $date);
         }
@@ -1149,29 +1185,29 @@ class html_controler{
      */
     private function passwords_campos(array $campos_view, array $keys_selects, stdClass $row_upd): array|stdClass
     {
-        if(!isset($campos_view['passwords'])){
-            $campos_view['passwords'] = array();
+        $campos_view = $this->pass_item_init(campos_view: $campos_view);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar passwords', data: $campos_view);
         }
-        if(!is_array($campos_view['passwords'])){
-            return $this->error->error(mensaje: 'Error campos_view[passwords] debe se run array', data: $campos_view);
+        $passwords = $this->passwords_campos_view(campos_view: $campos_view,keys_selects:  $keys_selects,
+            row_upd:  $row_upd);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar passwords', data: $passwords);
         }
+
+        return $passwords;
+    }
+
+    private function passwords_campos_view(array $campos_view, array $keys_selects, stdClass $row_upd){
         $passwords = new stdClass();
         foreach ($campos_view['passwords'] as $item){
-            $item = trim($item);
-            if(is_numeric($item)){
-                return $this->error->error(mensaje: 'Error item debe ser un string no un numero', data: $item);
-            }
-            if($item === ''){
-                return $this->error->error(mensaje: 'Error item esta vacio', data: $item);
-            }
-            $passwords = $this->passwords(item: $item,keys_selects:  $keys_selects,passwords:  $passwords,row_upd:  $row_upd);
+            $passwords = $this->integra_password_item(item: $item,keys_selects:  $keys_selects,passwords:  $passwords,row_upd:  $row_upd);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar passwords', data: $passwords);
             }
         }
         return $passwords;
     }
-
     /**
      * Retornos hidden
      * @param int $registro_id Registro id a retornar
@@ -1382,7 +1418,7 @@ class html_controler{
             if(!is_object($params)){
                 return $this->error->error(mensaje: 'Error $params debe ser un objeto', data: $params);
             }
-            
+
             $selects  = $this->selects(link: $link, name_model: $name_model,params:  $params,selects:  $selects);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar select', data: $selects);
@@ -1648,6 +1684,8 @@ class html_controler{
         }
         return true;
     }
+
+
 
 
 
