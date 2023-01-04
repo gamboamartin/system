@@ -26,6 +26,23 @@ class initTest extends test {
         $this->paths_conf->views = '/var/www/html/cat_sat/config/views.php';
     }
 
+    public function test_init_data_param_get(): void
+    {
+        errores::$error = false;
+        $ctl = new _ctl_base\init();
+        $ctl = new liberator($ctl);
+
+        $compare = 'a';
+        $data_init = new stdClass();
+        $key = 'b';
+        $_GET['b'] = 'x';
+        $resultado = $ctl->init_data_param_get($compare, $data_init, $key);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('x',$resultado->b);
+        errores::$error = false;
+    }
+
     public function test_init_data_retornos(): void
     {
         errores::$error = false;

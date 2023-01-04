@@ -49,10 +49,20 @@ class init{
      * @param stdClass $data_init datos previamente inicializados
      * @param string $key Key de GET
      * @return array|stdClass
+     * @version 4.6.1
      */
     private function init_data_param_get(string $compare, stdClass $data_init, string $key): array|stdClass
     {
-
+        $key = trim($key);
+        if($key === ''){
+            return $this->error->error(mensaje: 'Error key esta vacio', data: $key);
+        }
+        $keys = array($key);
+        $valida = (new validacion())->valida_existencia_keys(keys:$keys,registro:  $_GET);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar GET', data: $valida);
+        }
+        $compare = trim($compare);
         if($compare !== ''){
             $data_init = $this->init_param_get(data_init: $data_init,key:  $key);
             if(errores::$error){
