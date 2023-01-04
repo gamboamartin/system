@@ -218,7 +218,8 @@ class datatables{
         return $columns_defs_obj;
     }
 
-    private function columns_dt(stdClass $datatables, PDO $link, array $rows_lista, string $seccion): array
+    private function columns_dt(stdClass $datatables, PDO $link, array $not_actions, array $rows_lista,
+                                string $seccion): array
     {
         if($seccion === ''){
             return $this->error->error(
@@ -231,7 +232,8 @@ class datatables{
 
         }
 
-        $columns = (new acciones())->acciones_columnas(columns: $columns, link: $link, seccion: $seccion);
+        $columns = (new acciones())->acciones_columnas(columns: $columns, link: $link, seccion: $seccion,
+            not_actions: $not_actions);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al maquetar acciones ', data: $columns);
 
@@ -315,20 +317,23 @@ class datatables{
         return $datatable;
     }
 
-    public function datatable_base_init(stdClass $datatables, PDO $link, array $rows_lista, string $seccion): array|stdClass
+    public function datatable_base_init(stdClass $datatables, PDO $link, array $rows_lista, string $seccion,
+                                        array $not_actions = array()): array|stdClass
     {
         if($seccion === ''){
             return $this->error->error(
                 mensaje: 'Error seccion debe ser un string con datos', data:  $seccion);
         }
 
-        $filtro = (new \gamboamartin\system\datatables\init())->init_filtro_datatables(datatables: $datatables, rows_lista: $rows_lista,seccion: $seccion);
+        $filtro = (new \gamboamartin\system\datatables\init())->init_filtro_datatables(datatables: $datatables,
+            rows_lista: $rows_lista,seccion: $seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar filtro', data: $filtro);
         }
 
 
-        $columns = $this->columns_dt(datatables: $datatables, link: $link, rows_lista: $rows_lista, seccion: $seccion);
+        $columns = $this->columns_dt(datatables: $datatables, link: $link, not_actions: $not_actions,
+            rows_lista: $rows_lista, seccion: $seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al maquetar columns ', data: $columns);
         }
