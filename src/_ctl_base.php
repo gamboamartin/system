@@ -193,7 +193,7 @@ class _ctl_base extends system{
         return $childrens;
     }
 
-    protected function base_upd(array $keys_selects, array $not_actions, array $params, array $params_ajustados): array|stdClass
+    protected function base_upd(array $keys_selects, array $params, array $params_ajustados): array|stdClass
     {
 
         if(count($params) === 0){
@@ -214,7 +214,8 @@ class _ctl_base extends system{
         }
 
         $this->buttons = array();
-        $buttons = (new out_permisos())->buttons_view(controler:$this, not_actions: $not_actions, params: $params, params_ajustados: $params_ajustados);
+        $buttons = (new out_permisos())->buttons_view(controler:$this, not_actions: $this->not_actions,
+            params: $params, params_ajustados: $params_ajustados);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al generar botones',data:  $buttons);
         }
