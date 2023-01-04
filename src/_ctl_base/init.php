@@ -44,6 +44,12 @@ class init{
         return $data_init;
     }
 
+    /** Inicializa los parametros provenientes por get para template base
+     * @param string $compare Variable GET a verificar
+     * @param stdClass $data_init datos previamente inicializados
+     * @param string $key Key de GET
+     * @return array|stdClass
+     */
     private function init_data_param_get(string $compare, stdClass $data_init, string $key): array|stdClass
     {
 
