@@ -81,10 +81,15 @@ class init{
         return $filtro;
     }
 
-    public function n_rows_for_page(){
+    /**
+     * Integra el numero de registros por pagina en el get data
+     * @return int
+     */
+    public function n_rows_for_page(): int
+    {
         $n_rows_for_page = 10;
         if (isset ( $_GET['length'] )) {
-            $n_rows_for_page = $_GET['length'];
+            $n_rows_for_page = (int)$_GET['length'];
         }
         return $n_rows_for_page;
     }
