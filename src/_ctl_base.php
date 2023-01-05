@@ -646,6 +646,13 @@ class _ctl_base extends system{
         return $seccion_retorno;
     }
 
+    /**
+     * Valida la entrada de datos para childrens
+     * @param string $namespace_model
+     * @param string $name_model_children
+     * @param int $registro_id
+     * @return bool|array
+     */
     private function valida_data_children(string $namespace_model, string $name_model_children, int $registro_id): bool|array
     {
         $namespace_model = trim($namespace_model);
