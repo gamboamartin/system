@@ -31,6 +31,17 @@ class html_controler{
         $this->validacion = new validacion_html();
     }
 
+    /**
+     * Integra un href para btns
+     * @param int $cols
+     * @param string $etiqueta_html
+     * @param string $icon_html
+     * @param string $link
+     * @param string $role
+     * @param string $style
+     * @param array $styles
+     * @return string
+     */
     private function a_role(int $cols, string $etiqueta_html, string $icon_html, string $link, string $role,
                             string $style, array $styles): string
     {
@@ -775,6 +786,31 @@ class html_controler{
         $controler->inputs->descripcion_select = $html_descripcion_select;
 
         return $controler->inputs;
+    }
+
+    public function input_file(int $cols, string $name, stdClass $row_upd, bool $value_vacio,bool $disabled = false,
+                               string $place_holder = 'Documento', bool $required = true): array|string
+    {
+
+        if($cols<=0){
+            return $this->error->error(mensaje: 'Error cold debe ser mayor a 0', data: $cols);
+        }
+        if($cols>=13){
+            return $this->error->error(mensaje: 'Error cold debe ser menor o igual a  12', data: $cols);
+        }
+
+        $html =$this->directivas->input_file(disabled: $disabled, name: $name, place_holder: $place_holder,
+            required: $required, row_upd: $row_upd, value_vacio: $value_vacio);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar input', data: $html);
+        }
+
+        $div = $this->directivas->html->div_group(cols: $cols,html:  $html);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar div', data: $div);
+        }
+
+        return $div;
     }
 
 
