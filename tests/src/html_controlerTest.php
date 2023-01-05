@@ -547,6 +547,26 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_pass_item_init(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
+
+        $_SESSION['grupo_id'] = 2;
+
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+        $campos_view = array();
+        $campos_view['passwords'] = array();
+        $resultado = $html->pass_item_init($campos_view);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_passwords(): void
     {
         errores::$error = false;

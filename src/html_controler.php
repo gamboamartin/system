@@ -1114,6 +1114,7 @@ class html_controler{
      * Obtiene el item de un input de tipo pass
      * @param array $campos_view Campos definidos en el modelo
      * @return array
+     * @version 4.10.1
      */
     private function pass_item_init(array $campos_view): array
     {
