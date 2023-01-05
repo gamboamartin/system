@@ -1160,10 +1160,11 @@ class html_controler{
      * @param stdClass $row_upd Registro en proceso
      * @param array $keys_selects Parametros para front
      * @return array|stdClass
+     * @version 4.8.1
      */
     protected function passwords_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
     {
-        $campos_view = $this->obtener_inputs($modelo->campos_view);
+        $campos_view = $this->obtener_inputs(campos_view: $modelo->campos_view);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener campos de la vista del modelo', data: $campos_view);
         }
@@ -1566,7 +1567,7 @@ class html_controler{
 
     protected function telefonos_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
     {
-        $campos_view = $this->obtener_inputs($modelo->campos_view);
+        $campos_view = $this->obtener_inputs(campos_view: $modelo->campos_view);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener campos de la vista del modelo', data: $campos_view);
         }
