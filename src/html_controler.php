@@ -1110,6 +1110,11 @@ class html_controler{
         return $data;
     }
 
+    /**
+     * Obtiene el item de un input de tipo pass
+     * @param array $campos_view Campos definidos en el modelo
+     * @return array
+     */
     private function pass_item_init(array $campos_view): array
     {
         if(!isset($campos_view['passwords'])){
