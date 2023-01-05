@@ -75,6 +75,14 @@ class out_permisos{
             $cols = 3;
         }
 
+        if($n_acciones === 6){
+            $cols = 2;
+        }
+
+        if($n_acciones === 4){
+            $cols = 3;
+        }
+
         if($n_acciones === 3){
             $cols = 4;
         }
