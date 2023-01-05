@@ -170,47 +170,37 @@ class _ctl_base extends system{
     private function childrens(string $namespace_model, string $name_model_children, array $params, int $registro_id): array
     {
 
-        $namespace_model = trim($namespace_model);
-        if($namespace_model === ''){
-            return $this->errores->error(mensaje: 'Error namespace_model esta vacio',data:  $namespace_model);
-        }
-
-        $name_model_children = trim($name_model_children);
-        if($name_model_children === ''){
-            return $this->errores->error(mensaje: 'Error name_model_children esta vacio',data:  $name_model_children);
-        }
-
-        $this->tabla = trim($this->tabla);
-        if($this->tabla === ''){
-            return $this->errores->error(mensaje: 'Error $this->tabla esta vacio',data:  $this->tabla);
-        }
-
-        if($registro_id<=0){
-            return $this->errores->error(mensaje: 'Error $registro_id debe ser mayor a 0',data:  $registro_id);
-        }
-
-        $this->key_id_filter = $this->tabla.'.id';
-        $filtro = array();
-        $filtro[$this->key_id_filter] = $registro_id;
-
-        $model_children = $this->modelo->genera_modelo(modelo: $name_model_children,namespace_model: $namespace_model);
+        $valida = $this->valida_data_children(
+            namespace_model: $namespace_model,name_model_children:  $name_model_children,registro_id:  $registro_id);
         if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al generar modelo',data:  $model_children);
+            return $this->errores->error(mensaje: 'Error al validar datos',data:  $valida);
         }
+        $childrens = $this->rows_children(
+            namespace_model: $namespace_model,name_model_children:  $name_model_children, registro_id: $registro_id);
 
-        $r_children = $model_children->filtro_and(filtro:$filtro);
         if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al obtener r_children',data:  $r_children);
+            return $this->errores->error(mensaje: 'Error al integrar childrens',data:  $childrens);
         }
-        $childrens = $r_children->registros;
+        $childrens = $this->childrens_con_permiso(
+            childrens: $childrens,name_model_children:  $name_model_children,params:  $params);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al integrar childrens',data:  $childrens);
+        }
 
-        $key_id = $name_model_children.'_id';
+        return $childrens;
+    }
+
+    private function childrens_con_permiso(array $childrens, string $name_model_children, array $params): array
+    {
+        $key_id = $this->key_id_children(name_model_children: $name_model_children);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al integrar key_id',data:  $key_id);
+        }
         $childrens = $this->rows_con_permisos(key_id:  $key_id, rows:  $childrens,seccion: $name_model_children,
             params: $params);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al integrar link',data:  $childrens);
         }
-
         return $childrens;
     }
 
@@ -290,6 +280,28 @@ class _ctl_base extends system{
         }
         $data_retorno->siguiente_view = $siguiente_view;
         return $data_retorno;
+    }
+
+    private function filtro_children(int $registro_id): array
+    {
+        $filtro = array();
+        $filtro[$this->key_id_filter] = $registro_id;
+        return $filtro;
+    }
+
+    private function genera_filtro_children(int $registro_id): array
+    {
+        $key_id_filter = $this->key_id_filter();
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al obtener key_id_filter',data:  $key_id_filter);
+        }
+
+        $filtro = $this->filtro_children(registro_id: $registro_id);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al obtener filtro',data:  $filtro);
+        }
+
+        return $filtro;
     }
 
     /**
@@ -438,6 +450,17 @@ class _ctl_base extends system{
         }
         $keys_selects[$key]->$key_val = $value;
         return $keys_selects;
+    }
+
+    private function key_id_children(string $name_model_children): string
+    {
+        return $name_model_children.'_id';
+    }
+
+    private function key_id_filter(): string
+    {
+        $this->key_id_filter = $this->tabla.'.id';
+        return $this->key_id_filter;
     }
 
     /**
@@ -591,6 +614,24 @@ class _ctl_base extends system{
         return $result;
     }
 
+    private function rows_children(string $namespace_model, string $name_model_children, int $registro_id){
+        $filtro = $this->genera_filtro_children(registro_id: $registro_id);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al obtener filtro',data:  $filtro);
+        }
+
+        $model_children = $this->modelo->genera_modelo(modelo: $name_model_children,namespace_model: $namespace_model);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al generar modelo',data:  $model_children);
+        }
+
+        $r_children = $model_children->filtro_and(filtro:$filtro);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al obtener r_children',data:  $r_children);
+        }
+        return $r_children->registros;
+    }
+
     /**
      * Obtiene la seccion de retorno
      * @return string
@@ -603,6 +644,29 @@ class _ctl_base extends system{
             unset($_POST['seccion_retorno']);
         }
         return $seccion_retorno;
+    }
+
+    private function valida_data_children(string $namespace_model, string $name_model_children, int $registro_id): bool|array
+    {
+        $namespace_model = trim($namespace_model);
+        if($namespace_model === ''){
+            return $this->errores->error(mensaje: 'Error namespace_model esta vacio',data:  $namespace_model);
+        }
+
+        $name_model_children = trim($name_model_children);
+        if($name_model_children === ''){
+            return $this->errores->error(mensaje: 'Error name_model_children esta vacio',data:  $name_model_children);
+        }
+
+        $this->tabla = trim($this->tabla);
+        if($this->tabla === ''){
+            return $this->errores->error(mensaje: 'Error $this->tabla esta vacio',data:  $this->tabla);
+        }
+
+        if($registro_id<=0){
+            return $this->errores->error(mensaje: 'Error $registro_id debe ser mayor a 0',data:  $registro_id);
+        }
+        return true;
     }
 
 }
