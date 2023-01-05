@@ -49,7 +49,7 @@ class _ctl_base extends system{
         return array();
     }
 
-    protected function campos_view_base(array $init_data, stdClass $keys): array
+    public function campos_view_base(array $init_data, stdClass $keys): array
     {
         $selects = (new \base\controller\init())->select_key_input($init_data, selects: $keys->selects);
         if(errores::$error){
