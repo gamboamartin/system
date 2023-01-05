@@ -151,6 +151,13 @@ class template{
         return $div;
     }
 
+    /**
+     * Genera los input de tipo telefono
+     * @param directivas $directivas
+     * @param stdClass $params_select
+     * @param stdClass $row_upd
+     * @return array|string
+     */
     public function telefonos_template(directivas $directivas, stdClass $params_select, stdClass $row_upd): array|string
     {
 
