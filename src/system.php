@@ -459,7 +459,7 @@ class system extends controlador_base{
         return $header_retorno;
     }
 
-    protected function inputs(array $keys_selects): array|stdClass
+    public function inputs(array $keys_selects): array|stdClass
     {
         $keys_selects = $this->key_selects_txt(keys_selects: $keys_selects);
         if(errores::$error){
