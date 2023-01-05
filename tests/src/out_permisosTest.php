@@ -139,7 +139,7 @@ class out_permisosTest extends test {
 
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<a role='button' title='b' href='index.php?seccion=c&accion=a&registro_id=-1&session_id=1&adm_menu_id=-1' class='btn btn-success ' >b</a>",$resultado);
+        $this->assertEquals("<a role='button' title='b' href='index.php?seccion=c&accion=a&registro_id=-1&session_id=1&adm_menu_id=-1' class='btn btn-success ' style='margin-bottom: 5px; '>b</a>",$resultado);
         errores::$error = false;
     }
 

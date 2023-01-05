@@ -16,8 +16,8 @@ class out_permisos{
     }
 
     private function buttons_permitidos(array $acciones_permitidas, int $cols, html_controler $html,
-                                        array $params, array $registro,
-                                        int $registro_id, array $params_ajustados = array()): array
+                                        array $params, array $params_ajustados, array $registro, int $registro_id,
+                                        array $styles =  array('margin-bottom'=>'5px')): array
     {
         $buttons = array();
         foreach ($acciones_permitidas as $accion_permitida){
@@ -26,7 +26,7 @@ class out_permisos{
                 $params_btn = $params_ajustados[$accion_permitida['adm_accion_descripcion']];
             }
             $link = $this->link_btn_action(accion_permitida: $accion_permitida, cols: $cols,
-                html: $html, params: $params_btn, registro: $registro, registro_id: $registro_id);
+                html: $html, params: $params_btn, registro: $registro, registro_id: $registro_id, styles: $styles);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar link',data:  $link);
             }
@@ -35,7 +35,9 @@ class out_permisos{
         return $buttons;
     }
 
-    public function buttons_view(system $controler, array $not_actions, array $params, array $params_ajustados = array()): array
+    public function buttons_view(system $controler, array $not_actions, array $params,
+                                 array $params_ajustados = array(),
+                                 array $styles = array('margin-bottom'=>'5px')): array
     {
         $acciones_permitidas = (new datatables())->acciones_permitidas(link: $controler->link,
             seccion: $controler->seccion, not_actions: $not_actions);
@@ -51,8 +53,8 @@ class out_permisos{
         $html = (new html_controler(html: $controler->html_base));
 
         $buttons = $this->buttons_permitidos(acciones_permitidas: $acciones_permitidas, cols: $cols, html: $html,
-            params: $params, registro: $controler->registro, registro_id: $controler->registro_id,
-            params_ajustados: $params_ajustados);
+            params: $params, params_ajustados: $params_ajustados, registro: $controler->registro,
+            registro_id: $controler->registro_id, styles: $styles);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar botones',data:  $buttons);
         }
@@ -173,12 +175,14 @@ class out_permisos{
      * @param array $params Parametros para GET
      * @param array $registro Registro en proceso
      * @param int $registro_id Identificador de registro
+     * @param array $styles Estilos css
      * @return array|string
      * @version 0.253.37
      */
 
     private function link_btn_action(array $accion_permitida, int $cols, html_controler $html, array $params,
-                                     array $registro, int $registro_id): array|string
+                                     array $registro, int $registro_id,
+                                     array $styles =  array('margin-bottom'=>'5px')): array|string
     {
         $valida = $this->valida_data_action(accion_permitida: $accion_permitida);
         if(errores::$error){
@@ -204,7 +208,7 @@ class out_permisos{
             etiqueta: $accion_permitida['adm_accion_titulo'], registro_id: $registro_id,
             seccion: $accion_permitida['adm_seccion_descripcion'], style: $style, cols: $cols, icon: $icon,
             muestra_icono_btn: $data_icon->muestra_icono_btn, muestra_titulo_btn: $data_icon->muestra_titulo_btn,
-            params: $params);
+            params: $params, styles: $styles);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar link',data:  $link);
         }
