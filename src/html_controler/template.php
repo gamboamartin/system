@@ -153,9 +153,9 @@ class template{
 
     /**
      * Genera los input de tipo telefono
-     * @param directivas $directivas
-     * @param stdClass $params_select
-     * @param stdClass $row_upd
+     * @param directivas $directivas Directiva de template
+     * @param stdClass $params_select Parametros para front
+     * @param stdClass $row_upd Registro en proceso
      * @return array|string
      */
     public function telefonos_template(directivas $directivas, stdClass $params_select, stdClass $row_upd): array|string
