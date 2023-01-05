@@ -167,8 +167,28 @@ class _ctl_base extends system{
      * @param int $registro_id registro en proceso
      * @return array
      */
-    protected function childrens(string $namespace_model, string $name_model_children, array $params, int $registro_id): array
+    private function childrens(string $namespace_model, string $name_model_children, array $params, int $registro_id): array
     {
+
+        $namespace_model = trim($namespace_model);
+        if($namespace_model === ''){
+            return $this->errores->error(mensaje: 'Error namespace_model esta vacio',data:  $namespace_model);
+        }
+
+        $name_model_children = trim($name_model_children);
+        if($name_model_children === ''){
+            return $this->errores->error(mensaje: 'Error name_model_children esta vacio',data:  $name_model_children);
+        }
+
+        $this->tabla = trim($this->tabla);
+        if($this->tabla === ''){
+            return $this->errores->error(mensaje: 'Error $this->tabla esta vacio',data:  $this->tabla);
+        }
+
+        if($registro_id<=0){
+            return $this->errores->error(mensaje: 'Error $registro_id debe ser mayor a 0',data:  $registro_id);
+        }
+
         $this->key_id_filter = $this->tabla.'.id';
         $filtro = array();
         $filtro[$this->key_id_filter] = $registro_id;
@@ -185,7 +205,8 @@ class _ctl_base extends system{
         $childrens = $r_children->registros;
 
         $key_id = $name_model_children.'_id';
-        $childrens = $this->rows_con_permisos(key_id:  $key_id, rows:  $childrens,seccion: $name_model_children, params: $params);
+        $childrens = $this->rows_con_permisos(key_id:  $key_id, rows:  $childrens,seccion: $name_model_children,
+            params: $params);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al integrar link',data:  $childrens);
         }
@@ -312,7 +333,7 @@ class _ctl_base extends system{
      * @return array|stdClass
      * @version 0.264.38
      */
-    protected function init_data_children(): array|stdClass
+    private function init_data_children(): array|stdClass
     {
         if($this->registro_id<=0){
             return $this->errores->error(mensaje: 'Error this->registro_id debe ser mayor a 0',
