@@ -1110,6 +1110,11 @@ class html_controler{
         return $data;
     }
 
+    /**
+     * Integra parametros para salida GET
+     * @param array $params Parametros a integrar
+     * @return string
+     */
     private function params_get(array $params): string
     {
         $params_get = '';
