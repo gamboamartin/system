@@ -145,7 +145,7 @@ class html_controlerTest extends test {
 
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<a role='button' href='index.php?seccion=c&accion=a&registro_id=1&session_id=1&adm_menu_id=-1' class='btn btn-danger ' style='margin-right: 2px; '>b</a>", $resultado[1]['acciones']['a']);
+        $this->assertEquals("<a role='button' title='b' href='index.php?seccion=c&accion=a&registro_id=1&session_id=1&adm_menu_id=-1' class='btn btn-danger ' style='margin-right: 2px; '>b</a>", $resultado[1]['acciones']['a']);
         errores::$error = false;
     }
 
@@ -176,7 +176,7 @@ class html_controlerTest extends test {
             seccion:  $seccion,style:  $style);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<a role='button' href='index.php?seccion=a&accion=b&registro_id=-1&session_id=1&adm_menu_id=-1' class='btn btn-c col-sm-12' >d</a>", $resultado);
+        $this->assertEquals("<a role='button' title='d' href='index.php?seccion=a&accion=b&registro_id=-1&session_id=1&adm_menu_id=-1' class='btn btn-c col-sm-12' >d</a>", $resultado);
         errores::$error = false;
     }
 

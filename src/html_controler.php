@@ -40,10 +40,11 @@ class html_controler{
      * @param string $role
      * @param string $style
      * @param array $styles
+     * @param string $title Titulo a mostrar del button
      * @return string
      */
     private function a_role(int $cols, string $etiqueta_html, string $icon_html, string $link, string $role,
-                            string $style, array $styles): string
+                            string $style, array $styles, string $title): string
     {
         $cols_html = "col-sm-$cols";
         if($cols === -1){
@@ -60,7 +61,9 @@ class html_controler{
             $style_custom = "style='$propiedades'";
         }
 
-        return "<a role='$role' href='$link' class='btn btn-$style $cols_html' $style_custom>$icon_html$etiqueta_html</a>";
+        $params = "role='$role' title='$title' href='$link' class='btn btn-$style $cols_html' $style_custom";
+
+        return "<a $params>$icon_html$etiqueta_html</a>";
     }
 
     /**
@@ -207,7 +210,7 @@ class html_controler{
         }
 
         $a = $this->a_role(cols: $cols,etiqueta_html:  $params_btn->etiqueta_html,icon_html:  $params_btn->icon_html,
-            link:  $link, role: $role,style:  $style, styles: $styles);
+            link:  $link, role: $role,style:  $style, styles: $styles, title: $etiqueta);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar a', data: $a);
         }
