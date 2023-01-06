@@ -90,7 +90,7 @@ class _ctl_base extends system{
         return $this;
     }
 
-    public function contenido_children(stdClass $data_view, string $next_accion): array|string
+    public function contenido_children(stdClass $data_view, string $next_accion, array $not_actions): array|string
     {
 
         $params = array();
@@ -99,7 +99,8 @@ class _ctl_base extends system{
         $params['id_retorno'] = $this->registro_id;
 
         $childrens = $this->children_data(
-            namespace_model: $data_view->namespace_model, name_model_children: $data_view->name_model_children, params: $params);
+            namespace_model: $data_view->namespace_model, name_model_children: $data_view->name_model_children,
+            params: $params, not_actions: $not_actions);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al generar inputs',data:  $childrens);
         }
@@ -116,7 +117,8 @@ class _ctl_base extends system{
         return $contenido_table;
     }
 
-    protected function children_data(string $namespace_model, string $name_model_children, array $params): array
+    protected function children_data(string $namespace_model, string $name_model_children, array $params,
+                                     array $not_actions = array()): array
     {
         $inputs = $this->children_base();
         if(errores::$error){
@@ -124,8 +126,8 @@ class _ctl_base extends system{
                 mensaje: 'Error al generar inputs',data:  $inputs);
         }
 
-        $childrens = $this->childrens(namespace_model: $namespace_model,
-            name_model_children: $name_model_children, params: $params, registro_id: $this->registro_id);
+        $childrens = $this->childrens(namespace_model: $namespace_model, name_model_children: $name_model_children,
+            not_actions: $not_actions, params: $params, registro_id: $this->registro_id);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al integrar links',data:  $childrens);
         }
@@ -163,11 +165,13 @@ class _ctl_base extends system{
      * Genera el conjunto de children paar templates views
      * @param string $namespace_model paquete
      * @param string $name_model_children modelo del children
+     * @param array $not_actions Acciones a quitar de la lista
      * @param array $params parametros paar select
      * @param int $registro_id registro en proceso
      * @return array
      */
-    private function childrens(string $namespace_model, string $name_model_children, array $params, int $registro_id): array
+    private function childrens(string $namespace_model, string $name_model_children, array $not_actions,
+                               array $params, int $registro_id): array
     {
 
         $valida = $this->valida_data_children(
@@ -181,8 +185,8 @@ class _ctl_base extends system{
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al integrar childrens',data:  $childrens);
         }
-        $childrens = $this->childrens_con_permiso(
-            childrens: $childrens,name_model_children:  $name_model_children,params:  $params);
+        $childrens = $this->childrens_con_permiso(childrens: $childrens, name_model_children: $name_model_children,
+            not_actions: $not_actions, params: $params);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al integrar childrens',data:  $childrens);
         }
@@ -190,14 +194,15 @@ class _ctl_base extends system{
         return $childrens;
     }
 
-    private function childrens_con_permiso(array $childrens, string $name_model_children, array $params): array
+    private function childrens_con_permiso(array $childrens, string $name_model_children, array $not_actions,
+                                           array $params): array
     {
         $key_id = $this->key_id_children(name_model_children: $name_model_children);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al integrar key_id',data:  $key_id);
         }
-        $childrens = $this->rows_con_permisos(key_id:  $key_id, rows:  $childrens,seccion: $name_model_children,
-            params: $params);
+        $childrens = $this->rows_con_permisos(key_id: $key_id, rows: $childrens, seccion: $name_model_children,
+            not_actions: $not_actions, params: $params);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al integrar link',data:  $childrens);
         }

@@ -151,7 +151,8 @@ class _ctl_baseTest extends test {
         $params = array();
         $registro_id = 1;
 
-        $resultado = $ctl->childrens($namespace_model, $name_model_children, $params, $registro_id);
+        $resultado = $ctl->childrens($namespace_model, $name_model_children, array(), $params, $registro_id);
+
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals(1,$resultado[0]['adm_accion_id']);
