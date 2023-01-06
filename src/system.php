@@ -55,6 +55,8 @@ class system extends controlador_base{
      * @param PDO $link Conexion a la base de datos
      * @param modelo $modelo
      * @param links_menu $obj_link
+     * @param array $datatables_custom_cols
+     * @param array $datatables_custom_cols_omite
      * @param stdClass $datatables
      * @param array $filtro_boton_lista
      * @param string $campo_busca
@@ -62,9 +64,10 @@ class system extends controlador_base{
      * @param stdClass $paths_conf
      */
     public function __construct(html_controler $html,PDO $link, modelo $modelo, links_menu $obj_link,
-                                array $datatables_custom_cols = array(), stdClass $datatables = new stdClass(),
-                                array $filtro_boton_lista = array(), string $campo_busca = 'registro_id',
-                                string $valor_busca_fault = '', stdClass $paths_conf = new stdClass())
+                                array $datatables_custom_cols = array(), array $datatables_custom_cols_omite = array(),
+                                stdClass $datatables = new stdClass(), array $filtro_boton_lista = array(),
+                                string $campo_busca = 'registro_id', string $valor_busca_fault = '',
+                                stdClass $paths_conf = new stdClass())
     {
         $this->msj_con_html = false;
         parent::__construct(link: $link,modelo:  $modelo,filtro_boton_lista:  $filtro_boton_lista,
@@ -99,6 +102,24 @@ class system extends controlador_base{
         $this->include_breadcrumb = $include_breadcrumb;
         if(!file_exists($include_breadcrumb)){
             $this->include_breadcrumb = '';
+        }
+
+        foreach ($datatables_custom_cols_omite as $campo){
+            if(isset($datatables->columns[$campo])){
+                unset($datatables->columns[$campo]);
+            }
+
+        }
+
+        foreach ($datatables_custom_cols_omite as $campo){
+            if(isset($datatables->filtro)){
+
+                foreach ($datatables->filtro as $indice=>$campo_filtro){
+                    if($campo_filtro === $campo){
+                        unset($datatables->filtro[$indice]);
+                    }
+                }
+            }
         }
 
         foreach ($datatables_custom_cols as $key=>$column){
