@@ -648,9 +648,9 @@ class _ctl_base extends system{
 
     /**
      * Valida la entrada de datos para childrens
-     * @param string $namespace_model
-     * @param string $name_model_children
-     * @param int $registro_id
+     * @param string $namespace_model Namespace del paquete
+     * @param string $name_model_children Nombre del modelo
+     * @param int $registro_id Registro en proceso
      * @return bool|array
      */
     private function valida_data_children(string $namespace_model, string $name_model_children, int $registro_id): bool|array
