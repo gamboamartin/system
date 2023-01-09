@@ -218,6 +218,14 @@ class system extends controlador_base{
             unset($_POST['id_retorno']);
         }
 
+        $valida = $this->validacion->valida_alta_bd(controler: $this);
+        if(errores::$error){
+            if(!$transaccion_previa) {
+                $this->link->rollBack();
+            }
+            return $this->retorno_error(mensaje: 'Error al validar datos', data: $valida,header:  $header,ws:  $ws);
+        }
+
         $r_alta_bd = parent::alta_bd(header: false,ws: false);
         if(errores::$error){
             if(!$transaccion_previa) {

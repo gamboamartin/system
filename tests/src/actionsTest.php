@@ -243,7 +243,13 @@ class actionsTest extends test {
         $act = new liberator($act);
         $_GET['session_id'] = 1;
 
+        foreach ($_POST AS $key=>$val){
+            unset($_POST[$key]);
+        }
+
+
         $resultado = $act->limpia_butons();
+
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEmpty($resultado);
