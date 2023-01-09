@@ -23,6 +23,7 @@ class _ctl_base extends system{
     /**
      * Alta base de controllers
      * @return array|stdClass
+     * @version 4.31.1
      */
     protected function alta_bd_base(): array|stdClass
     {
