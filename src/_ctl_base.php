@@ -692,8 +692,10 @@ class _ctl_base extends system{
      * @param string $name_model_children Nombre del modelo
      * @param int $registro_id Registro en proceso
      * @return bool|array
+     * @version 4.33.1
      */
-    private function valida_data_children(string $namespace_model, string $name_model_children, int $registro_id): bool|array
+    private function valida_data_children(string $namespace_model, string $name_model_children,
+                                          int $registro_id): bool|array
     {
         $namespace_model = trim($namespace_model);
         if($namespace_model === ''){

@@ -809,5 +809,36 @@ class _ctl_baseTest extends test {
 
     }
 
+    public function test_valida_data_children(): void
+    {
+        errores::$error = false;
+
+        $_SESSION['usuario_id'] = 2;
+        $_SESSION['grupo_id'] = 2;
+        $_GET['session_id'] = mt_rand(1,99999999);
+        $_GET['seccion'] = 'adm_accion';
+
+
+        $html = new html();
+        $html_controler = new html_controler($html);
+        $modelo = new adm_accion($this->link);
+        $link_obj = new links_menu($this->link, -1);
+
+        errores::$error = false;
+
+        $ctl = new _ctl_base(html: $html_controler, link: $this->link,modelo: $modelo,obj_link: $link_obj,paths_conf: $this->paths_conf);
+        $ctl = new liberator($ctl);
+
+
+        errores::$error = false;
+        $namespace_model =  'a';
+        $name_model_children  = 'v';
+        $registro_id  = 1;
+        $resultado = $ctl->valida_data_children($namespace_model, $name_model_children, $registro_id);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
 }
 
