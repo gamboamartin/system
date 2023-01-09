@@ -671,6 +671,20 @@ class _ctl_base extends system{
         return $seccion_retorno;
     }
 
+    protected function upd_base_template(array $keys_selects): array|stdClass
+    {
+        $keys_selects = $this->key_select_base(keys_selects: $keys_selects);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al integrar keys selects base',data:  $keys_selects);
+        }
+
+        $base = $this->base_upd(keys_selects: $keys_selects, params: array(),params_ajustados: array());
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al integrar base',data:  $base);
+        }
+        return $base;
+    }
+
     /**
      * Valida la entrada de datos para childrens
      * @param string $namespace_model Namespace del paquete
