@@ -106,6 +106,33 @@ class templateTest extends test {
 
     }
 
+    public function test_telefonos_template(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new template();
+        // $html = new liberator($html);
+
+
+        $params_select =new stdClass();
+        $row_upd = new stdClass();
+
+        $params_select->cols = '1';
+        $params_select->disabled = false;
+        $params_select->name = 'a';
+        $params_select->place_holder = 'f';
+        $params_select->value_vacio = true;
+
+        $directivas = new directivas($html_);
+
+        $resultado = $html->telefonos_template($directivas, $params_select, $row_upd);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<div |class|><div |class|><input type='text' name='a' value='' class='form-control'   required id='a' placeholder='f' pattern='[1-9]{1}[0-9]{9}' /></div></div>",$resultado);
+        errores::$error = false;
+
+    }
+
 
 
 
