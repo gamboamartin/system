@@ -20,6 +20,10 @@ class _ctl_base extends system{
     protected string $key_id_row = '';
     public array $childrens;
 
+    /**
+     * Alta base de controllers
+     * @return array|stdClass
+     */
     protected function alta_bd_base(): array|stdClass
     {
         $data_retorno = $this->data_retorno_base();
