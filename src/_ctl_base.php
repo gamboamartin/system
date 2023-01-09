@@ -442,6 +442,18 @@ class _ctl_base extends system{
         return $this->inputs;
     }
 
+    protected function inputs_base_alta(array $keys_selects): array|stdClass
+    {
+        $keys_selects['descripcion'] = new stdClass();
+        $keys_selects['descripcion']->cols = 12;
+
+        $inputs = $this->inputs(keys_selects: $keys_selects);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al obtener inputs',data:  $inputs);
+        }
+        return $inputs;
+    }
+
     /**
      * Integra un elemento para select de template
      * @param string $key Campo a integrar
