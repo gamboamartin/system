@@ -869,6 +869,11 @@ class html_controler{
         return $passwords;
     }
 
+    /**
+     * Genera in item para salida de front
+     * @param string $item Campo o input
+     * @return array|string
+     */
     private function item(string $item): array|string
     {
         $item = trim($item);
