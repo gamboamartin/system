@@ -525,6 +525,16 @@ class _ctl_base extends system{
         return $keys_selects;
     }
 
+    protected function key_select_base(): array
+    {
+        $keys_selects['descripcion'] = new stdClass();
+        $keys_selects['descripcion']->cols = 12;
+
+        $keys_selects['codigo'] = new stdClass();
+        $keys_selects['codigo']->disabled = true;
+        return $keys_selects;
+    }
+
 
 
     /**
