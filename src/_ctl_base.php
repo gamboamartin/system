@@ -529,7 +529,7 @@ class _ctl_base extends system{
         return $keys_selects;
     }
 
-    protected function key_select_base(): array
+    protected function key_select_base(array $keys_selects): array
     {
         $keys_selects['descripcion'] = new stdClass();
         $keys_selects['descripcion']->cols = 12;
