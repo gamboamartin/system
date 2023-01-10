@@ -255,6 +255,12 @@ class html_controler{
         return $dates;
     }
 
+    /**
+     * @param modelo $modelo
+     * @param stdClass $row_upd
+     * @param array $keys_selects
+     * @return array|stdClass
+     */
     protected function emails_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
     {
         $campos_view = $this->obtener_inputs($modelo->campos_view);
@@ -294,6 +300,12 @@ class html_controler{
         return $etiqueta_html;
     }
 
+    /**
+     * @param modelo $modelo
+     * @param stdClass $row_upd
+     * @param array $keys_selects
+     * @return array|stdClass
+     */
     protected function fechas_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
     {
         $campos_view = $this->obtener_inputs($modelo->campos_view);
@@ -480,6 +492,12 @@ class html_controler{
         return $icon_html;
     }
 
+    /**
+     * @param stdClass $row_upd
+     * @param modelo $modelo
+     * @param array $keys_selects
+     * @return array|stdClass
+     */
     public function init_alta2(stdClass $row_upd, modelo $modelo, array $keys_selects = array()): array|stdClass
     {
         $selects = $this->selects_alta2(modelo: $modelo, keys_selects: $keys_selects);
@@ -1620,6 +1638,13 @@ class html_controler{
         return $style;
     }
 
+    /** Genera el template de telefonos para frontend
+     * @param modelo $modelo Modelo en ejecucion
+     * @param stdClass $row_upd Registro en proceso
+     * @param array $keys_selects Parametros de estilos
+     * @return array|stdClass
+     *
+     */
     protected function telefonos_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
     {
         $campos_view = $this->obtener_inputs(campos_view: $modelo->campos_view);
@@ -1635,7 +1660,8 @@ class html_controler{
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar select', data: $params_select);
             }
-            $date = (new template())->telefonos_template(directivas: $this->directivas, params_select: $params_select,row_upd: $row_upd);
+            $date = (new template())->telefonos_template(directivas: $this->directivas,
+                params_select: $params_select,row_upd: $row_upd);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar input', data: $date);
             }
