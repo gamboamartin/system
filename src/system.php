@@ -46,7 +46,7 @@ class system extends controlador_base{
     public array $actions_number = array();
     public string $include_breadcrumb = '';
     public string $contenido_table = '';
-    protected bool $lista_get_data = false;
+    public bool $lista_get_data = false;
     protected array $not_actions = array();
 
 
