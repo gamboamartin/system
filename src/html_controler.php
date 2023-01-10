@@ -1370,6 +1370,7 @@ class html_controler{
      * @param stdClass $params_select Parametros visuales
      * @return array|stdClass|string
      * @version 0.227.38
+     * @example $params_select->extra_params_keys[] = 'tabla_id'; integra un extra param al option de un select
      */
     private function select_aut2(modelo $modelo, stdClass $params_select): array|stdClass|string
     {
@@ -1532,6 +1533,8 @@ class html_controler{
      * @param array $keys_selects Selectores params
      * @return array|stdClass
      * @version 0.232.37
+     * @example keys_selects['name_input']->extra_params_keys[] = 'tabla_id';
+     * integra un extra param al option de un select
      */
     private function selects_integra(array $campos_view, array $keys_selects): array|stdClass
     {
