@@ -101,6 +101,12 @@ class init{
 
     }
 
+    /**
+     * Inicializa los parametros de retorno por GET
+     * @param stdClass $data_init Datos previos cargados
+     * @param string $key Key a integrar
+     * @return array|stdClass
+     */
     private function init_get_param(stdClass $data_init, string $key): array|stdClass
     {
         if(isset($_GET[$key])){
