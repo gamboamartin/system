@@ -106,9 +106,14 @@ class init{
      * @param stdClass $data_init Datos previos cargados
      * @param string $key Key a integrar
      * @return array|stdClass
+     * @version 4.39.2
      */
     private function init_get_param(stdClass $data_init, string $key): array|stdClass
     {
+        $key = trim($key);
+        if($key === ''){
+            return $this->error->error(mensaje: 'Error key no puede venir vacio', data: $key);
+        }
         if(isset($_GET[$key])){
             $compare = trim($_GET[$key]);
             $data_init = $this->init_data_param_get(compare: $compare,data_init:  $data_init,key:  $key);
