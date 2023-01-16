@@ -528,7 +528,8 @@ class system extends controlador_base{
             $registros_view = (new lista())->rows_view_lista(controler: $this);
             if (errores::$error) {
                 return $this->retorno_error(
-                    mensaje: 'Error al generar rows para lista', data: $registros_view, header: $header, ws: $ws);
+                    mensaje: 'Error al generar rows para lista en '.$this->seccion, data: $registros_view,
+                    header: $header, ws: $ws);
             }
 
             $this->registros = $registros_view;
