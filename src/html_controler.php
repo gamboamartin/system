@@ -33,13 +33,13 @@ class html_controler{
 
     /**
      * Integra un href para btns
-     * @param int $cols
-     * @param string $etiqueta_html
-     * @param string $icon_html
-     * @param string $link
-     * @param string $role
-     * @param string $style
-     * @param array $styles
+     * @param int $cols Columnas css
+     * @param string $etiqueta_html Etiqueta a mostrar
+     * @param string $icon_html Icono a mostrar
+     * @param string $link Liga de href
+     * @param string $role tipo de sole button o submit
+     * @param string $style Stilo de boton
+     * @param array $styles Estilos css
      * @param string $title Titulo a mostrar del button
      * @return string
      */
