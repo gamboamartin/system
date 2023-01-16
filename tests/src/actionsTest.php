@@ -344,6 +344,36 @@ class actionsTest extends test {
         errores::$error = false;
     }
 
+    public function test_registros_view_actions(): void
+    {
+        errores::$error = false;
+        $act = new actions();
+        //$act = new liberator($act);
+        $_GET['session_id'] = 1;
+
+        foreach ($_POST AS $key=>$val){
+            unset($_POST[$key]);
+        }
+
+        $acciones = new stdClass();
+        $link = $this->link;
+        $obj_link  = new links_menu($link, -1);
+        $registros = array();
+        $seccion = 'a';
+        $acciones->a = '';
+        $registros[0] = new stdClass();
+        $registros[0]->a_a = 'a';
+        $registros[0]->a_id = '1';
+        $resultado = $act->registros_view_actions($acciones, $link, $obj_link, $registros, $seccion);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a', $resultado[0]->a_a);
+        $this->assertEquals('1', $resultado[0]->a_id);
+        $this->assertEquals('', $resultado[0]->link_a);
+        $this->assertEquals('info', $resultado[0]->a_style);
+        errores::$error = false;
+    }
+
     /**
      */
     public function test_retorno_alta_bd(): void

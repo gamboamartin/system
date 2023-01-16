@@ -265,18 +265,33 @@ class actions{
     }
 
     /**
-     * @param stdClass $acciones
-     * @param PDO $link
+     * @param stdClass $acciones Acciones a integrar
+     * @param PDO $link Conexion a la base de datos
      * @param links_menu $obj_link Objeto para generacion de links
-     * @param array $registros
+     * @param array $registros Registros a mostrar en la lista
      * @param string $seccion Seccion en ejecucion
      * @return array
+     * @version 4.41.2
      */
     public function registros_view_actions(stdClass $acciones, PDO $link, links_menu $obj_link, array $registros,
                                            string $seccion): array
     {
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(mensaje: 'Error la seccion esta vacia', data:  $seccion);
+        }
+
         $registros_view = array();
         foreach ($acciones as $accion=>$data_accion){
+            if(!is_object($data_accion)){
+                $data_accion = new stdClass();
+            }
+            if(!isset($data_accion->style)){
+                $data_accion->style = 'info';
+            }
+            if(!isset($data_accion->style_status)){
+                $data_accion->style_status = '';
+            }
             $style = $data_accion->style;
             $style_status = $data_accion->style_status;
 
