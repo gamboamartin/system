@@ -1678,6 +1678,7 @@ class html_controler{
      * @param stdClass $row_upd Registro en proceso
      * @param array $keys_selects Parametros de estilos
      * @return array|stdClass
+     * @version 4.44.2
      *
      */
     protected function telefonos_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
@@ -1690,6 +1691,12 @@ class html_controler{
         $telefonos = new stdClass();
 
         foreach ($campos_view['telefonos'] as $item){
+
+            $item = trim($item);
+            if(is_numeric($item)){
+                return $this->error->error(mensaje: 'Error item debe ser un string no un numero', data: $item);
+            }
+
 
             $params_select = (new params())->params_select_init(item:$item,keys_selects:  $keys_selects);
             if(errores::$error){

@@ -879,6 +879,32 @@ class html_controlerTest extends test {
 
     }
 
+    public function test_telefonos_alta(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
+
+
+        $_SESSION['usuario_id'] = 2;
+        $_SESSION['grupo_id'] = 2;
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+      
+        $modelo = new adm_accion($this->link);
+        $modelo->campos_view['a']['type'] = 'telefonos';
+        $row_upd = new stdClass();
+
+        $resultado = $html->telefonos_alta($modelo, $row_upd);
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<div |class|><div |class|><input type='text' name='a' value='' class='form-control' required id='a' placeholder='a' pattern='[1-9]{1}[0-9]{9}' /></div></div>", $resultado->a);
+
+
+    }
+
     /**
      */
     public function test_text_item(): void
