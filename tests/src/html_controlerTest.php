@@ -109,7 +109,7 @@ class html_controlerTest extends test {
         $resultado = $html->alta($controler);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='text' name='codigo' value='' |class|  required id='codigo' placeholder='Codigo' /></div></div>", $resultado->codigo);
+        $this->assertEquals("<div |class|><div |class|><input type='text' name='codigo' value='' |class| required id='codigo' placeholder='Codigo' /></div></div>", $resultado->codigo);
 
         errores::$error = false;
     }
@@ -201,7 +201,7 @@ class html_controlerTest extends test {
 
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='date' name='a' value='' |class|  required id='a' placeholder='a' /></div></div>", $resultado->a);
+        $this->assertEquals("<div |class|><div |class|><input type='date' name='a' value='' |class| required id='a' placeholder='a' /></div></div>", $resultado->a);
         errores::$error = false;
     }
 
@@ -227,7 +227,7 @@ class html_controlerTest extends test {
         $resultado = $html->file_items($campos_view, $keys_selects, $row_upd);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='file' name='a' value='' class = 'form-control'  required id='a'/></div></div>",$resultado->a);
+        $this->assertEquals("<div |class|><div |class|><input type='file' name='a' value='' class = 'form-control' required id='a'/></div></div>",$resultado->a);
         errores::$error = false;
     }
 
@@ -257,7 +257,7 @@ class html_controlerTest extends test {
         $resultado = $html->file_template($params_select, $row_upd);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='file' name='1' value='' class = 'form-control'   id='1'/></div></div>",$resultado);
+        $this->assertEquals("<div |class|><div |class|><input type='file' name='1' value='' class = 'form-control' id='1'/></div></div>",$resultado);
         errores::$error = false;
 
     }
@@ -329,7 +329,7 @@ class html_controlerTest extends test {
         $resultado = $html->input_codigo($cols, $row_upd, $value_vacio);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='text' name='codigo' value='' |class|  required id='codigo' placeholder='Código' /></div></div>", $resultado);
+        $this->assertEquals("<div |class|><div |class|><input type='text' name='codigo' value='' |class| required id='codigo' placeholder='Código' /></div></div>", $resultado);
 
         errores::$error = false;
     }
@@ -348,7 +348,7 @@ class html_controlerTest extends test {
         $resultado = $html->input_codigo_bis($cols, $row_upd, $value_vacio);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='text' name='codigo_bis' value='' |class|  required id='codigo_bis' placeholder='Código BIS' /></div></div>", $resultado);
+        $this->assertEquals("<div |class|><div |class|><input type='text' name='codigo_bis' value='' |class| required id='codigo_bis' placeholder='Código BIS' /></div></div>", $resultado);
 
         errores::$error = false;
     }
@@ -367,7 +367,7 @@ class html_controlerTest extends test {
         $resultado = $html->input_descripcion($cols, $row_upd, $value_vacio);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='text' name='descripcion' value='' |class|  required id='descripcion' placeholder='Descripcion' /></div></div>", $resultado);
+        $this->assertEquals("<div |class|><div |class|><input type='text' name='descripcion' value='' |class| required id='descripcion' placeholder='Descripcion' /></div></div>", $resultado);
 
         errores::$error = false;
     }
@@ -386,7 +386,7 @@ class html_controlerTest extends test {
         $resultado = $html->input_id($cols, $row_upd, $value_vacio);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='text' name='id' value='' |class|  required id='id' placeholder='Id' /></div></div>", $resultado);
+        $this->assertEquals("<div |class|><div |class|><input type='text' name='id' value='' |class| required id='id' placeholder='Id' /></div></div>", $resultado);
 
         errores::$error = false;
     }
@@ -422,7 +422,7 @@ class html_controlerTest extends test {
         $resultado = $html->inputs_base($cols, $controler, $value_vacio);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='text' name='codigo' value='' |class|  required id='codigo' placeholder='Codigo' /></div></div>", $resultado->codigo);
+        $this->assertEquals("<div |class|><div |class|><input type='text' name='codigo' value='' |class| required id='codigo' placeholder='Codigo' /></div></div>", $resultado->codigo);
 
     }
 
@@ -445,7 +445,7 @@ class html_controlerTest extends test {
         $resultado = $html->input_text_required($cols, $disabled, $name, $place_holder, $row_upd, $value_vacio);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='text' name='a' value='' |class|  required id='a' placeholder='b' /></div></div>",$resultado);
+        $this->assertEquals("<div |class|><div |class|><input type='text' name='a' value='' |class| required id='a' placeholder='b' /></div></div>",$resultado);
         errores::$error = false;
     }
 
@@ -589,7 +589,7 @@ class html_controlerTest extends test {
         $resultado = $html->passwords($item, $keys_selects, $passwords, $row_upd);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='password' name='a' value='' class='form-control'   required id='a' placeholder='a' /></div></div>",$resultado->a);
+        $this->assertEquals("<div |class|><div |class|><input type='password' name='a' value='' class='form-control' required id='a' placeholder='a' /></div></div>",$resultado->a);
         errores::$error = false;
     }
 
@@ -615,7 +615,7 @@ class html_controlerTest extends test {
         $resultado = $html->passwords_alta($modelo, $row_upd);
         $this->assertIsObject($resultado);
         $this->assertFalse(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='password' name='x' value='' class='form-control'   required id='x' placeholder='x' /></div></div>",$resultado->x);
+        $this->assertEquals("<div |class|><div |class|><input type='password' name='x' value='' class='form-control' required id='x' placeholder='x' /></div></div>",$resultado->x);
         errores::$error = false;
 
     }
@@ -639,7 +639,7 @@ class html_controlerTest extends test {
         $resultado = $html->passwords_campos($campos_view, $keys_selects, $row_upd);
         $this->assertIsObject($resultado);
         $this->assertFalse(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='password' name='a' value='' class='form-control'   required id='a' placeholder='a' /></div></div>",$resultado->a);
+        $this->assertEquals("<div |class|><div |class|><input type='password' name='a' value='' class='form-control' required id='a' placeholder='a' /></div></div>",$resultado->a);
         errores::$error = false;
     }
 
@@ -902,7 +902,7 @@ class html_controlerTest extends test {
         $resultado = $html->text_item($item, $keys_selects, $row_upd, $texts);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='file' name='a' value='' class = 'form-control'  required id='a'/></div></div>", $resultado->a);
+        $this->assertEquals("<div |class|><div |class|><input type='file' name='a' value='' class = 'form-control' required id='a'/></div></div>", $resultado->a);
 
         errores::$error = false;
     }

@@ -395,9 +395,10 @@ class _ctl_baseTest extends test {
         errores::$error = false;
 
         $resultado = $ctl->init_alta();
+        //print_r($resultado);exit;
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("codigo' value='' |class|  required id='codigo' placeholder='Codigo'",$resultado);
+        $this->assertStringContainsStringIgnoringCase("codigo' value='' |class| required id='codigo' placeholder='Codigo'",$resultado);
         errores::$error = false;
     }
 

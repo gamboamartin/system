@@ -75,7 +75,7 @@ class templateTest extends test {
         $resultado = $html->input_template($directivas, $params_select, $row_upd);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='text' name='a' value='' |class| disabled  id='a' placeholder='a' /></div></div>",$resultado);
+        $this->assertEquals("<div |class|><div |class|><input type='text' name='a' value='' |class| disabled id='a' placeholder='a' /></div></div>",$resultado);
         errores::$error = false;
     }
 
@@ -101,7 +101,7 @@ class templateTest extends test {
         $resultado = $html->passwords_template($directivas, $params_select, $row_upd);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='password' name='a' value='' class='form-control'   required id='a' placeholder='f' /></div></div>",$resultado);
+        $this->assertEquals("<div |class|><div |class|><input type='password' name='a' value='' class='form-control' required id='a' placeholder='f' /></div></div>",$resultado);
         errores::$error = false;
 
     }
@@ -128,7 +128,7 @@ class templateTest extends test {
         $resultado = $html->telefonos_template($directivas, $params_select, $row_upd);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='text' name='a' value='' class='form-control'   required id='a' placeholder='f' pattern='[1-9]{1}[0-9]{9}' /></div></div>",$resultado);
+        $this->assertEquals("<div |class|><div |class|><input type='text' name='a' value='' class='form-control' required id='a' placeholder='f' pattern='[1-9]{1}[0-9]{9}' /></div></div>",$resultado);
         errores::$error = false;
 
     }
