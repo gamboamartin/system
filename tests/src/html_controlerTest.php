@@ -891,7 +891,7 @@ class html_controlerTest extends test {
         $_SESSION['grupo_id'] = 2;
         $_GET['session_id'] = 1;
         $_GET['seccion'] = 'adm_accion';
-      
+
         $modelo = new adm_accion($this->link);
         $modelo->campos_view['a']['type'] = 'telefonos';
         $row_upd = new stdClass();

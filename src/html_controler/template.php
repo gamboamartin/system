@@ -37,6 +37,14 @@ class template{
         return $div;
     }
 
+    /**
+     * Genera los inputs de tipo email
+     * @param directivas $directivas Directivas
+     * @param stdClass $params_select Parametros de inputs
+     * @param stdClass $row_upd Registro en proceso
+     * @return array|string
+     *  
+     */
     public function emails_template(directivas $directivas, stdClass $params_select, stdClass $row_upd): array|string
     {
 
