@@ -125,6 +125,12 @@ class init{
         return $data_init;
     }
 
+    /**
+     * Inicializa los keys de un GET de retornos
+     * @param stdClass $data_init Datos precargados
+     * @param array $keys_init Keys  inicializar
+     * @return array|stdClass
+     */
     private function init_keys_get(stdClass $data_init, array $keys_init): array|stdClass
     {
         foreach ($keys_init as $key){

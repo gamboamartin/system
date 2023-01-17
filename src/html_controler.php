@@ -264,7 +264,7 @@ class html_controler{
      * @param string $regex integra un regex a un pattern
      * @param stdClass $row_upd registro en proceso
      * @param string $title title de input
-     * @param bool $value_vacio valor vacio 
+     * @param bool $value_vacio valor vacio
      * @return array|string
      */
     private function div_input_text_required(int $cols, bool $disabled, string $name, string $place_holder,
