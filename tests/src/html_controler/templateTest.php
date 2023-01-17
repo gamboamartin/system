@@ -48,6 +48,33 @@ class templateTest extends test {
         errores::$error = false;
     }
 
+    public function test_emails_template(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new template();
+        // $html = new liberator($html);
+
+
+        $params_select =new stdClass();
+        $row_upd = new stdClass();
+
+        $params_select->cols = '1';
+        $params_select->disabled = true;
+        $params_select->name = 'a';
+        $params_select->place_holder = 'a';
+        $params_select->value_vacio = false;
+
+        $directivas = new directivas($html_);
+
+        $resultado = $html->emails_template($directivas, $params_select, $row_upd);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<div |class|><div |class|><input type='text' name='a' value='' |class| disabled required id='a' placeholder='a' pattern='[a-z0-9!#$%&'*+=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$' /></div></div>",$resultado);
+        errores::$error = false;
+
+    }
+
     public function test_input_template(): void
     {
         errores::$error = false;
