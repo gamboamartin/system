@@ -285,9 +285,10 @@ class html_controler{
     }
 
     /**
-     * @param modelo $modelo
-     * @param stdClass $row_upd
-     * @param array $keys_selects
+     * Genera los email de una view
+     * @param modelo $modelo Datos del modelo
+     * @param stdClass $row_upd Registro en proceso
+     * @param array $keys_selects parametros
      * @return array|stdClass
      */
     protected function emails_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass

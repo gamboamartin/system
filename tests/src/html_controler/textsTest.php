@@ -46,7 +46,7 @@ class textsTest extends test {
         $resultado = $html->text_input_integra($directivas, $item, $keys_selects, $row_upd, $texts);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='text' name='a' value='' |class| required id='a' placeholder='a' /></div></div>",$resultado->a);
+        $this->assertEquals("<div |class|><div |class|><input type='text' name='a' value='' |class| required id='a' placeholder='a' title='a' /></div></div>",$resultado->a);
         errores::$error = false;
     }
 
@@ -73,7 +73,7 @@ class textsTest extends test {
         $resultado = $html->texts_integra( $campos_view, $directivas, $keys_selects, $row_upd);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='text' name='x' value='' |class| required id='x' placeholder='x' /></div></div>",$resultado->x);
+        $this->assertEquals("<div |class|><div |class|><input type='text' name='x' value='' |class| required id='x' placeholder='x' title='x' /></div></div>",$resultado->x);
         errores::$error = false;
     }
 }

@@ -102,7 +102,7 @@ class templateTest extends test {
         $resultado = $html->input_template($directivas, $params_select, $row_upd);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='text' name='a' value='' |class| disabled id='a' placeholder='a' /></div></div>",$resultado);
+        $this->assertEquals("<div |class|><div |class|><input type='text' name='a' value='' |class| disabled id='a' placeholder='a' title='a' /></div></div>",$resultado);
         errores::$error = false;
     }
 

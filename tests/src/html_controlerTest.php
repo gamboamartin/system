@@ -109,7 +109,7 @@ class html_controlerTest extends test {
         $resultado = $html->alta($controler);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='text' name='codigo' value='' |class| required id='codigo' placeholder='Codigo' /></div></div>", $resultado->codigo);
+        $this->assertEquals("<div |class|><div |class|><input type='text' name='codigo' value='' |class| required id='codigo' placeholder='Codigo' title='Codigo' /></div></div>", $resultado->codigo);
 
         errores::$error = false;
     }
@@ -329,7 +329,7 @@ class html_controlerTest extends test {
         $resultado = $html->input_codigo($cols, $row_upd, $value_vacio);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='text' name='codigo' value='' |class| required id='codigo' placeholder='Código' /></div></div>", $resultado);
+        $this->assertEquals("<div |class|><div |class|><input type='text' name='codigo' value='' |class| required id='codigo' placeholder='Código' title='Código' /></div></div>", $resultado);
 
         errores::$error = false;
     }
@@ -348,7 +348,7 @@ class html_controlerTest extends test {
         $resultado = $html->input_codigo_bis($cols, $row_upd, $value_vacio);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='text' name='codigo_bis' value='' |class| required id='codigo_bis' placeholder='Código BIS' /></div></div>", $resultado);
+        $this->assertEquals("<div |class|><div |class|><input type='text' name='codigo_bis' value='' |class| required id='codigo_bis' placeholder='Código BIS' title='Código BIS' /></div></div>", $resultado);
 
         errores::$error = false;
     }
@@ -367,7 +367,7 @@ class html_controlerTest extends test {
         $resultado = $html->input_descripcion($cols, $row_upd, $value_vacio);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='text' name='descripcion' value='' |class| required id='descripcion' placeholder='Descripcion' /></div></div>", $resultado);
+        $this->assertEquals("<div |class|><div |class|><input type='text' name='descripcion' value='' |class| required id='descripcion' placeholder='Descripcion' title='Descripcion' /></div></div>", $resultado);
 
         errores::$error = false;
     }
@@ -386,7 +386,7 @@ class html_controlerTest extends test {
         $resultado = $html->input_id($cols, $row_upd, $value_vacio);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='text' name='id' value='' |class| required id='id' placeholder='Id' /></div></div>", $resultado);
+        $this->assertEquals("<div |class|><div |class|><input type='text' name='id' value='' |class| required id='id' placeholder='Id' title='Id' /></div></div>", $resultado);
 
         errores::$error = false;
     }
@@ -422,7 +422,7 @@ class html_controlerTest extends test {
         $resultado = $html->inputs_base($cols, $controler, $value_vacio);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='text' name='codigo' value='' |class| required id='codigo' placeholder='Codigo' /></div></div>", $resultado->codigo);
+        $this->assertEquals("<div |class|><div |class|><input type='text' name='codigo' value='' |class| required id='codigo' placeholder='Codigo' title='Codigo' /></div></div>", $resultado->codigo);
 
     }
 
@@ -445,7 +445,7 @@ class html_controlerTest extends test {
         $resultado = $html->input_text_required($cols, $disabled, $name, $place_holder, $row_upd, $value_vacio);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='text' name='a' value='' |class| required id='a' placeholder='b' /></div></div>",$resultado);
+        $this->assertEquals("<div |class|><div |class|><input type='text' name='a' value='' |class| required id='a' placeholder='b' title='b' /></div></div>",$resultado);
         errores::$error = false;
     }
 
