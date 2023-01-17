@@ -234,7 +234,15 @@ class datatables{
         return $columns;
     }
 
-    private function columns_title(array $columns, string $key_row_lista, string $seccion){
+    /**
+     * Integra las columnas de tipo titulo en datatables
+     * @param array $columns Columnas precargadas datatables
+     * @param string $key_row_lista key de campos a mostrar en lista
+     * @param string $seccion Seccion en ejecucion
+     * @return array
+     */
+    private function columns_title(array $columns, string $key_row_lista, string $seccion): array
+    {
         $key_row_lista = trim($key_row_lista);
         if($key_row_lista === ''){
             return $this->error->error(
