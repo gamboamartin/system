@@ -169,11 +169,18 @@ class system extends controlador_base{
         }
         $this->forms_inputs_alta = $form_alta;
 
+        /**
+         * REFACTORIZAR
+         */
         $include_inputs_alta = (new generales())->path_base."templates/inputs/$this->seccion/alta.php";
         if(!file_exists($include_inputs_alta)){
             $include_inputs_alta = (new views())->ruta_templates."inputs/base/alta.php";
-        }
 
+            $path_vendor_base = $this->path_base."vendor/$this->path_vendor_views/templates/inputs/$this->seccion/$this->accion.php";
+            if(file_exists($path_vendor_base)){
+                $include_inputs_alta = $path_vendor_base;
+            }
+        }
         $this->include_inputs_alta = $include_inputs_alta;
 
 
