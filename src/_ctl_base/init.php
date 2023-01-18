@@ -194,7 +194,7 @@ class init{
         return $params;
     }
 
-    public function params(controler $controler, array $params): array
+    final public function params(controler $controler, array $params): array
     {
         $data_init = $this->data_init(controler: $controler);
         if(errores::$error){
