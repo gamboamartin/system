@@ -78,6 +78,22 @@ class initTest extends test {
 
     }
 
+    public function test_init_keys_get(): void
+    {
+        errores::$error = false;
+        $init = new _ctl_base\init();
+        $init = new liberator($init);
+
+        $data_init = new stdClass();
+        $keys_init = array();
+        $keys_init[] = 'a';
+        $resultado = $init->init_keys_get($data_init, $keys_init);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
     public function test_init_param_get(): void
     {
         errores::$error = false;

@@ -130,10 +130,16 @@ class init{
      * @param stdClass $data_init Datos precargados
      * @param array $keys_init Keys  inicializar
      * @return array|stdClass
+     * @version 5.9.0
      */
     private function init_keys_get(stdClass $data_init, array $keys_init): array|stdClass
     {
         foreach ($keys_init as $key){
+            $key = trim($key);
+            if($key === ''){
+                return $this->error->error(mensaje: 'Error key no puede venir vacio', data: $key);
+            }
+
             $data_init = $this->init_get_param(data_init: $data_init,key:  $key);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al inicializar data', data: $data_init);
