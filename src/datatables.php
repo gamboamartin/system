@@ -56,6 +56,13 @@ class datatables{
     }
 
 
+    /**
+     * Inicializa datatables para get data
+     * @param stdClass $datatables datatables precargadas desde controler
+     * @param array $rows_lista Registros
+     * @param string $seccion Seccion en ejecucion
+     * @return array
+     */
     private function column_datable_init(stdClass $datatables, array $rows_lista, string $seccion): array
     {
         if($seccion === ''){
@@ -156,6 +163,7 @@ class datatables{
      * @param array $rows_lista Registros de view
      * @param string $seccion Seccion en ejecucion
      * @return array
+     * @version 5.7.0
      */
     private function columns_datatable(array $rows_lista, string $seccion): array
     {
