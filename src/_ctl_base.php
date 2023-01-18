@@ -485,6 +485,10 @@ class _ctl_base extends system{
         return $name_model_children.'_id';
     }
 
+    /**
+     * Integra un id para filter children
+     * @return string
+     */
     private function key_id_filter(): string
     {
         $this->key_id_filter = $this->tabla.'.id';
