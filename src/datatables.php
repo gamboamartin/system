@@ -240,6 +240,7 @@ class datatables{
      * @param string $key_row_lista key de campos a mostrar en lista
      * @param string $seccion Seccion en ejecucion
      * @return array
+     * @version 4.54.2
      */
     private function columns_title(array $columns, string $key_row_lista, string $seccion): array
     {
@@ -247,6 +248,11 @@ class datatables{
         if($key_row_lista === ''){
             return $this->error->error(
                 mensaje: 'Error $key_row_lista debe ser un string con datos', data:  $key_row_lista);
+        }
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(
+                mensaje: 'Error seccion debe ser un string con datos', data:  $seccion);
         }
 
         $columns = $this->titulo_column_datatable(
