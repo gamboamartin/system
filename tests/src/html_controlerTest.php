@@ -372,6 +372,33 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_emails_alta(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        //$html = new liberator($html);
+
+
+        $_SESSION['usuario_id'] = 2;
+        $_SESSION['grupo_id'] = 2;
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+        $html_controler = new html_controler($html_);
+        $html_controler = new liberator($html_controler);
+
+        $modelo = new adm_accion($this->link);
+        $modelo->campos_view['email']['type'] = 'emails';
+        $row_upd = new stdClass();
+
+        $resultado = $html_controler->emails_alta($modelo, $row_upd);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<div |class|><div |class|><input type='text' name='email' value='' |class| required id='email' placeholder='email' pattern='[a-z0-9!#$%&'*+=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$' /></div></div>", $resultado->email);
+
+        errores::$error = false;
+    }
+
     public function test_input_id(): void
     {
         errores::$error = false;

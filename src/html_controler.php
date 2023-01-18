@@ -290,6 +290,7 @@ class html_controler{
      * @param stdClass $row_upd Registro en proceso
      * @param array $keys_selects parametros
      * @return array|stdClass
+     * @version 5.1.0
      */
     protected function emails_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
     {
