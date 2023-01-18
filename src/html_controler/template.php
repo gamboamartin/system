@@ -14,7 +14,14 @@ class template{
         $this->validacion = new validacion_html();
     }
 
-    private function base_template(directivas $directivas, mixed $params_select, stdClass $row_upd): array|string
+    /**
+     * Integra base template inputs
+     * @param directivas $directivas html
+     * @param stdClass $params_select parametros de inputs
+     * @param stdClass $row_upd Registro en proceso
+     * @return array|string
+     */
+    private function base_template(directivas $directivas, stdClass $params_select, stdClass $row_upd): array|string
     {
         $valida = $this->validacion->valida_input_base(directivas: $directivas,params_select:  $params_select);
         if(errores::$error){
