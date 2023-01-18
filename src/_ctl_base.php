@@ -302,9 +302,17 @@ class _ctl_base extends system{
      * Integra un filtro para get childrens
      * @param int $registro_id Registro id para filtro
      * @return array
+     * @version 5.5.0
      */
     private function filtro_children(int $registro_id): array
     {
+        if($registro_id <= 0){
+            return $this->errores->error(mensaje: 'Error registro_id debe ser mayor a 0',data:  $registro_id);
+        }
+        $this->key_id_filter = trim($this->key_id_filter);
+        if($this->key_id_filter === ''){
+            return $this->errores->error(mensaje: 'Error $this->key_id_filter esta vacio',data:  $this->key_id_filter);
+        }
         $filtro = array();
         $filtro[$this->key_id_filter] = $registro_id;
         return $filtro;
