@@ -5,7 +5,7 @@ use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
 use stdClass;
 
-class init{
+final class init{
     private errores $error;
     public function __construct()
     {
