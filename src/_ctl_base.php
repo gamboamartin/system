@@ -298,6 +298,11 @@ class _ctl_base extends system{
         return $data_retorno;
     }
 
+    /**
+     * Integra un filtro para get childrens
+     * @param int $registro_id Registro id para filtro
+     * @return array
+     */
     private function filtro_children(int $registro_id): array
     {
         $filtro = array();
@@ -488,6 +493,7 @@ class _ctl_base extends system{
     /**
      * Integra un id para filter children
      * @return string
+     * @version 5.4.0
      */
     private function key_id_filter(): string
     {
