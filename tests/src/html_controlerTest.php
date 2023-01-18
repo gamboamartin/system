@@ -95,7 +95,15 @@ class html_controlerTest extends test {
             exit;
         }
 
-
+        $adm_seccion['id'] = 2;
+        $adm_seccion['descripcion'] = 'adm_accion';
+        $adm_seccion['adm_menu_id'] = 1;
+        $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
 
         $html_controler = new html_controler($html_);
 

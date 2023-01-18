@@ -4,6 +4,7 @@ use base\controller\controlador_base;
 use base\orm\modelo;
 use config\generales;
 use config\views;
+use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\errores\errores;
 use gamboamartin\template\directivas;
 use gamboamartin\template\html;
@@ -48,6 +49,8 @@ class system extends controlador_base{
     public string $contenido_table = '';
     public bool $lista_get_data = false;
     public array $not_actions = array();
+
+    public stdClass $adm_seccion_ejecucion;
 
 
     /**
@@ -141,6 +144,17 @@ class system extends controlador_base{
             var_dump($error);
             die('Error');
         }
+
+        $seccion_en_ejecucion = (new adm_seccion(link:  $this->link))->seccion_by_descripcion(descripcion: $this->seccion);
+        if(errores::$error){
+            $error = $this->errores->error(mensaje: 'Error al obtener seccion_en_ejecucion', data: $seccion_en_ejecucion);
+            print_r($error);
+            die('Error');
+        }
+
+        $this->path_vendor_views = $seccion_en_ejecucion->adm_namespace_descripcion;
+
+
     }
 
 
