@@ -48,7 +48,7 @@ class acciones{
      * @return array
      * @version 0.226.37
      */
-    public function acciones_columnas(array $columns, PDO $link, string $seccion, array $not_actions = array()): array
+    final public function acciones_columnas(array $columns, PDO $link, string $seccion, array $not_actions = array()): array
     {
 
         $valida = (new validacion_dt())->valida_data_column(seccion: $seccion);

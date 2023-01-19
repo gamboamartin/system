@@ -28,7 +28,7 @@ class datatables{
      * @return array
      * @version 0.153.33
      */
-    public function acciones_permitidas(PDO $link, string $seccion, array $not_actions = array()): array
+    final public function acciones_permitidas(PDO $link, string $seccion, array $not_actions = array()): array
     {
         $valida = (new validacion_dt())->valida_data_column(seccion: $seccion);
         if(errores::$error){
@@ -347,7 +347,7 @@ class datatables{
         return $datatable;
     }
 
-    public function datatable_base_init(stdClass $datatables, PDO $link, array $rows_lista, string $seccion,
+    final public function datatable_base_init(stdClass $datatables, PDO $link, array $rows_lista, string $seccion,
                                         array $not_actions = array()): array|stdClass
     {
         if($seccion === ''){

@@ -21,7 +21,7 @@ class filtros{
         return $filtro;
     }
 
-    public function filtro_accion_permitida(string $seccion): array
+    final public function filtro_accion_permitida(string $seccion): array
     {
         $filtro = array();
         $filtro['adm_grupo.id'] = $_SESSION['grupo_id'];

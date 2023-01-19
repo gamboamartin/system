@@ -58,7 +58,7 @@ class init{
      * @return array
      * @version 0.284.38
      */
-    public function init_filtro_datatables(stdClass $datatables, array $rows_lista, string $seccion): array
+    final public function init_filtro_datatables(stdClass $datatables, array $rows_lista, string $seccion): array
     {
         $seccion = trim($seccion);
         if($seccion === ''){
