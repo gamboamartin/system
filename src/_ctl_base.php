@@ -283,7 +283,7 @@ class _ctl_base extends system{
      * Retorna despues de transaccion con header
      * @version 0.305.39
      */
-    protected function data_retorno_base(): array|stdClass
+    final protected function data_retorno_base(): array|stdClass
     {
         $siguiente_view = (new actions())->init_alta_bd();
         if(errores::$error){

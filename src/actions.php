@@ -111,7 +111,7 @@ class actions{
      * @return array|string
      * @version v0.15.5
      */
-    public function init_alta_bd(string $siguiente_view = 'modifica'): array|string
+    final public function init_alta_bd(string $siguiente_view = 'modifica'): array|string
     {
         $siguiente_view = $this->siguiente_view(siguiente_view: $siguiente_view);
         if(errores::$error){
