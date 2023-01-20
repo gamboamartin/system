@@ -253,6 +253,25 @@ class datatablesTest extends test {
         errores::$error = false;
     }
 
+    public function test_column_datatable_init(): void
+    {
+        errores::$error = false;
+        $datatables = new datatables();
+        $datatables = new liberator($datatables);
+
+        $datatables_ = new stdClass();
+
+        $rows_lista = array();
+        $rows_lista[''] = 's';
+        $seccion = 'a';
+        $resultado = $datatables->column_datable_init($datatables_, $rows_lista, $seccion);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("S", $resultado['a_s']['titulo']);
+
+        errores::$error = false;
+    }
+
     /**
      */
     public function test_columns_defs(): void

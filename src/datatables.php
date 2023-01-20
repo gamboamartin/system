@@ -62,6 +62,8 @@ class datatables{
      * @param array $rows_lista Registros
      * @param string $seccion Seccion en ejecucion
      * @return array
+     * @version 7.2.0
+     *
      */
     private function column_datable_init(stdClass $datatables, array $rows_lista, string $seccion): array
     {
@@ -70,6 +72,9 @@ class datatables{
                 mensaje: 'Error seccion debe ser un string con datos', data:  $seccion);
         }
         if(isset($datatables->columns)){
+            if(!is_array($datatables->columns)){
+                return $this->error->error(mensaje: 'Error $datatables->columns debe se run array ', data: $datatables);
+            }
             $columns = $datatables->columns;
         }
         else{
@@ -173,6 +178,12 @@ class datatables{
         }
         $columns = array();
         foreach ($rows_lista as $key_row_lista){
+            $key_row_lista = trim($key_row_lista);
+            if($key_row_lista === ''){
+                return $this->error->error(
+                    mensaje: 'Error $key_row_lista debe ser un string con datos', data:  $key_row_lista);
+            }
+
             $columns = $this->columns_title(columns: $columns,key_row_lista:  $key_row_lista, seccion: $seccion);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al maquetar column titulo ', data: $columns);
