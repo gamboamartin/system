@@ -152,6 +152,16 @@ class system extends controlador_base{
             die('Error');
         }
 
+        $keys = array('adm_namespace_descripcion');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $seccion_en_ejecucion);
+        if(errores::$error){
+            $error = $this->errores->error(mensaje:
+                'Error  adm_namespace_descripcion esta vacio en seccion_en_ejecucion', data: $valida);
+            print_r($error);
+            die('Error');
+        }
+        
+
         $this->path_vendor_views = $seccion_en_ejecucion->adm_namespace_descripcion;
 
 
