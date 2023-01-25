@@ -545,6 +545,9 @@ class _ctl_base extends system{
 
         foreach ($keys_params as $key_val){
 
+            /**
+             * REFACTORIZAR
+             */
             if($key_val === 'id_selected'){
                 if(is_null($id_selected)){
                     $id_selected = -1;
@@ -554,8 +557,13 @@ class _ctl_base extends system{
                 return $this->errores->error(mensaje: 'Error key val no es una variable valida',data:  $key_val);
             }
 
+            $value = $$key_val;
+            if(isset($keys_selects[$key]->$key_val)){
+                $value=$keys_selects[$key]->$key_val;
+            }
+
             $keys_selects = $this->integra_key_to_select(key: $key,key_val:  $key_val,keys_selects:  $keys_selects,
-                value:  $$key_val);
+                value:  $value);
             if(errores::$error){
                 return $this->errores->error(mensaje: 'Error al integrar keys',data:  $keys_selects);
             }
