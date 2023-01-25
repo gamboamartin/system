@@ -98,20 +98,19 @@ class system extends controlador_base{
         }
 
         $this->include_menu_secciones = "templates/$this->tabla/$this->accion/secciones.php";
-        $include_breadcrumb = (new views())->ruta_templates."head/$this->accion/title.php";
-        if(file_exists("templates/head/$this->tabla/$this->accion/title.php")){
-            $include_breadcrumb = "templates/head/$this->tabla/$this->accion/title.php";
-        }
-        $this->include_breadcrumb = $include_breadcrumb;
-        if(!file_exists($include_breadcrumb)){
-            $this->include_breadcrumb = '';
+
+
+        $include_breadcrumb_rs = (new init())->include_breadcrumb(controler: $this);
+        if(errores::$error){
+            $error = $this->errores->error(mensaje: 'Error al inicializar include_breadcrumb_rs', data: $include_breadcrumb_rs);
+            var_dump($error);
+            die('Error');
         }
 
         foreach ($datatables_custom_cols_omite as $campo){
             if(isset($datatables->columns[$campo])){
                 unset($datatables->columns[$campo]);
             }
-
         }
 
         foreach ($datatables_custom_cols_omite as $campo){
@@ -160,7 +159,7 @@ class system extends controlador_base{
             print_r($error);
             die('Error');
         }
-        
+
 
         $this->path_vendor_views = $seccion_en_ejecucion->adm_namespace_descripcion;
 

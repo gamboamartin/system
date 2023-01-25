@@ -1,6 +1,7 @@
 <?php
 namespace gamboamartin\system;
 use config\generales;
+use config\views;
 use gamboamartin\errores\errores;
 use gamboamartin\template\html;
 use stdClass;
@@ -67,6 +68,28 @@ class init{
         $keys_row_lista->name_lista = $name_lista;
 
         return $keys_row_lista;
+    }
+
+    public function include_breadcrumb(system $controler){
+        $include_breadcrumb = (new views())->ruta_templates."head/$controler->accion/title.php";
+        if(file_exists("templates/head/$controler->tabla/$controler->accion/title.php")){
+            $include_breadcrumb = "templates/head/$controler->tabla/$controler->accion/title.php";
+        }
+
+        $include_breadcrumb_rs = $this->include_breadcrumbs(controlador: $controler, include_breadcrumb: $include_breadcrumb);
+        if(errores::$error){
+            return  $this->error->error(mensaje: 'Error al inicializar include_breadcrumb_rs', data: $include_breadcrumb_rs);
+        }
+        return $include_breadcrumb_rs;
+    }
+
+    private function include_breadcrumbs(system $controlador, string $include_breadcrumb): string
+    {
+        $controlador->include_breadcrumb = $include_breadcrumb;
+        if(!file_exists($include_breadcrumb)){
+            $controlador->include_breadcrumb = '';
+        }
+        return $controlador->include_breadcrumb;
     }
 
     /**
