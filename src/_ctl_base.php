@@ -318,6 +318,11 @@ class _ctl_base extends system{
         return $filtro;
     }
 
+    /**
+     * Genera un filtro para ser utilizado en childrens y obtener los registros pertenecientes al parent
+     * @param int $registro_id Registro en proceso
+     * @return array
+     */
     private function genera_filtro_children(int $registro_id): array
     {
         $key_id_filter = $this->key_id_filter();
