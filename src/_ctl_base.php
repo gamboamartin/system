@@ -541,7 +541,7 @@ class _ctl_base extends system{
         if(!isset($keys_selects[$key])){
             $keys_selects[$key] = new stdClass();
         }
-        
+
         $keys_params = array('cols','con_registros','label','id_selected','filtro');
 
         foreach ($keys_params as $key_val){

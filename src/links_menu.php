@@ -385,7 +385,7 @@ class links_menu{
      * @return array|string
      * @version 0.189.35
      */
-    public function link_alta_bd(PDO $link, string $seccion): array|string
+    final public function link_alta_bd(PDO $link, string $seccion): array|string
     {
         $alta_bd = '';
         $tengo_permiso = (new adm_usuario(link: $link))->tengo_permiso(adm_accion: 'alta_bd', adm_seccion: $seccion);
@@ -697,6 +697,10 @@ class links_menu{
         return $lista;
     }
 
+    /** Genera los links de una lista sin id
+     * @param PDO $link Conexion a la base de datos
+     * @return array|stdClass
+     */
     private function listas(PDO $link): array|stdClass
     {
 
