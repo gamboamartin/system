@@ -43,6 +43,7 @@ class html_controler{
      * @param string $title Titulo a mostrar del button
      * @return string
      * @version 7.11.0
+     * @por_doc = true
      */
     private function a_role(int $cols, string $etiqueta_html, string $icon_html, string $link, string $role,
                             string $style, array $styles, string $title): string
