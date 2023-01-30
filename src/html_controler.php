@@ -901,7 +901,7 @@ class html_controler{
      * @return array|string
      * @version 0.130.33
      */
-    protected function input_text_required(int $cols, bool $disabled, string $name, string $place_holder,
+    final public function input_text_required(int $cols, bool $disabled, string $name, string $place_holder,
                                            stdClass $row_upd, bool $value_vacio, string $regex = '',
                                            string $title = ''): array|string
     {
