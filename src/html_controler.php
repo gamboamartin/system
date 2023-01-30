@@ -42,6 +42,7 @@ class html_controler{
      * @param array $styles Estilos css
      * @param string $title Titulo a mostrar del button
      * @return string
+     * @version 7.11.0
      */
     private function a_role(int $cols, string $etiqueta_html, string $icon_html, string $link, string $role,
                             string $style, array $styles, string $title): string
@@ -49,6 +50,11 @@ class html_controler{
         $cols_html = "col-sm-$cols";
         if($cols === -1){
             $cols_html = '';
+        }
+
+        $role = trim($role);
+        if($role === ''){;
+            $role = 'button';
         }
 
         $propiedades = '';

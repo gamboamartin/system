@@ -32,6 +32,29 @@ class html_controlerTest extends test {
         $this->paths_conf->views = '/var/www/html/system/config/views.php';
     }
 
+    public function test_a_role(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
+
+
+        $cols = -1;
+        $etiqueta_html = '';
+        $icon_html = '';
+        $link = '';
+        $role = '';
+        $style = '';
+        $styles = array();
+        $title = '';
+        $resultado = $html->a_role($cols, $etiqueta_html, $icon_html, $link, $role, $style, $styles, $title);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<a role='button' title='' href='' class='btn btn- ' ></a>",$resultado);
+        errores::$error = false;
+    }
+
     /**
      */
     public function test_alta(): void
