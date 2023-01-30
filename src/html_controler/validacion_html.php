@@ -108,7 +108,7 @@ class validacion_html extends validacion{
      * @return bool|array
      * @version 0.315.40
      */
-    public function valida_input_base(directivas $directivas, mixed $params_select): bool|array
+    final public function valida_input_base(directivas $directivas, mixed $params_select): bool|array
     {
         $valida = $this->valida_input(params_select: $params_select);
         if(errores::$error){
