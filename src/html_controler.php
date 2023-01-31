@@ -79,7 +79,7 @@ class html_controler{
      * @return array|stdClass
      * @version 0.16.5
      */
-    public function alta(system $controler): array|stdClass
+    final public function alta(system $controler): array|stdClass
     {
         $controler->inputs = new stdClass();
 
@@ -811,7 +811,7 @@ class html_controler{
      * @param bool $value_vacio
      * @return array|stdClass
      */
-    protected function inputs_base(stdClass $cols, controler $controler, bool $value_vacio): array|stdClass
+    final protected function inputs_base(stdClass $cols, controler $controler, bool $value_vacio): array|stdClass
     {
 
         $keys = array('codigo','codigo_bis');
@@ -1058,7 +1058,7 @@ class html_controler{
      * @return array|stdClass
      * @version 0.211.37
      */
-    protected function obtener_inputs(array|stdClass $campos_view): array|stdClass
+    final protected function obtener_inputs(array|stdClass $campos_view): array|stdClass
     {
         $selects = array();
         $inputs = array();
@@ -1137,7 +1137,7 @@ class html_controler{
      * @return array|modelo
      * @version 0.120.33
      */
-    protected function obtener_select(array $campo): array|modelo
+    final protected function obtener_select(array $campo): array|modelo
     {
         if (!isset($campo['model'])){
             return $this->error->error(mensaje: 'Error no existe key model', data: $campo);
@@ -1156,7 +1156,7 @@ class html_controler{
      * @return string|array
      * @version 0.205.36
      */
-    protected function obtener_tipo_input(array|stdClass $campo): string|array
+    final protected function obtener_tipo_input(array|stdClass $campo): string|array
     {
         if(is_object($campo)){
             $campo = (array)$campo;

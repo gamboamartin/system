@@ -173,7 +173,7 @@ class params{
      * @return array|stdClass
      * @version 0.245.37
      */
-    public function params_select_init(string $item, array $keys_selects): array|stdClass
+    final public function params_select_init(string $item, array $keys_selects): array|stdClass
     {
 
         $item = trim($item);
