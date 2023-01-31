@@ -62,7 +62,7 @@ class select{
      * @fecha 2022-08-03 09:55
      * @author mgamboa
      */
-    public function init_data_select(bool $con_registros, modelo $modelo, array $extra_params_keys = array(),
+    final public function init_data_select(bool $con_registros, modelo $modelo, array $extra_params_keys = array(),
                                      array $filtro = array(), string $key_descripcion = '',
                                      string $key_descripcion_select= '', string $key_id = '', string $label = '',
                                      string $name = '', array $not_in = array()): array|stdClass
