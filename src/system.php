@@ -290,6 +290,76 @@ class system extends controlador_base{
         return $r_alta_bd;
     }
 
+    public function data_ajax(bool $header, bool $ws = false, array $not_actions = array()){
+
+        $params = (new datatables())->params(datatable: $this->datatable);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al obtener params', data: $params,header:  $header, ws: $ws);
+        }
+
+        if (isset($_GET['filtros'])){
+            $filtros = $_GET['filtros'];
+
+            foreach ($filtros as $index => $filtro){
+                $keys = array_keys($filtro);
+
+                if (!array_key_exists("key", $filtro)){
+                    return $this->retorno_error(mensaje: 'Error no exite la clave key', data: $filtro, header: $header,
+                        ws: $ws);
+                }
+
+                if (!array_key_exists("valor", $filtro)){
+                    return $this->retorno_error(mensaje: 'Error no exite la clave valor', data: $filtro, header: $header,
+                        ws: $ws);
+                }
+
+                if (!array_key_exists("operador", $filtro)){
+                    return $this->retorno_error(mensaje: 'Error no exite la clave operador', data: $filtro, header: $header,
+                        ws: $ws);
+                }
+
+                if (!array_key_exists("comparacion", $filtro)){
+                    return $this->retorno_error(mensaje: 'Error no exite la clave comparacion', data: $filtro,
+                        header: $header, ws: $ws);
+                }
+
+                if (trim($filtro['valor']) !== ""){
+                    $params->filtro_especial[$index][$filtro['valor']]['operador'] = $filtro['operador'];
+                    $params->filtro_especial[$index][$filtro['valor']]['valor'] = $filtro['key'];
+                    $params->filtro_especial[$index][$filtro['valor']]['comparacion'] = $filtro['comparacion'];
+                    $params->filtro_especial[$index][$filtro['valor']]['valor_es_campo'] = true;
+                }
+            }
+        }
+
+        $data_result = $this->modelo->get_data_lista(filtro:$params->filtro,filtro_especial: $params->filtro_especial,
+            n_rows_for_page: $params->n_rows_for_page, pagina: $params->pagina);
+
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al obtener data result', data: $data_result,header:  $header, ws: $ws);
+        }
+
+        $salida = array(
+            "draw"         => $params->draw,
+            "recordsTotal"    => intval( $data_result['n_registros']),
+            "recordsFiltered" => intval( $data_result['n_registros'] ),
+            "data"            => $data_result['registros']);
+
+        if($ws) {
+            ob_clean();
+            header('Content-Type: application/json');
+            try {
+                echo json_encode($salida, JSON_THROW_ON_ERROR);
+            } catch (Throwable $e) {
+                $error = $this->errores->error(mensaje: 'Error al obtener registros', data: $e);
+                print_r($error);
+            }
+            exit;
+        }
+
+        return $salida;
+    }
+
     private function datatable_columnDefs_init(array $columns, array $columndefs): array
     {
         $index_header = array();
