@@ -536,6 +536,8 @@ class system extends controlador_base{
      * @param array $keys_selects Conjunto de keys para select
      * @return array
      * @version 0.227.37
+     * @final rev
+     * @por_doc true
      */
     protected function key_selects_txt(array $keys_selects): array
     {

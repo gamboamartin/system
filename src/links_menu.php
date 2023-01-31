@@ -264,7 +264,7 @@ class links_menu{
      * @return stdClass|array
      * @version v0.21.2
      */
-    public function init_link_controller(system $controler): stdClass|array
+    final public function init_link_controller(system $controler): stdClass|array
     {
         $seccion = $controler->seccion;
 

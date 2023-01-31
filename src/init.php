@@ -97,6 +97,7 @@ class init{
      * @param system $controller Controlador en ejecucion
      * @return stdClass
      * @version 0.92.32
+     * @por_doc true
      */
     private function init_acciones_base(system $controller): stdClass
     {

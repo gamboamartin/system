@@ -27,7 +27,7 @@ class mensajeria{
      * @return array|stdClass
      * @version 0.20.1
      */
-    public function init_mensajes(controlador_base $controler, html $html): array|stdClass
+    final public function init_mensajes(controlador_base $controler, html $html): array|stdClass
     {
         $mensaje_exito = (new directivas(html: $html))->mensaje_exito(mensaje_exito: $controler->mensaje_exito);
         if(errores::$error){
