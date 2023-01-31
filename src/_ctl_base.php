@@ -101,7 +101,7 @@ class _ctl_base extends system{
         return $this;
     }
 
-    public function contenido_children(stdClass $data_view, string $next_accion, array $not_actions): array|string
+    final public function contenido_children(stdClass $data_view, string $next_accion, array $not_actions): array|string
     {
 
         $params = array();
@@ -128,7 +128,7 @@ class _ctl_base extends system{
         return $contenido_table;
     }
 
-    protected function children_data(string $namespace_model, string $name_model_children, array $params,
+    final protected function children_data(string $namespace_model, string $name_model_children, array $params,
                                      array $not_actions = array()): array
     {
         $inputs = $this->children_base();
@@ -152,7 +152,7 @@ class _ctl_base extends system{
      * @return array|stdClass
      * @version 0.309.39
      */
-    protected function children_base(): array|stdClass
+    final protected function children_base(): array|stdClass
     {
         $registro = $this->init_data_children();
         if(errores::$error){
@@ -424,6 +424,7 @@ class _ctl_base extends system{
      * @param stdClass $registro
      * @return stdClass|array
      * @version 0.265.38
+     * @final rev
      */
     protected function inputs_children(stdClass $registro): stdClass|array
     {

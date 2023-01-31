@@ -108,7 +108,7 @@ class table{
 
     }
 
-    public function table(array $childrens, int $cols_actions, stdClass $data_view, array $class_css_table = array(),
+    final public function table(array $childrens, int $cols_actions, stdClass $data_view, array $class_css_table = array(),
                           array $class_css_td = array(), array $id_css_table = array(), array $id_css_td = array()): array|string
     {
         $contenido_table = $this->contenido_table(class_css_td: $class_css_td, childrens: $childrens,
@@ -125,7 +125,7 @@ class table{
 
     }
 
-    public function table_genera(string $contenido_table, array $class_css, array $id_css): array|string
+    final public function table_genera(string $contenido_table, array $class_css, array $id_css): array|string
     {
         $css_html = $this->atributos_css(class_css: $class_css,id_css:  $id_css);
         if(errores::$error){
