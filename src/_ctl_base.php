@@ -25,7 +25,7 @@ class _ctl_base extends system{
      * @return array|stdClass
      * @version 4.31.1
      */
-    protected function alta_bd_base(): array|stdClass
+    final protected function alta_bd_base(): array|stdClass
     {
         $data_retorno = $this->data_retorno_base();
         if(errores::$error){

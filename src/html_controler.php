@@ -105,7 +105,7 @@ class html_controler{
      * @return array
      * @version 0.165.34
      */
-    public function boton_link_permitido(array $accion_permitida, int $indice, int $registro_id, array $rows,
+    final public function boton_link_permitido(array $accion_permitida, int $indice, int $registro_id, array $rows,
                                          array $params = array()): array
     {
         $valida = $this->validacion->valida_boton_link(

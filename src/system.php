@@ -217,6 +217,7 @@ class system extends controlador_base{
      * @param bool $ws Mostrara el resultado en forma de json
      * @return array|stdClass
      * @version 0.230.37
+     * @final rev
      */
     public function alta_bd(bool $header, bool $ws = false): array|stdClass
     {
@@ -818,7 +819,7 @@ class system extends controlador_base{
      * @return array
      * @version 0.173.34
      */
-    protected function rows_con_permisos(
+    final protected function rows_con_permisos(
         string $key_id, array $rows, string $seccion, array $not_actions = array(), array $params = array()): array
     {
 

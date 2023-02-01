@@ -106,7 +106,7 @@ class out_permisos{
      * @return array
      * @version 0.172.34
      */
-    public function genera_buttons_permiso(
+    final public function genera_buttons_permiso(
         array $acciones_permitidas, html_controler$html, string $key_id, array $rows, array $params = array()): array
     {
         foreach ($rows as $indice=>$row){
