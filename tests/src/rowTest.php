@@ -43,6 +43,24 @@ class rowTest extends test {
         $html = new html();
         $html_controler = new html_controler($html);
 
+        $del = (new adm_seccion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $adm_seccion['id'] = 99;
+        $adm_seccion['descripcion'] = 'adm_accion';
+        $adm_seccion['adm_menu_id'] = 1;
+        $adm_seccion['adm_namespace_id'] = 1;
+        $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
         $modelo = new adm_accion($this->link);
         $obj_link = new links_menu($this->link, -1);
 
@@ -85,6 +103,7 @@ class rowTest extends test {
         $adm_seccion['id'] = 1;
         $adm_seccion['descripcion'] = 'adm_accion';
         $adm_seccion['adm_menu_id'] = 1;
+        $adm_seccion['adm_namespace_id'] = 1;
         $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
         if(errores::$error){
             $error = (new errores())->error('Error al insertar', $alta);

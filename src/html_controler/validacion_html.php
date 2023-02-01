@@ -39,7 +39,7 @@ class validacion_html extends validacion{
         return true;
     }
 
-    public function valida_boton_link(array $accion_permitida, int $indice, int $registro_id, array $rows): bool|array
+    final public function valida_boton_link(array $accion_permitida, int $indice, int $registro_id, array $rows): bool|array
     {
         $keys = array('adm_accion_descripcion','adm_accion_titulo','adm_seccion_descripcion','adm_accion_css',
             'adm_accion_es_status','adm_accion_muestra_icono_btn','adm_accion_muestra_titulo_btn');

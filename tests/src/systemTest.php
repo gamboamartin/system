@@ -76,6 +76,7 @@ class systemTest extends test {
         $adm_seccion['id'] = 40;
         $adm_seccion['descripcion'] = 'adm_mes';
         $adm_seccion['adm_menu_id'] = 1;
+        $adm_seccion['adm_namespace_id'] = 1;
         $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
         if(errores::$error){
             $error = (new errores())->error('Error al insertar', $alta);
@@ -124,6 +125,7 @@ class systemTest extends test {
         $adm_seccion['id'] = mt_rand(1,999999);
         $adm_seccion['descripcion'] = 'adm_accion';
         $adm_seccion['adm_menu_id'] = 1;
+        $adm_seccion['adm_namespace_id'] = 1;
         $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
         if(errores::$error){
             $error = (new errores())->error('Error al insertar', $alta);
@@ -398,6 +400,7 @@ class systemTest extends test {
         $adm_seccion['id'] = mt_rand(1,999999);
         $adm_seccion['descripcion'] = 'adm_accion';
         $adm_seccion['adm_menu_id'] = 1;
+        $adm_seccion['adm_namespace_id'] = 1;
         $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
         if(errores::$error){
             $error = (new errores())->error('Error al insertar', $alta);
@@ -430,11 +433,30 @@ class systemTest extends test {
     {
         errores::$error = false;
         $_SESSION['grupo_id'] = 2;
+        $_SESSION['usuario_id'] = 2;
         $_GET['session_id'] = 1;
         $_GET['registro_id'] = 1;
         $_GET['seccion'] = 'adm_accion';
         $html = new html();
         $html_controler = new html_controler($html);
+
+        $del = (new adm_seccion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $adm_seccion['id'] = 999;
+        $adm_seccion['descripcion'] = 'adm_accion';
+        $adm_seccion['adm_menu_id'] = 1;
+        $adm_seccion['adm_namespace_id'] = 1;
+        $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
 
         $modelo = new adm_accion($this->link);
         $obj_link = new links_menu($this->link, -1);
@@ -480,6 +502,7 @@ class systemTest extends test {
         $adm_seccion['id'] = 1;
         $adm_seccion['descripcion'] = 'adm_accion';
         $adm_seccion['adm_menu_id'] = 1;
+        $adm_seccion['adm_namespace_id'] = 1;
         $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
         if(errores::$error){
             $error = (new errores())->error('Error al insertar', $alta);
