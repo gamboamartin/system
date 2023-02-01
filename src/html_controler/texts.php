@@ -66,7 +66,7 @@ class texts{
      * @return array|stdClass
      * @version 0.254.37
      */
-    public function texts_integra(array $campos_view, directivas $directivas, array $keys_selects, stdClass $row_upd): array|stdClass
+    final public function texts_integra(array $campos_view, directivas $directivas, array $keys_selects, stdClass $row_upd): array|stdClass
     {
 
         $keys = array('inputs');

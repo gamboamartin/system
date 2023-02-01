@@ -232,7 +232,7 @@ class html_controler{
      * @return array|stdClass
      * @version 2.279.38
      */
-    protected function dates_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
+    final protected function dates_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
     {
         $campos_view = $this->obtener_inputs($modelo->campos_view);
         if(errores::$error){
@@ -413,7 +413,7 @@ class html_controler{
      * @version 0.293.39
      */
 
-    protected function files_alta2(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
+    final protected function files_alta2(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
     {
         $campos_view = $this->obtener_inputs(campos_view: $modelo->campos_view);
         if(errores::$error){
@@ -1292,7 +1292,7 @@ class html_controler{
      * @return array|stdClass
      * @version 4.8.1
      */
-    protected function passwords_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
+    final protected function passwords_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
     {
         $campos_view = $this->obtener_inputs(campos_view: $modelo->campos_view);
         if(errores::$error){
@@ -1569,7 +1569,7 @@ class html_controler{
      * @return array|stdClass
      * @version 0.242.37
      */
-    protected function selects_alta2(modelo $modelo,array $keys_selects = array()): array|stdClass
+    final protected function selects_alta2(modelo $modelo,array $keys_selects = array()): array|stdClass
     {
         $campos_view = $this->obtener_inputs($modelo->campos_view);
         if(errores::$error){
@@ -1797,7 +1797,7 @@ class html_controler{
      * @return array|stdClass
      * @version 0.255.37
      */
-    protected function texts_alta2(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
+    final protected function texts_alta2(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
     {
         $campos_view = $this->obtener_inputs($modelo->campos_view);
         if(errores::$error){

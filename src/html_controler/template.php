@@ -84,7 +84,7 @@ class template{
      * @return array|string
      * @version 0.233.37
      */
-    public function dates_template(directivas $directivas, stdClass $params_select, stdClass $row_upd): array|string
+    final public function dates_template(directivas $directivas, stdClass $params_select, stdClass $row_upd): array|string
     {
         $div = $this->base_template(directivas: $directivas,params_select:  $params_select, row_upd: $row_upd);
         if(errores::$error){
