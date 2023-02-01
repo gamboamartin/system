@@ -284,7 +284,7 @@ class datatables{
 
 
 
-    public function data_link(array $adm_accion_grupo, array $data_result, html $html_base, string $key, int $registro_id): array|stdClass
+    final public function data_link(array $adm_accion_grupo, array $data_result, html $html_base, string $key, int $registro_id): array|stdClass
     {
         $style = (new html_controler(html: $html_base))->style_btn(
             accion_permitida: $adm_accion_grupo, row: $data_result['registros'][$key]);
@@ -303,7 +303,7 @@ class datatables{
         return $data_link;
     }
 
-    public function database_link(array $adm_accion_grupo, html_controler $html, int $registro_id, string $style,
+    final public function database_link(array $adm_accion_grupo, html_controler $html, int $registro_id, string $style,
                                   array $styles = array('margin-left'=>'2px', 'margin-bottom'=>'2px') ): array|stdClass
     {
 
@@ -500,7 +500,7 @@ class datatables{
         return $not_in;
     }
 
-    public function params(array $datatable): array|stdClass
+    final public function params(array $datatable): array|stdClass
     {
         $draw = (new \gamboamartin\system\datatables\init())->draw();
         if(errores::$error){

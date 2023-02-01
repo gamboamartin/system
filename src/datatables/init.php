@@ -19,7 +19,7 @@ class init{
      * @return int|array
      * @version 0.239.37
      */
-    public function draw(): int|array
+    final public function draw(): int|array
     {
         $draw = mt_rand(1,999);
         if (isset ( $_GET['draw'] )) {
@@ -85,7 +85,7 @@ class init{
      * Integra el numero de registros por pagina en el get data
      * @return int
      */
-    public function n_rows_for_page(): int
+    final public function n_rows_for_page(): int
     {
         $n_rows_for_page = 10;
         if (isset ( $_GET['length'] )) {
@@ -94,7 +94,7 @@ class init{
         return $n_rows_for_page;
     }
 
-    public function pagina(int $n_rows_for_page): int
+    final public function pagina(int $n_rows_for_page): int
     {
         $pagina = 1;
         if (isset ( $_GET['start'] )) {

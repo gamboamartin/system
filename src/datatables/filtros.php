@@ -76,7 +76,7 @@ class filtros{
         return $filtro_especial;
     }
 
-    public function genera_filtro_especial_datatable(array $datatable): array
+    final public function genera_filtro_especial_datatable(array $datatable): array
     {
         $filtro_especial = array();
         if(isset($_GET['search']) && $_GET['search']['value'] !== '' ) {

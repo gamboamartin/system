@@ -20,7 +20,7 @@ class params{
      * @return stdClass|array
      * @version 2.8.0
      */
-    public function data_icon(array $adm_accion): stdClass|array
+    final public function data_icon(array $adm_accion): stdClass|array
     {
         $keys = array('adm_accion_muestra_icono_btn','adm_accion_muestra_titulo_btn');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $adm_accion);

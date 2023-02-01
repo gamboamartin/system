@@ -179,7 +179,7 @@ class html_controler{
      * @return string|array
      * @version 0.164.34
      */
-    public function button_href(string $accion, string $etiqueta, int $registro_id, string $seccion, string $style,
+    final public function button_href(string $accion, string $etiqueta, int $registro_id, string $seccion, string $style,
                                 int $cols = 12, string $icon = '', bool $muestra_icono_btn = false,
                                 bool $muestra_titulo_btn = true, array $params = array(),
                                 string $role = 'button', array $styles = array()): string|array
@@ -1649,7 +1649,7 @@ class html_controler{
      * @return array|string
      * @version 0.237.37
      */
-    public function style_btn(array $accion_permitida, array $row):array|string{
+    final public function style_btn(array $accion_permitida, array $row):array|string{
 
         $valida = $this->valida_boton_data_accion(accion_permitida: $accion_permitida);
         if(errores::$error){
@@ -1813,8 +1813,7 @@ class html_controler{
         return $texts;
     }
 
-
-    public function valida_boton_data_accion(array $accion_permitida): bool|array
+    final public function valida_boton_data_accion(array $accion_permitida): bool|array
     {
         $keys = array('adm_accion_css','adm_accion_es_status','adm_accion_descripcion','adm_seccion_descripcion');
         $valida = $this->validacion->valida_existencia_keys(keys:$keys,registro:  $accion_permitida);
