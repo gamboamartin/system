@@ -394,7 +394,7 @@ class system extends controlador_base{
         return $index_header;
     }
 
-    public function datatable_init(array $columns, array $filtro = array(), string $identificador = ".datatable",
+    final public function datatable_init(array $columns, array $filtro = array(), string $identificador = ".datatable",
                                    array $data = array()): array
     {
 

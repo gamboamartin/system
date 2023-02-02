@@ -40,7 +40,7 @@ class init{
      * @return array
      * @version 0.151.33
      */
-    public function init_datatable(array $filtro,string $identificador = ".datatable", array $data = array()): array
+    final public function init_datatable(array $filtro,string $identificador = ".datatable", array $data = array()): array
     {
         $datatable["columns"] = array();
         $datatable["columnDefs"] = array();

@@ -343,7 +343,7 @@ class datatables{
      * @return array
      * @version 0.152.33
      */
-    public function datatable(array $columns, array $filtro = array(),string $identificador = ".datatable",
+    final public function datatable(array $columns, array $filtro = array(),string $identificador = ".datatable",
                               array $data = array()): array
     {
         $datatable = (new \gamboamartin\system\datatables\init())->init_datatable(filtro:$filtro,identificador: $identificador, data: $data);

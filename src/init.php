@@ -70,7 +70,7 @@ class init{
         return $keys_row_lista;
     }
 
-    public function include_breadcrumb(system $controler){
+    final public function include_breadcrumb(system $controler){
         $include_breadcrumb = (new views())->ruta_templates."head/$controler->accion/title.php";
         if(file_exists("templates/head/$controler->tabla/$controler->accion/title.php")){
             $include_breadcrumb = "templates/head/$controler->tabla/$controler->accion/title.php";
@@ -121,7 +121,7 @@ class init{
      * @return array|stdClass
      * @version 0.163.34
      */
-    public function init_controller(system $controller, html $html): array|stdClass
+    final public function init_controller(system $controller, html $html): array|stdClass
     {
         $init_msj = (new mensajeria())->init_mensajes(controler: $controller,html: $html);
         if(errores::$error){
@@ -184,7 +184,7 @@ class init{
      * @return array
      * @version 0.169.34
      */
-    public function keys_row_lista(system $controler): array
+    final public function keys_row_lista(system $controler): array
     {
 
         foreach ($controler->rows_lista as $row){
