@@ -480,7 +480,7 @@ class system extends controlador_base{
         return $r_del;
     }
 
-    public function genera_inputs(array $keys_selects = array()): array|stdClass
+    final public function genera_inputs(array $keys_selects = array()): array|stdClass
     {
         if(!is_object($this->inputs)){
             return $this->errores->error(
@@ -590,7 +590,7 @@ class system extends controlador_base{
         return $header_retorno;
     }
 
-    public function inputs(array $keys_selects): array|stdClass
+    final public function inputs(array $keys_selects): array|stdClass
     {
         $keys_selects = $this->key_selects_txt(keys_selects: $keys_selects);
         if(errores::$error){

@@ -35,7 +35,7 @@ class out_permisos{
         return $buttons;
     }
 
-    public function buttons_view(system $controler, array $not_actions, array $params,
+    final public function buttons_view(system $controler, array $not_actions, array $params,
                                  array $params_ajustados = array(),
                                  array $styles = array('margin-bottom'=>'5px')): array
     {
