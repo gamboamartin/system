@@ -5,6 +5,7 @@ use gamboamartin\errores\errores;
 use gamboamartin\system\html_controler\template;
 use gamboamartin\template\directivas;
 use gamboamartin\template\html;
+use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 use stdClass;
 
@@ -20,6 +21,35 @@ class templateTest extends test {
         $this->paths_conf->generales = '/var/www/html/system/config/generales.php';
         $this->paths_conf->database = '/var/www/html/system/config/database.php';
         $this->paths_conf->views = '/var/www/html/system/config/views.php';
+    }
+
+    public function test_base_template(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new template();
+        $html = new liberator($html);
+
+
+        $params_select =new stdClass();
+        $row_upd = new stdClass();
+
+
+        $params_select->cols = '1';
+        $params_select->disabled = false;
+        $params_select->name = 'a';
+        $params_select->place_holder = 'z';
+        $params_select->value_vacio = true;
+
+        $directivas = new directivas($html_);
+
+        $resultado = $html->base_template($directivas, $params_select, $row_upd);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<div |class|><div |class|><input type='date' name='a' value='' |class| required id='a' placeholder='z' /></div></div>", $resultado);
+        errores::$error = false;
+
+
     }
 
     public function test_dates_template(): void

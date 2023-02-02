@@ -20,6 +20,7 @@ class template{
      * @param stdClass $params_select parametros de inputs
      * @param stdClass $row_upd Registro en proceso
      * @return array|string
+     * @version 7.27.0
      */
     private function base_template(directivas $directivas, stdClass $params_select, stdClass $row_upd): array|string
     {
