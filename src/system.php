@@ -663,6 +663,7 @@ class system extends controlador_base{
      * @param bool $ws Si ws da salida json
      * @return array|stdClass
      * @version 0.210.37
+     * @final rev
      */
     public function modifica(bool $header, bool $ws = false): array|stdClass
     {
@@ -707,12 +708,6 @@ class system extends controlador_base{
         }
         $this->forms_inputs_modifica = $form_modifica;
 
-        /*$include_inputs_modifica = (new generales())->path_base."templates/inputs/$this->seccion/modifica.php";
-        if(!file_exists($include_inputs_modifica)){
-            $include_inputs_modifica = (new views())->ruta_templates."inputs/base/modifica.php";
-        }
-
-        $this->include_inputs_modifica = $include_inputs_modifica;*/
 
         /**
          * REFCATROIZAR SIMILAR ALTA

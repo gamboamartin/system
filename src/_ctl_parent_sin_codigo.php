@@ -36,7 +36,12 @@ class _ctl_parent_sin_codigo extends _ctl_parent {
 
     }
 
-
+    /**
+     * @param bool $header
+     * @param bool $ws
+     * @return array|string
+     * @final rev
+     */
     public function alta(bool $header, bool $ws = false): array|string
     {
 
@@ -58,6 +63,13 @@ class _ctl_parent_sin_codigo extends _ctl_parent {
         return $r_alta;
     }
 
+    /**
+     * @param bool $header
+     * @param bool $ws
+     * @param array $keys_selects
+     * @return array|stdClass
+     * @final rev
+     */
     public function modifica(bool $header, bool $ws = false, array $keys_selects = array()): array|stdClass
     {
         $keys_selects = array();

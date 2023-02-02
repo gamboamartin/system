@@ -1006,7 +1006,7 @@ class html_controler{
      * @return array|stdClass
      * @version 0.102.32
      */
-    public function modifica(controler $controler): array|stdClass
+    final public function modifica(controler $controler): array|stdClass
     {
         $controler->inputs = new stdClass();
 
