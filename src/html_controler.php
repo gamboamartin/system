@@ -299,7 +299,7 @@ class html_controler{
      * @return array|stdClass
      * @version 5.1.0
      */
-    protected function emails_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
+    final protected function emails_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
     {
         $campos_view = $this->obtener_inputs($modelo->campos_view);
         if(errores::$error){
@@ -344,7 +344,7 @@ class html_controler{
      * @param array $keys_selects
      * @return array|stdClass
      */
-    protected function fechas_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
+    final protected function fechas_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
     {
         $campos_view = $this->obtener_inputs($modelo->campos_view);
         if(errores::$error){
@@ -536,7 +536,7 @@ class html_controler{
      * @param array $keys_selects
      * @return array|stdClass
      */
-    public function init_alta2(stdClass $row_upd, modelo $modelo, array $keys_selects = array()): array|stdClass
+    final public function init_alta2(stdClass $row_upd, modelo $modelo, array $keys_selects = array()): array|stdClass
     {
         $selects = $this->selects_alta2(modelo: $modelo, keys_selects: $keys_selects);
         if (errores::$error) {
@@ -1706,7 +1706,7 @@ class html_controler{
      * @version 4.44.2
      *
      */
-    protected function telefonos_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
+    final protected function telefonos_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
     {
         $campos_view = $this->obtener_inputs(campos_view: $modelo->campos_view);
         if(errores::$error){

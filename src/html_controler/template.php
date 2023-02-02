@@ -53,7 +53,7 @@ class template{
      * @version 4.49.2
      *
      */
-    public function emails_template(directivas $directivas, stdClass $params_select, stdClass $row_upd): array|string
+    final public function emails_template(directivas $directivas, stdClass $params_select, stdClass $row_upd): array|string
     {
 
         $valida = $this->validacion->valida_input_base(directivas: $directivas,params_select:  $params_select);
@@ -94,7 +94,7 @@ class template{
         return $div;
     }
 
-    public function fechas_template(directivas $directivas, stdClass $params_select, stdClass $row_upd): array|string
+    final public function fechas_template(directivas $directivas, stdClass $params_select, stdClass $row_upd): array|string
     {
 
         $div = $this->base_template(directivas: $directivas,params_select:  $params_select, row_upd: $row_upd);
@@ -175,7 +175,7 @@ class template{
      * @return array|string
      * @version 4.35.1
      */
-    public function telefonos_template(directivas $directivas, stdClass $params_select, stdClass $row_upd): array|string
+    final public function telefonos_template(directivas $directivas, stdClass $params_select, stdClass $row_upd): array|string
     {
 
         $valida = $this->validacion->valida_input_base(directivas: $directivas,params_select:  $params_select);
