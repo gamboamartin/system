@@ -54,13 +54,14 @@ class _ctl_base extends system{
      * Integra los campos view de una vista para alta y modifica Metodo para sobreescribir
      * @return array
      * @version 0.262.38
+     * @final rev
      */
     protected function campos_view(): array
     {
         return array();
     }
 
-    public function campos_view_base(array $init_data, stdClass $keys): array
+    final public function campos_view_base(array $init_data, stdClass $keys): array
     {
         $selects = (new \base\controller\init())->select_key_input($init_data, selects: $keys->selects);
         if(errores::$error){
@@ -527,7 +528,7 @@ class _ctl_base extends system{
      * @return array
      * @version 0.288.38
      */
-    protected function key_select(int $cols, bool $con_registros, array $filtro,string $key, array $keys_selects,
+    final protected function key_select(int $cols, bool $con_registros, array $filtro,string $key, array $keys_selects,
                                   int|null $id_selected, string $label): array
     {
         $key = trim($key);
