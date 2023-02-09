@@ -298,8 +298,9 @@ class html_controler{
      * @param array $keys_selects parametros
      * @return array|stdClass
      * @version 5.1.0
+     * @final rev
      */
-    final protected function emails_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
+    protected function emails_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
     {
         $campos_view = $this->obtener_inputs($modelo->campos_view);
         if(errores::$error){
