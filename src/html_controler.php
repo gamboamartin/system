@@ -1707,9 +1707,10 @@ class html_controler{
      * @param array $keys_selects Parametros de estilos
      * @return array|stdClass
      * @version 4.44.2
+     * @final rev
      *
      */
-    final protected function telefonos_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
+    protected function telefonos_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
     {
         $campos_view = $this->obtener_inputs(campos_view: $modelo->campos_view);
         if(errores::$error){
