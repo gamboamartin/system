@@ -379,9 +379,19 @@ class datatables{
             return $this->error->error(mensaje: 'Error al maquetar columns ', data: $columns);
         }
 
+        $multi_selects = false;
+
+        if (property_exists($datatables,"multi_selects")){
+            if (!is_bool($datatables->multi_selects)){
+                return $this->error->error(mensaje: 'Error multi_selects tiene que ser de tipo bool', data: $datatables);
+            }
+            $multi_selects = $datatables->multi_selects;
+        }
+
         $data = new stdClass();
         $data->filtro = $filtro;
         $data->columns = $columns;
+        $data->multi_selects = $multi_selects;
 
         return $data;
     }

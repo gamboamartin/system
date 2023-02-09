@@ -137,7 +137,8 @@ class system extends controlador_base{
             die('Error');
         }
 
-        $this->datatable_init(columns: $data_for_datable->columns, filtro: $data_for_datable->filtro);
+        $this->datatable_init(columns: $data_for_datable->columns, filtro: $data_for_datable->filtro,
+            multi_selects: $data_for_datable->multi_selects);
         if(errores::$error){
             $error = $this->errores->error(mensaje: 'Error al inicializar columnDefs', data: $this->datatable);
             var_dump($error);
@@ -395,7 +396,7 @@ class system extends controlador_base{
     }
 
     final public function datatable_init(array $columns, array $filtro = array(), string $identificador = ".datatable",
-                                   array $data = array()): array
+                                   array $data = array(), bool $multi_selects = false): array
     {
 
         $datatable = (new datatables())->datatable(columns: $columns, filtro: $filtro,identificador: $identificador,
