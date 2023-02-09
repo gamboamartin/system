@@ -343,8 +343,9 @@ class html_controler{
      * @param stdClass $row_upd
      * @param array $keys_selects
      * @return array|stdClass
+     * @final rev
      */
-    final protected function fechas_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
+    protected function fechas_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
     {
         $campos_view = $this->obtener_inputs($modelo->campos_view);
         if(errores::$error){
