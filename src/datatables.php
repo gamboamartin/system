@@ -139,10 +139,14 @@ class datatables{
      * @return array
      * @version 0.150.33
      */
-    private function columns(array $columns, array $datatable): array
+    private function columns(array $columns, array $datatable, bool $multi_selects = false): array
     {
-
         $index_button = -1;
+
+        if ($multi_selects === true){
+            $check = array("check" => array("titulo" => " "));
+            $columns = array_merge($check, $columns);
+        }
 
         foreach ($columns as $indice => $column){
 
@@ -158,8 +162,8 @@ class datatables{
             }
             $datatable = $data->datatable;
             $index_button = $data->index_button;
-
         }
+
         return $datatable;
     }
 
@@ -224,6 +228,12 @@ class datatables{
         $columns_defs_obj->data = null;
         $columns_defs_obj->type = $type;
         $columns_defs_obj->rendered = $rendered;
+
+        if ($indice === "check"){
+            $columns_defs_obj->defaultContent = '';
+            $columns_defs_obj->orderable = false;
+            $columns_defs_obj->className = 'select-checkbox';
+        }
 
         array_unshift($columns_defs_obj->rendered,$indice);
 
@@ -352,7 +362,7 @@ class datatables{
             return $this->error->error(mensaje: 'Error al inicializar datatable', data:  $datatable);
         }
 
-        $datatable = $this->columns(columns: $columns, datatable: $datatable);
+        $datatable = $this->columns(columns: $columns, datatable: $datatable, multi_selects: $multi_selects);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar columns', data:  $datatable);
         }
@@ -431,6 +441,10 @@ class datatables{
         }
 
         $targets = $indice_columna === count($columns) ? $index_button:$indice_columna;
+
+        if ($indice === "check"){
+            $type = "check";
+        }
 
         $columnDefs_obj = $this->columns_defs(column: $column, indice: $indice, targets: $targets, type: $type);
         if(errores::$error){
