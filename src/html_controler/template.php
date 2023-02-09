@@ -101,6 +101,7 @@ class template{
      * @param stdClass $params_select Parametros de directivas
      * @param stdClass $row_upd Registro en proceso para asignar value
      * @return array|string
+     *
      */
     final public function fechas_template(directivas $directivas, stdClass $params_select, stdClass $row_upd): array|string
     {
