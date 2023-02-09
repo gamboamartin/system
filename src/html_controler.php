@@ -340,9 +340,10 @@ class html_controler{
     }
 
     /**
-     * @param modelo $modelo
-     * @param stdClass $row_upd
-     * @param array $keys_selects
+     * Genera los inputs de fecha
+     * @param modelo $modelo Modelo en ejecucion
+     * @param stdClass $row_upd Registro en proceso
+     * @param array $keys_selects Keys params
      * @return array|stdClass
      * @final rev
      */
