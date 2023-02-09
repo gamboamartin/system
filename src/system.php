@@ -400,7 +400,7 @@ class system extends controlador_base{
     {
 
         $datatable = (new datatables())->datatable(columns: $columns, filtro: $filtro,identificador: $identificador,
-            data: $data);
+            data: $data, multi_selects: $multi_selects);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al generar datatables base', data:  $datatable);
         }

@@ -40,13 +40,15 @@ class init{
      * @return array
      * @version 0.151.33
      */
-    final public function init_datatable(array $filtro,string $identificador = ".datatable", array $data = array()): array
+    final public function init_datatable(array $filtro,string $identificador = ".datatable", array $data = array(),
+                                         bool $multi_selects = false): array
     {
         $datatable["columns"] = array();
         $datatable["columnDefs"] = array();
         $datatable['filtro'] = $filtro;
         $datatable['identificador'] = $identificador;
         $datatable['data'] = $data;
+        $datatable['multi_selects'] = $multi_selects;
         return $datatable;
     }
 
