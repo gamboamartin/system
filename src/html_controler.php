@@ -226,6 +226,7 @@ class html_controler{
     }
 
     /**
+     * Genera los inputs de tipo fechas date
      * @param modelo $modelo Modelo en ejecucion
      * @param stdClass $row_upd Registro en proceso
      * @param array $keys_selects Parametros de inputs
