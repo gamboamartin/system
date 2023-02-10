@@ -396,11 +396,11 @@ class system extends controlador_base{
     }
 
     final public function datatable_init(array $columns, array $filtro = array(), string $identificador = ".datatable",
-                                   array $data = array(), bool $multi_selects = false): array
+                                   array $data = array(), array $in = array(), bool $multi_selects = false): array
     {
 
         $datatable = (new datatables())->datatable(columns: $columns, filtro: $filtro,identificador: $identificador,
-            data: $data, multi_selects: $multi_selects);
+            data: $data, in: $in, multi_selects: $multi_selects);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al generar datatables base', data:  $datatable);
         }

@@ -354,10 +354,10 @@ class datatables{
      * @version 0.152.33
      */
     final public function datatable(array $columns, array $filtro = array(),string $identificador = ".datatable",
-                              array $data = array(), bool $multi_selects = false): array
+                              array $data = array(), array $in = array(), bool $multi_selects = false): array
     {
         $datatable = (new \gamboamartin\system\datatables\init())->init_datatable(filtro:$filtro, identificador: $identificador,
-            data: $data, multi_selects: $multi_selects);
+            data: $data,in: $in, multi_selects: $multi_selects);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar datatable', data:  $datatable);
         }
