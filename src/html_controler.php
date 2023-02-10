@@ -347,10 +347,11 @@ class html_controler{
      * @param array $keys_selects Keys params
      * @return array|stdClass
      * @final rev
+     * @version 7.38.2
      */
     protected function fechas_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
     {
-        $campos_view = $this->obtener_inputs($modelo->campos_view);
+        $campos_view = $this->obtener_inputs(campos_view: $modelo->campos_view);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener campos de la vista del modelo', data: $campos_view);
         }
