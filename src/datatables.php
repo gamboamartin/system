@@ -550,12 +550,19 @@ class datatables{
             return $this->error->error(mensaje: 'Error al obtener filtro_especial', data: $filtro_especial);
         }
 
+        $in  = array();
+        if (isset($_GET['in'])){
+            $in = $_GET['in'];
+        }
+
         $data = new stdClass();
         $data->draw = $draw;
         $data->n_rows_for_page = $n_rows_for_page;
         $data->pagina = $pagina;
         $data->filtro = $filtro;
         $data->filtro_especial = $filtro_especial;
+        $data->in = $in;
+
         return $data;
     }
 
