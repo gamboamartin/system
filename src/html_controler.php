@@ -541,6 +541,8 @@ class html_controler{
      * @param modelo $modelo Modelo en proceso
      * @param array $keys_selects Parametros visuales de inputs
      * @return array|stdClass
+     * @version 7.41.2
+     *
      */
     final public function init_alta2(stdClass $row_upd, modelo $modelo, array $keys_selects = array()): array|stdClass
     {

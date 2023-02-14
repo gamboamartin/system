@@ -372,6 +372,32 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_init_alta2(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        //$html = new liberator($html);
+
+        $_SESSION['grupo_id'] = 2;
+
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+
+        $modelo = new adm_seccion($this->link);
+        $row_upd = new stdClass();
+        $modelo->campos_view['a']['type'] = 'fechas';
+
+        $resultado = $html->init_alta2($row_upd, $modelo);
+
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<div |class|><div |class|><input type='date' name='a' value='' |class| required id='a' placeholder='a' /></div></div>", $resultado['fechas']->a);
+
+        errores::$error = false;
+    }
+
 
 
     public function test_input_codigo(): void
