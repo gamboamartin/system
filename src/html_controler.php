@@ -274,10 +274,21 @@ class html_controler{
      * @param string $title title de input
      * @param bool $value_vacio valor vacio
      * @return array|string
+     * @version 7.43.2
      */
     private function div_input_text_required(int $cols, bool $disabled, string $name, string $place_holder,
                                              string $regex, stdClass $row_upd, string $title, bool $value_vacio ): array|string
     {
+
+        $valida = $this->directivas->valida_data_label(name: $name,place_holder:  $place_holder);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar datos ', data: $valida);
+        }
+
+        $valida = $this->directivas->valida_cols(cols: $cols);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar cols', data: $valida);
+        }
 
         $html =$this->directivas->input_text_required(disabled: $disabled,name: $name,place_holder: $place_holder,
             row_upd: $row_upd, value_vacio: $value_vacio,regex: $regex, title: $title);

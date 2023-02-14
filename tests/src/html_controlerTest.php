@@ -237,6 +237,37 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_div_input_text_required(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
+
+        $_SESSION['grupo_id'] = 2;
+
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+
+
+        $row_upd = new stdClass();
+
+
+        $cols = 12;
+        $disabled = false;
+        $name = 'a';
+        $place_holder = 'v';
+        $regex = '';
+        $title = '';
+        $value_vacio = false;
+        $resultado = $html->div_input_text_required($cols, $disabled, $name, $place_holder, $regex, $row_upd, $title, $value_vacio);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<div |class|><div |class|><input type='text' name='a' value='' |class| required id='a' placeholder='v' title='v' /></div></div>", $resultado);
+        errores::$error = false;
+    }
+
     public function test_fechas_alta(): void
     {
         errores::$error = false;
