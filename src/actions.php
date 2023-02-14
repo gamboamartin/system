@@ -313,7 +313,7 @@ class actions{
      * @return array|string link para header
      * @version 0.22.2
      */
-    public function retorno_alta_bd(PDO $link, int $registro_id, string $seccion, string $siguiente_view,
+    final public function retorno_alta_bd(PDO $link, int $registro_id, string $seccion, string $siguiente_view,
                                     array $params = array()): array|string
     {
         $seccion = trim($seccion);

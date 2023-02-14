@@ -770,7 +770,7 @@ class system extends controlador_base{
      * @return bool|array
      * @version 0.90.32
      */
-    protected function retorno_base(int $registro_id, mixed $result, string $siguiente_view, bool $ws,
+    final protected function retorno_base(int $registro_id, mixed $result, string $siguiente_view, bool $ws,
                                     bool $header = true, array $params = array(),
                                     string $seccion_retorno = ''):bool|array{
 
