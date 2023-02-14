@@ -536,9 +536,10 @@ class html_controler{
     }
 
     /**
-     * @param stdClass $row_upd
-     * @param modelo $modelo
-     * @param array $keys_selects
+     * Integra los inputs para frontend
+     * @param stdClass $row_upd Registro en proceso
+     * @param modelo $modelo Modelo en proceso
+     * @param array $keys_selects Parametros visuales de inputs
      * @return array|stdClass
      */
     final public function init_alta2(stdClass $row_upd, modelo $modelo, array $keys_selects = array()): array|stdClass
