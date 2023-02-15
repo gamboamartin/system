@@ -337,6 +337,12 @@ class html_controler{
         return $emails;
     }
 
+    /**
+     * Integra la etiqueta html
+     * @param string $etiqueta Etiqueta a convertir
+     * @param bool $muestra_titulo_btn valida si se muestra o no
+     * @return array|string
+     */
     private function etiqueta_html(string $etiqueta, bool $muestra_titulo_btn): array|string
     {
         $etiqueta_html = '';
