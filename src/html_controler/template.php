@@ -33,8 +33,8 @@ class template{
         }
 
 
-        $html =$directivas->fecha_required(disabled: $params_select->disabled, name: $params_select->name,
-            place_holder: $params_select->place_holder,  row_upd: $row_upd,
+        $html =$directivas->fecha(disabled: $params_select->disabled, name: $params_select->name,
+            place_holder: $params_select->place_holder, required: $params_select->required, row_upd: $row_upd,
             value_vacio: $params_select->value_vacio);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar input', data: $html);
