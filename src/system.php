@@ -198,7 +198,7 @@ class system extends controlador_base{
                             data:  $button, header: $header,ws:$ws);
                     }
                     $this->buttons_parents_alta->$model_parent->tabla = $button;
-                    
+
                 }
             }
 
