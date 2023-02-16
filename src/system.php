@@ -197,7 +197,8 @@ class system extends controlador_base{
                         return $this->retorno_error(mensaje: 'Error al generar boton',
                             data:  $button, header: $header,ws:$ws);
                     }
-                    $this->buttons_parents_alta->$model_parent->tabla = $button;
+                    $object_button = $model_parent->tabla;
+                    $this->buttons_parents_alta->$object_button = $button;
 
                 }
             }
