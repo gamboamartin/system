@@ -52,6 +52,8 @@ class system extends controlador_base{
 
     public stdClass $adm_seccion_ejecucion;
 
+    public array|stdClass $keys_selects;
+
 
     /**
      * @param html_controler $html Html base
@@ -318,6 +320,22 @@ class system extends controlador_base{
         }
         $r_alta_bd->siguiente_view = $siguiente_view;
         return $r_alta_bd;
+    }
+
+    /**
+     * @param string $identificador
+     * @param mixed $propiedades
+     * @return void
+     */
+    public function asignar_propiedad(string $identificador, mixed $propiedades)
+    {
+        if (!array_key_exists($identificador,$this->keys_selects)){
+            $this->keys_selects[$identificador] = new stdClass();
+        }
+
+        foreach ($propiedades as $key => $value){
+            $this->keys_selects[$identificador]->$key = $value;
+        }
     }
 
     public function data_ajax(bool $header, bool $ws = false, array $not_actions = array()){
