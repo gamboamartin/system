@@ -44,6 +44,9 @@ class templateTest extends test {
         $directivas = new directivas($html_);
 
         $resultado = $html->base_template($directivas, $params_select, $row_upd);
+
+        //print_r($resultado);exit;
+
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("<div |class|><div |class|><input type='date' name='a' value='' |class| required id='a' placeholder='z' /></div></div>", $resultado);
