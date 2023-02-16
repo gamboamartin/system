@@ -179,6 +179,26 @@ class system extends controlador_base{
      */
     public function alta(bool $header, bool $ws = false): array|string
     {
+
+        if($this->verifica_parents_alta){
+            /**
+             * @var modelo $model_parent;
+             */
+            foreach ($this->parents_verifica as $model_parent){
+                $tiene_rows = $model_parent->tiene_registros();
+                if(errores::$error){
+                    return $this->retorno_error(mensaje: 'Error al verificar $model_parent',
+                        data:  $tiene_rows, header: $header,ws:$ws);
+                }
+                if(!$tiene_rows){
+                    return $this->retorno_error(mensaje: 'Error al verificar $model_parent',
+                        data:  $tiene_rows, header: $header,ws:$ws);
+                }
+            }
+
+        }
+
+
         $r_alta =  array();
         $this->inputs = new stdClass();
 
