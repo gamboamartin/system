@@ -191,8 +191,14 @@ class system extends controlador_base{
                         data:  $tiene_rows, header: $header,ws:$ws);
                 }
                 if(!$tiene_rows){
-                    return $this->retorno_error(mensaje: 'Error al verificar $model_parent '.$model_parent->tabla,
-                        data:  $tiene_rows, header: $header,ws:$ws);
+                    $button = $this->html->button_href(accion: 'alta', etiqueta: 'Nueva '.$model_parent->tabla,
+                        registro_id:  -1, seccion: $model_parent->tabla,style: 'warning');
+                    if(errores::$error){
+                        return $this->retorno_error(mensaje: 'Error al generar boton',
+                            data:  $button, header: $header,ws:$ws);
+                    }
+                    $this->buttons_parents_alta->$model_parent->tabla = $button;
+                    
                 }
             }
 
