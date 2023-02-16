@@ -171,7 +171,6 @@ class system extends controlador_base{
 
     /**
      * Funcion que genera los inputs y templates base para un alta
-     * @version 0.17.5
      * @param bool $header Si header muestra resultado via http
      * @param bool $ws Muestra resultado via Json
      * @return array|string
@@ -183,15 +182,16 @@ class system extends controlador_base{
         if($this->verifica_parents_alta){
             /**
              * @var modelo $model_parent;
+             * REFACTORIZAR
              */
             foreach ($this->parents_verifica as $model_parent){
                 $tiene_rows = $model_parent->tiene_registros();
                 if(errores::$error){
-                    return $this->retorno_error(mensaje: 'Error al verificar $model_parent',
+                    return $this->retorno_error(mensaje: 'Error al verificar $model_parent '.$model_parent->tabla,
                         data:  $tiene_rows, header: $header,ws:$ws);
                 }
                 if(!$tiene_rows){
-                    return $this->retorno_error(mensaje: 'Error al verificar $model_parent',
+                    return $this->retorno_error(mensaje: 'Error al verificar $model_parent '.$model_parent->tabla,
                         data:  $tiene_rows, header: $header,ws:$ws);
                 }
             }
