@@ -70,7 +70,13 @@ class init{
         return $keys_row_lista;
     }
 
-    final public function include_breadcrumb(system $controler){
+    /**
+     * Integra los bread de listas
+     * @param system $controler Controlador en ejecucion
+     * @return array|string
+     */
+    final public function include_breadcrumb(system $controler): array|string
+    {
         $include_breadcrumb = (new views())->ruta_templates."head/$controler->accion/title.php";
         if(file_exists("templates/head/$controler->tabla/$controler->accion/title.php")){
             $include_breadcrumb = "templates/head/$controler->tabla/$controler->accion/title.php";
