@@ -83,6 +83,12 @@ class init{
         return $include_breadcrumb_rs;
     }
 
+    /**
+     * INtegra los breadcrumbs de navegacion
+     * @param system $controlador Controlador en ejecucion
+     * @param string $include_breadcrumb include file
+     * @return string
+     */
     private function include_breadcrumbs(system $controlador, string $include_breadcrumb): string
     {
         $controlador->include_breadcrumb = $include_breadcrumb;
