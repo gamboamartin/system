@@ -84,10 +84,11 @@ class init{
     }
 
     /**
-     * INtegra los breadcrumbs de navegacion
+     * Integra los breadcrumbs de navegacion
      * @param system $controlador Controlador en ejecucion
      * @param string $include_breadcrumb include file
      * @return string
+     * @version 7.54.3
      */
     private function include_breadcrumbs(system $controlador, string $include_breadcrumb): string
     {
