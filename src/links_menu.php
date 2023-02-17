@@ -416,7 +416,7 @@ class links_menu{
      * @return array|string
      * @version 0.81.32
      */
-    public function link_con_id(string $accion, PDO $link, int $registro_id, string $seccion,
+    final public function link_con_id(string $accion, PDO $link, int $registro_id, string $seccion,
                                 array $params = array()): array|string
     {
         $accion = trim($accion);

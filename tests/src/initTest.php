@@ -5,6 +5,8 @@ use gamboamartin\administrador\models\adm_accion;
 use gamboamartin\administrador\models\adm_accion_grupo;
 use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\administrador\models\adm_seccion_pertenece;
+use gamboamartin\controllers\controlador_adm_grupo;
+use gamboamartin\controllers\controlador_adm_seccion;
 use gamboamartin\errores\errores;
 use gamboamartin\system\html_controler;
 use gamboamartin\system\init;
@@ -49,6 +51,31 @@ class initTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('a_b', $resultado->key_value);
         $this->assertEquals('B', $resultado->name_lista);
+        errores::$error = false;
+    }
+
+    public function test_include_breadcrumbs(): void
+    {
+        errores::$error = false;
+
+        $_GET['session_id']  = 1;
+        $_GET['seccion']  = 'adm_accion';
+        $_SESSION['grupo_id'] = 1;
+
+        $init = new init();
+        $init = new liberator($init);
+
+        $html = new html();
+        $html_controler = new html_controler($html);
+        $modelo = new adm_accion($this->link);
+        $obj_link = new links_menu($this->link, -1);
+        $controler = new system(html: $html_controler, link: $this->link, modelo: $modelo, obj_link: $obj_link,
+            paths_conf: $this->paths_conf);
+        $include_breadcrumb = 'a';
+        $resultado = $init->include_breadcrumbs($controler, $include_breadcrumb);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('', $resultado);
         errores::$error = false;
     }
 

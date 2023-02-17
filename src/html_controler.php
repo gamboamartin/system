@@ -274,10 +274,21 @@ class html_controler{
      * @param string $title title de input
      * @param bool $value_vacio valor vacio
      * @return array|string
+     * @version 7.43.2
      */
     private function div_input_text_required(int $cols, bool $disabled, string $name, string $place_holder,
                                              string $regex, stdClass $row_upd, string $title, bool $value_vacio ): array|string
     {
+
+        $valida = $this->directivas->valida_data_label(name: $name,place_holder:  $place_holder);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar datos ', data: $valida);
+        }
+
+        $valida = $this->directivas->valida_cols(cols: $cols);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar cols', data: $valida);
+        }
 
         $html =$this->directivas->input_text_required(disabled: $disabled,name: $name,place_holder: $place_holder,
             row_upd: $row_upd, value_vacio: $value_vacio,regex: $regex, title: $title);
@@ -326,6 +337,12 @@ class html_controler{
         return $emails;
     }
 
+    /**
+     * Integra la etiqueta html
+     * @param string $etiqueta Etiqueta a convertir
+     * @param bool $muestra_titulo_btn valida si se muestra o no
+     * @return array|string
+     */
     private function etiqueta_html(string $etiqueta, bool $muestra_titulo_btn): array|string
     {
         $etiqueta_html = '';
@@ -536,10 +553,13 @@ class html_controler{
     }
 
     /**
-     * @param stdClass $row_upd
-     * @param modelo $modelo
-     * @param array $keys_selects
+     * Integra los inputs para frontend
+     * @param stdClass $row_upd Registro en proceso
+     * @param modelo $modelo Modelo en proceso
+     * @param array $keys_selects Parametros visuales de inputs
      * @return array|stdClass
+     * @version 7.41.2
+     *
      */
     final public function init_alta2(stdClass $row_upd, modelo $modelo, array $keys_selects = array()): array|stdClass
     {

@@ -52,6 +52,8 @@ class system extends controlador_base{
 
     public stdClass $adm_seccion_ejecucion;
 
+    public array|stdClass $keys_selects = array();
+
 
     /**
      * @param html_controler $html Html base
@@ -171,7 +173,6 @@ class system extends controlador_base{
 
     /**
      * Funcion que genera los inputs y templates base para un alta
-     * @version 0.17.5
      * @param bool $header Si header muestra resultado via http
      * @param bool $ws Muestra resultado via Json
      * @return array|string
@@ -179,6 +180,34 @@ class system extends controlador_base{
      */
     public function alta(bool $header, bool $ws = false): array|string
     {
+
+        if($this->verifica_parents_alta){
+            /**
+             * @var modelo $model_parent;
+             * REFACTORIZAR
+             */
+            foreach ($this->parents_verifica as $model_parent){
+                $tiene_rows = $model_parent->tiene_registros();
+                if(errores::$error){
+                    return $this->retorno_error(mensaje: 'Error al verificar $model_parent '.$model_parent->tabla,
+                        data:  $tiene_rows, header: $header,ws:$ws);
+                }
+                if(!$tiene_rows){
+                    $button = $this->html->button_href(accion: 'alta', etiqueta: 'Nueva '.$model_parent->tabla,
+                        registro_id:  -1, seccion: $model_parent->tabla,style: 'warning');
+                    if(errores::$error){
+                        return $this->retorno_error(mensaje: 'Error al generar boton',
+                            data:  $button, header: $header,ws:$ws);
+                    }
+                    $object_button = $model_parent->tabla;
+                    $this->buttons_parents_alta->$object_button = $button;
+
+                }
+            }
+
+        }
+
+
         $r_alta =  array();
         $this->inputs = new stdClass();
 
@@ -291,6 +320,30 @@ class system extends controlador_base{
         }
         $r_alta_bd->siguiente_view = $siguiente_view;
         return $r_alta_bd;
+    }
+
+    /**
+     * Asigna las propiedades de un input
+     * @param string $identificador Name input
+     * @param array $propiedades Propiedades a integrar
+     * @return array|stdClass
+     * @version 7.52.3
+     */
+    public function asignar_propiedad(string $identificador, array $propiedades): array|stdClass
+    {
+        $identificador = trim($identificador);
+        if($identificador === ''){
+            return $this->errores->error(mensaje: 'Error identificador esta vacio',data:  $identificador);
+        }
+
+        if (!array_key_exists($identificador,$this->keys_selects)){
+            $this->keys_selects[$identificador] = new stdClass();
+        }
+
+        foreach ($propiedades as $key => $value){
+            $this->keys_selects[$identificador]->$key = $value;
+        }
+        return $this->keys_selects;
     }
 
     public function data_ajax(bool $header, bool $ws = false, array $not_actions = array()){
@@ -770,7 +823,7 @@ class system extends controlador_base{
      * @return bool|array
      * @version 0.90.32
      */
-    protected function retorno_base(int $registro_id, mixed $result, string $siguiente_view, bool $ws,
+    final protected function retorno_base(int $registro_id, mixed $result, string $siguiente_view, bool $ws,
                                     bool $header = true, array $params = array(),
                                     string $seccion_retorno = ''):bool|array{
 

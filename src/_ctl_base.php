@@ -634,7 +634,7 @@ class _ctl_base extends system{
         return $label;
     }
 
-    protected function out_alta_bd(bool $header, stdClass $data_retorno, stdClass $result, bool $ws){
+    final protected function out_alta_bd(bool $header, stdClass $data_retorno, stdClass $result, bool $ws){
         if($header){
 
             if($data_retorno->id_retorno === -1) {

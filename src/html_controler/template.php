@@ -32,9 +32,13 @@ class template{
             return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
         }
 
+        if(!isset($params_select->required)){
+            $params_select->required = true;
+        }
 
-        $html =$directivas->fecha_required(disabled: $params_select->disabled, name: $params_select->name,
-            place_holder: $params_select->place_holder,  row_upd: $row_upd,
+
+        $html =$directivas->fecha(disabled: $params_select->disabled, name: $params_select->name,
+            place_holder: $params_select->place_holder, required: $params_select->required, row_upd: $row_upd,
             value_vacio: $params_select->value_vacio);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar input', data: $html);
