@@ -52,7 +52,7 @@ class system extends controlador_base{
 
     public stdClass $adm_seccion_ejecucion;
 
-    public array|stdClass $keys_selects;
+    public array|stdClass $keys_selects = array();
 
 
     /**
@@ -327,9 +327,15 @@ class system extends controlador_base{
      * @param string $identificador Name input
      * @param array $propiedades Propiedades a integrar
      * @return array|stdClass
+     * @version 7.52.3
      */
-    public function asignar_propiedad(string $identificador, mixed $propiedades): array|stdClass
+    public function asignar_propiedad(string $identificador, array $propiedades): array|stdClass
     {
+        $identificador = trim($identificador);
+        if($identificador === ''){
+            return $this->errores->error(mensaje: 'Error identificador esta vacio',data:  $identificador);
+        }
+
         if (!array_key_exists($identificador,$this->keys_selects)){
             $this->keys_selects[$identificador] = new stdClass();
         }
