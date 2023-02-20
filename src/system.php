@@ -634,6 +634,7 @@ class system extends controlador_base{
      * Genera botones si hace falta algun parent
      * @param modelo $model_parent Modelo parent
      * @return array|stdClass
+     * 7.69.3
      */
     private function genera_botones_parent(modelo $model_parent): array|stdClass
     {
@@ -853,6 +854,10 @@ class system extends controlador_base{
         return $params_btn_children;
     }
 
+    /**
+     * @param modelo $model_parent
+     * @return string
+     */
     private function key_parent_id(modelo $model_parent): string
     {
         return $model_parent->tabla.'_id';
