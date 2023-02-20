@@ -454,6 +454,7 @@ class system extends controlador_base{
     }
 
     /**
+     * Genera los botones para modifica view base
      * @return array|stdClass
      */
     private function buttons_upd(): array|stdClass
