@@ -426,9 +426,9 @@ class system extends controlador_base{
         return $salida;
     }
 
-    private function boton_children(array $child, string $entidad): array|string
+    private function boton_children(array $child, string $entidad, array $params): array|string
     {
-        $params = $this->params_key();
+        $params = $this->params_key(params: $params);
         if(errores::$error){
             return  $this->errores->error(mensaje: 'Error al generar param',data:  $params);
         }
@@ -441,10 +441,10 @@ class system extends controlador_base{
         return $button;
     }
 
-    private function botones_children(): array
+    private function botones_children(array $params): array
     {
         foreach ($this->childrens_data as $entidad=>$child){
-            $button = $this->boton_children(child: $child,entidad:  $entidad);
+            $button = $this->boton_children(child: $child,entidad:  $entidad, params: $params);
             if(errores::$error){
                 return $this->errores->error(mensaje: 'Error al generar button',data:  $button);
             }
@@ -453,6 +453,9 @@ class system extends controlador_base{
         return $this->buttons_childrens_alta;
     }
 
+    /**
+     * @return array|stdClass
+     */
     private function buttons_upd(): array|stdClass
     {
         $button_status = (new directivas(html: $this->html_base))->button_href_status(
@@ -722,6 +725,7 @@ class system extends controlador_base{
     /**
      * Inicializa un row para upd
      * @return stdClass
+     * @version 7.62.3
      */
     private function init_row_upd(): stdClass
     {
@@ -887,7 +891,7 @@ class system extends controlador_base{
 
         }
 
-        $botones = $this->botones_children();
+        $botones = $this->botones_children(params: $this->params_upd_get);
         if(errores::$error){
             $error = $this->errores->error(mensaje: 'Error al generar buttons',data:  $botones);
             print_r($error);
@@ -917,7 +921,7 @@ class system extends controlador_base{
         return $r_modifica_bd;
     }
 
-    private function params_key(): array
+    private function params_key(array $params): array
     {
         $params[$this->seccion.'_id'] = $this->registro_id;
         return $params;
