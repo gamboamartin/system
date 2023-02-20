@@ -891,7 +891,15 @@ class system extends controlador_base{
 
         }
 
-        $botones = $this->botones_children(params: $this->params_upd_get);
+        $params_btn_children = array();
+        foreach ($this->parents_verifica as $model_parent){
+            $key_parent_id = $model_parent->tabla.'_id';
+            if(isset($this->row_upd->$key_parent_id)){
+                $params_btn_children[$key_parent_id] = $this->row_upd->$key_parent_id;
+            }
+        }
+
+        $botones = $this->botones_children(params: $params_btn_children);
         if(errores::$error){
             $error = $this->errores->error(mensaje: 'Error al generar buttons',data:  $botones);
             print_r($error);
