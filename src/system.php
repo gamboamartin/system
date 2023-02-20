@@ -456,9 +456,30 @@ class system extends controlador_base{
     /**
      * Genera los botones para modifica view base
      * @return array|stdClass
+     * @version 7.65.3
      */
     private function buttons_upd(): array|stdClass
     {
+        if(!isset($this->row_upd)){
+            $this->row_upd = new stdClass();
+        }
+        if(!isset($this->row_upd->status)){
+            $row_upd = $this->init_row_upd();
+            if(errores::$error){
+                return$this->errores->error(mensaje: 'Error al inicializar row', data: $row_upd);
+            }
+            $this->row_upd->status = 'inactivo';
+        }
+
+
+        if(!isset($this->inputs)){
+            $this->inputs = new stdClass();
+        }
+        if(is_array($this->inputs)){
+            $this->inputs = new stdClass();
+        }
+
+
         $button_status = (new directivas(html: $this->html_base))->button_href_status(
             cols: 12, registro_id:$this->registro_id, seccion: $this->seccion,status: $this->row_upd->status);
         if(errores::$error){
@@ -779,6 +800,36 @@ class system extends controlador_base{
         return $this->buttons_parents_alta;
     }
 
+    private function integra_buttons_children(): array
+    {
+        $params_btn_children = $this->params_btn();
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al integrar value children', data: $params_btn_children);
+        }
+
+        $botones = $this->botones_children(params: $params_btn_children);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al generar buttons',data:  $botones);
+
+        }
+        return $botones;
+    }
+
+    private function integra_params_btn(modelo $model_parent, array $params_btn_children): array
+    {
+        $key_parent_id = $this->key_parent_id(model_parent: $model_parent);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al obtener key parent',data:  $key_parent_id);
+
+        }
+
+        $params_btn_children = $this->param_btn_children(key_parent_id: $key_parent_id, params_btn_children: $params_btn_children);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al integrar value children', data: $params_btn_children);
+        }
+        return $params_btn_children;
+    }
+
     private function key_parent_id(modelo $model_parent): string
     {
         return $model_parent->tabla.'_id';
@@ -892,15 +943,8 @@ class system extends controlador_base{
 
         }
 
-        $params_btn_children = array();
-        foreach ($this->parents_verifica as $model_parent){
-            $key_parent_id = $model_parent->tabla.'_id';
-            if(isset($this->row_upd->$key_parent_id)){
-                $params_btn_children[$key_parent_id] = $this->row_upd->$key_parent_id;
-            }
-        }
 
-        $botones = $this->botones_children(params: $params_btn_children);
+        $botones = $this->integra_buttons_children();
         if(errores::$error){
             $error = $this->errores->error(mensaje: 'Error al generar buttons',data:  $botones);
             print_r($error);
@@ -934,6 +978,56 @@ class system extends controlador_base{
     {
         $params[$this->seccion.'_id'] = $this->registro_id;
         return $params;
+    }
+
+
+    private function param_btn_children(string $key_parent_id, array $params_btn_children): array
+    {
+        if(isset($this->row_upd->$key_parent_id)){
+
+            $params_btn_children = $this->value_param_children(key_parent_id: $key_parent_id,params_btn_children:  $params_btn_children);
+            if(errores::$error){
+                return $this->errores->error(mensaje: 'Error al integrar value',data:  $params_btn_children);
+            }
+        }
+        else {
+            $params_btn_children = $this->param_children(key_parent_id: $key_parent_id, params_btn_children: $params_btn_children);
+            if (errores::$error) {
+                return $this->errores->error(mensaje: 'Error al integrar value children', data: $params_btn_children);
+            }
+        }
+        return $params_btn_children;
+    }
+
+
+    private function param_children(string $key_parent_id, array $params_btn_children): array
+    {
+        $row_in_proceso = $this->modelo->registro(registro_id: $this->registro_id,retorno_obj: true);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al obtener registro en proceso',data:  $row_in_proceso);
+        }
+        if(isset($row_in_proceso->$key_parent_id)){
+            $params_btn_children = $this->value_row_children_proceso(key_parent_id: $key_parent_id,
+                params_btn_children:  $params_btn_children,row_in_proceso:  $row_in_proceso);
+            if(errores::$error){
+                return $this->errores->error(mensaje: 'Error al integrar value',data:  $params_btn_children);
+            }
+        }
+        return $params_btn_children;
+    }
+
+    private function params_btn(): array
+    {
+        $params_btn_children = array();
+        foreach ($this->parents_verifica as $model_parent){
+
+            $params_btn_children = $this->integra_params_btn(model_parent: $model_parent,params_btn_children:  $params_btn_children);
+            if (errores::$error) {
+               return $this->errores->error(mensaje: 'Error al integrar value children', data: $params_btn_children);
+            }
+
+        }
+        return $params_btn_children;
     }
 
     private function parents_alta(): array|bool
@@ -1054,6 +1148,18 @@ class system extends controlador_base{
             return $this->errores->error(mensaje: 'Error al integrar link',data:  $rows);
         }
         return $rows;
+    }
+
+    private function value_param_children(string $key_parent_id, array $params_btn_children): array
+    {
+        $params_btn_children[$key_parent_id] = $this->row_upd->$key_parent_id;
+        return $params_btn_children;
+    }
+
+    private function value_row_children_proceso(string $key_parent_id, array $params_btn_children, stdClass $row_in_proceso): array
+    {
+        $params_btn_children[$key_parent_id] = $row_in_proceso->$key_parent_id;
+        return $params_btn_children;
     }
 
 
