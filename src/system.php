@@ -788,6 +788,11 @@ class system extends controlador_base{
         return $inputs;
     }
 
+    /**
+     * Integra un boton para ejecucion parent
+     * @param modelo $model_parent Modelo parent
+     * @return array|stdClass
+     */
     private function integra_button_parent(modelo $model_parent): array|stdClass
     {
         $button = $this->html->button_href(accion: 'alta', etiqueta: 'Nueva '.$model_parent->tabla,
