@@ -181,36 +181,11 @@ class system extends controlador_base{
     public function alta(bool $header, bool $ws = false): array|string
     {
 
-        if($this->verifica_parents_alta){
-            /**
-             * @var modelo $model_parent;
-             * REFACTORIZAR
-             */
-            foreach ($this->parents_verifica as $model_parent){
-                $tiene_rows = $model_parent->tiene_registros();
-                if(errores::$error){
-                    return $this->retorno_error(mensaje: 'Error al verificar $model_parent '.$model_parent->tabla,
-                        data:  $tiene_rows, header: $header,ws:$ws);
-                }
-                if(!$tiene_rows){
-                    $button = $this->html->button_href(accion: 'alta', etiqueta: 'Nueva '.$model_parent->tabla,
-                        registro_id:  -1, seccion: $model_parent->tabla,style: 'warning');
-                    if(errores::$error){
-                        return $this->retorno_error(mensaje: 'Error al generar boton',
-                            data:  $button, header: $header,ws:$ws);
-                    }
-                    $object_button = $model_parent->tabla;
-                    $this->buttons_parents_alta->$object_button = $button;
 
-                }
-                $key_parent_id = $model_parent->tabla.'_id';
-                if(isset($_GET[$key_parent_id])){
-                    $this->valores_asignados_default[$key_parent_id] = $_GET[$key_parent_id];
-                }
-            }
-
+        $valores = $this->parents_alta();
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al asignar valores parent', data: $valores, header: $header, ws: $ws);
         }
-
 
         $r_alta =  array();
         $this->inputs = new stdClass();
@@ -324,6 +299,29 @@ class system extends controlador_base{
         }
         $r_alta_bd->siguiente_view = $siguiente_view;
         return $r_alta_bd;
+    }
+
+    private function asigna_valor_default(string $key_parent_id): array
+    {
+        $this->valores_asignados_default[$key_parent_id] = $_GET[$key_parent_id];
+        return $this->valores_asignados_default;
+    }
+
+    private function asigna_valores_default(modelo $model_parent): array
+    {
+        $valores = array();
+        $key_parent_id = $this->key_parent_id(model_parent: $model_parent);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al generar key parent', data:  $key_parent_id);
+        }
+
+        if(isset($_GET[$key_parent_id])){
+            $valores = $this->asigna_valor_default(key_parent_id: $key_parent_id);
+            if(errores::$error){
+                return $this->errores->error(mensaje: 'Error al asignar valor', data:  $valores);
+            }
+        }
+        return $valores;
     }
 
     /**
@@ -538,6 +536,22 @@ class system extends controlador_base{
         return $r_del;
     }
 
+    private function genera_botones_parent(modelo $model_parent): array|stdClass
+    {
+        $buttons = new stdClass();
+        $tiene_rows = $model_parent->tiene_registros();
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al verificar $model_parent '.$model_parent->tabla, data:  $tiene_rows);
+        }
+        if(!$tiene_rows){
+            $buttons = $this->integra_button_parent(model_parent: $model_parent);
+            if(errores::$error){
+                return $this->errores->error(mensaje: 'Error al generar botones', data:  $buttons);
+            }
+        }
+        return $buttons;
+    }
+
     final public function genera_inputs(array $keys_selects = array()): array|stdClass
     {
         if(!is_object($this->inputs)){
@@ -659,6 +673,23 @@ class system extends controlador_base{
             return $this->errores->error(mensaje: 'Error al obtener inputs',data:  $inputs);
         }
         return $inputs;
+    }
+
+    private function integra_button_parent(modelo $model_parent): array|stdClass
+    {
+        $button = $this->html->button_href(accion: 'alta', etiqueta: 'Nueva '.$model_parent->tabla,
+            registro_id:  -1, seccion: $model_parent->tabla,style: 'warning');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al generar boton', data:  $button);
+        }
+        $object_button = $model_parent->tabla;
+        $this->buttons_parents_alta->$object_button = $button;
+        return $this->buttons_parents_alta;
+    }
+
+    private function key_parent_id(modelo $model_parent): string
+    {
+        return $model_parent->tabla.'_id';
     }
 
     /**
@@ -802,6 +833,27 @@ class system extends controlador_base{
         $this->header_out(result: $r_modifica_bd, header: $header,ws:  $ws);
 
         return $r_modifica_bd;
+    }
+
+    private function parents_alta(): array|bool
+    {
+        /**
+         * @var modelo $model_parent;
+         */
+        if($this->verifica_parents_alta){
+            foreach ($this->parents_verifica as $model_parent) {
+                $buttons = $this->genera_botones_parent(model_parent: $model_parent);
+                if (errores::$error) {
+                    return $this->errores->error(mensaje: 'Error al generar botones', data: $buttons);
+                }
+
+                $valores = $this->asigna_valores_default(model_parent: $model_parent);
+                if (errores::$error) {
+                    return $this->errores->error(mensaje: 'Error al asignar valor', data: $valores);
+                }
+            }
+        }
+        return $this->verifica_parents_alta;
     }
 
     function reemplazar_id_link($str, $start, $end, $replacement) {

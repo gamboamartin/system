@@ -236,6 +236,8 @@ class datatablesTest extends test {
         errores::$error = false;
     }
 
+
+
     public function test_columns_datatable(): void
     {
         errores::$error = false;
@@ -342,6 +344,25 @@ class datatablesTest extends test {
         $this->assertEquals('b', $resultado->rendered[0]);
         $this->assertEquals('a', $resultado->rendered[1]);
 
+        errores::$error = false;
+    }
+
+    public function test_columns_dt(): void
+    {
+        errores::$error = false;
+        $_SESSION['usuario_id'] = 2;
+        $_SESSION['grupo_id'] = 2;
+        $datatables = new datatables();
+        $datatables = new liberator($datatables);
+
+        $datatables_ = new stdClass();
+        $link = $this->link;
+        $not_actions = array();
+        $rows_lista = array();
+        $seccion = 'a';
+        $resultado = $datatables->columns_dt($datatables_, $link, $not_actions, $rows_lista, $seccion);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
         errores::$error = false;
     }
 

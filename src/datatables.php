@@ -248,13 +248,14 @@ class datatables{
      * @param array $rows_lista Registros de la lista
      * @param string $seccion Seccion en ejecucion
      * @return array
+     * @version 7.58.3
      */
     private function columns_dt(stdClass $datatables, PDO $link, array $not_actions, array $rows_lista,
                                 string $seccion): array
     {
+        $seccion = trim($seccion);
         if($seccion === ''){
-            return $this->error->error(
-                mensaje: 'Error seccion debe ser un string con datos', data:  $seccion);
+            return $this->error->error(mensaje: 'Error seccion debe ser un string con datos', data:  $seccion);
         }
 
         $columns = $this->column_datable_init(datatables: $datatables,rows_lista: $rows_lista,seccion: $seccion);
