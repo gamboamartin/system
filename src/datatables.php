@@ -379,6 +379,15 @@ class datatables{
         return $datatable;
     }
 
+    /**
+     * Inicializa datatables
+     * @param stdClass $datatables Objeto de controller
+     * @param PDO $link Conexion a base de datos
+     * @param array $rows_lista Registros de lista
+     * @param string $seccion Seccion en ejecucion
+     * @param array $not_actions Acciones a omitir
+     * @return array|stdClass
+     */
     final public function datatable_base_init(stdClass $datatables, PDO $link, array $rows_lista, string $seccion,
                                         array $not_actions = array()): array|stdClass
     {

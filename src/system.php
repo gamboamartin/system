@@ -187,6 +187,14 @@ class system extends controlador_base{
             return $this->retorno_error(mensaje: 'Error al asignar valores parent', data: $valores, header: $header, ws: $ws);
         }
 
+        foreach ($this->valores_asignados_default as $campo=>$valor){
+            if(!isset($this->keys_selects[$campo])) {
+                $this->keys_selects[$campo] = new stdClass();
+            }
+            $this->keys_selects[$campo]->value_vacio = false;
+            $this->keys_selects[$campo]->id_selected = $valor;
+        }
+
         $r_alta =  array();
         $this->inputs = new stdClass();
 
