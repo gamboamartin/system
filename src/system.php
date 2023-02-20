@@ -821,6 +821,19 @@ class system extends controlador_base{
         }
         $this->include_inputs_modifica = $include_inputs_modifica;
 
+        foreach ($this->childrens_data as $entidad=>$child){
+            $params[$entidad.'_id'] = $this->registro_id;
+            $button = $this->html_base->button_href(accion: 'alta',etiqueta: $child['title'],registro_id: -1,
+                seccion: $entidad,style:  'success', params: $params);
+            if(errores::$error){
+                $error = $this->errores->error(mensaje: 'Error al generar button',data:  $button);
+                print_r($error);
+                die('Error');
+            }
+            $this->buttons_childrens_alta[] = $button;
+        }
+
+
 
         return $r_modifica;
     }
