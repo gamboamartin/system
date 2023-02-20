@@ -792,6 +792,7 @@ class system extends controlador_base{
      * Integra un boton para ejecucion parent
      * @param modelo $model_parent Modelo parent
      * @return array|stdClass
+     * @version 7.67.3
      */
     private function integra_button_parent(modelo $model_parent): array|stdClass
     {
