@@ -240,6 +240,15 @@ class datatables{
         return $columns_defs_obj;
     }
 
+    /**
+     * Integra las columnas para listas
+     * @param stdClass $datatables objeto de controller
+     * @param PDO $link Conexion a base de datos
+     * @param array $not_actions Acciones no mostrables
+     * @param array $rows_lista Registros de la lista
+     * @param string $seccion Seccion en ejecucion
+     * @return array
+     */
     private function columns_dt(stdClass $datatables, PDO $link, array $not_actions, array $rows_lista,
                                 string $seccion): array
     {
