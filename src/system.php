@@ -181,6 +181,18 @@ class system extends controlador_base{
     public function alta(bool $header, bool $ws = false): array|string
     {
 
+        foreach ($this->parents_verifica as $model_parent){
+            $key_parent_id = $model_parent->tabla.'_id';
+            if(isset($_GET[$key_parent_id])){
+                if(isset($this->keys_selects[$key_parent_id])){
+
+                    $this->keys_selects[$key_parent_id]->con_registros = true;
+                    $this->keys_selects[$key_parent_id]->value = $_GET[$key_parent_id];
+                }
+            }
+
+        }
+
 
         $valores = $this->parents_alta();
         if (errores::$error) {
@@ -618,6 +630,11 @@ class system extends controlador_base{
         return $this->forms_inputs_modifica;
     }
 
+    /**
+     * Genera botones si hace falta algun parent
+     * @param modelo $model_parent Modelo parent
+     * @return array|stdClass
+     */
     private function genera_botones_parent(modelo $model_parent): array|stdClass
     {
         $buttons = new stdClass();
