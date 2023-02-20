@@ -615,10 +615,10 @@ class systemTest extends test {
         $controler = new liberator($controler);
 
 
-        $resultado = $controler->integra_button_parent($modelo);
+        $resultado = $controler->integra_button_parent($modelo,'success');
         $this->assertNotTrue(errores::$error);
         $this->assertIsObject($resultado);
-        $this->assertEquals("<a role='button' title='Nueva adm_accion' href='index.php?seccion=adm_accion&accion=alta&registro_id=-1&session_id=1&adm_menu_id=-1' class='btn btn-warning col-sm-12' >Nueva adm_accion</a>",$resultado->adm_accion);
+        $this->assertEquals("<a role='button' title='Nueva adm_accion' href='index.php?seccion=adm_accion&accion=alta&registro_id=-1&session_id=1&adm_menu_id=-1' class='btn btn-success col-sm-12' >Nueva adm_accion</a>",$resultado->adm_accion);
         errores::$error = false;
     }
 

@@ -643,11 +643,15 @@ class system extends controlador_base{
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al verificar $model_parent '.$model_parent->tabla, data:  $tiene_rows);
         }
-        if(!$tiene_rows){
-            $buttons = $this->integra_button_parent(model_parent: $model_parent);
-            if(errores::$error){
-                return $this->errores->error(mensaje: 'Error al generar botones', data:  $buttons);
-            }
+
+        $style = 'warning';
+        if($tiene_rows){
+            $style = 'success';
+        }
+
+        $buttons = $this->integra_button_parent(model_parent: $model_parent, style: $style);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al generar botones', data:  $buttons);
         }
         return $buttons;
     }
@@ -809,13 +813,14 @@ class system extends controlador_base{
     /**
      * Integra un boton para ejecucion parent
      * @param modelo $model_parent Modelo parent
+     * @param string $style Stilo css
      * @return array|stdClass
      * @version 7.67.3
      */
-    private function integra_button_parent(modelo $model_parent): array|stdClass
+    private function integra_button_parent(modelo $model_parent, string $style): array|stdClass
     {
         $button = $this->html->button_href(accion: 'alta', etiqueta: 'Nueva '.$model_parent->tabla,
-            registro_id:  -1, seccion: $model_parent->tabla,style: 'warning');
+            registro_id:  -1, seccion: $model_parent->tabla,style: $style);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al generar boton', data:  $button);
         }
