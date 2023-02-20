@@ -74,6 +74,8 @@ class init{
      * Integra los bread de listas
      * @param system $controler Controlador en ejecucion
      * @return array|string
+     * @version 7.56.3
+     *
      */
     final public function include_breadcrumb(system $controler): array|string
     {

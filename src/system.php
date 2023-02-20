@@ -203,6 +203,10 @@ class system extends controlador_base{
                     $this->buttons_parents_alta->$object_button = $button;
 
                 }
+                $key_parent_id = $model_parent->tabla.'_id';
+                if(isset($_GET[$key_parent_id])){
+                    $this->valores_asignados_default[$key_parent_id] = $_GET[$key_parent_id];
+                }
             }
 
         }
