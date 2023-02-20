@@ -426,6 +426,45 @@ class system extends controlador_base{
         return $salida;
     }
 
+    private function boton_children(array $child, string $entidad): array|string
+    {
+        $params = $this->params_key();
+        if(errores::$error){
+            return  $this->errores->error(mensaje: 'Error al generar param',data:  $params);
+        }
+
+        $button = $this->html_base->button_href(accion: 'alta',etiqueta: $child['title'],registro_id: -1,
+            seccion: $entidad,style:  'success', params: $params);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al generar button',data:  $button);
+        }
+        return $button;
+    }
+
+    private function botones_children(): array
+    {
+        foreach ($this->childrens_data as $entidad=>$child){
+            $button = $this->boton_children(child: $child,entidad:  $entidad);
+            if(errores::$error){
+                return $this->errores->error(mensaje: 'Error al generar button',data:  $button);
+            }
+            $this->buttons_childrens_alta[] = $button;
+        }
+        return $this->buttons_childrens_alta;
+    }
+
+    private function buttons_upd(): array|stdClass
+    {
+        $button_status = (new directivas(html: $this->html_base))->button_href_status(
+            cols: 12, registro_id:$this->registro_id, seccion: $this->seccion,status: $this->row_upd->status);
+        if(errores::$error){
+            return$this->errores->error(mensaje: 'Error al generar boton', data: $button_status);
+        }
+        $this->inputs->status = $button_status;
+
+        return $this->inputs;
+    }
+
     private function datatable_columnDefs_init(array $columns, array $columndefs): array
     {
         $index_header = array();
@@ -542,6 +581,16 @@ class system extends controlador_base{
         $r_del->siguiente_view = $siguiente_view;
 
         return $r_del;
+    }
+
+    private function form_modifica(): string
+    {
+        $form_modifica = '';
+        foreach($this->inputs_modifica as $input_modifica){
+            $form_modifica .= $this->inputs->$input_modifica;
+        }
+        $this->forms_inputs_modifica = $form_modifica;
+        return $this->forms_inputs_modifica;
     }
 
     private function genera_botones_parent(modelo $model_parent): array|stdClass
@@ -670,6 +719,36 @@ class system extends controlador_base{
         return $header_retorno;
     }
 
+    /**
+     * Inicializa un row para upd
+     * @return stdClass
+     */
+    private function init_row_upd(): stdClass
+    {
+        if(!isset($this->row_upd)){
+            $this->row_upd = new stdClass();
+        }
+        if(!isset($this->row_upd->status)){
+            $this->row_upd->status = '';
+        }
+        return $this->row_upd;
+    }
+
+    private function include_inputs_modifica(): string
+    {
+        $include_inputs_modifica = (new generales())->path_base."templates/inputs/$this->seccion/modifica.php";
+        if(!file_exists($include_inputs_modifica)){
+            $include_inputs_modifica = (new views())->ruta_templates."inputs/base/modifica.php";
+
+            $path_vendor_base = $this->path_base."vendor/$this->path_vendor_views/templates/inputs/$this->seccion/$this->accion.php";
+            if(file_exists($path_vendor_base)){
+                $include_inputs_modifica = $path_vendor_base;
+            }
+        }
+        $this->include_inputs_modifica = $include_inputs_modifica;
+        return $this->include_inputs_modifica;
+    }
+
     final public function inputs(array $keys_selects): array|stdClass
     {
         $keys_selects = $this->key_selects_txt(keys_selects: $keys_selects);
@@ -759,7 +838,6 @@ class system extends controlador_base{
      * @param bool $header Si header da salida en html
      * @param bool $ws Si ws da salida json
      * @return array|stdClass
-     * @version 0.210.37
      * @final rev
      */
     public function modifica(bool $header, bool $ws = false): array|stdClass
@@ -782,57 +860,40 @@ class system extends controlador_base{
                 header:  $header, ws: $ws);
         }
 
-
-        if(!isset($this->row_upd)){
-            $this->row_upd = new stdClass();
-        }
-        if(!isset($this->row_upd->status)){
-            $this->row_upd->status = '';
-        }
-
-        $button_status = (new directivas(html: $this->html_base))->button_href_status(cols: 12, registro_id:$this->registro_id,
-            seccion: $this->seccion,status: $this->row_upd->status);
+        $row_upd = $this->init_row_upd();
         if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al generar boton', data: $button_status,
+            return $this->retorno_error(mensaje: 'Error al inicializa row upd', data: $row_upd,
                 header:  $header, ws: $ws);
         }
-        $this->inputs->status = $button_status;
 
-
-        $form_modifica = '';
-        foreach($this->inputs_modifica as $input_modifica){
-            $form_modifica .= $this->inputs->$input_modifica;
-        }
-        $this->forms_inputs_modifica = $form_modifica;
-
-
-        /**
-         * REFCATROIZAR SIMILAR ALTA
-         */
-
-        $include_inputs_modifica = (new generales())->path_base."templates/inputs/$this->seccion/modifica.php";
-        if(!file_exists($include_inputs_modifica)){
-            $include_inputs_modifica = (new views())->ruta_templates."inputs/base/modifica.php";
-
-            $path_vendor_base = $this->path_base."vendor/$this->path_vendor_views/templates/inputs/$this->seccion/$this->accion.php";
-            if(file_exists($path_vendor_base)){
-                $include_inputs_modifica = $path_vendor_base;
-            }
-        }
-        $this->include_inputs_modifica = $include_inputs_modifica;
-
-        foreach ($this->childrens_data as $entidad=>$child){
-            $params[$entidad.'_id'] = $this->registro_id;
-            $button = $this->html_base->button_href(accion: 'alta',etiqueta: $child['title'],registro_id: -1,
-                seccion: $entidad,style:  'success', params: $params);
-            if(errores::$error){
-                $error = $this->errores->error(mensaje: 'Error al generar button',data:  $button);
-                print_r($error);
-                die('Error');
-            }
-            $this->buttons_childrens_alta[] = $button;
+        $buttons = $this->buttons_upd();
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al generar boton', data: $buttons, header:  $header, ws: $ws);
         }
 
+        $form = $this->form_modifica();
+        if(errores::$error){
+            $error = $this->errores->error(mensaje: 'Error al generar form',data:  $form);
+            print_r($error);
+            die('Error');
+
+        }
+
+        $include_inputs_modifica = $this->include_inputs_modifica();
+        if(errores::$error){
+            $error = $this->errores->error(mensaje: 'Error al generar include',data:  $include_inputs_modifica);
+            print_r($error);
+            die('Error');
+
+        }
+
+        $botones = $this->botones_children();
+        if(errores::$error){
+            $error = $this->errores->error(mensaje: 'Error al generar buttons',data:  $botones);
+            print_r($error);
+            die('Error');
+
+        }
 
 
         return $r_modifica;
@@ -854,6 +915,12 @@ class system extends controlador_base{
         $this->header_out(result: $r_modifica_bd, header: $header,ws:  $ws);
 
         return $r_modifica_bd;
+    }
+
+    private function params_key(): array
+    {
+        $params[$this->seccion.'_id'] = $this->registro_id;
+        return $params;
     }
 
     private function parents_alta(): array|bool
