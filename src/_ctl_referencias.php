@@ -281,17 +281,21 @@ class _ctl_referencias{
         return $params_btn_children;
     }
 
-    private function params_btn_parent(object|array $parent): stdClass
+    /**
+     * Obtiene los parametros para ejecucion de referencias
+     * @param modelo|array $parent Data de integracion
+     * @return stdClass
+     */
+    private function params_btn_parent(modelo|array $parent): stdClass
     {
         if(is_array($parent) && isset($parent['model_parent'])) {
-
             $model_parent = $parent['model_parent'];
             $etiqueta = $parent['etiqueta'];
         }
         else{
 
             $model_parent = $parent;
-            $etiqueta = 'Alta '.$model_parent->tabla;
+            $etiqueta = 'Alta '.$model_parent->etiqueta;
         }
 
         $data = new stdClass();
