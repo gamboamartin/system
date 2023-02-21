@@ -374,7 +374,7 @@ class _ctl_referencias{
                 if (errores::$error) {
                     return $this->error->error(mensaje: 'Error al generar botones', data: $buttons);
                 }
-                
+
                 $valores = $this->asigna_valores_default(controler: $controler, model_parent: $params->model_parent);
                 if (errores::$error) {
                     return $this->error->error(mensaje: 'Error al asignar valor', data: $valores);

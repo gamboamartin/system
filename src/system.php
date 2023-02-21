@@ -166,6 +166,9 @@ class system extends controlador_base{
 
         $this->path_vendor_views = $seccion_en_ejecucion->adm_namespace_descripcion;
 
+        if($modelo->etiqueta !==''){
+            $this->seccion_titulo = $modelo->etiqueta;
+        }
 
     }
 
