@@ -227,7 +227,7 @@ class systemTest extends test {
 
 
         $modelo = new adm_mes(link: $this->link);
-        $resultado = $controler->genera_botones_parent($modelo);
+        $resultado = $controler->genera_botones_parent('Nueva adm_mes',$modelo);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("<a role='button' title='Nueva adm_mes' href='index.php?seccion=adm_mes&accion=alta&registro_id=-1&session_id=1&adm_menu_id=-1' class='btn btn-warning col-sm-12' >Nueva adm_mes</a>",$resultado->adm_mes);
         $this->assertIsObject($resultado);
@@ -243,7 +243,8 @@ class systemTest extends test {
             exit;
         }
 
-        $resultado = $controler->genera_botones_parent($modelo);
+        $resultado = $controler->genera_botones_parent('a',$modelo);
+
         $this->assertNotTrue(errores::$error);
         $this->assertIsObject($resultado);
         errores::$error = false;
@@ -615,7 +616,7 @@ class systemTest extends test {
         $controler = new liberator($controler);
 
 
-        $resultado = $controler->integra_button_parent($modelo,'success');
+        $resultado = $controler->integra_button_parent('Nueva adm_accion',$modelo,'success');
         $this->assertNotTrue(errores::$error);
         $this->assertIsObject($resultado);
         $this->assertEquals("<a role='button' title='Nueva adm_accion' href='index.php?seccion=adm_accion&accion=alta&registro_id=-1&session_id=1&adm_menu_id=-1' class='btn btn-success col-sm-12' >Nueva adm_accion</a>",$resultado->adm_accion);

@@ -632,24 +632,24 @@ class system extends controlador_base{
 
     /**
      * Genera botones si hace falta algun parent
+     * @param string $etiqueta Etiqueta de boton parent
      * @param modelo $model_parent Modelo parent
      * @return array|stdClass
      * 7.69.3
      */
-    private function genera_botones_parent(modelo $model_parent): array|stdClass
+    private function genera_botones_parent(string $etiqueta, modelo $model_parent): array|stdClass
     {
-        $buttons = new stdClass();
-        $tiene_rows = $model_parent->tiene_registros();
+        $etiqueta = trim($etiqueta);
+        if($etiqueta === ''){
+            return $this->errores->error(mensaje: 'Error la $etiqueta esta vacia', data: $etiqueta);
+        }
+
+        $style = $this->style_btn_parent(model_parent: $model_parent);
         if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al verificar $model_parent '.$model_parent->tabla, data:  $tiene_rows);
+            return $this->errores->error(mensaje: 'Error al genera style '.$model_parent->tabla, data:  $style);
         }
 
-        $style = 'warning';
-        if($tiene_rows){
-            $style = 'success';
-        }
-
-        $buttons = $this->integra_button_parent(model_parent: $model_parent, style: $style);
+        $buttons = $this->integra_button_parent(etiqueta: $etiqueta, model_parent: $model_parent, style: $style);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al generar botones', data:  $buttons);
         }
@@ -812,14 +812,20 @@ class system extends controlador_base{
 
     /**
      * Integra un boton para ejecucion parent
+     * @param string $etiqueta Etiqueta de boton
      * @param modelo $model_parent Modelo parent
      * @param string $style Stilo css
      * @return array|stdClass
      * @version 7.67.3
      */
-    private function integra_button_parent(modelo $model_parent, string $style): array|stdClass
+    private function integra_button_parent(string $etiqueta, modelo $model_parent, string $style): array|stdClass
     {
-        $button = $this->html->button_href(accion: 'alta', etiqueta: 'Nueva '.$model_parent->tabla,
+        $etiqueta = trim($etiqueta);
+        if($etiqueta === ''){
+            return $this->errores->error(mensaje: 'Error la $etiqueta esta vacia', data: $etiqueta);
+        }
+
+        $button = $this->html->button_href(accion: 'alta', etiqueta: $etiqueta,
             registro_id:  -1, seccion: $model_parent->tabla,style: $style);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al generar boton', data:  $button);
@@ -1063,19 +1069,46 @@ class system extends controlador_base{
         return $params_btn_children;
     }
 
+    private function params_btn_parent(object|array $parent): stdClass
+    {
+        if(is_array($parent) && isset($parent['model_parent'])) {
+
+            $model_parent = $parent['model_parent'];
+            $etiqueta = $parent['etiqueta'];
+        }
+        else{
+
+            $model_parent = $parent;
+            $etiqueta = 'Alta '.$model_parent->tabla;
+        }
+
+        $data = new stdClass();
+        $data->model_parent = $model_parent;
+        $data->etiqueta = $etiqueta;
+        return $data;
+    }
+
     private function parents_alta(): array|bool
     {
         /**
          * @var modelo $model_parent;
          */
         if($this->verifica_parents_alta){
-            foreach ($this->parents_verifica as $model_parent) {
-                $buttons = $this->genera_botones_parent(model_parent: $model_parent);
+
+            foreach ($this->parents_verifica as $parent) {
+
+                $params = $this->params_btn_parent(parent: $parent);
+                if (errores::$error) {
+                    return $this->errores->error(mensaje: 'Error al generar params', data: $params);
+                }
+
+                $buttons = $this->genera_botones_parent(
+                    etiqueta: $params->etiqueta, model_parent: $params->model_parent);
                 if (errores::$error) {
                     return $this->errores->error(mensaje: 'Error al generar botones', data: $buttons);
                 }
 
-                $valores = $this->asigna_valores_default(model_parent: $model_parent);
+                $valores = $this->asigna_valores_default(model_parent: $params->model_parent);
                 if (errores::$error) {
                     return $this->errores->error(mensaje: 'Error al asignar valor', data: $valores);
                 }
@@ -1181,6 +1214,29 @@ class system extends controlador_base{
             return $this->errores->error(mensaje: 'Error al integrar link',data:  $rows);
         }
         return $rows;
+    }
+
+    private function style_btn(bool $tiene_rows): string
+    {
+        $style = 'warning';
+        if($tiene_rows){
+            $style = 'success';
+        }
+        return $style;
+    }
+
+    private function style_btn_parent(modelo $model_parent): array|string
+    {
+        $tiene_rows = $model_parent->tiene_registros();
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al verificar $model_parent '.$model_parent->tabla, data:  $tiene_rows);
+        }
+
+        $style = $this->style_btn(tiene_rows: $tiene_rows);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al genera style '.$model_parent->tabla, data:  $style);
+        }
+        return $style;
     }
 
     private function value_param_children(string $key_parent_id, array $params_btn_children): array
