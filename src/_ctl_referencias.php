@@ -90,7 +90,7 @@ class _ctl_referencias{
         return $buttons;
     }
 
-    private function genera_keys_parents(system $controler, array|object $parent){
+    private function genera_keys_parents(system $controler, array|modelo $parent){
         $model_parent = $this->model_parent(parent: $parent);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar model parent', data: $model_parent);
@@ -217,7 +217,13 @@ class _ctl_referencias{
         return $model_parent->tabla.'_id';
     }
 
-    private function model_parent(array|object $parent){
+    /**
+     * Verifica la estructura del parent y retorna el modelo
+     * @param array|modelo $parent Dato a verificar
+     * @return modelo
+     */
+    private function model_parent(array|modelo $parent): modelo
+    {
         $model_parent = $parent;
         if(is_array($parent) && isset($parent['model_parent'])){
             $model_parent = $parent['model_parent'];
