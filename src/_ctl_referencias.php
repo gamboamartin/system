@@ -220,14 +220,25 @@ class _ctl_referencias{
     /**
      * Verifica la estructura del parent y retorna el modelo
      * @param array|modelo $parent Dato a verificar
-     * @return modelo
+     * @return modelo|array
+     * @version 7.79.3
      */
-    private function model_parent(array|modelo $parent): modelo
+    private function model_parent(array|modelo $parent): modelo|array
     {
         $model_parent = $parent;
         if(is_array($parent) && isset($parent['model_parent'])){
+
+            if(!is_object($parent['model_parent'])){
+                return $this->error->error(mensaje: 'Error el model_parent no es de tipo modelo',data:  $parent);
+            }
+
             $model_parent = $parent['model_parent'];
         }
+
+        if(!is_object($model_parent)){
+            return $this->error->error(mensaje: 'Error el resultado no es de tipo modelo',data:  $model_parent);
+        }
+
         return $model_parent;
     }
 

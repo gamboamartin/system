@@ -935,12 +935,6 @@ class system extends controlador_base{
         return $r_modifica_bd;
     }
 
-
-
-
-
-
-
     function reemplazar_id_link($str, $start, $end, $replacement) {
 
         $replacement = $start . $replacement . $end;
