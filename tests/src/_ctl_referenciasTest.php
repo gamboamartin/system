@@ -113,6 +113,33 @@ class _ctl_referenciasTest extends test {
         errores::$error = false;
     }
 
+    public function test_key_parent_id(): void
+    {
+        errores::$error = false;
+        $_SESSION['grupo_id'] = 2;
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+        $ctl = (new _ctl_referencias());
+        $ctl = new liberator($ctl);
+
+        $model_parent = new adm_mes(link: $this->link);
+        $resultado = $ctl->key_parent_id($model_parent);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsString($resultado);
+        $this->assertEquals("adm_mes_id",$resultado);
+
+        errores::$error = false;
+
+        $model_parent = new adm_mes(link: $this->link);
+        $model_parent->tabla = '';
+        $resultado = $ctl->key_parent_id($model_parent);
+        $this->assertTrue(errores::$error);
+        $this->assertIsArray($resultado);
+        $this->assertEquals("Error la tabla del modelo esta vacia",$resultado['mensaje_limpio']);
+        errores::$error = false;
+    }
+
     public function test_model_parent(): void
     {
         errores::$error = false;

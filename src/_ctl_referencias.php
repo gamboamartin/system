@@ -216,11 +216,16 @@ class _ctl_referencias{
     /**
      * Genera el name id de la tabla a relacionar
      * @param modelo $model_parent Modelo parent
-     * @return string
+     * @return string|array
+     * @version 7.81.3
      */
-    private function key_parent_id(modelo $model_parent): string
+    private function key_parent_id(modelo $model_parent): string|array
     {
-        return $model_parent->tabla.'_id';
+        $tabla = trim($model_parent->tabla);
+        if($tabla === ''){
+            return $this->error->error(mensaje: 'Error la tabla del modelo esta vacia',data:  $tabla);
+        }
+        return $tabla.'_id';
     }
 
     /**
