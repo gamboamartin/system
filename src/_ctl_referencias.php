@@ -58,6 +58,23 @@ class _ctl_referencias{
         return $button;
     }
 
+    private function boton_permitido(system $controler, stdClass $params){
+        $buttons = new stdClass();
+        $tengo_permiso = (new adm_accion(link: $controler->link))->permiso(accion: 'alta',seccion:  $params->model_parent->tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar permiso boton', data:  $tengo_permiso);
+        }
+
+        if($tengo_permiso) {
+            $buttons = $this->genera_botones_parent(
+                controler: $controler, etiqueta: $params->etiqueta, model_parent: $params->model_parent);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al generar botones', data: $buttons);
+            }
+        }
+        return $buttons;
+    }
+
     private function botones_children(system $controler, array $params): array
     {
         foreach ($controler->childrens_data as $entidad=>$child){
@@ -353,21 +370,11 @@ class _ctl_referencias{
                     return $this->error->error(mensaje: 'Error al generar params', data: $params);
                 }
 
-                $tengo_permiso = (new adm_accion(link: $controler->link))->permiso(accion: 'alta',seccion:  $params->model_parent->tabla);
-                if(errores::$error){
-                    return $this->error->error(mensaje: 'Error al validar permiso boton', data:  $tengo_permiso);
+                $buttons = $this->boton_permitido(controler: $controler,params: $params);
+                if (errores::$error) {
+                    return $this->error->error(mensaje: 'Error al generar botones', data: $buttons);
                 }
-
-                if($tengo_permiso) {
-
-                    $buttons = $this->genera_botones_parent(
-                        controler: $controler, etiqueta: $params->etiqueta, model_parent: $params->model_parent);
-                    if (errores::$error) {
-                        return $this->error->error(mensaje: 'Error al generar botones', data: $buttons);
-                    }
-                }
-
-
+                
                 $valores = $this->asigna_valores_default(controler: $controler, model_parent: $params->model_parent);
                 if (errores::$error) {
                     return $this->error->error(mensaje: 'Error al asignar valor', data: $valores);
