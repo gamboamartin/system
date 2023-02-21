@@ -23,7 +23,7 @@ use Throwable;
  */
 class system extends controlador_base{
 
-    private html_controler $html;
+    public html_controler $html;
 
     public stdClass|array $acciones;
 
@@ -181,35 +181,14 @@ class system extends controlador_base{
     public function alta(bool $header, bool $ws = false): array|string
     {
 
-        foreach ($this->parents_verifica as $parent){
-
-            $model_parent = $parent;
-            if(is_array($parent) && isset($parent['model_parent'])){
-                $model_parent = $parent['model_parent'];
-            }
-
-            $key_parent_id = $this->key_parent_id(model_parent: $model_parent);
-            if (errores::$error) {
-                return $this->retorno_error(mensaje: 'Error al generar key parent', data: $key_parent_id, header: $header, ws: $ws);
-            }
-            if(isset($_GET[$key_parent_id])){
-                if(isset($this->keys_selects[$key_parent_id])){
-
-                    $keys_selects = $this->input_parent(key_parent_id: $key_parent_id);
-                    if (errores::$error) {
-                        return $this->retorno_error(mensaje: 'Error al generar select', data: $keys_selects, header: $header, ws: $ws);
-                    }
-
-                }
-            }
-
-        }
 
 
-        $valores = $this->parents_alta();
+        $data = (new _ctl_referencias())->referencias_alta(controler: $this);
         if (errores::$error) {
-            return $this->retorno_error(mensaje: 'Error al asignar valores parent', data: $valores, header: $header, ws: $ws);
+            return $this->retorno_error(mensaje: 'Error al generar data parents', data: $data, header: $header, ws: $ws);
         }
+
+
 
         foreach ($this->valores_asignados_default as $campo=>$valor){
             if(!isset($this->keys_selects[$campo])) {
@@ -333,28 +312,7 @@ class system extends controlador_base{
         return $r_alta_bd;
     }
 
-    private function asigna_valor_default(string $key_parent_id): array
-    {
-        $this->valores_asignados_default[$key_parent_id] = $_GET[$key_parent_id];
-        return $this->valores_asignados_default;
-    }
 
-    private function asigna_valores_default(modelo $model_parent): array
-    {
-        $valores = array();
-        $key_parent_id = $this->key_parent_id(model_parent: $model_parent);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al generar key parent', data:  $key_parent_id);
-        }
-
-        if(isset($_GET[$key_parent_id])){
-            $valores = $this->asigna_valor_default(key_parent_id: $key_parent_id);
-            if(errores::$error){
-                return $this->errores->error(mensaje: 'Error al asignar valor', data:  $valores);
-            }
-        }
-        return $valores;
-    }
 
     /**
      * Asigna las propiedades de un input
@@ -507,32 +465,8 @@ class system extends controlador_base{
         return $salida;
     }
 
-    private function boton_children(array $child, string $entidad, array $params): array|string
-    {
-        $params = $this->params_key(params: $params);
-        if(errores::$error){
-            return  $this->errores->error(mensaje: 'Error al generar param',data:  $params);
-        }
 
-        $button = $this->html_base->button_href(accion: 'alta',etiqueta: $child['title'],registro_id: -1,
-            seccion: $entidad,style:  'success', params: $params);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al generar button',data:  $button);
-        }
-        return $button;
-    }
 
-    private function botones_children(array $params): array
-    {
-        foreach ($this->childrens_data as $entidad=>$child){
-            $button = $this->boton_children(child: $child,entidad:  $entidad, params: $params);
-            if(errores::$error){
-                return $this->errores->error(mensaje: 'Error al generar button',data:  $button);
-            }
-            $this->buttons_childrens_alta[] = $button;
-        }
-        return $this->buttons_childrens_alta;
-    }
 
     /**
      * Genera los botones para modifica view base
@@ -699,31 +633,7 @@ class system extends controlador_base{
         return $this->forms_inputs_modifica;
     }
 
-    /**
-     * Genera botones si hace falta algun parent
-     * @param string $etiqueta Etiqueta de boton parent
-     * @param modelo $model_parent Modelo parent
-     * @return array|stdClass
-     * 7.69.3
-     */
-    private function genera_botones_parent(string $etiqueta, modelo $model_parent): array|stdClass
-    {
-        $etiqueta = trim($etiqueta);
-        if($etiqueta === ''){
-            return $this->errores->error(mensaje: 'Error la $etiqueta esta vacia', data: $etiqueta);
-        }
 
-        $style = $this->style_btn_parent(model_parent: $model_parent);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al genera style '.$model_parent->tabla, data:  $style);
-        }
-
-        $buttons = $this->integra_button_parent(etiqueta: $etiqueta, model_parent: $model_parent, style: $style);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al generar botones', data:  $buttons);
-        }
-        return $buttons;
-    }
 
     final public function genera_inputs(array $keys_selects = array()): array|stdClass
     {
@@ -866,13 +776,7 @@ class system extends controlador_base{
         return $this->include_inputs_modifica;
     }
 
-    private function input_parent(string $key_parent_id): array|stdClass
-    {
-        $this->keys_selects[$key_parent_id]->con_registros = true;
-        $this->keys_selects[$key_parent_id]->value = $_GET[$key_parent_id];
 
-        return $this->keys_selects;
-    }
 
     final public function inputs(array $keys_selects): array|stdClass
     {
@@ -887,70 +791,10 @@ class system extends controlador_base{
         return $inputs;
     }
 
-    /**
-     * Integra un boton para ejecucion parent
-     * @param string $etiqueta Etiqueta de boton
-     * @param modelo $model_parent Modelo parent
-     * @param string $style Stilo css
-     * @return array|stdClass
-     * @version 7.67.3
-     */
-    private function integra_button_parent(string $etiqueta, modelo $model_parent, string $style): array|stdClass
-    {
-        $etiqueta = trim($etiqueta);
-        if($etiqueta === ''){
-            return $this->errores->error(mensaje: 'Error la $etiqueta esta vacia', data: $etiqueta);
-        }
 
-        $button = $this->html->button_href(accion: 'alta', etiqueta: $etiqueta,
-            registro_id:  -1, seccion: $model_parent->tabla,style: $style);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al generar boton', data:  $button);
-        }
-        $object_button = $model_parent->tabla;
-        $this->buttons_parents_alta->$object_button = $button;
-        return $this->buttons_parents_alta;
-    }
 
-    private function integra_buttons_children(): array
-    {
-        $params_btn_children = $this->params_btn();
-        if (errores::$error) {
-            return $this->errores->error(mensaje: 'Error al integrar value children', data: $params_btn_children);
-        }
 
-        $botones = $this->botones_children(params: $params_btn_children);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al generar buttons',data:  $botones);
 
-        }
-        return $botones;
-    }
-
-    private function integra_params_btn(modelo $model_parent, array $params_btn_children): array
-    {
-        $key_parent_id = $this->key_parent_id(model_parent: $model_parent);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al obtener key parent',data:  $key_parent_id);
-
-        }
-
-        $params_btn_children = $this->param_btn_children(key_parent_id: $key_parent_id, params_btn_children: $params_btn_children);
-        if (errores::$error) {
-            return $this->errores->error(mensaje: 'Error al integrar value children', data: $params_btn_children);
-        }
-        return $params_btn_children;
-    }
-
-    /**
-     * Genera el name id de la tabla a relacionar
-     * @param modelo $model_parent Modelo parent
-     * @return string
-     */
-    private function key_parent_id(modelo $model_parent): string
-    {
-        return $model_parent->tabla.'_id';
-    }
 
     /**
      * Debe ser operable y sobreescrito en controller de ejecucion
@@ -1061,7 +905,7 @@ class system extends controlador_base{
         }
 
 
-        $botones = $this->integra_buttons_children();
+        $botones = (new _ctl_referencias())->integra_buttons_children(controler: $this);
         if(errores::$error){
             $error = $this->errores->error(mensaje: 'Error al generar buttons',data:  $botones);
             print_r($error);
@@ -1091,115 +935,11 @@ class system extends controlador_base{
         return $r_modifica_bd;
     }
 
-    private function params_key(array $params): array
-    {
-        $params[$this->seccion.'_id'] = $this->registro_id;
-        return $params;
-    }
 
 
-    private function param_btn_children(string $key_parent_id, array $params_btn_children): array
-    {
-        if(isset($this->row_upd->$key_parent_id)){
-
-            $params_btn_children = $this->value_param_children(key_parent_id: $key_parent_id,params_btn_children:  $params_btn_children);
-            if(errores::$error){
-                return $this->errores->error(mensaje: 'Error al integrar value',data:  $params_btn_children);
-            }
-        }
-        else {
-            $params_btn_children = $this->param_children(key_parent_id: $key_parent_id, params_btn_children: $params_btn_children);
-            if (errores::$error) {
-                return $this->errores->error(mensaje: 'Error al integrar value children', data: $params_btn_children);
-            }
-        }
-        return $params_btn_children;
-    }
 
 
-    private function param_children(string $key_parent_id, array $params_btn_children): array
-    {
-        $row_in_proceso = $this->modelo->registro(registro_id: $this->registro_id,retorno_obj: true);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al obtener registro en proceso',data:  $row_in_proceso);
-        }
-        if(isset($row_in_proceso->$key_parent_id)){
-            $params_btn_children = $this->value_row_children_proceso(key_parent_id: $key_parent_id,
-                params_btn_children:  $params_btn_children,row_in_proceso:  $row_in_proceso);
-            if(errores::$error){
-                return $this->errores->error(mensaje: 'Error al integrar value',data:  $params_btn_children);
-            }
-        }
-        return $params_btn_children;
-    }
 
-    private function params_btn(): array
-    {
-        $params_btn_children = array();
-        foreach ($this->parents_verifica as $parent){
-
-            $model_parent = $parent;
-            if(is_array($parent) && isset($parent['model_parent'])){
-                $model_parent = $parent['model_parent'];
-            }
-
-            $params_btn_children = $this->integra_params_btn(model_parent: $model_parent,
-                params_btn_children:  $params_btn_children);
-            if (errores::$error) {
-               return $this->errores->error(mensaje: 'Error al integrar value children', data: $params_btn_children);
-            }
-
-        }
-        return $params_btn_children;
-    }
-
-    private function params_btn_parent(object|array $parent): stdClass
-    {
-        if(is_array($parent) && isset($parent['model_parent'])) {
-
-            $model_parent = $parent['model_parent'];
-            $etiqueta = $parent['etiqueta'];
-        }
-        else{
-
-            $model_parent = $parent;
-            $etiqueta = 'Alta '.$model_parent->tabla;
-        }
-
-        $data = new stdClass();
-        $data->model_parent = $model_parent;
-        $data->etiqueta = $etiqueta;
-        return $data;
-    }
-
-    private function parents_alta(): array|bool
-    {
-        /**
-         * @var modelo $model_parent;
-         */
-        if($this->verifica_parents_alta){
-
-            foreach ($this->parents_verifica as $parent) {
-
-                $params = $this->params_btn_parent(parent: $parent);
-                if (errores::$error) {
-                    return $this->errores->error(mensaje: 'Error al generar params', data: $params);
-                }
-
-                $buttons = $this->genera_botones_parent(
-                    etiqueta: $params->etiqueta, model_parent: $params->model_parent);
-                if (errores::$error) {
-                    return $this->errores->error(mensaje: 'Error al generar botones', data: $buttons);
-                }
-
-                $valores = $this->asigna_valores_default(model_parent: $params->model_parent);
-                if (errores::$error) {
-                    return $this->errores->error(mensaje: 'Error al asignar valor', data: $valores);
-                }
-            }
-        }
-        return $this->verifica_parents_alta;
-    }
 
     function reemplazar_id_link($str, $start, $end, $replacement) {
 
@@ -1300,40 +1040,6 @@ class system extends controlador_base{
         return $rows;
     }
 
-    private function style_btn(bool $tiene_rows): string
-    {
-        $style = 'warning';
-        if($tiene_rows){
-            $style = 'success';
-        }
-        return $style;
-    }
-
-    private function style_btn_parent(modelo $model_parent): array|string
-    {
-        $tiene_rows = $model_parent->tiene_registros();
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al verificar $model_parent '.$model_parent->tabla, data:  $tiene_rows);
-        }
-
-        $style = $this->style_btn(tiene_rows: $tiene_rows);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al genera style '.$model_parent->tabla, data:  $style);
-        }
-        return $style;
-    }
-
-    private function value_param_children(string $key_parent_id, array $params_btn_children): array
-    {
-        $params_btn_children[$key_parent_id] = $this->row_upd->$key_parent_id;
-        return $params_btn_children;
-    }
-
-    private function value_row_children_proceso(string $key_parent_id, array $params_btn_children, stdClass $row_in_proceso): array
-    {
-        $params_btn_children[$key_parent_id] = $row_in_proceso->$key_parent_id;
-        return $params_btn_children;
-    }
 
 
 }
