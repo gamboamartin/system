@@ -13,6 +13,12 @@ class _ctl_referencias{
         $this->error = new errores();
     }
 
+    /**
+     * Asignan valores default para precargar selects
+     * @param system $controler Controlador en ejecucion
+     * @param string $key_parent_id Key del parent 0 al input select
+     * @return array
+     */
     private function asigna_valor_default(system $controler, string $key_parent_id): array
     {
         $controler->valores_asignados_default[$key_parent_id] = $_GET[$key_parent_id];
