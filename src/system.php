@@ -181,7 +181,12 @@ class system extends controlador_base{
     public function alta(bool $header, bool $ws = false): array|string
     {
 
-        foreach ($this->parents_verifica as $model_parent){
+        foreach ($this->parents_verifica as $parent){
+
+            $model_parent = $parent;
+            if(is_array($parent) && isset($parent['model_parent'])){
+                $model_parent = $parent['model_parent'];
+            }
 
             $key_parent_id = $this->key_parent_id(model_parent: $model_parent);
             if (errores::$error) {
@@ -190,8 +195,11 @@ class system extends controlador_base{
             if(isset($_GET[$key_parent_id])){
                 if(isset($this->keys_selects[$key_parent_id])){
 
-                    $this->keys_selects[$key_parent_id]->con_registros = true;
-                    $this->keys_selects[$key_parent_id]->value = $_GET[$key_parent_id];
+                    $keys_selects = $this->input_parent(key_parent_id: $key_parent_id);
+                    if (errores::$error) {
+                        return $this->retorno_error(mensaje: 'Error al generar select', data: $keys_selects, header: $header, ws: $ws);
+                    }
+                    
                 }
             }
 
@@ -856,6 +864,14 @@ class system extends controlador_base{
         }
         $this->include_inputs_modifica = $include_inputs_modifica;
         return $this->include_inputs_modifica;
+    }
+
+    private function input_parent(string $key_parent_id): array|stdClass
+    {
+        $this->keys_selects[$key_parent_id]->con_registros = true;
+        $this->keys_selects[$key_parent_id]->value = $_GET[$key_parent_id];
+
+        return $this->keys_selects;
     }
 
     final public function inputs(array $keys_selects): array|stdClass
