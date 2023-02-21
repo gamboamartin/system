@@ -407,6 +407,25 @@ class datatablesTest extends test {
 
     }
 
+    public function test_datatable_base_init(): void
+    {
+        errores::$error = false;
+        $_SESSION['usuario_id'] = 2;
+        $_SESSION['grupo_id'] = 2;
+        $datatables = new datatables();
+        //$datatables = new liberator($datatables);
+
+        $datatables_ = new stdClass();
+        $link = $this->link;
+        $rows_lista = array();
+        $seccion = 'a';
+        $resultado = $datatables->datatable_base_init($datatables_, $link, $rows_lista, $seccion);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+
+    }
+
 
     public function test_genera_column(): void
     {

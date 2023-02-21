@@ -387,14 +387,15 @@ class datatables{
      * @param string $seccion Seccion en ejecucion
      * @param array $not_actions Acciones a omitir
      * @return array|stdClass
+     * @version 7.85.3
      *
      */
     final public function datatable_base_init(stdClass $datatables, PDO $link, array $rows_lista, string $seccion,
                                         array $not_actions = array()): array|stdClass
     {
+        $seccion = trim($seccion);
         if($seccion === ''){
-            return $this->error->error(
-                mensaje: 'Error seccion debe ser un string con datos', data:  $seccion);
+            return $this->error->error(mensaje: 'Error seccion debe ser un string con datos', data:  $seccion);
         }
 
         $filtro = (new \gamboamartin\system\datatables\init())->init_filtro_datatables(datatables: $datatables,
