@@ -182,7 +182,11 @@ class system extends controlador_base{
     {
 
         foreach ($this->parents_verifica as $model_parent){
-            $key_parent_id = $model_parent->tabla.'_id';
+
+            $key_parent_id = $this->key_parent_id(model_parent: $model_parent);
+            if (errores::$error) {
+                return $this->retorno_error(mensaje: 'Error al generar key parent', data: $key_parent_id, header: $header, ws: $ws);
+            }
             if(isset($_GET[$key_parent_id])){
                 if(isset($this->keys_selects[$key_parent_id])){
 
