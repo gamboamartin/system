@@ -375,43 +375,100 @@ class system extends controlador_base{
             return $this->retorno_error(mensaje: 'Error al obtener params', data: $params,header:  $header, ws: $ws);
         }
 
+        $params->extra_join = array();
+
         if (isset($_GET['filtros'])){
             $filtros = $_GET['filtros'];
 
-            foreach ($filtros as $index => $filtro){
-                $keys = array_keys($filtro);
+            if (array_key_exists("filtro", $filtros)){
+                foreach ($filtros["filtro"] as $index => $filtro){
+                    $keys = array_keys($filtro);
 
-                if (!array_key_exists("key", $filtro)){
-                    return $this->retorno_error(mensaje: 'Error no exite la clave key', data: $filtro, header: $header,
-                        ws: $ws);
-                }
+                    if (!array_key_exists("key", $filtro)){
+                        return $this->retorno_error(mensaje: 'Error no exite la clave key', data: $filtro, header: $header,
+                            ws: $ws);
+                    }
 
-                if (!array_key_exists("valor", $filtro)){
-                    return $this->retorno_error(mensaje: 'Error no exite la clave valor', data: $filtro, header: $header,
-                        ws: $ws);
-                }
-
-                if (!array_key_exists("operador", $filtro)){
-                    return $this->retorno_error(mensaje: 'Error no exite la clave operador', data: $filtro, header: $header,
-                        ws: $ws);
-                }
-
-                if (!array_key_exists("comparacion", $filtro)){
-                    return $this->retorno_error(mensaje: 'Error no exite la clave comparacion', data: $filtro,
-                        header: $header, ws: $ws);
-                }
-
-                if (trim($filtro['valor']) !== ""){
-                    $params->filtro_especial[$index][$filtro['valor']]['operador'] = $filtro['operador'];
-                    $params->filtro_especial[$index][$filtro['valor']]['valor'] = $filtro['key'];
-                    $params->filtro_especial[$index][$filtro['valor']]['comparacion'] = $filtro['comparacion'];
-                    $params->filtro_especial[$index][$filtro['valor']]['valor_es_campo'] = true;
+                    if (!array_key_exists("valor", $filtro)){
+                        return $this->retorno_error(mensaje: 'Error no exite la clave valor', data: $filtro, header: $header,
+                            ws: $ws);
+                    }
+                    $params->filtro[$filtro['key']]  = $filtro['valor'];
                 }
             }
+
+            if (array_key_exists("filtro_especial", $filtros)){
+                foreach ($filtros["filtro_especial"] as $index => $filtro){
+                    $keys = array_keys($filtro);
+
+                    if (!array_key_exists("key", $filtro)){
+                        return $this->retorno_error(mensaje: 'Error no exite la clave key', data: $filtro, header: $header,
+                            ws: $ws);
+                    }
+
+                    if (!array_key_exists("valor", $filtro)){
+                        return $this->retorno_error(mensaje: 'Error no exite la clave valor', data: $filtro, header: $header,
+                            ws: $ws);
+                    }
+
+                    if (!array_key_exists("operador", $filtro)){
+                        return $this->retorno_error(mensaje: 'Error no exite la clave operador', data: $filtro, header: $header,
+                            ws: $ws);
+                    }
+
+                    if (!array_key_exists("comparacion", $filtro)){
+                        return $this->retorno_error(mensaje: 'Error no exite la clave comparacion', data: $filtro,
+                            header: $header, ws: $ws);
+                    }
+
+                    if (trim($filtro['valor']) !== ""){
+                        $params->filtro_especial[$index][$filtro['valor']]['operador'] = $filtro['operador'];
+                        $params->filtro_especial[$index][$filtro['valor']]['valor'] = $filtro['key'];
+                        $params->filtro_especial[$index][$filtro['valor']]['comparacion'] = $filtro['comparacion'];
+                        $params->filtro_especial[$index][$filtro['valor']]['valor_es_campo'] = true;
+                    }
+                }
+            }
+
+            if (array_key_exists("extra_join", $filtros)){
+                foreach ($filtros["extra_join"] as $index => $filtro){
+                    $keys = array_keys($filtro);
+
+                    if (!array_key_exists("entidad", $filtro)){
+                        return $this->retorno_error(mensaje: 'Error no exite la clave entidad', data: $filtro, header: $header,
+                            ws: $ws);
+                    }
+
+                    if (!array_key_exists("key", $filtro)){
+                        return $this->retorno_error(mensaje: 'Error no exite la clave key', data: $filtro, header: $header,
+                            ws: $ws);
+                    }
+
+                    if (!array_key_exists("enlace", $filtro)){
+                        return $this->retorno_error(mensaje: 'Error no exite la clave enlace', data: $filtro, header: $header,
+                            ws: $ws);
+                    }
+
+                    if (!array_key_exists("key_enlace", $filtro)){
+                        return $this->retorno_error(mensaje: 'Error no exite la clave key_enlace', data: $filtro, header: $header,
+                            ws: $ws);
+                    }
+
+                    if (!array_key_exists("renombre", $filtro)){
+                        return $this->retorno_error(mensaje: 'Error no exite la clave renombre', data: $filtro, header: $header,
+                            ws: $ws);
+                    }
+                    $params->extra_join[$filtro['entidad']]['key']  = $filtro['key'];
+                    $params->extra_join[$filtro['entidad']]['enlace']  = $filtro['enlace'];
+                    $params->extra_join[$filtro['entidad']]['key_enlace']  = $filtro['key_enlace'];
+                    $params->extra_join[$filtro['entidad']]['renombre']  = $filtro['renombre'];
+                }
+            }
+
         }
 
         $data_result = $this->modelo->get_data_lista(filtro:$params->filtro,filtro_especial: $params->filtro_especial,
-            n_rows_for_page: $params->n_rows_for_page, pagina: $params->pagina);
+            n_rows_for_page: $params->n_rows_for_page, pagina: $params->pagina,extra_join: $params->extra_join);
 
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al obtener data result', data: $data_result,header:  $header, ws: $ws);
