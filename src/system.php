@@ -199,7 +199,7 @@ class system extends controlador_base{
                     if (errores::$error) {
                         return $this->retorno_error(mensaje: 'Error al generar select', data: $keys_selects, header: $header, ws: $ws);
                     }
-                    
+
                 }
             }
 
@@ -943,7 +943,8 @@ class system extends controlador_base{
     }
 
     /**
-     * @param modelo $model_parent
+     * Genera el name id de la tabla a relacionar
+     * @param modelo $model_parent Modelo parent
      * @return string
      */
     private function key_parent_id(modelo $model_parent): string
@@ -1135,9 +1136,15 @@ class system extends controlador_base{
     private function params_btn(): array
     {
         $params_btn_children = array();
-        foreach ($this->parents_verifica as $model_parent){
+        foreach ($this->parents_verifica as $parent){
 
-            $params_btn_children = $this->integra_params_btn(model_parent: $model_parent,params_btn_children:  $params_btn_children);
+            $model_parent = $parent;
+            if(is_array($parent) && isset($parent['model_parent'])){
+                $model_parent = $parent['model_parent'];
+            }
+
+            $params_btn_children = $this->integra_params_btn(model_parent: $model_parent,
+                params_btn_children:  $params_btn_children);
             if (errores::$error) {
                return $this->errores->error(mensaje: 'Error al integrar value children', data: $params_btn_children);
             }
