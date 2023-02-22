@@ -49,10 +49,15 @@ class links_menu{
 
     }
 
-    private function adm_menu_id(){
+    /**
+     * Obtiene el menu id para se utilizado por GET en los links
+     * @return int
+     */
+    private function adm_menu_id(): int
+    {
         $adm_menu_id = -1;
         if(isset($_GET['adm_menu_id'])){
-            $adm_menu_id = $_GET['adm_menu_id'];
+            $adm_menu_id = (int)$_GET['adm_menu_id'];
         }
         return $adm_menu_id;
     }
