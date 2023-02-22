@@ -135,6 +135,12 @@ class _ctl_referencias{
         return $controler->keys_selects;
     }
 
+    /**
+     * Integra los inputs de tipo parent
+     * @param system $controler Controlador en ejecucion
+     * @param string $key_parent_id Key a integrar para select
+     * @return array|stdClass
+     */
     private function input_parent(system $controler, string $key_parent_id): array|stdClass
     {
         $controler->keys_selects[$key_parent_id]->con_registros = true;
