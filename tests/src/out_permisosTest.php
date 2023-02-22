@@ -34,6 +34,7 @@ class out_permisosTest extends test {
         $_SESSION['grupo_id'] = 1;
         $_GET['session_id'] = 1;
         $_GET['seccion'] = 'adm_accion';
+        $_GET['adm_menu_id'] = -1;
         $html = new html();
         $html_controler = new html_controler($html);
 

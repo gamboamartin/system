@@ -34,6 +34,30 @@ class links_menuTest extends test {
 
     }
 
+    #[NoReturn] public function test_adm_menu_id(): void
+    {
+        errores::$error = false;
+        $_SESSION['usuario_id'] = 2;
+        $_GET['session_id'] = 1;
+        $html = new links_menu($this->link, -1);
+        $html = new liberator($html);
+
+        errores::$error = false;
+
+        $resultado = $html->adm_menu_id();
+        $this->assertIsInt($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(-1, $resultado);
+
+        errores::$error = false;
+        $_GET['adm_menu_id'] = 5;
+        $resultado = $html->adm_menu_id();
+        $this->assertIsInt($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(5, $resultado);
+        errores::$error = false;
+    }
+
     /**
      */
     #[NoReturn] public function test_alta(): void

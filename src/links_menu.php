@@ -52,6 +52,7 @@ class links_menu{
     /**
      * Obtiene el menu id para se utilizado por GET en los links
      * @return int
+     * @version 7.88.3
      */
     private function adm_menu_id(): int
     {
