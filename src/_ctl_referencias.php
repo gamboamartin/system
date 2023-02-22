@@ -140,9 +140,20 @@ class _ctl_referencias{
      * @param system $controler Controlador en ejecucion
      * @param string $key_parent_id Key a integrar para select
      * @return array|stdClass
+     * @version 7.90.3
      */
     private function input_parent(system $controler, string $key_parent_id): array|stdClass
     {
+        $key_parent_id = trim($key_parent_id);
+        if($key_parent_id === ''){
+            return $this->error->error(mensaje: 'Error key_parent_id esta vacio', data: $key_parent_id);
+        }
+        if(!isset($controler->keys_selects[$key_parent_id])){
+            $controler->keys_selects[$key_parent_id] = new stdClass();
+        }
+        if(!isset($_GET[$key_parent_id])){
+            $_GET[$key_parent_id] = '';
+        }
         $controler->keys_selects[$key_parent_id]->con_registros = true;
         $controler->keys_selects[$key_parent_id]->value = $_GET[$key_parent_id];
 
