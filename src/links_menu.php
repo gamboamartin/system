@@ -49,6 +49,14 @@ class links_menu{
 
     }
 
+    private function adm_menu_id(){
+        $adm_menu_id = -1;
+        if(isset($_GET['adm_menu_id'])){
+            $adm_menu_id = $_GET['adm_menu_id'];
+        }
+        return $adm_menu_id;
+    }
+
     /**
      * Genera un link de alta
      * @param PDO $link
@@ -189,7 +197,7 @@ class links_menu{
         return $this->links;
     }
 
-    public function genera_links(controler $controler): array|stdClass
+    final public function genera_links(controler $controler): array|stdClass
     {
         $filtro['adm_seccion.descripcion']  = $controler->modelo->tabla;
         $acciones = (new adm_accion($controler->link))->filtro_and(columnas: array("adm_accion_descripcion"),
@@ -304,6 +312,35 @@ class links_menu{
         return $this->links;
     }
 
+    private function liga(string $accion, int $registro_id, string $seccion, bool $tengo_permiso){
+        $liga = '';
+        if($tengo_permiso){
+            $liga = $this->liga_con_permiso(accion: $accion,registro_id:  $registro_id,seccion:  $seccion);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar liga', data: $liga);
+            }
+        }
+        return $liga;
+    }
+
+    private function liga_completa(string $accion, int $adm_menu_id, int $registro_id, string $seccion): string
+    {
+        return "./index.php?seccion=$seccion&accion=$accion&registro_id=$registro_id&session_id=$this->session_id&adm_menu_id=$adm_menu_id";
+    }
+
+    private function liga_con_permiso(string $accion, int $registro_id, string $seccion){
+        $adm_menu_id = $this->adm_menu_id();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener adm_menu_id', data: $adm_menu_id);
+        }
+
+        $liga = $this->liga_completa(accion: $accion,adm_menu_id:  $adm_menu_id,registro_id:  $registro_id, seccion: $seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar liga', data: $liga);
+        }
+        return $liga;
+    }
+
     /**
      * Genera un link basado en datos de controler
      * @param string $accion Accion a ejecutar
@@ -317,7 +354,6 @@ class links_menu{
 
         $seccion = trim($seccion);
         if($seccion === ''){
-
             return $this->error->error(mensaje: 'Error seccion esta vacia', data:$seccion);
         }
 
@@ -326,13 +362,9 @@ class links_menu{
             return $this->error->error(mensaje: 'Error al validar si tengo permiso', data: $tengo_permiso);
         }
 
-        $liga = '';
-        if($tengo_permiso){
-            $adm_menu_id = -1;
-            if(isset($_GET['adm_menu_id'])){
-                $adm_menu_id = $_GET['adm_menu_id'];
-            }
-            $liga = "./index.php?seccion=$seccion&accion=$accion&registro_id=$registro_id&session_id=$this->session_id&adm_menu_id=$adm_menu_id";
+        $liga = $this->liga(accion: $accion,registro_id:  $registro_id,seccion:  $seccion,tengo_permiso:  $tengo_permiso);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar liga', data: $liga);
         }
 
         return $liga;
