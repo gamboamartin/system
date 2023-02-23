@@ -154,8 +154,8 @@ class params{
         $data = new stdClass();
         $data->cols = $params->cols ?? 6;
         $data->label = $params->label ?? str_replace('_',' ', $label);
-
         $data->label = str_replace('  ', ' ', $data->label);
+        $data->key_descripcion_select = $params->key_descripcion_select ?? '';
 
         $data = $this->params_base(data: $data,name:  $label,params:  $params);
         if(errores::$error){

@@ -41,17 +41,18 @@ class html_controlerTest extends test {
 
 
         $cols = -1;
-        $etiqueta_html = '';
+        $etiqueta_html = 'b';
         $icon_html = '';
         $link = '';
         $role = '';
-        $style = '';
+        $style = 'a';
         $styles = array();
         $title = '';
         $resultado = $html->a_role($cols, $etiqueta_html, $icon_html, $link, $role, $style, $styles, $title);
+
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<a role='button' title='' href='' class='btn btn- ' ></a>",$resultado);
+        $this->assertEquals("<a role='button' title='b' href='' class='btn btn-a '>b</a>",$resultado);
         errores::$error = false;
     }
 
@@ -208,7 +209,7 @@ class html_controlerTest extends test {
             seccion:  $seccion,style:  $style);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<a role='button' title='d' href='index.php?seccion=a&accion=b&registro_id=-1&session_id=1&adm_menu_id=-1' class='btn btn-c col-sm-12' >d</a>", $resultado);
+        $this->assertEquals("<a role='button' title='d' href='index.php?seccion=a&accion=b&registro_id=-1&session_id=1&adm_menu_id=-1' class='btn btn-c col-sm-12'>d</a>", $resultado);
         errores::$error = false;
     }
 
@@ -833,7 +834,7 @@ class html_controlerTest extends test {
 
         $html_controler = new html_controler($html_);
         $modelo = new adm_menu($this->link);
-        $html_controler = new liberator($html_controler);
+        //$html_controler = new liberator($html_controler);
         $params_select = new stdClass();
         $params_select->cols = '1';
         $params_select->con_registros = true;
@@ -844,12 +845,41 @@ class html_controlerTest extends test {
         $params_select->label = 'a';
         $params_select->not_in = array();
         $params_select->required = true;
+        $params_select->key_descripcion_select = '';
 
         $resultado = $html_controler->select_aut2($modelo, $params_select);
+
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase("s='controls'><select class='form-control selectpicker color-secondary  adm_menu_id' data", $resultado);
         errores::$error = false;
+
+        errores::$error = false;
+
+
+
+        $modelo = new adm_menu($this->link);
+
+        $params_select = new stdClass();
+        $params_select->cols = '1';
+        $params_select->con_registros = true;
+        $params_select->id_selected = '-1';
+        $params_select->disabled = false;
+        $params_select->extra_params_keys = array();
+        $params_select->filtro = array();
+        $params_select->label = 'a';
+        $params_select->not_in = array();
+        $params_select->required = true;
+        $params_select->key_descripcion_select = 'adm_menu_id';
+
+        $resultado = $html_controler->select_aut2($modelo, $params_select);
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<div class='control-group col-sm-1'><div class='controls'><select class='form-control selectpicker color-secondary  adm_menu_id' data-live-search='true' id='adm_menu_id' name='adm_menu_id' required ><option value=''  >Selecciona una opcion</option><option value='1'  >1</option></select></div></div>", $resultado);
+        errores::$error = false;
+
+
     }
 
     public function test_select_catalogo(): void

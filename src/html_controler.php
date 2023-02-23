@@ -32,6 +32,39 @@ class html_controler{
     }
 
     /**
+     * Genera los parametros para un link de tipo button
+     * @param string $cols_html Columnas css
+     * @param string $link Link referencia ejecucion
+     * @param string $role Role de boton submit o button
+     * @param string $style Estilos base del boton
+     * @param string $style_custom Estilos agregados
+     * @param string $title Titulo del boton
+     * @return string|array
+     */
+    private function a_params(string $cols_html, string $link, string $role, string $style, string $style_custom,
+                              string $title): string|array
+    {
+        $style = trim($style);
+        if($style === ''){
+            return $this->error->error(mensaje: 'Error style esta vacio',data:  $style);
+        }
+        $title = trim($title);
+        if($title === ''){
+            return $this->error->error(mensaje: 'Error title esta vacio',data:  $title);
+        }
+        $params = "role='$role' title='$title' href='$link' class='btn btn-$style $cols_html' $style_custom";
+        $params = trim($params);
+        $i=0;
+        $iteraciones = 5;
+        while ($i<=$iteraciones){
+            $params =  str_replace('  ', ' ', $params);
+            $i++;
+        }
+        return $params;
+
+    }
+
+    /**
      * Integra un href para btns
      * @param int $cols Columnas css
      * @param string $etiqueta_html Etiqueta a mostrar
@@ -41,36 +74,80 @@ class html_controler{
      * @param string $style Stilo de boton
      * @param array $styles Estilos css
      * @param string $title Titulo a mostrar del button
-     * @return string
+     * @return string|array
      * @version 7.11.0
      * @por_doc = true
      */
     private function a_role(int $cols, string $etiqueta_html, string $icon_html, string $link, string $role,
-                            string $style, array $styles, string $title): string
+                            string $style, array $styles, string $title): string|array
     {
-        $cols_html = "col-sm-$cols";
-        if($cols === -1){
-            $cols_html = '';
+
+        $style = trim($style);
+        if($style === ''){
+            return $this->error->error(mensaje: 'Error style esta vacio',data:  $style);
+        }
+        $title = trim($title);
+        if($title === ''){
+            $title = $etiqueta_html;
         }
 
-        $role = trim($role);
-        if($role === ''){;
-            $role = 'button';
+        if($title === ''){
+            return $this->error->error(mensaje: 'Error title esta vacio',data:  $title);
         }
 
-        $propiedades = '';
-
-        foreach ($styles as $propiedad=>$valor){
-            $propiedades.= $propiedad.': '.$valor.'; ';
-        }
-        $style_custom = '';
-        if($propiedades!==''){
-            $style_custom = "style='$propiedades'";
+        $cols_html = $this->cols_html(cols: $cols);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar cols html', data: $cols_html);
         }
 
-        $params = "role='$role' title='$title' href='$link' class='btn btn-$style $cols_html' $style_custom";
+        $role = $this->role_button(role: $role);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar role', data: $role);
+        }
 
-        return "<a $params>$icon_html$etiqueta_html</a>";
+        $style_custom = $this->genera_styles_custom(styles: $styles);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar style_custom', data: $style_custom);
+        }
+
+        $params = $this->a_params(cols_html: $cols_html,link:  $link,role:  $role,style:  $style,
+            style_custom: $style_custom,title:  $title);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar params', data: $params);
+        }
+
+        $a = $this->a_role_button(etiqueta_html: $etiqueta_html,icon_html:  $icon_html, params: $params);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar button', data: $a);
+        }
+
+        return $a;
+    }
+
+    private function a_role_button(string $etiqueta_html, string $icon_html, string $params): string|array
+    {
+        $etiqueta_html = trim($etiqueta_html);
+        $icon_html = trim($icon_html);
+        $params = trim($params);
+        if($params === ''){
+            return $this->error->error(mensaje: 'Error al params esta vacio', data: $params);
+        }
+
+        $data_a = $icon_html.' '.$etiqueta_html;
+        $data_a = trim($data_a);
+        if($data_a === ''){
+            return $this->error->error(mensaje: 'Error al data_a esta vacio', data: $data_a);
+        }
+
+        $a = "<a $params>$data_a</a>";
+
+        $i = 0;
+        while($i<=5){
+            $a = str_replace('  ', ' ', $a);
+            $i++;
+        }
+
+        return $a;
     }
 
     /**
@@ -223,6 +300,15 @@ class html_controler{
         }
 
         return $a;
+    }
+
+    private function cols_html(int $cols): string
+    {
+        $cols_html = "col-sm-$cols";
+        if($cols === -1){
+            $cols_html = '';
+        }
+        return $cols_html;
     }
 
     /**
@@ -496,6 +582,20 @@ class html_controler{
         }
 
         return $div;
+    }
+
+    private function genera_styles_custom(array $styles){
+        $propiedades = $this->propiedades_css(styles: $styles);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar propiedades', data: $propiedades);
+        }
+
+
+        $style_custom = $this->style_custom(propiedades: $propiedades);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar style_custom', data: $style_custom);
+        }
+        return $style_custom;
     }
 
     /**
@@ -969,6 +1069,12 @@ class html_controler{
         return $passwords;
     }
 
+    private function integra_propiedad(string $propiedad, string $propiedades, string $valor): string
+    {
+        $propiedades.= $propiedad.': '.$valor.'; ';
+        return $propiedades;
+    }
+
     /**
      * Genera in item para salida de front
      * @param string $item Campo o input
@@ -1364,6 +1470,18 @@ class html_controler{
         }
         return $passwords;
     }
+
+    private function propiedades_css(array $styles){
+        $propiedades = '';
+
+        foreach ($styles as $propiedad=>$valor){
+            $propiedades = $this->integra_propiedad(propiedad: $propiedad,propiedades:  $propiedades,valor:  $valor);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar propiedades', data: $propiedades);
+            }
+        }
+        return $propiedades;
+    }
     /**
      * Retornos hidden
      * @param int $registro_id Registro id a retornar
@@ -1396,6 +1514,15 @@ class html_controler{
         $data->hidden_id_retorno = $hidden_id_retorno;
         $data->hidden_seccion_retorno = $hidden_seccion_retorno;
         return $data;
+    }
+
+    private function role_button(string $role): string
+    {
+        $role = trim($role);
+        if($role === ''){;
+            $role = 'button';
+        }
+        return $role;
     }
 
 
@@ -1454,11 +1581,17 @@ class html_controler{
      * @version 0.227.38
      * @example $params_select->extra_params_keys[] = 'tabla_id'; integra un extra param al option de un select
      */
-    private function select_aut2(modelo $modelo, stdClass $params_select): array|stdClass|string
+    PUBLIC function select_aut2(modelo $modelo, stdClass $params_select): array|stdClass|string
     {
         $keys = array('cols','con_registros','id_selected','disabled','extra_params_keys','filtro','label','not_in',
             'required');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $params_select);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
+        }
+
+        $keys = array('key_descripcion_select');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $params_select, valida_vacio: false);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
         }
@@ -1484,7 +1617,8 @@ class html_controler{
         $select  = $this->select_catalogo(cols: $params_select->cols, con_registros: $params_select->con_registros,
             id_selected: $params_select->id_selected, modelo: $modelo, disabled: $params_select->disabled,
             extra_params_keys: $params_select->extra_params_keys, filtro: $params_select->filtro,
-            label: $params_select->label, not_in: $params_select->not_in, required: $params_select->required);
+            key_descripcion_select: $params_select->key_descripcion_select, label: $params_select->label,
+            not_in: $params_select->not_in, required: $params_select->required);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $select);
         }
@@ -1721,6 +1855,15 @@ class html_controler{
             $style = 'success';
         }
         return $style;
+    }
+
+    private function style_custom(string $propiedades): string
+    {
+        $style_custom = '';
+        if($propiedades!==''){
+            $style_custom = "style='$propiedades'";
+        }
+        return $style_custom;
     }
 
     /** Genera el template de telefonos para frontend
