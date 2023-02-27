@@ -5,13 +5,16 @@ use base\controller\controler;
 use base\orm\modelo;
 use gamboamartin\administrador\models\adm_accion;
 use gamboamartin\errores\errores;
+use gamboamartin\validacion\validacion;
 use stdClass;
 
 class _ctl_referencias{
 
     private errores $error;
+    private validacion $validacion;
     public function __construct(){
         $this->error = new errores();
+        $this->validacion = new validacion();
     }
 
     /**
@@ -60,7 +63,8 @@ class _ctl_referencias{
 
     private function boton_permitido(system $controler, stdClass $params){
         $buttons = new stdClass();
-        $tengo_permiso = (new adm_accion(link: $controler->link))->permiso(accion: 'alta',seccion:  $params->model_parent->tabla);
+        $tengo_permiso = (new adm_accion(link: $controler->link))->permiso(accion: 'alta',
+            seccion:  $params->model_parent->tabla);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar permiso boton', data:  $tengo_permiso);
         }
@@ -347,15 +351,27 @@ class _ctl_referencias{
     /**
      * Obtiene los parametros para ejecucion de referencias
      * @param modelo|array $parent Data de integracion
-     * @return stdClass
+     * @return stdClass|array
+     * @version 7.92.3
      */
-    private function params_btn_parent(modelo|array $parent): stdClass
+    private function params_btn_parent(modelo|array $parent): stdClass|array
     {
         if(is_array($parent) && isset($parent['model_parent'])) {
+            $keys = array('model_parent','etiqueta');
+            $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro: $parent);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al validar parent', data: $valida);
+            }
+
             $model_parent = $parent['model_parent'];
             $etiqueta = $parent['etiqueta'];
         }
         else{
+            $keys = array('etiqueta');
+            $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro: $parent);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al validar parent', data: $valida);
+            }
 
             $model_parent = $parent;
             $etiqueta = 'Alta '.$model_parent->etiqueta;

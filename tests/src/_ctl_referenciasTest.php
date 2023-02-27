@@ -187,6 +187,26 @@ class _ctl_referenciasTest extends test {
         errores::$error = false;
     }
 
+    public function test_params_btn_parent(): void
+    {
+        errores::$error = false;
+        $_SESSION['grupo_id'] = 2;
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+        $ctl = (new _ctl_referencias());
+        $ctl = new liberator($ctl);
+
+        $parent = array();
+        $parent['model_parent'] = new adm_seccion(link: $this->link);
+        $parent['etiqueta'] = 'a';
+        $resultado = $ctl->params_btn_parent($parent);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsObject($resultado);
+        $this->assertEquals("adm_seccion",$resultado->model_parent->tabla);
+        errores::$error = false;
+    }
+
 
 }
 
