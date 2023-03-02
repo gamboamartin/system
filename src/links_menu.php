@@ -236,16 +236,28 @@ class links_menu{
      * Obtiene el link a ejecutar
      * @param string $seccion Seccion a ejecutar
      * @param string $accion Accion a integrar
+     * @param bool $valida_error
      * @return array|string
      */
-    final public function get_link(string $seccion, string $accion): array|string
+    final public function get_link(string $seccion, string $accion, bool $valida_error = false): array|string
     {
-        if (!property_exists($this->links, $seccion)) {
-            return $this->error->error(mensaje: 'Error no existe la seccion '.$seccion,data:  $seccion);
-        }
+        if($valida_error) {
+            if (!property_exists($this->links, $seccion)) {
+                return $this->error->error(mensaje: 'Error no existe la seccion ' . $seccion, data: $seccion);
+            }
 
-        if (!property_exists($this->links->$seccion, $accion)) {
-            return $this->error->error(mensaje: 'Error no existe la accion '.$accion,data:  $accion);
+            if (!property_exists($this->links->$seccion, $accion)) {
+                return $this->error->error(mensaje: 'Error no existe la accion ' . $accion, data: $accion);
+            }
+        }
+        else{
+            if (!property_exists($this->links, $seccion)) {
+                $this->links->$seccion = new stdClass();
+            }
+
+            if (!property_exists($this->links->$seccion, $accion)) {
+                $this->links->$seccion->$accion = '';
+            }
         }
 
         return $this->links->$seccion->$accion;
