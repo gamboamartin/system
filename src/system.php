@@ -197,33 +197,22 @@ class system extends controlador_base{
             $this->keys_selects[$campo]->id_selected = $valor;
         }
 
-        $r_alta =  array();
-        $this->inputs = new stdClass();
 
-        $inputs = $this->html->alta(controler: $this);
+        $form_alta = $this->genera_form_alta();
         if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al generar inputs', data: $inputs,
+            return $this->retorno_error(mensaje: 'Error al generar form', data: $form_alta,
                 header:  $header, ws: $ws);
         }
 
-        $form_alta = '';
-        foreach($this->inputs_alta as $input_alta){
-            $form_alta .= $this->inputs->$input_alta;
-        }
         $this->forms_inputs_alta = $form_alta;
 
-        /**
-         * REFACTORIZAR
-         */
-        $include_inputs_alta = (new generales())->path_base."templates/inputs/$this->seccion/alta.php";
-        if(!file_exists($include_inputs_alta)){
-            $include_inputs_alta = (new views())->ruta_templates."inputs/base/alta.php";
 
-            $path_vendor_base = $this->path_base."vendor/$this->path_vendor_views/templates/inputs/$this->seccion/$this->accion.php";
-            if(file_exists($path_vendor_base)){
-                $include_inputs_alta = $path_vendor_base;
-            }
+        $include_inputs_alta = $this->include_inputs_alta();
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al generar include', data: $include_inputs_alta,
+                header:  $header, ws: $ws);
         }
+
         $this->include_inputs_alta = $include_inputs_alta;
 
 
@@ -622,6 +611,15 @@ class system extends controlador_base{
         return $r_del;
     }
 
+    private function form_alta(): string
+    {
+        $form_alta = '';
+        foreach($this->inputs_alta as $input_alta){
+            $form_alta .= $this->inputs->$input_alta;
+        }
+        return $form_alta;
+    }
+
     private function form_modifica(): string
     {
         $form_modifica = '';
@@ -630,6 +628,22 @@ class system extends controlador_base{
         }
         $this->forms_inputs_modifica = $form_modifica;
         return $this->forms_inputs_modifica;
+    }
+
+    private function genera_form_alta(): array|string
+    {
+        $this->inputs = new stdClass();
+
+        $inputs = $this->html->alta(controler: $this);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al generar inputs', data: $inputs);
+        }
+
+        $form_alta = $this->form_alta();
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al generar form', data: $form_alta);
+        }
+        return $form_alta;
     }
 
 
@@ -742,6 +756,29 @@ class system extends controlador_base{
         $header_retorno = "index.php?seccion=$retornos->next_seccion&accion=$retornos->next_accion&adm_menu_id=$retornos->adm_menu_id";
         $header_retorno .= "&session_id=$this->session_id&registro_id=$retornos->id_retorno";
         return $header_retorno;
+    }
+
+    private function include_inputs_alta(): array|string
+    {
+        $include_inputs_alta = (new generales())->path_base."templates/inputs/$this->seccion/alta.php";
+        if(!file_exists($include_inputs_alta)){
+            $include_inputs_alta = $this->include_inputs_alta_seccion();
+            if(errores::$error){
+                return $this->errores->error(mensaje: 'Error al generar include', data: $include_inputs_alta);
+            }
+        }
+        return $include_inputs_alta;
+    }
+
+    private function include_inputs_alta_seccion(): string
+    {
+        $include_inputs_alta = (new views())->ruta_templates."inputs/base/alta.php";
+
+        $path_vendor_base = $this->path_base."vendor/$this->path_vendor_views/templates/inputs/$this->seccion/$this->accion.php";
+        if(file_exists($path_vendor_base)){
+            $include_inputs_alta = $path_vendor_base;
+        }
+        return $include_inputs_alta;
     }
 
     /**
