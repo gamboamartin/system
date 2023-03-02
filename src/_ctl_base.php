@@ -342,7 +342,6 @@ class _ctl_base extends system{
     /**
      * Inicializa loe elementos para un alta
      * @return array|stdClass|string
-     * @version 0.269.38
      */
     final public function init_alta(): array|stdClass|string
     {

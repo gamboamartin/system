@@ -216,7 +216,14 @@ class _ctl_referencias{
         return $botones;
     }
 
-    private function integra_key_parent(system $controler, string $key_parent_id){
+    /**
+     * Integra el key para un parent button para alta
+     * @param system $controler Controlador en ejecucion
+     * @param string $key_parent_id Key de valor
+     * @return array|stdClass
+     */
+    private function integra_key_parent(system $controler, string $key_parent_id): array|stdClass
+    {
         if(isset($controler->keys_selects[$key_parent_id])){
             $keys_selects = $this->input_parent(controler: $controler, key_parent_id: $key_parent_id);
             if (errores::$error) {
