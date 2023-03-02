@@ -238,7 +238,14 @@ class _ctl_referencias{
         return $controler->keys_selects;
     }
 
-    private function integra_key_parent_get(system $controler, string $key_parent_id){
+    /**
+     * Integra un elemento para buttons parent para alta
+     * @param system $controler Controlador en ejecucion
+     * @param string $key_parent_id Key del campo a obtener info
+     * @return array|stdClass
+     */
+    private function integra_key_parent_get(system $controler, string $key_parent_id): array|stdClass
+    {
         if(isset($_GET[$key_parent_id])){
             $keys_selects = $this->integra_key_parent(controler: $controler,key_parent_id: $key_parent_id);
             if (errores::$error) {
