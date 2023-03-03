@@ -243,9 +243,15 @@ class _ctl_referencias{
      * @param system $controler Controlador en ejecucion
      * @param string $key_parent_id Key del campo a obtener info
      * @return array|stdClass
+     * @version 7.102.3
      */
     private function integra_key_parent_get(system $controler, string $key_parent_id): array|stdClass
     {
+        $key_parent_id = trim($key_parent_id);
+        if($key_parent_id === ''){
+            return $this->error->error(mensaje: 'Error key_parent_id esta vacio', data: $key_parent_id);
+        }
+
         if(isset($_GET[$key_parent_id])){
             $keys_selects = $this->integra_key_parent(controler: $controler,key_parent_id: $key_parent_id);
             if (errores::$error) {
