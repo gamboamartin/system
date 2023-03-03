@@ -214,6 +214,9 @@ class links_menu{
 
         if ($acciones->n_registros > 0){
             foreach ($acciones->registros as $registro){
+                /**
+                 * REFACTORIZAR
+                 */
                 $seccion = trim($controler->seccion);
                 if($seccion === ''){
                     $tabla = $controler->tabla;
@@ -534,6 +537,14 @@ class links_menu{
         return $elimina;
     }
 
+    /**
+     * Inicializa un link para uso general
+     * @param PDO $link Conexion a base de datos
+     * @param string $seccion Seccion en ejecucion
+     * @param string $accion Accion en ejecucion
+     * @param int $registro_id Registro a integrar link
+     * @return array|stdClass
+     */
     private function link_init(PDO $link, string $seccion, string $accion,int $registro_id): array|stdClass
     {
         $seccion = trim($seccion);
