@@ -61,6 +61,12 @@ class _ctl_base extends system{
         return array();
     }
 
+    /**
+     * Genera los campos view basicos
+     * @param array $init_data Datos previamente inicializados
+     * @param stdClass $keys Keys a integrar
+     * @return array
+     */
     final public function campos_view_base(array $init_data, stdClass $keys): array
     {
         $selects = (new \base\controller\init())->select_key_input($init_data, selects: $keys->selects);
@@ -323,9 +329,14 @@ class _ctl_base extends system{
      * Genera un filtro para ser utilizado en childrens y obtener los registros pertenecientes al parent
      * @param int $registro_id Registro en proceso
      * @return array
+     * @version 7.99.3
      */
     private function genera_filtro_children(int $registro_id): array
     {
+        if($registro_id <= 0){
+            return $this->errores->error(mensaje: 'Error registro_id debe ser mayor a 0',data:  $registro_id);
+        }
+
         $key_id_filter = $this->key_id_filter();
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al obtener key_id_filter',data:  $key_id_filter);
