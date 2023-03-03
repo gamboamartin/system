@@ -350,6 +350,14 @@ class links_menu{
         return $liga;
     }
 
+    /**
+     * Genera el link para uso de anclas
+     * @param string $accion accion a llamar
+     * @param int $adm_menu_id Menu a llamar
+     * @param int $registro_id Registro a ejecutar transaccion
+     * @param string $seccion Seccion a ejecutar
+     * @return string
+     */
     private function liga_completa(string $accion, int $adm_menu_id, int $registro_id, string $seccion): string
     {
         return "./index.php?seccion=$seccion&accion=$accion&registro_id=$registro_id&session_id=$this->session_id&adm_menu_id=$adm_menu_id";
@@ -544,6 +552,7 @@ class links_menu{
      * @param string $accion Accion en ejecucion
      * @param int $registro_id Registro a integrar link
      * @return array|stdClass
+
      */
     private function link_init(PDO $link, string $seccion, string $accion,int $registro_id): array|stdClass
     {
