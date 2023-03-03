@@ -172,7 +172,13 @@ class _ctl_referencias{
         return $controler->keys_selects;
     }
 
-    private function inputs_parent(system $controler){
+    /**
+     * Integra los botones de parents para alta
+     * @param system $controler Controlador en proceso
+     * @return array|stdClass
+     */
+    private function inputs_parent(system $controler): array|stdClass
+    {
         foreach ($controler->parents_verifica as $parent){
 
             $keys_selects = $this->genera_keys_parents(controler: $controler,parent: $parent);
