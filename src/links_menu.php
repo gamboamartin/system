@@ -146,6 +146,16 @@ class links_menu{
         return $this->links;
     }
 
+    private function asigna_seccion(controler $controler){
+        $tabla = $this->init_tabla(controler: $controler);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar tabla',data:  $tabla);
+        }
+
+        $controler->seccion = $tabla;
+        return $controler->seccion;
+    }
+
     /**
      * @param string $accion Accion a asignar o generar link
      * @param PDO $link
@@ -212,26 +222,11 @@ class links_menu{
             return $this->error->error(mensaje: 'Error al obtener acciones de la seccion',data:  $acciones);
         }
 
-        if ($acciones->n_registros > 0){
-            foreach ($acciones->registros as $registro){
-                /**
-                 * REFACTORIZAR
-                 */
-                $seccion = trim($controler->seccion);
-                if($seccion === ''){
-                    $tabla = $controler->tabla;
-                    $tabla = trim($tabla);
-                    $controler->seccion = $tabla;
-                }
-
-                $accion = $registro['adm_accion_descripcion'];
-                $init = $this->link_init(link: $controler->link, seccion: $controler->seccion, accion: $accion,
-                    registro_id: $controler->registro_id);
-                if(errores::$error){
-                    return $this->error->error(mensaje: 'Error al inicializar links', data: $init);
-                }
-            }
+        $inits = $this->integra_links(acciones: $acciones,controler:  $controler);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar links', data: $inits);
         }
+
         return $this->links;
     }
 
@@ -293,6 +288,20 @@ class links_menu{
         return $this->links;
     }
 
+    private function init_data_link(controler $controler, array $registro){
+        $seccion_rs = $this->seccion(controler: $controler);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar seccion',data:  $seccion_rs);
+        }
+        $accion = $registro['adm_accion_descripcion'];
+        $init = $this->link_init(link: $controler->link, seccion: $controler->seccion, accion: $accion,
+            registro_id: $controler->registro_id);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar links', data: $init);
+        }
+        return $init;
+    }
+
     /**
      * Genera y asigna los links basicos para views de controller
      * @param system $controler Controlador en ejecucion
@@ -337,6 +346,35 @@ class links_menu{
         $controler->link_modifica = $this->links->$seccion->modifica;
         $controler->link_modifica_bd = $this->links->$seccion->modifica_bd;
         return $this->links;
+    }
+
+    private function init_links(stdClass $acciones, controler $controler){
+        $inits = array();
+        foreach ($acciones->registros as $registro){
+            $init = $this->init_data_link(controler: $controler,registro:  $registro);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al inicializar links', data: $init);
+            }
+            $inits[] = $init;
+        }
+        return $inits;
+    }
+
+    private function init_tabla(controler $controler): string
+    {
+        $tabla = $controler->tabla;
+        return trim($tabla);
+    }
+
+    private function integra_links(stdClass $acciones, controler $controler){
+        $inits = array();
+        if ($acciones->n_registros > 0){
+            $inits = $this->init_links(acciones: $acciones,controler:  $controler);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al inicializar links', data: $inits);
+            }
+        }
+        return $inits;
     }
 
     private function liga(string $accion, int $registro_id, string $seccion, bool $tengo_permiso){
@@ -855,6 +893,17 @@ class links_menu{
             return $this->error->error(mensaje: 'Error al inicializa link', data: $init);
         }
         return $this->links;
+    }
+
+    private function seccion(controler $controler){
+        $seccion = trim($controler->seccion);
+        if($seccion === ''){
+            $seccion_rs = $this->asigna_seccion(controler: $controler);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al inicializar seccion',data:  $seccion_rs);
+            }
+        }
+        return $controler->seccion;
     }
 
     /**
