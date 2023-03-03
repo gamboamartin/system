@@ -123,6 +123,7 @@ class _ctl_referencias{
      * @param system $controler Controlador en ejecucion
      * @param array|modelo $parent Modelos a integrar
      * @return array|stdClass
+     * @version 7.104.3
      */
     private function genera_keys_parents(system $controler, array|modelo $parent): array|stdClass
     {
