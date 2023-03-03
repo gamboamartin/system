@@ -118,7 +118,14 @@ class _ctl_referencias{
         return $buttons;
     }
 
-    private function genera_keys_parents(system $controler, array|modelo $parent){
+    /**
+     * Genera los keys para buttons parent en alta
+     * @param system $controler Controlador en ejecucion
+     * @param array|modelo $parent Modelos a integrar
+     * @return array|stdClass
+     */
+    private function genera_keys_parents(system $controler, array|modelo $parent): array|stdClass
+    {
         $model_parent = $this->model_parent(parent: $parent);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar model parent', data: $model_parent);
