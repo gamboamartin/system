@@ -360,6 +360,11 @@ class links_menu{
         return $inits;
     }
 
+    /**
+     * Inicializa el nombre de la tabla integrada en el constructor
+     * @param controler $controler Controlador en ejecucion
+     * @return string
+     */
     private function init_tabla(controler $controler): string
     {
         $tabla = $controler->tabla;
