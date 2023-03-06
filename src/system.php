@@ -646,8 +646,11 @@ class system extends controlador_base{
         return $form_alta;
     }
 
-
-
+    /**
+     * Integra los inputs para front alta y modifica
+     * @param array $keys_selects Parametros inicializados
+     * @return array|stdClass
+     */
     final public function genera_inputs(array $keys_selects = array()): array|stdClass
     {
         if(!is_object($this->inputs)){
