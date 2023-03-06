@@ -1661,9 +1661,9 @@ class html_controler{
         }
 
         $init = (new select())->init_data_select(con_registros: $con_registros, modelo: $modelo,
-            extra_params_keys: $extra_params_keys, filtro:$filtro, key_descripcion: $key_descripcion,
-            key_descripcion_select: $key_descripcion_select, key_id: $key_id, label: $label, name: $name,
-            not_in: $not_in);
+            columns_ds: $columns_ds, extra_params_keys: $extra_params_keys, filtro: $filtro,
+            key_descripcion: $key_descripcion, key_descripcion_select: $key_descripcion_select, key_id: $key_id,
+            label: $label, name: $name, not_in: $not_in);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar datos', data: $init);
         }
