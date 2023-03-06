@@ -129,6 +129,7 @@ class params{
         $data->cols = $params->cols ?? 12;
         $data->place_holder = $params->place_holder ?? $name_model;
         $data->label = $params->label ?? str_replace('_',' ', strtoupper($name_model));
+        $data->columns_ds = $params->columns_ds ?? array();
 
         $data = $this->params_base(data: $data, name : $name_model,params:  $params);
         if(errores::$error){
@@ -156,6 +157,7 @@ class params{
         $data->label = $params->label ?? str_replace('_',' ', $label);
         $data->label = str_replace('  ', ' ', $data->label);
         $data->key_descripcion_select = $params->key_descripcion_select ?? '';
+        $data->columns_ds = $params->columns_ds ?? array();
 
         $data = $this->params_base(data: $data,name:  $label,params:  $params);
         if(errores::$error){

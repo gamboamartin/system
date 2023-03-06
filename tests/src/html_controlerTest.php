@@ -845,6 +845,7 @@ class html_controlerTest extends test {
         $params_select->label = 'a';
         $params_select->not_in = array();
         $params_select->required = true;
+        $params_select->columns_ds = array();
         $params_select->key_descripcion_select = '';
 
         $resultado = $html_controler->select_aut2($modelo, $params_select);
@@ -871,6 +872,7 @@ class html_controlerTest extends test {
         $params_select->not_in = array();
         $params_select->required = true;
         $params_select->key_descripcion_select = 'adm_menu_id';
+        $params_select->columns_ds = array();
 
         $resultado = $html_controler->select_aut2($modelo, $params_select);
 

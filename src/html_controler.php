@@ -1561,9 +1561,9 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al generar modelo', data: $modelo);
         }
         $select  = $this->select_catalogo(cols: $params_select->cols, con_registros: $params_select->con_registros,
-            id_selected: $params_select->id_selected, modelo: $modelo, disabled: $params_select->disabled,
-            filtro: $params_select->filtro, label: $params_select->label, not_in: $params_select->not_in,
-            required: $params_select->required);
+            id_selected: $params_select->id_selected, modelo: $modelo, columns_ds: $params_select->columns_ds,
+            disabled: $params_select->disabled, filtro: $params_select->filtro, label: $params_select->label,
+            not_in: $params_select->not_in, required: $params_select->required);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $select);
         }
@@ -1608,17 +1608,17 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
         }
 
-        $keys = array('extra_params_keys','filtro','not_in');
+        $keys = array('extra_params_keys','filtro','not_in','columns_ds');
         $valida = $this->validacion->valida_arrays(keys: $keys, row: $params_select);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
         }
 
         $select  = $this->select_catalogo(cols: $params_select->cols, con_registros: $params_select->con_registros,
-            id_selected: $params_select->id_selected, modelo: $modelo, disabled: $params_select->disabled,
-            extra_params_keys: $params_select->extra_params_keys, filtro: $params_select->filtro,
-            key_descripcion_select: $params_select->key_descripcion_select, label: $params_select->label,
-            not_in: $params_select->not_in, required: $params_select->required);
+            id_selected: $params_select->id_selected, modelo: $modelo, columns_ds: $params_select->columns_ds,
+            disabled: $params_select->disabled, extra_params_keys: $params_select->extra_params_keys,
+            filtro: $params_select->filtro, key_descripcion_select: $params_select->key_descripcion_select,
+            label: $params_select->label, not_in: $params_select->not_in, required: $params_select->required);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $select);
         }
@@ -1648,10 +1648,11 @@ class html_controler{
      * @author mgamboa
      */
     protected function select_catalogo(int $cols, bool $con_registros, int $id_selected, modelo $modelo,
-                                       bool $disabled = false, array $extra_params_keys = array(),
-                                       array $filtro=array(), string $key_descripcion = '',
-                                       string $key_descripcion_select = '', string $key_id = '', string $label = '',
-                                       string $name = '', array $not_in = array(), bool $required = false): array|string
+                                       array $columns_ds = array(), bool $disabled = false,
+                                       array $extra_params_keys = array(), array $filtro=array(),
+                                       string $key_descripcion = '', string $key_descripcion_select = '',
+                                       string $key_id = '', string $label = '', string $name = '',
+                                       array $not_in = array(), bool $required = false): array|string
     {
 
         $valida = (new directivas(html:$this->html_base))->valida_cols(cols:$cols);
@@ -1667,8 +1668,9 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al inicializar datos', data: $init);
         }
 
-        $select = $this->html_base->select(cols:$cols, id_selected:$id_selected, label: $init->label,name:$init->name,
-            values: $init->values, disabled: $disabled, extra_params_key: $extra_params_keys, required: $required);
+        $select = $this->html_base->select(cols: $cols, id_selected: $id_selected, label: $init->label,
+            name: $init->name, values: $init->values, columns_ds: $columns_ds, disabled: $disabled,
+            extra_params_key: $extra_params_keys, required: $required);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $select);
         }
