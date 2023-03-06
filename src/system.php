@@ -965,6 +965,11 @@ class system extends controlador_base{
 
         }
 
+        $data = (new _ctl_referencias())->referencias_alta(controler: $this);
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al generar data parents', data: $data, header: $header, ws: $ws);
+        }
+
 
         return $r_modifica;
     }
