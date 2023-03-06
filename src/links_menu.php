@@ -363,10 +363,14 @@ class links_menu{
     /**
      * Inicializa el nombre de la tabla integrada en el constructor
      * @param controler $controler Controlador en ejecucion
-     * @return string
+     * @return string|array
      */
-    private function init_tabla(controler $controler): string
+    private function init_tabla(controler $controler): string|array
     {
+        $tabla = trim($controler->tabla);
+        if($tabla === ''){
+            return $this->error->error(mensaje: 'Error tabla esta vacia', data: $tabla);
+        }
         $tabla = $controler->tabla;
         return trim($tabla);
     }

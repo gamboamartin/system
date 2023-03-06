@@ -138,6 +138,12 @@ class init{
      */
     final public function init_controller(system $controller, html $html): array|stdClass
     {
+        $seccion = $controller->seccion;
+
+        if($seccion === ''){
+            return $this->error->error(mensaje: 'Error seccion esta vacia', data:$seccion);
+        }
+
         $init_msj = (new mensajeria())->init_mensajes(controler: $controller,html: $html);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar mensajes', data: $init_msj);

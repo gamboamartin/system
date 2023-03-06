@@ -78,6 +78,15 @@ class system extends controlador_base{
         parent::__construct(link: $link,modelo:  $modelo,filtro_boton_lista:  $filtro_boton_lista,
             campo_busca:  $campo_busca,valor_busca_fault:  $valor_busca_fault,paths_conf:  $paths_conf);
 
+
+        $seccion = $this->seccion;
+
+        if($seccion === ''){
+            $error = $this->errores->error(mensaje: 'Error seccion esta vacia', data:$seccion);
+            print_r($error);
+            die('Error');
+        }
+
         $this->html_base = $html->html_base;
         $init = (new init())->init_controller(controller:$this,html: $this->html_base );
         if(errores::$error){
