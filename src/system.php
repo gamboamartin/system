@@ -631,12 +631,25 @@ class system extends controlador_base{
 
     /**
      * Integra los datos de unb form para view modifica
-     * @return string
+     * @return string|array
+     * @version 7.114.3
      */
-    private function form_modifica(): string
+    private function form_modifica(): string|array
     {
         $form_modifica = '';
         foreach($this->inputs_modifica as $input_modifica){
+
+            $input_modifica = trim($input_modifica);
+            if($input_modifica === ''){
+                return $this->errores->error(mensaje: 'Error input_modifica esta vacio', data: $input_modifica);
+            }
+            if(!is_object($this->inputs)){
+                $this->inputs = new stdClass();
+            }
+            if(!isset($this->inputs->$input_modifica)){
+                $this->inputs->$input_modifica = '';
+            }
+
             $form_modifica .= $this->inputs->$input_modifica;
         }
         $this->forms_inputs_modifica = $form_modifica;
@@ -813,6 +826,10 @@ class system extends controlador_base{
         return $this->row_upd;
     }
 
+    /**
+     * Integra un include para modifica
+     * @return string
+     */
     private function include_inputs_modifica(): string
     {
         $include_inputs_modifica = (new generales())->path_base."templates/inputs/$this->seccion/modifica.php";

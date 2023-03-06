@@ -493,6 +493,12 @@ class _ctl_referencias{
         return $style;
     }
 
+    /**
+     * @param system $controler
+     * @param string $key_parent_id
+     * @param array $params_btn_children
+     * @return array
+     */
     private function value_param_children(system $controler, string $key_parent_id, array $params_btn_children): array
     {
         $params_btn_children[$key_parent_id] = $controler->row_upd->$key_parent_id;
