@@ -620,6 +620,10 @@ class system extends controlador_base{
         return $form_alta;
     }
 
+    /**
+     * Integra los datos de unb form para view modifica
+     * @return string
+     */
     private function form_modifica(): string
     {
         $form_modifica = '';
