@@ -539,6 +539,12 @@ class _ctl_referencias{
         return $keys_selects;
     }
 
+    /**
+     * Obtiene el style de un boton
+     * @param string $success Success default
+     * @param bool $tiene_rows Si tiene registros o no
+     * @return string
+     */
     private function style_btn(string $success, bool $tiene_rows): string
     {
         $style = 'warning';
