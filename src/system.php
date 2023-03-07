@@ -585,14 +585,30 @@ class system extends controlador_base{
             $this->link->commit();
         }
 
-        $siguiente_view = (new actions())->init_alta_bd(siguiente_view: 'lista');
-        if(errores::$error){
 
-            return $this->retorno_error(mensaje: 'Error al obtener siguiente view', data: $siguiente_view,
-                header:  $header, ws: $ws);
+        if(isset($_GET['accion_retorno'])){
+            $siguiente_view = $_GET['accion_retorno'];
+        }
+        else{
+            $siguiente_view = (new actions())->init_alta_bd(siguiente_view: 'lista');
+            if(errores::$error){
+
+                return $this->retorno_error(mensaje: 'Error al obtener siguiente view', data: $siguiente_view,
+                    header:  $header, ws: $ws);
+            }
         }
 
-        $header_retorno = $this->header_retorno(accion: $siguiente_view, seccion: $this->tabla, id_retorno: -1);
+        $seccion_retorno = $this->tabla;
+        if(isset($_GET['seccion_retorno'])){
+            $seccion_retorno = $_GET['seccion_retorno'];
+        }
+
+        $id_retorno = -1;
+        if(isset($_GET['id_retorno'])){
+            $id_retorno = $_GET['id_retorno'];
+        }
+
+        $header_retorno = $this->header_retorno(accion: $siguiente_view, seccion: $seccion_retorno, id_retorno: $id_retorno);
         if(errores::$error){
 
             return $this->retorno_error(mensaje: 'Error al maquetar retorno', data: $header_retorno,
