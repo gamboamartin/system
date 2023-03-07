@@ -124,7 +124,7 @@ class _ctl_referencias{
             return $this->error->error(mensaje: 'Error la $etiqueta esta vacia', data: $etiqueta);
         }
 
-        $style = $this->style_btn_parent(model_parent: $model_parent);
+        $style = $this->style_btn_parent(model_parent: $model_parent, success: 'success');
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al genera style '.$model_parent->tabla, data:  $style);
         }
@@ -145,7 +145,7 @@ class _ctl_referencias{
             return $this->error->error(mensaje: 'Error la $etiqueta esta vacia', data: $etiqueta);
         }
 
-        $style = $this->style_btn_parent(model_parent: $model_parent);
+        $style = $this->style_btn_parent(model_parent: $model_parent, success: 'info');
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al genera style '.$model_parent->tabla, data:  $style);
         }
@@ -530,23 +530,23 @@ class _ctl_referencias{
         return $keys_selects;
     }
 
-    private function style_btn(bool $tiene_rows): string
+    private function style_btn(string $success, bool $tiene_rows): string
     {
         $style = 'warning';
         if($tiene_rows){
-            $style = 'success';
+            $style = $success;
         }
         return $style;
     }
 
-    private function style_btn_parent(modelo $model_parent): array|string
+    private function style_btn_parent(modelo $model_parent, string $success): array|string
     {
         $tiene_rows = $model_parent->tiene_registros();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al verificar $model_parent '.$model_parent->tabla, data:  $tiene_rows);
         }
 
-        $style = $this->style_btn(tiene_rows: $tiene_rows);
+        $style = $this->style_btn(success: $success, tiene_rows: $tiene_rows);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al genera style '.$model_parent->tabla, data:  $style);
         }
