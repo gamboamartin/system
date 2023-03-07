@@ -76,6 +76,25 @@ class _ctl_referencias{
                 return $this->error->error(mensaje: 'Error al generar botones', data: $buttons);
             }
         }
+
+        $tengo_permiso = (new adm_accion(link: $controler->link))->permiso(accion: 'modifica',
+            seccion:  $params->model_parent->tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar permiso boton', data:  $tengo_permiso);
+        }
+
+        if($tengo_permiso) {
+
+            $key_id = $params->model_parent->key_id;
+            $buttons = $this->genera_botones_parent_ir(
+                controler: $controler, etiqueta: $params->etiqueta, model_parent: $params->model_parent,
+                registro_id: $controler->row_upd->$key_id);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al generar botones', data: $buttons);
+            }
+        }
+
+
         return $buttons;
     }
 
@@ -112,6 +131,27 @@ class _ctl_referencias{
 
         $buttons = $this->integra_button_parent(controler: $controler, etiqueta: $etiqueta,
             model_parent: $model_parent, style: $style);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar botones', data:  $buttons);
+        }
+        return $buttons;
+    }
+
+    private function genera_botones_parent_ir(
+        system $controler, string $etiqueta, modelo $model_parent, int $registro_id): array|stdClass
+    {
+        $etiqueta = trim($etiqueta);
+        if($etiqueta === ''){
+            return $this->error->error(mensaje: 'Error la $etiqueta esta vacia', data: $etiqueta);
+        }
+
+        $style = $this->style_btn_parent(model_parent: $model_parent);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al genera style '.$model_parent->tabla, data:  $style);
+        }
+
+        $buttons = $this->integra_button_parent_ir(controler: $controler, etiqueta: $etiqueta,
+            model_parent: $model_parent, registro_id: $registro_id, style: $style);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar botones', data:  $buttons);
         }
@@ -213,6 +253,26 @@ class _ctl_referencias{
         $object_button = $model_parent->tabla;
         $controler->buttons_parents_alta->$object_button = $button;
         return $controler->buttons_parents_alta;
+    }
+
+    private function integra_button_parent_ir(system $controler, string $etiqueta, modelo $model_parent,
+                                              int $registro_id, string $style): array|stdClass
+    {
+        $etiqueta = trim($etiqueta);
+        if($etiqueta === ''){
+            return $this->error->error(mensaje: 'Error la $etiqueta esta vacia', data: $etiqueta);
+        }
+
+        $button = $controler->html->button_href(accion: 'modifica', etiqueta: $etiqueta,
+            registro_id:  $registro_id, seccion: $model_parent->tabla,style: $style);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar boton', data:  $button);
+        }
+
+
+        $object_button = $model_parent->tabla;
+        $controler->buttons_parents_ir->$object_button = $button;
+        return $controler->buttons_parents_ir;
     }
 
     final public function integra_buttons_children(system $controler): array
