@@ -87,7 +87,7 @@ class _ctl_referencias{
 
             $key_id = $params->model_parent->key_id;
             $buttons = $this->genera_botones_parent_ir(
-                controler: $controler, etiqueta: $params->etiqueta, model_parent: $params->model_parent,
+                controler: $controler, etiqueta: $params->etiqueta_ir, model_parent: $params->model_parent,
                 registro_id: $controler->row_upd->$key_id);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al generar botones', data: $buttons);
@@ -464,6 +464,10 @@ class _ctl_referencias{
 
             $model_parent = $parent['model_parent'];
             $etiqueta = $parent['etiqueta'];
+            $etiqueta_ir = ' Ir a '.$model_parent->etiqueta;
+            if(isset($parent['etiqueta_ir'])) {
+                $etiqueta_ir = $parent['etiqueta_ir'];
+            }
         }
         else{
             $keys = array('etiqueta');
@@ -474,11 +478,13 @@ class _ctl_referencias{
 
             $model_parent = $parent;
             $etiqueta = 'Alta '.$model_parent->etiqueta;
+            $etiqueta_ir = ' Ir a '.$model_parent->etiqueta;
         }
 
         $data = new stdClass();
         $data->model_parent = $model_parent;
         $data->etiqueta = $etiqueta;
+        $data->etiqueta_ir = $etiqueta_ir;
         return $data;
     }
 
