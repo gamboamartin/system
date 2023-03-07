@@ -86,11 +86,14 @@ class _ctl_referencias{
         if($tengo_permiso) {
 
             $key_id = $params->model_parent->key_id;
-            $buttons = $this->genera_botones_parent_ir(
-                controler: $controler, etiqueta: $params->etiqueta_ir, model_parent: $params->model_parent,
-                registro_id: $controler->row_upd->$key_id);
-            if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al generar botones', data: $buttons);
+
+            if(isset($controler->row_upd->$key_id)) {
+                $buttons = $this->genera_botones_parent_ir(
+                    controler: $controler, etiqueta: $params->etiqueta_ir, model_parent: $params->model_parent,
+                    registro_id: $controler->row_upd->$key_id);
+                if (errores::$error) {
+                    return $this->error->error(mensaje: 'Error al generar botones', data: $buttons);
+                }
             }
         }
 
