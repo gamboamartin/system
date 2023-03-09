@@ -266,7 +266,7 @@ class _ctl_referenciasTest extends test {
         $resultado = $ctl->model_parent($parent);
         $this->assertNotTrue(errores::$error);
         $this->assertIsObject($resultado);
-        $this->assertEquals("adm_seccion",$resultado->etiqueta);
+        $this->assertEquals("Seccion",$resultado->etiqueta);
         errores::$error = false;
     }
 
