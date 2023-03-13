@@ -644,6 +644,14 @@ class _ctl_base extends system{
         return $label;
     }
 
+    /**
+     * Ajusta los elementos de salida de un alta bd
+     * @param bool $header is header aplica redirect
+     * @param stdClass $data_retorno datos de redirect para get
+     * @param stdClass $result Resultado de la transaccion
+     * @param bool $ws is ws muestra salida json
+     * @return stdClass|void
+     */
     final protected function out_alta_bd(bool $header, stdClass $data_retorno, stdClass $result, bool $ws){
         if($header){
 
