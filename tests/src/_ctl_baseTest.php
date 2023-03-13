@@ -1006,6 +1006,38 @@ class _ctl_baseTest extends test {
         errores::$error = false;
     }
 
+    public function test_out_alta_bd(): void
+    {
+        errores::$error = false;
+
+        $_SESSION['usuario_id'] = 2;
+        $_SESSION['grupo_id'] = 2;
+        $_GET['session_id'] = mt_rand(1,99999999);
+        $_GET['seccion'] = 'adm_accion';
+
+
+        $html = new html();
+        $html_controler = new html_controler($html);
+        $modelo = new adm_accion($this->link);
+        $link_obj = new links_menu($this->link, -1);
+
+        errores::$error = false;
+
+        $ctl = new _ctl_base(html: $html_controler, link: $this->link,modelo: $modelo,obj_link: $link_obj,paths_conf: $this->paths_conf);
+        $ctl = new liberator($ctl);
+
+        $header = false;
+        $data_retorno = new stdClass();
+        $result = new stdClass();
+        $ws = false;
+        $resultado = $ctl->out_alta_bd($header, $data_retorno, $result, $ws);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('',$resultado->siguiente_view);
+
+        errores::$error = false;
+    }
+
     public function test_seccion_retorno(): void
     {
         errores::$error = false;

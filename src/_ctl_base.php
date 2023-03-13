@@ -651,8 +651,12 @@ class _ctl_base extends system{
      * @param stdClass $result Resultado de la transaccion
      * @param bool $ws is ws muestra salida json
      * @return stdClass|void
+     * @version 8.2.0
      */
     final protected function out_alta_bd(bool $header, stdClass $data_retorno, stdClass $result, bool $ws){
+        if(!isset($data_retorno->siguiente_view)){
+            $data_retorno->siguiente_view = '';
+        }
         if($header){
 
             if($data_retorno->id_retorno === -1) {
