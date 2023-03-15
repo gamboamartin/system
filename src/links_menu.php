@@ -146,7 +146,13 @@ class links_menu{
         return $this->links;
     }
 
-    private function asigna_seccion(controler $controler){
+    /**
+     * Asigna la seccion a controler via tabla
+     * @param controler $controler Controlador en ejecucion
+     * @return array|string
+     */
+    private function asigna_seccion(controler $controler): array|string
+    {
         $tabla = $this->init_tabla(controler: $controler);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar tabla',data:  $tabla);
@@ -364,6 +370,7 @@ class links_menu{
      * Inicializa el nombre de la tabla integrada en el constructor
      * @param controler $controler Controlador en ejecucion
      * @return string|array
+     * @version 8.3.0
      */
     private function init_tabla(controler $controler): string|array
     {
@@ -904,7 +911,12 @@ class links_menu{
         return $this->links;
     }
 
-    private function seccion(controler $controler){
+    /**
+     * @param controler $controler
+     * @return array|string
+     */
+    private function seccion(controler $controler): array|string
+    {
         $seccion = trim($controler->seccion);
         if($seccion === ''){
             $seccion_rs = $this->asigna_seccion(controler: $controler);
