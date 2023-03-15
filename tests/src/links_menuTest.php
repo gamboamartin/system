@@ -200,9 +200,7 @@ class links_menuTest extends test {
         errores::$error = false;
     }
 
-    /**
-     * @throws JsonException
-     */
+
     #[NoReturn] public function test_init_link_controller(): void
     {
         errores::$error = false;
@@ -288,6 +286,34 @@ class links_menuTest extends test {
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         errores::$error = false;
+    }
+
+    #[NoReturn] public function test_seccion(): void
+    {
+        errores::$error = false;
+        $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
+        $_SESSION['usuario_id'] = 2;
+        $_SESSION['grupo_id'] = 2;
+        $_GET['session_id'] = '1';
+        $html = new links_menu($this->link, -1);
+        $html = new liberator($html);
+
+        $html_ = new html();
+        $html_controler = new html_controler($html_);
+
+        $modelo = new adm_accion($this->link);
+        $obj_link = new links_menu($this->link, -1);
+        $controler = new system(html: $html_controler, link: $this->link, modelo: $modelo, obj_link: $obj_link,
+            paths_conf: $this->paths_conf);
+
+        $resultado = $html->seccion($controler);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('adm_accion',$resultado);
+        errores::$error = false;
+
+
     }
 
     /**

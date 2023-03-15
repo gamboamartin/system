@@ -927,6 +927,7 @@ class links_menu{
      * Inicializa la seccion de una entidad controller
      * @param controler $controler Controlador en ejecucion
      * @return array|string
+     * @version 8.5.0
      */
     private function seccion(controler $controler): array|string
     {
