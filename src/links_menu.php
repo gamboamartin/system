@@ -408,6 +408,14 @@ class links_menu{
     private function liga(string $accion, int $registro_id, string $seccion, bool $tengo_permiso){
         $liga = '';
         if($tengo_permiso){
+            $seccion = trim($seccion);
+            if($seccion === ''){
+                return $this->error->error(mensaje: 'Error seccion esta vacia', data: $seccion);
+            }
+            $accion = trim($accion);
+            if($accion === ''){
+                return $this->error->error(mensaje: 'Error accion esta vacia', data: $accion);
+            }
             $liga = $this->liga_con_permiso(accion: $accion,registro_id:  $registro_id,seccion:  $seccion);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar liga', data: $liga);
@@ -422,14 +430,32 @@ class links_menu{
      * @param int $adm_menu_id Menu a llamar
      * @param int $registro_id Registro a ejecutar transaccion
      * @param string $seccion Seccion a ejecutar
-     * @return string
+     * @return string|array
+     * @version 8.6.0
      */
-    private function liga_completa(string $accion, int $adm_menu_id, int $registro_id, string $seccion): string
+    private function liga_completa(string $accion, int $adm_menu_id, int $registro_id, string $seccion): string|array
     {
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(mensaje: 'Error seccion esta vacia', data: $seccion);
+        }
+        $accion = trim($accion);
+        if($accion === ''){
+            return $this->error->error(mensaje: 'Error accion esta vacia', data: $accion);
+        }
         return "./index.php?seccion=$seccion&accion=$accion&registro_id=$registro_id&session_id=$this->session_id&adm_menu_id=$adm_menu_id";
     }
 
     private function liga_con_permiso(string $accion, int $registro_id, string $seccion){
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(mensaje: 'Error seccion esta vacia', data: $seccion);
+        }
+        $accion = trim($accion);
+        if($accion === ''){
+            return $this->error->error(mensaje: 'Error accion esta vacia', data: $accion);
+        }
+
         $adm_menu_id = $this->adm_menu_id();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener adm_menu_id', data: $adm_menu_id);
@@ -449,6 +475,7 @@ class links_menu{
      * @param int $registro_id Registro en proceso
      * @param string $seccion Seccion a ejecutar
      * @return string|array
+     *
      */
     private function link(string $accion, PDO $link, int $registro_id, string $seccion): string|array
     {

@@ -233,6 +233,29 @@ class links_menuTest extends test {
         errores::$error = false;
     }
 
+    #[NoReturn] public function test_liga_completa(): void
+    {
+        errores::$error = false;
+        $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
+        $_SESSION['usuario_id'] = 2;
+        $_SESSION['grupo_id'] = 2;
+        $_GET['session_id'] = '1';
+        $html = new links_menu($this->link, -1);
+        $html = new liberator($html);
+
+        $accion = 'b';
+        $adm_menu_id = -1;
+        $registro_id = -1;
+        $seccion = 'a';
+
+        $resultado = $html->liga_completa($accion, $adm_menu_id, $registro_id, $seccion);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("./index.php?seccion=a&accion=b&registro_id=-1&session_id=1&adm_menu_id=-1", $resultado);
+        errores::$error = false;
+    }
+
     /**
      */
     #[NoReturn] public function test_link_alta(): void
