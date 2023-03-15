@@ -1488,7 +1488,7 @@ class html_controler{
      * @param string $tabla Tabla a retornar
      * @return array|stdClass
      */
-    public function retornos(int $registro_id, string $tabla): array|stdClass
+    final public function retornos(int $registro_id, string $tabla): array|stdClass
     {
 
         $tabla = trim($tabla);

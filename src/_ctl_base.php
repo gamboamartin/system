@@ -16,8 +16,7 @@ use Throwable;
 
 class _ctl_base extends system{
 
-    protected string $key_id_filter = '';
-    protected string $key_id_row = '';
+
     public array $childrens;
 
     /**

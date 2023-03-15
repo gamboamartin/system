@@ -787,8 +787,14 @@ class _ctl_baseTest extends test {
 
         errores::$error = false;
         $resultado = $ctl->input_retornos();
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
+
+       //print_r($resultado);exit;
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<input type='hidden' name='adm_accion_id' value='-1'>",$resultado->hidden_row_id);
+        $this->assertEquals("<input type='hidden' name='seccion_retorno' value='adm_accion'>",$resultado->hidden_seccion_retorno);
+        $this->assertEquals("<input type='hidden' name='id_retorno' value='-1'>",$resultado->hidden_id_retorno);
 
         errores::$error = false;
     }

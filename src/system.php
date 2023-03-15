@@ -54,6 +54,9 @@ class system extends controlador_base{
 
     public array|stdClass $keys_selects = array();
 
+    protected string $key_id_filter = '';
+    protected string $key_id_row = '';
+
 
     /**
      * @param html_controler $html Html base
@@ -178,6 +181,8 @@ class system extends controlador_base{
         if($modelo->etiqueta !==''){
             $this->seccion_titulo = $modelo->etiqueta;
         }
+
+        $this->key_id_row = $this->tabla.'_id';
 
     }
 
