@@ -605,7 +605,7 @@ class html_controler{
      * @return array|string
      * @version 0.159.34
      */
-    public function hidden(string $name, string $value): array|string
+    final public function hidden(string $name, string $value): array|string
     {
         $name = trim($name);
         if($name === ''){
@@ -1487,7 +1487,6 @@ class html_controler{
      * @param int $registro_id Registro id a retornar
      * @param string $tabla Tabla a retornar
      * @return array|stdClass
-     * @version 0.187.35
      */
     public function retornos(int $registro_id, string $tabla): array|stdClass
     {

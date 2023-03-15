@@ -446,9 +446,8 @@ class _ctl_base extends system{
     /**
      * Genera los input para retornos despues de transaccion
      * @return array|stdClass
-     * @version 0.259.38
      */
-    private function input_retornos(): array|stdClass
+    final protected function input_retornos(): array|stdClass
     {
         $retornos = (new html_controler(html: $this->html_base))->retornos(registro_id: $this->registro_id,tabla:  $this->tabla);
         if(errores::$error){
