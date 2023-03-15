@@ -706,7 +706,14 @@ class _ctl_base extends system{
         return $result;
     }
 
-    private function rows_children(string $namespace_model, string $name_model_children, int $registro_id){
+    /**
+     * @param string $namespace_model
+     * @param string $name_model_children
+     * @param int $registro_id
+     * @return array
+     */
+    private function rows_children(string $namespace_model, string $name_model_children, int $registro_id): array
+    {
         $filtro = $this->genera_filtro_children(registro_id: $registro_id);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al obtener filtro',data:  $filtro);

@@ -133,7 +133,7 @@ class system extends controlador_base{
             print_r($error);
             die('Error');
         }
-        
+
 
         foreach ($datatables_custom_cols as $key=>$column){
             $datatables->columns[$key] = $column;
