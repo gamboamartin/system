@@ -127,16 +127,13 @@ class system extends controlador_base{
             }
         }
 
-        foreach ($datatables_custom_cols_omite as $campo){
-            if(isset($datatables->filtro)){
-
-                foreach ($datatables->filtro as $indice=>$campo_filtro){
-                    if($campo_filtro === $campo){
-                        unset($datatables->filtro[$indice]);
-                    }
-                }
-            }
+        $datatables = $this->aplica_limpia_filtro_omite(datatables: $datatables,datatables_custom_cols_omite:  $datatables_custom_cols_omite);
+        if(errores::$error){
+            $error = $this->errores->error(mensaje: 'Error al limpia_filtro_dt ', data: $datatables);
+            print_r($error);
+            die('Error');
         }
+        
 
         foreach ($datatables_custom_cols as $key=>$column){
             $datatables->columns[$key] = $column;
@@ -232,6 +229,28 @@ class system extends controlador_base{
 
 
         return $this->forms_inputs_alta;
+    }
+
+    private function aplica_limpia_filtro_dt(string $campo, stdClass $datatables): array|stdClass
+    {
+        if(isset($datatables->filtro)){
+            $datatables = $this->limpia_filtros_dt(campo: $campo,datatables:  $datatables);
+            if(errores::$error){
+                return $this->errores->error(mensaje: 'Error al limpia_filtro_dt ', data: $datatables);
+            }
+        }
+        return $datatables;
+    }
+
+    private function aplica_limpia_filtro_omite(stdClass $datatables, array $datatables_custom_cols_omite): array|stdClass
+    {
+        foreach ($datatables_custom_cols_omite as $campo){
+            $datatables = $this->aplica_limpia_filtro_dt(campo: $campo,datatables:  $datatables);
+            if(errores::$error){
+                return $this->errores->error(mensaje: 'Error al limpia_filtro_dt ', data: $datatables);
+            }
+        }
+        return $datatables;
     }
 
     /**
@@ -898,6 +917,27 @@ class system extends controlador_base{
     {
 
         return $keys_selects;
+    }
+
+    private function limpia_filtro_dt(string $campo, string $campo_filtro, stdClass $datatables, int $indice): stdClass
+    {
+        if($campo_filtro === $campo){
+            unset($datatables->filtro[$indice]);
+        }
+        return $datatables;
+    }
+
+    private function limpia_filtros_dt(string $campo, stdClass $datatables): array|stdClass
+    {
+        foreach ($datatables->filtro as $indice=>$campo_filtro){
+
+            $datatables = $this->limpia_filtro_dt(
+                campo: $campo,campo_filtro:  $campo_filtro,datatables:  $datatables,indice:  $indice);
+            if(errores::$error){
+                return $this->errores->error(mensaje: 'Error al limpia_filtro_dt ', data: $datatables);
+            }
+        }
+        return $datatables;
     }
     
     /**
