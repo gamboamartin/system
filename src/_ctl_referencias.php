@@ -219,6 +219,7 @@ class _ctl_referencias{
      * Integra los botones de parents para alta
      * @param system $controler Controlador en proceso
      * @return array|stdClass
+     * @version 8.11.0
      */
     private function inputs_parent(system $controler): array|stdClass
     {
