@@ -364,7 +364,8 @@ class datatables{
      * @version 0.152.33
      */
     final public function datatable(array $columns, array $filtro = array(),string $identificador = ".datatable",
-                              array $data = array(), array $in = array(), bool $multi_selects = false): array
+                                    array $data = array(), array $in = array(), bool $multi_selects = false,
+                                    bool $menu_active = false): array
     {
         $datatable = (new \gamboamartin\system\datatables\init())->init_datatable(filtro:$filtro, identificador: $identificador,
             data: $data,in: $in, multi_selects: $multi_selects);
@@ -376,6 +377,13 @@ class datatables{
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar columns', data:  $datatable);
         }
+
+        if ($menu_active){
+            if ($datatable['columnDefs'][count($datatable['columnDefs']) - 1]->type === 'button') {
+                $datatable['columnDefs'][count($datatable['columnDefs']) - 1]->type = 'menu';
+            }
+        }
+
         return $datatable;
     }
 
@@ -420,10 +428,20 @@ class datatables{
             $multi_selects = $datatables->multi_selects;
         }
 
+        $menu_active = false;
+
+        if (property_exists($datatables,"menu_active")){
+            if (!is_bool($datatables->menu_active)){
+                return $this->error->error(mensaje: 'Error menu_active tiene que ser de tipo bool', data: $datatables);
+            }
+            $menu_active = $datatables->menu_active;
+        }
+
         $data = new stdClass();
         $data->filtro = $filtro;
         $data->columns = $columns;
         $data->multi_selects = $multi_selects;
+        $data->menu_active = $menu_active;
 
         return $data;
     }
