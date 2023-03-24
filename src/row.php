@@ -22,7 +22,7 @@ class row{
      * @return array
      * @version 0.182.34
      */
-    public function integra_row_upd(string $key, modelo $modelo, int $registro_id): array
+    final public function integra_row_upd(string $key, modelo $modelo, int $registro_id): array
     {
         if($registro_id<=0){
             return $this->error->error(mensaje: 'Error this->registro_id debe ser mayor a 0', data:  $registro_id);

@@ -1115,7 +1115,13 @@ class system extends controlador_base{
         return true;
     }
 
-    public function row_upd(string $key): array|stdClass
+    /**
+     * Actualiza elementos por campo
+     * @param string $key Elemento a actualizar
+     * @return array|stdClass
+     *
+     */
+    final public function row_upd(string $key): array|stdClass
     {
         $row_upd = (new row())->integra_row_upd(key: $key, modelo: $this->modelo, registro_id: $this->registro_id);
         if(errores::$error){
