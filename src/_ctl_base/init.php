@@ -148,6 +148,11 @@ final class init{
         return $data_init;
     }
 
+    /**
+     * Inicializa los parametros para envio por GET
+     * @param stdClass $data_init Datos a inicializar
+     * @return array|stdClass
+     */
     private function init_keys_get_data(stdClass $data_init): array|stdClass
     {
         $keys_init = array('next_seccion','next_accion','id_retorno');
