@@ -570,6 +570,7 @@ class _ctl_referencias{
     }
 
     /**
+     * Integra un value a un input de tipo children
      * @param system $controler
      * @param string $key_parent_id
      * @param array $params_btn_children
