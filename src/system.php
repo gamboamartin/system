@@ -988,7 +988,13 @@ class system extends controlador_base{
         $response['status'] = "Success";
         $response['message'] = "Se cargo correctamente los registros";
 
-        $data = $this->modelo->filtro_and();
+        $filtro = isset($_POST['search'])? $_POST['search']: '';
+        $pagina = isset($_POST['pagina'])? $_POST['pagina']: 1;
+
+        $cantidad = 10;
+        $inicio = $cantidad * $pagina;
+
+        $data = $this->modelo->filtro_and(limit: $inicio);
         if(errores::$error){
             $response['status'] = "Error";
             $response['message'] = "Error al obtener registros - ".$data['mensaje_limpio'];
