@@ -982,6 +982,34 @@ class system extends controlador_base{
         return $this->registros;
     }
 
+    public function load_table(bool $header, bool $ws = false, array $not_actions = array())
+    {
+        $response = array();
+        $response['status'] = "Success";
+        $response['message'] = "Se cargo correctamente los registros";
+
+        $data = $this->modelo->filtro_and();
+        if(errores::$error){
+            $response['status'] = "Error";
+            $response['message'] = "Error al obtener registros - ".$data['mensaje_limpio'];
+        }
+
+        $registros = array();
+
+        if (isset($data->registros)){
+            $registros = $data->registros;
+        }
+
+        $response['data'] = $data;
+        ob_start();
+        require_once((new views())->ruta_template_table . "template_table.php");
+        $response['html'] = ob_get_clean();
+
+        header('Content-type: application/json');
+        echo json_encode($response);
+        exit();
+    }
+
     /**
      * Inicializa datos para vista modifica
      * @param bool $header Si header da salida en html
