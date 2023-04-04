@@ -55,19 +55,14 @@ class select{
      * @param string $label Etiqueta a mostrar
      * @param string $name Nombre del input
      * @param array $not_in Omite resultado de options
+     * @param array $registros
      * @return array|stdClass
-     * @version 0.52.32
-     * @version 0.55.32
-     * @verfuncion 0.1.0
-     * @verfuncion 0.2.0 Se integra filtro
-     * @fecha 2022-08-03 09:55
-     * @author mgamboa
      */
     final public function init_data_select(bool $con_registros, modelo $modelo, array $columns_ds = array(),
                                            array $extra_params_keys = array(), array $filtro = array(),
                                            string $key_descripcion = '', string $key_descripcion_select= '',
                                            string $key_id = '', string $label = '', string $name = '',
-                                           array $not_in = array()): array|stdClass
+                                           array $not_in = array(), array $registros = array()): array|stdClass
     {
 
         $keys = $this->keys_base(tabla: $modelo->tabla, key_descripcion: $key_descripcion, key_descripcion_select: $key_descripcion_select,
@@ -77,7 +72,8 @@ class select{
         }
 
         $values = $this->values_selects(con_registros: $con_registros, keys: $keys, modelo: $modelo,
-            columns_ds: $columns_ds, extra_params_keys: $extra_params_keys, filtro: $filtro, not_in: $not_in);
+            columns_ds: $columns_ds, extra_params_keys: $extra_params_keys, filtro: $filtro, not_in: $not_in,
+            registros: $registros);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener valores',data:  $values);
         }
@@ -313,18 +309,13 @@ class select{
      * @param array $extra_params_keys Keys para asignacion de extra params para ser utilizado en javascript
      * @param array $filtro Filtro para obtencion de datos del select
      * @param array $not_in Omite resultados para options
+     * @param array $registros
      * @return array
-     * @version 0.49.31
-     * @version 0.54.32
-     * @verfuncion 0.1.0
-     * @verfuncion 0.2.0 Se integra filtro
-     * @fecha 2022-08-03 09:04
-     * @fecha 2022-08-03 14:50
      * @author mgamboa
      */
     private function values_selects( bool $con_registros, stdClass $keys, modelo $modelo, array $columns_ds = array(),
                                      array $extra_params_keys = array(), array $filtro = array(),
-                                     array $not_in = array()): array
+                                     array $not_in = array(), array $registros = array()): array
     {
         $keys_valida = array('id','descripcion_select','descripcion');
         $valida = (new validacion())->valida_existencia_keys(keys: $keys_valida, registro: $keys);
@@ -332,12 +323,13 @@ class select{
             return $this->error->error(mensaje: 'Error al validar keys',data:  $valida);
         }
 
-        $registros = array();
         if($con_registros) {
-            $registros = $this->rows_select(keys: $keys, modelo: $modelo, columns_ds: $columns_ds,
-                extra_params_keys: $extra_params_keys, filtro: $filtro, not_in: $not_in);
-            if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al obtener registros', data: $registros);
+            if(count($registros) === 0) {
+                $registros = $this->rows_select(keys: $keys, modelo: $modelo, columns_ds: $columns_ds,
+                    extra_params_keys: $extra_params_keys, filtro: $filtro, not_in: $not_in);
+                if (errores::$error) {
+                    return $this->error->error(mensaje: 'Error al obtener registros', data: $registros);
+                }
             }
         }
 

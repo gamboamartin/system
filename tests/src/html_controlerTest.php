@@ -834,7 +834,7 @@ class html_controlerTest extends test {
 
         $html_controler = new html_controler($html_);
         $modelo = new adm_menu($this->link);
-        //$html_controler = new liberator($html_controler);
+        $html_controler = new liberator($html_controler);
         $params_select = new stdClass();
         $params_select->cols = '1';
         $params_select->con_registros = true;

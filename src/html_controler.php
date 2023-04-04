@@ -658,7 +658,6 @@ class html_controler{
      * @param modelo $modelo Modelo en proceso
      * @param array $keys_selects Parametros visuales de inputs
      * @return array|stdClass
-     * @version 7.41.2
      *
      */
     final public function init_alta2(stdClass $row_upd, modelo $modelo, array $keys_selects = array()): array|stdClass
@@ -1534,7 +1533,6 @@ class html_controler{
      * @param string $namespace_model
      * @param string $tabla
      * @return array|stdClass
-     * @version 0.96.32
      */
     private function select_aut(
         PDO $link, string $name_model, stdClass $params, stdClass $selects,string $namespace_model = '' ,
@@ -1577,10 +1575,9 @@ class html_controler{
      * @param modelo $modelo Modelo del select
      * @param stdClass $params_select Parametros visuales
      * @return array|stdClass|string
-     * @version 0.227.38
      * @example $params_select->extra_params_keys[] = 'tabla_id'; integra un extra param al option de un select
      */
-    PUBLIC function select_aut2(modelo $modelo, stdClass $params_select): array|stdClass|string
+    private function select_aut2(modelo $modelo, stdClass $params_select): array|stdClass|string
     {
         $keys = array('cols','con_registros','id_selected','disabled','extra_params_keys','filtro','label','not_in',
             'required');
@@ -1641,17 +1638,14 @@ class html_controler{
      * @param bool $required si required agrega el atributo required a input
      * @param array $not_in Omite los elementos en obtencion de datos
      * @return array|string Un string con options en forma de html
-     * @version 0.56.32
-     * @verfuncion 0.1.0
-     * @fecha 2022-08-03 16:27
-     * @author mgamboa
      */
     protected function select_catalogo(int $cols, bool $con_registros, int $id_selected, modelo $modelo,
                                        array $columns_ds = array(), bool $disabled = false,
                                        array $extra_params_keys = array(), array $filtro=array(),
                                        string $key_descripcion = '', string $key_descripcion_select = '',
                                        string $key_id = '', string $label = '', string $name = '',
-                                       array $not_in = array(), bool $required = false): array|string
+                                       array $not_in = array(), array $registros = array(),
+                                       bool $required = false): array|string
     {
 
         $valida = (new directivas(html:$this->html_base))->valida_cols(cols:$cols);
@@ -1662,7 +1656,7 @@ class html_controler{
         $init = (new select())->init_data_select(con_registros: $con_registros, modelo: $modelo,
             columns_ds: $columns_ds, extra_params_keys: $extra_params_keys, filtro: $filtro,
             key_descripcion: $key_descripcion, key_descripcion_select: $key_descripcion_select, key_id: $key_id,
-            label: $label, name: $name, not_in: $not_in);
+            label: $label, name: $name, not_in: $not_in, registros: $registros);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar datos', data: $init);
         }
@@ -1727,7 +1721,6 @@ class html_controler{
      * @param modelo $modelo Modelo en ejecucion
      * @param array $keys_selects Parametros de selects
      * @return array|stdClass
-     * @version 0.242.37
      */
     final protected function selects_alta2(modelo $modelo,array $keys_selects = array()): array|stdClass
     {
@@ -1749,7 +1742,6 @@ class html_controler{
      * @param array $campos_view Campos precargados
      * @param array $keys_selects Selectores params
      * @return array|stdClass
-     * @version 0.232.37
      * @example keys_selects['name_input']->extra_params_keys[] = 'tabla_id';
      * integra un extra param al option de un select
      */
