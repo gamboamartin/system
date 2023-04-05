@@ -437,11 +437,20 @@ class datatables{
             $menu_active = $datatables->menu_active;
         }
 
+        $type = "datatable";
+
+        if (property_exists($datatables,"type")){
+            if (strcasecmp($datatables->type, "scroll") == 0) {
+                $type = $datatables->type;
+            }
+        }
+
         $data = new stdClass();
         $data->filtro = $filtro;
         $data->columns = $columns;
         $data->multi_selects = $multi_selects;
         $data->menu_active = $menu_active;
+        $data->type = $type;
 
         return $data;
     }
