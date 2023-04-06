@@ -196,6 +196,20 @@ class select{
         return ucwords($label);
     }
 
+    private function registros_select(array $columns_ds, bool $con_registros, array $extra_params_keys, array $filtro,
+                                      stdClass $keys, modelo $modelo, array $not_in, array $registros){
+        if($con_registros) {
+            if(count($registros) === 0) {
+                $registros = $this->rows_select(keys: $keys, modelo: $modelo, columns_ds: $columns_ds,
+                    extra_params_keys: $extra_params_keys, filtro: $filtro, not_in: $not_in);
+                if (errores::$error) {
+                    return $this->error->error(mensaje: 'Error al obtener registros', data: $registros);
+                }
+            }
+        }
+        return $registros;
+    }
+
 
     /**
      * Obtiene los registros para un select
@@ -323,14 +337,11 @@ class select{
             return $this->error->error(mensaje: 'Error al validar keys',data:  $valida);
         }
 
-        if($con_registros) {
-            if(count($registros) === 0) {
-                $registros = $this->rows_select(keys: $keys, modelo: $modelo, columns_ds: $columns_ds,
-                    extra_params_keys: $extra_params_keys, filtro: $filtro, not_in: $not_in);
-                if (errores::$error) {
-                    return $this->error->error(mensaje: 'Error al obtener registros', data: $registros);
-                }
-            }
+        $registros = $this->registros_select(columns_ds: $columns_ds,con_registros:  $con_registros,
+            extra_params_keys: $extra_params_keys,filtro:  $filtro,keys:  $keys, modelo: $modelo,not_in:  $not_in,
+            registros:  $registros);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener registros', data: $registros);
         }
 
         $values = $this->genera_values_selects(keys: $keys,registros: $registros, tabla: $modelo->tabla);
