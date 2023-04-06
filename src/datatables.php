@@ -251,7 +251,7 @@ class datatables{
      * @version 7.58.3
      */
     private function columns_dt(stdClass $datatables, PDO $link, array $not_actions, array $rows_lista,
-                                string $seccion): array
+                                string $seccion, string $type = "datatable"): array
     {
         $seccion = trim($seccion);
         if($seccion === ''){
@@ -264,12 +264,14 @@ class datatables{
 
         }
 
-        $columns = (new acciones())->acciones_columnas(columns: $columns, link: $link, seccion: $seccion,
-            not_actions: $not_actions);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al maquetar acciones ', data: $columns);
-
+        if ($type === "datatable"){
+            $columns = (new acciones())->acciones_columnas(columns: $columns, link: $link, seccion: $seccion,
+                not_actions: $not_actions);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al maquetar acciones ', data: $columns);
+            }
         }
+
         return $columns;
     }
 
@@ -412,9 +414,16 @@ class datatables{
             return $this->error->error(mensaje: 'Error al inicializar filtro', data: $filtro);
         }
 
+        $type = "datatable";
+
+        if (property_exists($datatables,"type")){
+            if (strcasecmp($datatables->type, "scroll") == 0) {
+                $type = $datatables->type;
+            }
+        }
 
         $columns = $this->columns_dt(datatables: $datatables, link: $link, not_actions: $not_actions,
-            rows_lista: $rows_lista, seccion: $seccion);
+            rows_lista: $rows_lista, seccion: $seccion, type: $type);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al maquetar columns ', data: $columns);
         }
@@ -435,14 +444,6 @@ class datatables{
                 return $this->error->error(mensaje: 'Error menu_active tiene que ser de tipo bool', data: $datatables);
             }
             $menu_active = $datatables->menu_active;
-        }
-
-        $type = "datatable";
-
-        if (property_exists($datatables,"type")){
-            if (strcasecmp($datatables->type, "scroll") == 0) {
-                $type = $datatables->type;
-            }
         }
 
         $data = new stdClass();
