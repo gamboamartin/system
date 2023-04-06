@@ -149,7 +149,8 @@ class system extends controlador_base{
         }
 
         $this->datatable_init(columns: $data_for_datable->columns, filtro: $data_for_datable->filtro,
-            multi_selects: $data_for_datable->multi_selects, menu_active: $data_for_datable->menu_active);
+            multi_selects: $data_for_datable->multi_selects, menu_active: $data_for_datable->menu_active,
+            type: $data_for_datable->type);
         if(errores::$error){
             $error = $this->errores->error(mensaje: 'Error al inicializar columnDefs', data: $this->datatable);
             var_dump($error);
@@ -560,17 +561,23 @@ class system extends controlador_base{
 
     final public function datatable_init(array $columns, array $filtro = array(), string $identificador = ".datatable",
                                          array $data = array(), array $in = array(), bool $multi_selects = false,
-                                         bool $menu_active = false): array
+                                         bool $menu_active = false, string $type = "datatable"): array
     {
+        $this->datatable["type"]  = $type;
+        $this->datatable["columns"]  = $columns;
+        $this->datatable["filtro"]  = $filtro;
+        $this->datatable["data"]  = $data;
 
-        $datatable = (new datatables())->datatable(columns: $columns, filtro: $filtro,identificador: $identificador,
-            data: $data, in: $in, multi_selects: $multi_selects, menu_active: $menu_active);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al generar datatables base', data:  $datatable);
+        if ( $type === "datatable") {
+            $datatable = (new datatables())->datatable(columns: $columns, filtro: $filtro,identificador: $identificador,
+                data: $data, in: $in, multi_selects: $multi_selects, menu_active: $menu_active, type: $type);
+            if(errores::$error){
+                return $this->errores->error(mensaje: 'Error al generar datatables base', data:  $datatable);
+            }
+
+            $this->datatable = $datatable;
+            $this->datatables[] = $this->datatable;
         }
-
-        $this->datatable = $datatable;
-        $this->datatables[] = $this->datatable;
 
         return $this->datatable;
     }

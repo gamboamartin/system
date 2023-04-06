@@ -367,10 +367,10 @@ class datatables{
      */
     final public function datatable(array $columns, array $filtro = array(),string $identificador = ".datatable",
                                     array $data = array(), array $in = array(), bool $multi_selects = false,
-                                    bool $menu_active = false): array
+                                    bool $menu_active = false, string $type = "datatable"): array
     {
         $datatable = (new \gamboamartin\system\datatables\init())->init_datatable(filtro:$filtro, identificador: $identificador,
-            data: $data,in: $in, multi_selects: $multi_selects);
+            data: $data,in: $in, multi_selects: $multi_selects, type : $type);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar datatable', data:  $datatable);
         }
