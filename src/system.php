@@ -567,6 +567,7 @@ class system extends controlador_base{
         $this->datatable["columns"]  = $columns;
         $this->datatable["filtro"]  = $filtro;
         $this->datatable["data"]  = $data;
+        $this->datatable["multi_selects"]  = $multi_selects;
 
         if ( $type === "datatable") {
             $datatable = (new datatables())->datatable(columns: $columns, filtro: $filtro,identificador: $identificador,
@@ -995,11 +996,22 @@ class system extends controlador_base{
         $response['status'] = "Success";
         $response['message'] = "Se cargo correctamente los registros";
 
-        $filtro = isset($_POST['search'])? $_POST['search']: '';
+        $search = isset($_POST['search'])? $_POST['search']: '';
         $pagina = isset($_POST['pagina'])? $_POST['pagina']: 1;
 
         $cantidad = 10;
         $inicio = $cantidad * $pagina;
+
+        $total_registros = $this->modelo->cuenta();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener registros', data: $n_rows);
+        }
+
+        $filtro = array();
+
+        foreach ($this->datatable['filtro'] as $item){
+            $filtro[$item] = $search;
+        }
 
         $data = $this->modelo->filtro_and(limit: $cantidad, offset: $inicio, order: array($this->tabla.".id" => "DESC"));
         if(errores::$error){
@@ -1022,6 +1034,8 @@ class system extends controlador_base{
 
             $registros['data'] = $data->registros;
             $registros['acciones'] = $acciones_permitidas;
+            $registros['ultimo_registro'] = $inicio;
+            $registros['total_registros'] = $total_registros;
         }
 
         $response['data'] = $data;
