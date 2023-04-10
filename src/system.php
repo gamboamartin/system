@@ -1001,7 +1001,7 @@ class system extends controlador_base{
         $cantidad = 10;
         $inicio = $cantidad * $pagina;
 
-        $data = $this->modelo->filtro_and(limit: $inicio);
+        $data = $this->modelo->filtro_and(limit: $cantidad, offset: $inicio, order: array($this->tabla.".id" => "DESC"));
         if(errores::$error){
             $response['status'] = "Error";
             $response['message'] = "Error al obtener registros - ".$data['mensaje_limpio'];
@@ -1010,12 +1010,32 @@ class system extends controlador_base{
         $registros = array();
 
         if (isset($data->registros)){
-            $registros = $data->registros;
+
+            $acciones_permitidas = (new datatables())->acciones_permitidas(link:$this->link, seccion:  $this->tabla,
+                not_actions: $not_actions,columnas: array("adm_seccion_descripcion", "adm_accion_descripcion",
+                    "adm_accion_titulo"));
+            if(errores::$error){
+                $response['status'] = "Error";
+                $response['message'] = "Error al obtener acciones - ".$acciones_permitidas['mensaje_limpio'];
+            }
+            $response['acciones'] = $acciones_permitidas;
+
+            $registros['data'] = $data->registros;
+            $registros['acciones'] = $acciones_permitidas;
         }
 
         $response['data'] = $data;
+
+        $template = "";
+
+        if ($pagina == 1){
+            $template = "template_table.php";
+        } else {
+            $template = "template_table_append.php";
+        }
+
         ob_start();
-        require_once((new views())->ruta_template_table . "template_table.php");
+        require_once((new views())->ruta_template_table . $template);
         $response['html'] = ob_get_clean();
 
         header('Content-type: application/json');

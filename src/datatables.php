@@ -28,7 +28,8 @@ class datatables{
      * @return array
      * @version 0.153.33
      */
-    final public function acciones_permitidas(PDO $link, string $seccion, array $not_actions = array()): array
+    final public function acciones_permitidas(PDO $link, string $seccion, array $not_actions = array(),
+                                              array $columnas = array()): array
     {
         $valida = (new validacion_dt())->valida_data_column(seccion: $seccion);
         if(errores::$error){
@@ -46,7 +47,7 @@ class datatables{
             return $this->error->error(mensaje: 'Error al obtener not in', data: $not_in);
         }
 
-        $r_accion_grupo = (new adm_accion_grupo($link))->filtro_and(filtro: $filtro, not_in: $not_in);
+        $r_accion_grupo = (new adm_accion_grupo($link))->filtro_and(columnas: $columnas, filtro: $filtro, not_in: $not_in);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener acciones', data: $r_accion_grupo);
 
