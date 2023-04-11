@@ -1000,20 +1000,29 @@ class system extends controlador_base{
         $pagina = isset($_POST['pagina'])? $_POST['pagina']: 1;
 
         $cantidad = 10;
-        $inicio = $cantidad * $pagina;
+        $inicio = ($cantidad * $pagina) - $cantidad;
+
+        if ($search !== ''){
+            $cantidad = 0;
+            $inicio = 0;
+        }
 
         $total_registros = $this->modelo->cuenta();
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener registros', data: $n_rows);
+            $response['status'] = "Error";
+            $response['message'] = "Error al obtener registros - ".$total_registros['mensaje_limpio'];
         }
 
-        $filtro = array();
+        $filtro_especial = array();
 
-        foreach ($this->datatable['filtro'] as $item){
-            $filtro[$item] = $search;
+        foreach ($this->datatable['filtro'] as $indice => $item){
+            $filtro_especial[$indice][$item]['operador'] = 'LIKE';
+            $filtro_especial[$indice][$item]['valor'] = addslashes(trim("%$search%"));
+            $filtro_especial[$indice][$item]['comparacion'] = "OR";
         }
 
-        $data = $this->modelo->filtro_and(limit: $cantidad, offset: $inicio, order: array($this->tabla.".id" => "DESC"));
+        $data = $this->modelo->filtro_and(filtro_especial: $filtro_especial,limit: $cantidad, offset: $inicio,
+            order: array($this->tabla.".id" => "DESC"));
         if(errores::$error){
             $response['status'] = "Error";
             $response['message'] = "Error al obtener registros - ".$data['mensaje_limpio'];
