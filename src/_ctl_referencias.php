@@ -544,10 +544,15 @@ class _ctl_referencias{
      * Obtiene el style de un boton
      * @param string $success Success default
      * @param bool $tiene_rows Si tiene registros o no
-     * @return string
+     * @return string|array
+     * @version 8.26.0
      */
-    private function style_btn(string $success, bool $tiene_rows): string
+    private function style_btn(string $success, bool $tiene_rows): string|array
     {
+        $success = trim($success);
+        if($success === ''){
+            return $this->error->error(mensaje: 'Error success no puede venir vacio', data: $success);
+        }
         $style = 'warning';
         if($tiene_rows){
             $style = $success;
@@ -555,6 +560,11 @@ class _ctl_referencias{
         return $style;
     }
 
+    /**
+     * @param modelo $model_parent
+     * @param string $success
+     * @return array|string
+     */
     private function style_btn_parent(modelo $model_parent, string $success): array|string
     {
         $tiene_rows = $model_parent->tiene_registros();
