@@ -561,8 +561,9 @@ class _ctl_referencias{
     }
 
     /**
-     * @param modelo $model_parent
-     * @param string $success
+     * Genera el estilo de un boton parent para alta y modifica
+     * @param modelo $model_parent Modelo
+     * @param string $success Estilo default
      * @return array|string
      */
     private function style_btn_parent(modelo $model_parent, string $success): array|string
