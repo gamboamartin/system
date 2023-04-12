@@ -997,6 +997,7 @@ class system extends controlador_base{
         $response['message'] = "Se cargo correctamente los registros";
 
         $search = isset($_POST['search'])? $_POST['search']: '';
+        $init = isset($_POST['init'])? $_POST['init']: 0;
         $pagina = isset($_POST['pagina'])? $_POST['pagina']: 1;
 
         $cantidad = 10;
@@ -1051,7 +1052,7 @@ class system extends controlador_base{
 
         $template = "";
 
-        if ($pagina == 1){
+        if ($init == 1) {
             $template = "template_table.php";
         } else {
             $template = "template_table_append.php";
