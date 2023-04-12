@@ -57,6 +57,7 @@ class system extends controlador_base{
     protected string $key_id_filter = '';
     protected string $key_id_row = '';
 
+    public string $template_lista = "";
 
     /**
      * @param html_controler $html Html base
@@ -169,6 +170,14 @@ class system extends controlador_base{
         if(errores::$error){
             $error = $this->errores->error(mensaje:
                 'Error  adm_namespace_descripcion esta vacio en seccion_en_ejecucion', data: $valida);
+            print_r($error);
+            die('Error');
+        }
+
+        $template = $this->load_template();
+        if(errores::$error){
+            $error = $this->errores->error(mensaje:
+                'Error al cargar template lista', data: $template);
             print_r($error);
             die('Error');
         }
@@ -997,7 +1006,6 @@ class system extends controlador_base{
         $response['message'] = "Se cargo correctamente los registros";
 
         $search = isset($_POST['search'])? $_POST['search']: '';
-        $init = isset($_POST['init'])? $_POST['init']: 0;
         $pagina = isset($_POST['pagina'])? $_POST['pagina']: 1;
 
         $cantidad = 10;
@@ -1050,21 +1058,27 @@ class system extends controlador_base{
 
         $response['data'] = $data;
 
-        $template = "";
-
-        if ($init == 1) {
-            $template = "template_table.php";
-        } else {
-            $template = "template_table_append.php";
-        }
-
         ob_start();
-        require_once((new views())->ruta_template_table . $template);
+        require_once((new views())->ruta_template_table . "template_table_append.php");
         $response['html'] = ob_get_clean();
 
         header('Content-type: application/json');
         echo json_encode($response);
         exit();
+    }
+
+    public function load_template(): string|array
+    {
+        if (!file_exists((new views())->ruta_template_table . "template_table.php")){
+            return $this->errores->error(mensaje: 'Error no existe el archivo template_table.php',
+                data:  (new views())->ruta_template_table);
+        }
+
+        ob_start();
+        require_once((new views())->ruta_template_table . "template_table.php");
+        $this->template_lista = ob_get_clean();
+
+        return $this->template_lista;
     }
 
     /**
