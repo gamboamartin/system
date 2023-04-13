@@ -1079,15 +1079,21 @@ class system extends controlador_base{
 
     public function load_template(): string|array
     {
-        if (!file_exists((new views())->ruta_template_table . "template_table.php")){
-            return $this->errores->error(mensaje: 'Error no existe el archivo template_table.php',
-                data:  (new views())->ruta_template_table);
+        if ($this->datatable['type'] === 'scroll') {
+            if (!property_exists(new views(), "ruta_template_table")){
+                return $this->errores->error(mensaje: 'Error no existe ruta_template_table en config/views',
+                    data:  $this->datatable);
+            }
+
+            if (!file_exists((new views())->ruta_template_table . "template_table.php")){
+                return $this->errores->error(mensaje: 'Error no existe el archivo template_table.php',
+                    data:  (new views())->ruta_template_table);
+            }
+
+            ob_start();
+            require_once((new views())->ruta_template_table . "template_table.php");
+            $this->template_lista = ob_get_clean();
         }
-
-
-        ob_start();
-        require_once((new views())->ruta_template_table . "template_table.php");
-        $this->template_lista = ob_get_clean();
 
         return $this->template_lista;
     }
