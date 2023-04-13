@@ -1052,10 +1052,20 @@ class system extends controlador_base{
 
             $registros['data'] = $data->registros;
             $registros['acciones'] = $acciones_permitidas;
-            $registros['ultimo_registro'] = $inicio;
-            $registros['total_registros'] = $total_registros;
         }
 
+        $response['total_registros'] = $total_registros;
+
+        if ($data->n_registros > 0 || $search === ''){
+            $response['primer_registro'] = 1;
+        } else if ($data->n_registros === 0 && $search === ''){
+            $response['primer_registro'] = 5;
+        }else {
+            $response['primer_registro'] = 0;
+        }
+
+
+        $response['ultimo_registro'] = (($cantidad * $pagina) > $total_registros)? $total_registros:  ($data->n_registros * $pagina);
         $response['data'] = $data;
 
         ob_start();
@@ -1073,6 +1083,7 @@ class system extends controlador_base{
             return $this->errores->error(mensaje: 'Error no existe el archivo template_table.php',
                 data:  (new views())->ruta_template_table);
         }
+
 
         ob_start();
         require_once((new views())->ruta_template_table . "template_table.php");
