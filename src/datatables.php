@@ -605,6 +605,14 @@ class datatables{
             $in = $_GET['in'];
         }
 
+        $order  = array();
+        if (isset($_GET['order'])){
+            if (count($datatable['columns']) - 1 > $_GET['order'][0]['column']){
+                $campo = $datatable['columns'][$_GET['order'][0]['column']]->data;
+                $order = array($campo => $_GET['order'][0]['dir'] );
+            }
+        }
+
         $data = new stdClass();
         $data->draw = $draw;
         $data->n_rows_for_page = $n_rows_for_page;
@@ -612,6 +620,7 @@ class datatables{
         $data->filtro = $filtro;
         $data->filtro_especial = $filtro_especial;
         $data->in = $in;
+        $data->order = $order;
 
         return $data;
     }

@@ -764,7 +764,7 @@ class system extends controlador_base{
         }
 
         $data_result = $this->modelo->get_data_lista(filtro:$params->filtro,filtro_especial: $params->filtro_especial,
-            n_rows_for_page: $params->n_rows_for_page, pagina: $params->pagina,in: $params->in);
+            n_rows_for_page: $params->n_rows_for_page, pagina: $params->pagina,in: $params->in,order: $params->order);
 
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al obtener data result', data: $data_result,header:  $header, ws: $ws);
