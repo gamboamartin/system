@@ -65,9 +65,14 @@ class _ctl_base extends system{
      * @param array $init_data Datos previamente inicializados
      * @param stdClass $keys Keys a integrar
      * @return array
+     * @version 8.36.0
      */
     final public function campos_view_base(array $init_data, stdClass $keys): array
     {
+        if(!isset($keys->selects)){
+            $keys->selects = array();
+        }
+
         $selects = (new \base\controller\init())->select_key_input($init_data, selects: $keys->selects);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al maquetar select',data:  $selects);
