@@ -565,9 +565,16 @@ class _ctl_referencias{
      * @param modelo $model_parent Modelo
      * @param string $success Estilo default
      * @return array|string
+     * @version 8.34.0
+     *
      */
     private function style_btn_parent(modelo $model_parent, string $success): array|string
     {
+        $success = trim($success);
+        if($success === ''){
+            return $this->error->error(mensaje: 'Error success no puede venir vacio', data: $success);
+        }
+
         $tiene_rows = $model_parent->tiene_registros();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al verificar $model_parent '.$model_parent->tabla, data:  $tiene_rows);
