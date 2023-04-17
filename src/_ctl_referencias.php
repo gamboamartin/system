@@ -115,10 +115,11 @@ class _ctl_referencias{
 
     /**
      * Genera botones si hace falta algun parent
+     * @param system $controler Controlador en ejecucion
      * @param string $etiqueta Etiqueta de boton parent
      * @param modelo $model_parent Modelo parent
      * @return array|stdClass
-     * 7.69.3
+     * @version 8.35.0
      */
     private function genera_botones_parent(system $controler, string $etiqueta, modelo $model_parent): array|stdClass
     {
@@ -259,6 +260,14 @@ class _ctl_referencias{
         return $controler->buttons_parents_alta;
     }
 
+    /**
+     * @param system $controler
+     * @param string $etiqueta
+     * @param modelo $model_parent
+     * @param int $registro_id
+     * @param string $style
+     * @return array|stdClass
+     */
     private function integra_button_parent_ir(system $controler, string $etiqueta, modelo $model_parent,
                                               int $registro_id, string $style): array|stdClass
     {
