@@ -200,7 +200,7 @@ class system extends controlador_base{
      * @param bool $header Si header muestra resultado via http
      * @param bool $ws Muestra resultado via Json
      * @return array|string
-     * @final rev
+     * @esfinal rev
      */
     public function alta(bool $header, bool $ws = false): array|string
     {
