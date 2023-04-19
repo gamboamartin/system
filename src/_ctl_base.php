@@ -53,7 +53,7 @@ class _ctl_base extends system{
      * Integra los campos view de una vista para alta y modifica Metodo para sobreescribir
      * @return array
      * @version 0.262.38
-     * @final rev
+     * @esfinal revisada
      */
     protected function campos_view(): array
     {
