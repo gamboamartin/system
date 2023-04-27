@@ -141,6 +141,13 @@ class _ctl_referencias{
         return $buttons;
     }
 
+    /**
+     * @param system $controler
+     * @param string $etiqueta
+     * @param modelo $model_parent
+     * @param int $registro_id
+     * @return array|stdClass
+     */
     private function genera_botones_parent_ir(
         system $controler, string $etiqueta, modelo $model_parent, int $registro_id): array|stdClass
     {
@@ -268,6 +275,7 @@ class _ctl_referencias{
      * @param int $registro_id Registro en proceso
      * @param string $style Estilo de button
      * @return array|stdClass
+     * @version 8.40.0
      */
     private function integra_button_parent_ir(system $controler, string $etiqueta, modelo $model_parent,
                                               int $registro_id, string $style): array|stdClass
@@ -275,6 +283,11 @@ class _ctl_referencias{
         $etiqueta = trim($etiqueta);
         if($etiqueta === ''){
             return $this->error->error(mensaje: 'Error la $etiqueta esta vacia', data: $etiqueta);
+        }
+        $valida = $controler->html_base->valida_input(accion: 'modifica',etiqueta:  $etiqueta,
+            seccion: $model_parent->tabla,style:  $style);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
         }
 
         $button = $controler->html->button_href(accion: 'modifica', etiqueta: $etiqueta,
