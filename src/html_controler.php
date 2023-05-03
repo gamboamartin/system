@@ -822,7 +822,8 @@ class html_controler{
     }
 
     public function input_fecha(int $cols, stdClass $row_upd, bool $value_vacio, bool $disabled = false,
-                                      string $place_holder = 'Fecha', mixed $value = null): array|string
+                                      string $place_holder = 'Fecha', mixed $value = null,
+                                bool $value_hora = false): array|string
     {
 
         if($cols<=0){
@@ -833,7 +834,7 @@ class html_controler{
         }
 
         $html =$this->directivas->input_fecha_required(disabled: $disabled,name: 'fecha',place_holder: $place_holder,
-            row_upd: $row_upd, value_vacio: $value_vacio, value: $value);
+            row_upd: $row_upd, value_vacio: $value_vacio, value: $value,value_hora: $value_hora);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar input', data: $html);
         }
