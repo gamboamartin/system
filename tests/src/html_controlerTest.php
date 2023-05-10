@@ -511,7 +511,7 @@ class html_controlerTest extends test {
         $resultado = $html_controler->emails_alta($modelo, $row_upd);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='text' name='email' value='' |class| required id='email' placeholder='email' pattern='[a-z0-9!#$%&'*+=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$' /></div></div>", $resultado->email);
+        $this->assertEquals("<div |class|><div |class|><input type='text' name='email' value='' |class| required id='email' placeholder='email' pattern='[^@\s]+@[^@\s]+[^.\s]' /></div></div>", $resultado->email);
 
         errores::$error = false;
     }

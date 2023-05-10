@@ -142,10 +142,11 @@ class _ctl_referencias{
     }
 
     /**
-     * @param system $controler
-     * @param string $etiqueta
-     * @param modelo $model_parent
-     * @param int $registro_id
+     * Genera lso botones de ir a la entidad relacionada
+     * @param system $controler Controlador en ejecucion
+     * @param string $etiqueta Etiqueta de boton
+     * @param modelo $model_parent Modelo a ir
+     * @param int $registro_id registro en proceso
      * @return array|stdClass
      */
     private function genera_botones_parent_ir(

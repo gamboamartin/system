@@ -103,7 +103,7 @@ class templateTest extends test {
         $resultado = $html->emails_template($directivas, $params_select, $row_upd);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='text' name='a' value='' |class| disabled required id='a' placeholder='a' pattern='[a-z0-9!#$%&'*+=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$' /></div></div>",$resultado);
+        $this->assertEquals("<div |class|><div |class|><input type='text' name='a' value='' |class| disabled required id='a' placeholder='a' pattern='[^@\s]+@[^@\s]+[^.\s]' /></div></div>",$resultado);
         errores::$error = false;
 
     }
