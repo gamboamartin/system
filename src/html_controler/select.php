@@ -196,8 +196,21 @@ class select{
         return ucwords($label);
     }
 
+    /**
+     * Obtiene los registros para un select
+     * @param array $columns_ds Columnas a mostrar en cada registro
+     * @param bool $con_registros Si con registros integrara los elementos del modelo
+     * @param array $extra_params_keys Parametros para data extra
+     * @param array $filtro Filtro de datos
+     * @param stdClass $keys Keys para la obtencion de campos
+     * @param modelo $modelo Modelo de datos
+     * @param array $not_in Integra elementos que se quieran omitir en los rows
+     * @param array $registros Registros a integrar
+     * @return array
+     */
     private function registros_select(array $columns_ds, bool $con_registros, array $extra_params_keys, array $filtro,
-                                      stdClass $keys, modelo $modelo, array $not_in, array $registros){
+                                      stdClass $keys, modelo $modelo, array $not_in, array $registros): array
+    {
         if($con_registros) {
             if(count($registros) === 0) {
                 $registros = $this->rows_select(keys: $keys, modelo: $modelo, columns_ds: $columns_ds,
