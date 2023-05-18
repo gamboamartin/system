@@ -236,14 +236,20 @@ class actions{
 
             $links_menu = new $obj_link(link: $link, registro_id: $row->$key_id);
 
-
             if (!isset($links_menu->links->$seccion)) {
                 return $this->error->error(mensaje: "Error no existe links_menu->$seccion", data: $links_menu);
             }
             $existe_accion = isset($links_menu->links->$seccion->$accion);
-            if (!$existe_accion) {
+            $existe_accion_2 = isset($obj_link->links->$seccion->$accion);
+
+            if (!$existe_accion && !$existe_accion_2) {
                 return $this->error->error(mensaje: "Error no existe links_menu->$seccion->$accion", data: $links_menu);
             }
+
+            if (!$existe_accion) {
+                $links_menu->links->$seccion = $obj_link->links->$seccion;
+            }
+
         }
 
         return $links_menu->links->$seccion->$accion;
