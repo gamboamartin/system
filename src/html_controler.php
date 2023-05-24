@@ -827,7 +827,7 @@ class html_controler{
     {
 
         if($cols<=0){
-            return $this->error->error(mensaje: 'Error cold debe ser mayor a 0', data: $cols);
+            return $this->error->error(mensaje: 'Error cold debe ser mayor a 0', data: $cols );
         }
         if($cols>=13){
             return $this->error->error(mensaje: 'Error cold debe ser menor o igual a  12', data: $cols);
