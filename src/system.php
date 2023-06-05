@@ -377,6 +377,12 @@ class system extends controlador_base{
         }
 
         $params->extra_join = array();
+        $params->columnas = array();
+
+
+        if (isset($_GET['columns'])){
+            $params->columnas = $_GET['columns'];
+        }
 
         if (isset($_GET['filtros'])){
             $filtros = $_GET['filtros'];
@@ -468,9 +474,9 @@ class system extends controlador_base{
 
         }
 
-        $data_result = $this->modelo->get_data_lista(filtro:$params->filtro,filtro_especial: $params->filtro_especial,
-            n_rows_for_page: $params->n_rows_for_page, pagina: $params->pagina,extra_join: $params->extra_join);
-
+        $data_result = $this->modelo->get_data_lista(filtro:$params->filtro,columnas: $params->columnas,
+            filtro_especial: $params->filtro_especial, n_rows_for_page: $params->n_rows_for_page, pagina: $params->pagina,
+            extra_join: $params->extra_join);
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al obtener data result', data: $data_result,header:  $header, ws: $ws);
         }
