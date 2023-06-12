@@ -88,6 +88,37 @@ class _ctl_referenciasTest extends test {
 
     }
 
+    public function test_genera_botones_parent_ir(): void
+    {
+        errores::$error = false;
+        $_SESSION['grupo_id'] = 2;
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+        $html = new html();
+        $html_controler = new html_controler($html);
+
+        $modelo = new adm_accion($this->link);
+        $obj_link = new links_menu($this->link, -1);
+
+        $controler = new system(html: $html_controler, link: $this->link, modelo: $modelo, obj_link: $obj_link,
+            paths_conf: $this->paths_conf);
+
+
+        $ctl = (new _ctl_referencias());
+        $ctl = new liberator($ctl);
+
+        $etiqueta = 'a';
+        $model_parent = new adm_seccion(link: $this->link);
+        $registro_id = 1;
+
+        $resultado = $ctl->genera_botones_parent_ir($controler, $etiqueta, $model_parent, $registro_id);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsObject($resultado);
+        $this->assertEquals("<a role='button' title='a' href='index.php?seccion=adm_seccion&accion=modifica&registro_id=1&session_id=1&adm_menu_id=-1' class='btn btn-info col-sm-12'>a</a>",$resultado->adm_seccion);
+
+        errores::$error = false;
+    }
+
     public function test_genera_keys_parents(): void
     {
         errores::$error = false;

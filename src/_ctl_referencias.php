@@ -148,6 +148,7 @@ class _ctl_referencias{
      * @param modelo $model_parent Modelo a ir
      * @param int $registro_id registro en proceso
      * @return array|stdClass
+     * @version 8.48.0
      */
     private function genera_botones_parent_ir(
         system $controler, string $etiqueta, modelo $model_parent, int $registro_id): array|stdClass
@@ -155,6 +156,9 @@ class _ctl_referencias{
         $etiqueta = trim($etiqueta);
         if($etiqueta === ''){
             return $this->error->error(mensaje: 'Error la $etiqueta esta vacia', data: $etiqueta);
+        }
+        if($registro_id<=0){
+            return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0', data: $registro_id);
         }
 
         $style = $this->style_btn_parent(model_parent: $model_parent, success: 'info');
