@@ -63,6 +63,33 @@ class _ctl_referencias{
 
     private function boton_permitido(system $controler, stdClass $params){
         $buttons = new stdClass();
+
+        $buttons = $this->buttons_alta(buttons: $buttons,controler:  $controler,params:  $params);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar botones', data: $buttons);
+        }
+
+        $buttons = $this->buttons_modifica(buttons: $buttons,controler:  $controler,params:  $params);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar botones', data: $buttons);
+        }
+
+        return $buttons;
+    }
+
+    private function botones_children(system $controler, array $params): array
+    {
+        foreach ($controler->childrens_data as $entidad=>$child){
+            $button = $this->boton_children(child: $child, controler: $controler, entidad: $entidad, params: $params);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar button',data:  $button);
+            }
+            $controler->buttons_childrens_alta[] = $button;
+        }
+        return $controler->buttons_childrens_alta;
+    }
+
+    private function buttons_alta(stdClass $buttons, system $controler, stdClass $params){
         $tengo_permiso = (new adm_accion(link: $controler->link))->permiso(accion: 'alta',
             seccion:  $params->model_parent->tabla);
         if(errores::$error){
@@ -76,7 +103,10 @@ class _ctl_referencias{
                 return $this->error->error(mensaje: 'Error al generar botones', data: $buttons);
             }
         }
+        return $buttons;
+    }
 
+    private function buttons_modifica(stdClass $buttons, system $controler, stdClass $params){
         $tengo_permiso = (new adm_accion(link: $controler->link))->permiso(accion: 'modifica',
             seccion:  $params->model_parent->tabla);
         if(errores::$error){
@@ -96,21 +126,7 @@ class _ctl_referencias{
                 }
             }
         }
-
-
         return $buttons;
-    }
-
-    private function botones_children(system $controler, array $params): array
-    {
-        foreach ($controler->childrens_data as $entidad=>$child){
-            $button = $this->boton_children(child: $child, controler: $controler, entidad: $entidad, params: $params);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar button',data:  $button);
-            }
-            $controler->buttons_childrens_alta[] = $button;
-        }
-        return $controler->buttons_childrens_alta;
     }
 
     /**
