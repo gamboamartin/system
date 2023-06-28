@@ -89,7 +89,15 @@ class _ctl_referencias{
         return $controler->buttons_childrens_alta;
     }
 
-    private function buttons_alta(stdClass $buttons, system $controler, stdClass $params){
+    /**
+     * Integra los botones de alta view base
+     * @param stdClass $buttons Botones previos cargados
+     * @param system $controler Controlador en ejecucion
+     * @param stdClass $params parametros get
+     * @return array|stdClass
+     */
+    private function buttons_alta(stdClass $buttons, system $controler, stdClass $params): array|stdClass
+    {
         $tengo_permiso = (new adm_accion(link: $controler->link))->permiso(accion: 'alta',
             seccion:  $params->model_parent->tabla);
         if(errores::$error){
