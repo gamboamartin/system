@@ -684,6 +684,10 @@ class system extends controlador_base{
         return $r_del;
     }
 
+    /**
+     * Integra los inputs par aun form de tipo alta
+     * @return string
+     */
     private function form_alta(): string
     {
         $form_alta = '';
