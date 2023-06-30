@@ -882,8 +882,9 @@ class html_controler{
         return $div;
     }
 
-    public function input_monto(int $cols, stdClass $row_upd, bool $value_vacio, bool $disabled = false,
-                                string $name = 'monto', string $place_holder = 'Monto', mixed $value = null): array|string
+    public function input_monto(int $cols, stdClass $row_upd, bool $value_vacio,bool $con_label = true,
+                                bool $disabled = false, string $name = 'monto', string $place_holder = 'Monto',
+                                mixed $value = null): array|string
     {
 
         if($cols<=0){
@@ -893,8 +894,8 @@ class html_controler{
             return $this->error->error(mensaje: 'Error cold debe ser menor o igual a  12', data: $cols);
         }
 
-        $html =$this->directivas->input_monto_required(disabled: $disabled,name: $name,place_holder: $place_holder,
-            row_upd: $row_upd, value_vacio: $value_vacio, value: $value);
+        $html =$this->directivas->input_monto_required(disabled: $disabled, name: $name, place_holder: $place_holder,
+            row_upd: $row_upd, value_vacio: $value_vacio, con_label: $con_label, value: $value);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar input', data: $html);
         }
