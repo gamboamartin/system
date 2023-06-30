@@ -40,6 +40,7 @@ class html_controler{
      * @param string $style_custom Estilos agregados
      * @param string $title Titulo del boton
      * @return string|array
+     * @version 8.83.0
      */
     private function a_params(string $cols_html, string $link, string $role, string $style, string $style_custom,
                               string $title): string|array
@@ -51,6 +52,10 @@ class html_controler{
         $title = trim($title);
         if($title === ''){
             return $this->error->error(mensaje: 'Error title esta vacio',data:  $title);
+        }
+        $role = trim($role);
+        if($role === ''){
+            return $this->error->error(mensaje: 'Error role esta vacio',data:  $role);
         }
         $params = "role='$role' title='$title' href='$link' class='btn btn-$style $cols_html' $style_custom";
         $params = trim($params);
@@ -75,7 +80,6 @@ class html_controler{
      * @param array $styles Estilos css
      * @param string $title Titulo a mostrar del button
      * @return string|array
-     * @version 7.11.0
      * @por_doc = true
      */
     private function a_role(int $cols, string $etiqueta_html, string $icon_html, string $link, string $role,
@@ -791,13 +795,14 @@ class html_controler{
      * @param int $cols Columnas en css
      * @param stdClass $row_upd Registro en proceso
      * @param bool $value_vacio is vacio no muestra datos
+     * @param bool $con_label Si no con label deja vacio el input
      * @param bool $disabled Si disabled el input queda deshabilitado
      * @param string $place_holder Etiqueta a mostrar
      * @return array|string
      * @version 0.74.32
      */
-    public function input_descripcion(int $cols, stdClass $row_upd, bool $value_vacio, bool $disabled = false,
-                                      string $place_holder = 'Descripcion'): array|string
+    public function input_descripcion(int $cols, stdClass $row_upd, bool $value_vacio, bool $con_label = true,
+                                      bool $disabled = false, string $place_holder = 'Descripcion'): array|string
     {
 
         if($cols<=0){
@@ -808,7 +813,7 @@ class html_controler{
         }
 
         $html =$this->directivas->input_text_required(disabled: $disabled,name: 'descripcion',place_holder: $place_holder,
-            row_upd: $row_upd, value_vacio: $value_vacio);
+            row_upd: $row_upd, value_vacio: $value_vacio, con_label: $con_label);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar input', data: $html);
         }
