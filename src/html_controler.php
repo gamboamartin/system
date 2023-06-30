@@ -887,6 +887,17 @@ class html_controler{
         return $div;
     }
 
+    /**
+     * @param int $cols Columnas en css
+     * @param stdClass $row_upd Registro en proceso
+     * @param bool $value_vacio is vacio no muestra datos
+     * @param bool $con_label Si con label integra el label en el input
+     * @param bool $disabled Si disabled integra atributo disabled en input
+     * @param string $name Name del input
+     * @param string $place_holder Info input
+     * @param mixed|null $value Valor default
+     * @return array|string
+     */
     public function input_monto(int $cols, stdClass $row_upd, bool $value_vacio,bool $con_label = true,
                                 bool $disabled = false, string $name = 'monto', string $place_holder = 'Monto',
                                 mixed $value = null): array|string
