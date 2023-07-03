@@ -641,9 +641,9 @@ class _ctl_referencias{
 
     /**
      * Integra un value a un input de tipo children
-     * @param system $controler
-     * @param string $key_parent_id
-     * @param array $params_btn_children
+     * @param system $controler Controlador en ejecucion
+     * @param string $key_parent_id Key id parent
+     * @param array $params_btn_children Parametros de botones
      * @return array
      */
     private function value_param_children(system $controler, string $key_parent_id, array $params_btn_children): array

@@ -1113,7 +1113,7 @@ class system extends controlador_base{
      * @param bool $header Si header da salida en html
      * @param bool $ws Si ws da salida json
      * @return array|stdClass
-     * @final rev
+     * @finalrev
      */
     public function modifica(bool $header, bool $ws = false): array|stdClass
     {
