@@ -645,14 +645,25 @@ class _ctl_referencias{
      * @param string $key_parent_id Key id parent
      * @param array $params_btn_children Parametros de botones
      * @return array
+     * @version 8.56.0
      */
     private function value_param_children(system $controler, string $key_parent_id, array $params_btn_children): array
     {
+        $key_parent_id = trim($key_parent_id);
+        if($key_parent_id === ''){
+            return $this->error->error(mensaje: 'Error key_parent_id no puede venir vacio', data: $key_parent_id);
+        }
+        if(!isset($controler->row_upd->$key_parent_id)){
+           return $this->error->error(mensaje: 'Error no existe atributo en row upd '.$key_parent_id,
+               data:  $controler);
+        }
+
         $params_btn_children[$key_parent_id] = $controler->row_upd->$key_parent_id;
         return $params_btn_children;
     }
 
-    private function value_row_children_proceso(string $key_parent_id, array $params_btn_children, stdClass $row_in_proceso): array
+    private function value_row_children_proceso(string $key_parent_id, array $params_btn_children,
+                                                stdClass $row_in_proceso): array
     {
         $params_btn_children[$key_parent_id] = $row_in_proceso->$key_parent_id;
         return $params_btn_children;
