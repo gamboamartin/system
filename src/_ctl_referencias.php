@@ -95,9 +95,20 @@ class _ctl_referencias{
      * @param system $controler Controlador en ejecucion
      * @param stdClass $params parametros get
      * @return array|stdClass
+     * @version 8.57.0
      */
     private function buttons_alta(stdClass $buttons, system $controler, stdClass $params): array|stdClass
     {
+        if(!isset($params->model_parent)){
+            return $this->error->error(mensaje: 'Error $params->model_parent no existe', data:  $params);
+        }
+        if(!is_object($params->model_parent)){
+            return $this->error->error(mensaje: 'Error $params->model_parent debe ser un objeto', data:  $params);
+        }
+        if(!isset($params->model_parent->tabla)){
+            return $this->error->error(mensaje: 'Error $params->model_parent->tabla no existe', data:  $params);
+        }
+
         $tengo_permiso = (new adm_accion(link: $controler->link))->permiso(accion: 'alta',
             seccion:  $params->model_parent->tabla);
         if(errores::$error){
