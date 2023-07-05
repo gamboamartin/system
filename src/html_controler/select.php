@@ -65,7 +65,8 @@ class select{
                                            array $not_in = array(), array $registros = array()): array|stdClass
     {
 
-        $keys = $this->keys_base(tabla: $modelo->tabla, key_descripcion: $key_descripcion, key_descripcion_select: $key_descripcion_select,
+        $keys = $this->keys_base(tabla: $modelo->tabla, key_descripcion: $key_descripcion,
+            key_descripcion_select: $key_descripcion_select,
             key_id: $key_id, name: $name);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar keys',data:  $keys);
@@ -78,17 +79,12 @@ class select{
             return $this->error->error(mensaje: 'Error al obtener valores',data:  $values);
         }
 
-        /**
-         * REFACTORIZAR
-         */
-        $label_ =$label;
-        if($label_ === '') {
-            $label_ = $this->label(tabla: $modelo->tabla);
-            if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al obtener label', data: $label_);
-            }
-        }
 
+        $label_ = $this->label_(label: $label,tabla:  $modelo->tabla);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener label', data: $label_);
+        }
+        
         $keys->values = $values;
         $keys->label = $label_;
         return $keys;
@@ -194,6 +190,17 @@ class select{
 
 
         return ucwords($label);
+    }
+
+    private function label_(string $label, string $tabla){
+        $label_ =$label;
+        if($label_ === '') {
+            $label_ = $this->label(tabla: $tabla);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al obtener label', data: $label_);
+            }
+        }
+        return $label_;
     }
 
     /**
@@ -337,9 +344,10 @@ class select{
      * @param array $extra_params_keys Keys para asignacion de extra params para ser utilizado en javascript
      * @param array $filtro Filtro para obtencion de datos del select
      * @param array $not_in Omite resultados para options
-     * @param array $registros
+     * @param array $registros registros a mostrar en caso de que este vacio los obtiene de la entidad
      * @return array
      * @author mgamboa
+     * @version 8.60.0
      */
     private function values_selects( bool $con_registros, stdClass $keys, modelo $modelo, array $columns_ds = array(),
                                      array $extra_params_keys = array(), array $filtro = array(),
