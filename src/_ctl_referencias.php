@@ -46,6 +46,13 @@ class _ctl_referencias{
         return $valores;
     }
 
+    /**
+     * @param array $child
+     * @param system $controler
+     * @param string $entidad
+     * @param array $params
+     * @return array|string
+     */
     private function boton_children(array $child, system $controler, string $entidad, array $params): array|string
     {
         $params = $this->params_key(controler: $controler, params: $params);
@@ -61,7 +68,13 @@ class _ctl_referencias{
         return $button;
     }
 
-    private function boton_permitido(system $controler, stdClass $params){
+    /**
+     * @param system $controler
+     * @param stdClass $params
+     * @return array|stdClass
+     */
+    private function boton_permitido(system $controler, stdClass $params): array|stdClass
+    {
         $buttons = new stdClass();
 
         $buttons = $this->buttons_alta(buttons: $buttons,controler:  $controler,params:  $params);
@@ -77,6 +90,11 @@ class _ctl_referencias{
         return $buttons;
     }
 
+    /**
+     * @param system $controler
+     * @param array $params
+     * @return array
+     */
     private function botones_children(system $controler, array $params): array
     {
         foreach ($controler->childrens_data as $entidad=>$child){
@@ -125,7 +143,14 @@ class _ctl_referencias{
         return $buttons;
     }
 
-    private function buttons_modifica(stdClass $buttons, system $controler, stdClass $params){
+    /**
+     * @param stdClass $buttons
+     * @param system $controler
+     * @param stdClass $params
+     * @return array|stdClass
+     */
+    private function buttons_modifica(stdClass $buttons, system $controler, stdClass $params): array|stdClass
+    {
         $tengo_permiso = (new adm_accion(link: $controler->link))->permiso(accion: 'modifica',
             seccion:  $params->model_parent->tabla);
         if(errores::$error){
@@ -342,6 +367,10 @@ class _ctl_referencias{
         return $controler->buttons_parents_ir;
     }
 
+    /**
+     * @param system $controler
+     * @return array
+     */
     final public function integra_buttons_children(system $controler): array
     {
         $params_btn_children = $this->params_btn(controler: $controler);
@@ -402,6 +431,13 @@ class _ctl_referencias{
         return $controler->keys_selects;
     }
 
+    /**
+     * Integra los parametros de un boton de tipo hijo
+     * @param system $controler Controlador en ejecucion
+     * @param modelo $model_parent Modelo parent a integrar
+     * @param array $params_btn_children parametros previamente cargados
+     * @return array
+     */
     private function integra_params_btn(system $controler, modelo $model_parent, array $params_btn_children): array
     {
         $key_parent_id = $this->key_parent_id(model_parent: $model_parent);
@@ -458,6 +494,13 @@ class _ctl_referencias{
         return $model_parent;
     }
 
+    /**
+     * Integra los parametros de un boton de tipo dependencia de un modelo
+     * @param system $controler Controlador en ejecucion
+     * @param string $key_parent_id Key del controlador en ejecucion para envio de registro_id
+     * @param array $params_btn_children Parametros previamente cargados
+     * @return array
+     */
     private function param_btn_children(system $controler, string $key_parent_id, array $params_btn_children): array
     {
         if(isset($this->row_upd->$key_parent_id)){
@@ -478,6 +521,13 @@ class _ctl_referencias{
         return $params_btn_children;
     }
 
+    /**
+     * Integra los parametros de un boton
+     * @param system $controler Controlador en ejecucion
+     * @param string $key_parent_id Key para registro id de retorno
+     * @param array $params_btn_children Parametros previamente cargados
+     * @return array
+     */
     private function param_children(system $controler, string $key_parent_id, array $params_btn_children): array
     {
         $row_in_proceso = $controler->modelo->registro(registro_id: $controler->registro_id,retorno_obj: true);
@@ -494,6 +544,11 @@ class _ctl_referencias{
         return $params_btn_children;
     }
 
+    /**
+     * Parametros de botones para envio get
+     * @param system $controler Controlador en ejecucion
+     * @return array
+     */
     private function params_btn(system $controler): array
     {
         $params_btn_children = array();
@@ -555,6 +610,12 @@ class _ctl_referencias{
         return $data;
     }
 
+    /**
+     * Integra un parametro para envio get
+     * @param system $controler Controlador en ejecucion
+     * @param array $params Parametros previamente cargados
+     * @return array
+     */
     private function params_key(system $controler, array $params): array
     {
         $params[$controler->seccion.'_id'] = $controler->registro_id;
@@ -673,6 +734,14 @@ class _ctl_referencias{
         return $params_btn_children;
     }
 
+    /**
+     * Integra el valor de un parametro de boton
+     * @param string $key_parent_id Key de integracion id para envio de accion
+     * @param array $params_btn_children Parametros previamente cargados
+     * @param stdClass $row_in_proceso Registro en proceso
+     * @return array
+     *
+     */
     private function value_row_children_proceso(string $key_parent_id, array $params_btn_children,
                                                 stdClass $row_in_proceso): array
     {
