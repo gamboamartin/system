@@ -1,6 +1,8 @@
 <?php
 namespace tests\controllers;
 
+use gamboamartin\administrador\models\adm_seccion;
+use gamboamartin\administrador\tests\base_test;
 use gamboamartin\controllers\controlador_adm_seccion;
 use gamboamartin\controllers\controlador_adm_session;
 use gamboamartin\controllers\controlador_adm_sistema;
@@ -37,7 +39,24 @@ class mensajeriaTest extends test {
         $_GET['seccion'] = 'adm_seccion';
         $_GET['accion'] = 'lista';
         $_SESSION['grupo_id'] = 1;
+        $_SESSION['usuario_id'] = 2;
         $_GET['session_id'] = '1';
+
+        $_GET['accion'] = 'lista';
+        $del = (new adm_seccion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $alta = (new base_test)->alta_adm_accion(link: $this->link,adm_seccion_descripcion: 'adm_seccion',descripcion: 'lista');
+        if(errores::$error){
+            $error = (new errores())->error('Error al alta', $alta);
+            print_r($error);
+            exit;
+        }
+
         $controler = new controlador_adm_seccion(link: $this->link, paths_conf: $this->paths_conf);
         //$inicializacion = new liberator($inicializacion);
         $html = new html();
@@ -53,6 +72,22 @@ class mensajeriaTest extends test {
         $_SESSION['grupo_id'] = 1;
         $_GET['session_id'] = '1';
         $_SESSION['exito'][]['mensaje'] = 'a';
+
+        $_GET['accion'] = 'lista';
+        $del = (new adm_seccion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $alta = (new base_test)->alta_adm_accion(link: $this->link,adm_seccion_descripcion: 'adm_seccion',descripcion: 'lista');
+        if(errores::$error){
+            $error = (new errores())->error('Error al alta', $alta);
+            print_r($error);
+            exit;
+        }
+
         $controler = new controlador_adm_seccion(link: $this->link, paths_conf: $this->paths_conf);
         //$inicializacion = new liberator($inicializacion);
 

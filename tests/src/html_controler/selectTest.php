@@ -114,6 +114,35 @@ class selectTest extends test {
         errores::$error = false;
     }
 
+    public function test_registros_select(): void
+    {
+        errores::$error = false;
+
+        $html = new select();
+        $html = new liberator($html);
+
+        $keys = new stdClass();
+        $keys->id = 'adm_accion_id';
+        $keys->descripcion_select = 'adm_accion_descripcion';
+        $keys->descripcion = 'adm_accion_descripcion';
+
+        $con_registros = true;
+        $modelo = new adm_accion($this->link);
+        $extra_params_keys = array();
+        $columns_ds = array();
+        $filtro = array();
+        $not_in = array();
+        $registros = array();
+        $columns_ds[] = 'a';
+        $extra_params_keys[] = 'b';
+
+        $resultado = $html->registros_select($columns_ds, $con_registros, $extra_params_keys,
+            $filtro, $keys, $modelo, $not_in, $registros);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
     public function test_rows_select(): void
     {
         errores::$error = false;

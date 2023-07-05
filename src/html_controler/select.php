@@ -207,6 +207,7 @@ class select{
      * @param array $not_in Integra elementos que se quieran omitir en los rows
      * @param array $registros Registros a integrar
      * @return array
+     * @version 8.59.0
      */
     private function registros_select(array $columns_ds, bool $con_registros, array $extra_params_keys, array $filtro,
                                       stdClass $keys, modelo $modelo, array $not_in, array $registros): array

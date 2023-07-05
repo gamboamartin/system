@@ -3,6 +3,8 @@ namespace tests\src;
 
 
 use gamboamartin\administrador\models\adm_accion;
+use gamboamartin\administrador\models\adm_seccion;
+use gamboamartin\administrador\tests\base_test;
 use gamboamartin\errores\errores;
 use gamboamartin\system\html_controler;
 use gamboamartin\system\links_menu;
@@ -109,6 +111,21 @@ class links_menuTest extends test {
         $html = new liberator($html);
 
         errores::$error = false;
+
+        $_GET['accion'] = 'lista';
+        $del = (new adm_seccion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $alta = (new base_test)->alta_adm_accion(link: $this->link,adm_seccion_descripcion: 'adm_accion',descripcion: 'lista');
+        if(errores::$error){
+            $error = (new errores())->error('Error al alta', $alta);
+            print_r($error);
+            exit;
+        }
 
         $html_ = new html();
         $html_controler = new html_controler($html_);
@@ -283,15 +300,17 @@ class links_menuTest extends test {
         errores::$error = false;
         $_SESSION['usuario_id'] = 2;
         $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
         $html = new links_menu($this->link, -1);
         $html = new liberator($html);
 
 
         $accion = 'lista';
         $resultado = $html->links_sin_id($accion, $this->link);
+        //print_r($resultado);exit;
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertIsString( $resultado->adm_accion->modifica);
+        $this->assertIsString( $resultado->adm_session->inicio);
         errores::$error = false;
     }
 

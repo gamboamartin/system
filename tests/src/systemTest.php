@@ -7,6 +7,7 @@ use gamboamartin\administrador\models\adm_accion_grupo;
 use gamboamartin\administrador\models\adm_mes;
 use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\administrador\models\adm_seccion_pertenece;
+use gamboamartin\administrador\tests\base_test;
 use gamboamartin\errores\errores;
 use gamboamartin\system\html_controler;
 use gamboamartin\system\links_menu;
@@ -38,13 +39,32 @@ class systemTest extends test {
     {
         errores::$error = false;
         $_SESSION['grupo_id'] = 2;
+        $_SESSION['usuario_id'] = 2;
         $_GET['session_id'] = 1;
         $_GET['seccion'] = 'adm_accion';
+
+        $_GET['accion'] = 'lista';
+        $del = (new adm_seccion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $alta = (new base_test)->alta_adm_accion(link: $this->link,adm_seccion_descripcion: 'adm_accion',descripcion: 'lista');
+        if(errores::$error){
+            $error = (new errores())->error('Error al alta', $alta);
+            print_r($error);
+            exit;
+        }
+
         $html = new html();
         $html_controler = new html_controler($html);
 
         $modelo = new adm_accion($this->link);
         $obj_link = new links_menu($this->link, -1);
+
+
 
         $controler = new system(html: $html_controler, link: $this->link, modelo: $modelo, obj_link: $obj_link,
             paths_conf: $this->paths_conf);
@@ -80,6 +100,21 @@ class systemTest extends test {
         $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
         if(errores::$error){
             $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
+        $_GET['accion'] = 'lista';
+        $del = (new adm_seccion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $alta = (new base_test)->alta_adm_accion(link: $this->link,adm_seccion_descripcion: 'adm_mes',descripcion: 'lista');
+        if(errores::$error){
+            $error = (new errores())->error('Error al alta', $alta);
             print_r($error);
             exit;
         }
@@ -182,6 +217,21 @@ class systemTest extends test {
             exit;
         }
 
+        $_GET['accion'] = 'lista';
+        $del = (new adm_seccion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $alta = (new base_test)->alta_adm_accion(link: $this->link,adm_seccion_descripcion: 'adm_accion',descripcion: 'lista');
+        if(errores::$error){
+            $error = (new errores())->error('Error al alta', $alta);
+            print_r($error);
+            exit;
+        }
+
         $html = new html();
         $html_controler = new html_controler($html);
 
@@ -222,6 +272,21 @@ class systemTest extends test {
         $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
         if(errores::$error){
             $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
+        $_GET['accion'] = 'lista';
+        $del = (new adm_seccion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $alta = (new base_test)->alta_adm_accion(link: $this->link,adm_seccion_descripcion: 'adm_accion',descripcion: 'lista');
+        if(errores::$error){
+            $error = (new errores())->error('Error al alta', $alta);
             print_r($error);
             exit;
         }
@@ -274,6 +339,21 @@ class systemTest extends test {
         $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
         if(errores::$error){
             $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
+        $_GET['accion'] = 'lista';
+        $del = (new adm_seccion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $alta = (new base_test)->alta_adm_accion(link: $this->link,adm_seccion_descripcion: 'adm_accion',descripcion: 'lista');
+        if(errores::$error){
+            $error = (new errores())->error('Error al alta', $alta);
             print_r($error);
             exit;
         }
@@ -618,6 +698,21 @@ class systemTest extends test {
         $alta = (new adm_accion($this->link))->alta_registro($adm_accion);
         if(errores::$error){
             $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
+        $_GET['accion'] = 'lista';
+        $del = (new adm_seccion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $alta = (new base_test)->alta_adm_accion(link: $this->link,adm_seccion_descripcion: 'adm_accion',descripcion: 'lista');
+        if(errores::$error){
+            $error = (new errores())->error('Error al alta', $alta);
             print_r($error);
             exit;
         }

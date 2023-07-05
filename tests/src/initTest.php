@@ -5,6 +5,7 @@ use gamboamartin\administrador\models\adm_accion;
 use gamboamartin\administrador\models\adm_accion_grupo;
 use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\administrador\models\adm_seccion_pertenece;
+use gamboamartin\administrador\tests\base_test;
 use gamboamartin\controllers\controlador_adm_grupo;
 use gamboamartin\controllers\controlador_adm_seccion;
 use gamboamartin\errores\errores;
@@ -242,6 +243,21 @@ class initTest extends test {
 
         $modelo = new adm_accion($this->link);
         $obj_link = new links_menu($this->link, -1);
+
+        $_GET['accion'] = 'lista';
+        $del = (new adm_seccion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $alta = (new base_test)->alta_adm_accion(link: $this->link,adm_seccion_descripcion: 'adm_menu',descripcion: 'lista');
+        if(errores::$error){
+            $error = (new errores())->error('Error al alta', $alta);
+            print_r($error);
+            exit;
+        }
 
         $controler = new system(html: $html_controler, link: $this->link, modelo: $modelo, obj_link: $obj_link,
             paths_conf: $this->paths_conf);

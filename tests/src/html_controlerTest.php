@@ -7,6 +7,7 @@ use gamboamartin\administrador\models\adm_menu;
 use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\administrador\models\adm_seccion_pertenece;
 use gamboamartin\administrador\models\adm_usuario;
+use gamboamartin\administrador\tests\base_test;
 use gamboamartin\controllers\controlador_adm_session;
 use gamboamartin\errores\errores;
 use gamboamartin\system\html_controler;
@@ -90,6 +91,7 @@ class html_controlerTest extends test {
 
         $_GET['session_id'] = 1;
         $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
 
         $del = (new adm_accion_grupo($this->link))->elimina_todo();
         if(errores::$error){
@@ -144,9 +146,16 @@ class html_controlerTest extends test {
         $adm_seccion['id'] = 2;
         $adm_seccion['descripcion'] = 'adm_accion';
         $adm_seccion['adm_menu_id'] = 1;
-        $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
+        $del = (new adm_seccion($this->link))->elimina_todo();
         if(errores::$error){
-            $error = (new errores())->error('Error al insertar', $alta);
+            $error = (new errores())->error('Error al del', $del);
+            print_r($error);
+            exit;
+        }
+
+        $alta = (new base_test)->alta_adm_accion(link: $this->link,adm_seccion_descripcion: 'adm_accion',descripcion: 'lista');
+        if(errores::$error){
+            $error = (new errores())->error('Error al alta', $alta);
             print_r($error);
             exit;
         }

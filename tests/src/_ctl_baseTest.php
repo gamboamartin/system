@@ -6,6 +6,7 @@ use gamboamartin\administrador\models\adm_accion_grupo;
 use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\administrador\models\adm_seccion_pertenece;
 use gamboamartin\administrador\models\adm_sistema;
+use gamboamartin\administrador\tests\base_test;
 use gamboamartin\errores\errores;
 use gamboamartin\system\_ctl_base;
 use gamboamartin\system\actions;
@@ -39,6 +40,7 @@ class _ctl_baseTest extends test {
         $_SESSION['grupo_id'] = 2;
         $_GET['session_id'] = mt_rand(1,99999999);
         $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
 
         $del = (new adm_seccion($this->link))->elimina_todo();
         if(errores::$error){
@@ -47,22 +49,26 @@ class _ctl_baseTest extends test {
             exit;
         }
 
-        $adm_seccion['id'] = 2;
-        $adm_seccion['descripcion'] = 'adm_accion';
-        $adm_seccion['adm_menu_id'] = 1;
-        $adm_seccion['adm_namespace_id'] = 1;
-        $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
+
+
+        $alta = (new base_test)->alta_adm_accion(link: $this->link,adm_seccion_descripcion: 'adm_accion',descripcion: 'login');
         if(errores::$error){
-            $error = (new errores())->error('Error al insertar', $alta);
+            $error = (new errores())->error('Error al alta', $alta);
             print_r($error);
             exit;
         }
-
 
         $html = new html();
         $html_controler = new html_controler($html);
         $modelo = new adm_accion($this->link);
         $link_obj = new links_menu($this->link, -1);
+
+        $alta = (new base_test)->alta_adm_accion(link: $this->link,adm_seccion_descripcion: 'adm_accion',descripcion: 'lista');
+        if(errores::$error){
+            $error = (new errores())->error('Error al alta', $alta);
+            print_r($error);
+            exit;
+        }
 
         errores::$error = false;
 
@@ -82,6 +88,7 @@ class _ctl_baseTest extends test {
         $adm_seccion['id'] = 1;
         $adm_seccion['descripcion'] = 'test';
         $adm_seccion['adm_menu_id'] = 1;
+        $adm_seccion['adm_namespace_id'] = 1;
         $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
         if(errores::$error){
             $error = (new errores())->error('Error al insertar', $alta);
@@ -105,6 +112,7 @@ class _ctl_baseTest extends test {
         $_SESSION['grupo_id'] = 2;
         $_GET['session_id'] = mt_rand(1,99999999);
         $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
 
         $del = (new adm_seccion(link: $this->link))->elimina_todo();
         if(errores::$error){
@@ -113,14 +121,11 @@ class _ctl_baseTest extends test {
             exit;
         }
 
-        $seccion_ins['id'] = 1;
-        $seccion_ins['descripcion'] = 'adm_accion';
-        $seccion_ins['adm_menu_id'] = '1';
-        $seccion_ins['adm_namespace_id'] = '1';
 
-        $alta = (new adm_seccion(link: $this->link))->alta_registro($seccion_ins);
+
+        $del = (new adm_seccion(link: $this->link))->elimina_todo();
         if(errores::$error){
-            $error = (new errores())->error('Error al insertar ', $alta);
+            $error = (new errores())->error('Error al del ', $del);
             print_r($error);
             exit;
         }
@@ -131,6 +136,13 @@ class _ctl_baseTest extends test {
         $html_controler = new html_controler($html);
         $modelo = new adm_accion($this->link);
         $link_obj = new links_menu($this->link, -1);
+
+        $alta = (new base_test)->alta_adm_accion(link: $this->link,adm_seccion_descripcion: 'adm_accion',descripcion: 'lista');
+        if(errores::$error){
+            $error = (new errores())->error('Error al alta', $alta);
+            print_r($error);
+            exit;
+        }
 
         errores::$error = false;
 
@@ -212,6 +224,7 @@ class _ctl_baseTest extends test {
         $_SESSION['grupo_id'] = 2;
         $_GET['session_id'] = mt_rand(1,99999999);
         $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
 
         $del = (new adm_seccion($this->link))->elimina_todo();
         if(errores::$error){
@@ -224,9 +237,9 @@ class _ctl_baseTest extends test {
         $adm_seccion['descripcion'] = 'adm_accion';
         $adm_seccion['adm_menu_id'] = 1;
         $adm_seccion['adm_namespace_id'] = 1;
-        $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
+        $del = (new adm_seccion($this->link))->elimina_todo();
         if(errores::$error){
-            $error = (new errores())->error('Error al insertar', $alta);
+            $error = (new errores())->error('Error al insertar', $del);
             print_r($error);
             exit;
         }
@@ -236,6 +249,15 @@ class _ctl_baseTest extends test {
         $html_controler = new html_controler($html);
         $modelo = new adm_accion($this->link);
         $link_obj = new links_menu($this->link, -1);
+
+
+        $alta = (new base_test)->alta_adm_accion(link: $this->link,adm_seccion_descripcion: 'adm_accion',descripcion: 'lista');
+        if(errores::$error){
+            $error = (new errores())->error('Error al alta', $alta);
+            print_r($error);
+            exit;
+        }
+
 
         errores::$error = false;
 
@@ -305,6 +327,7 @@ class _ctl_baseTest extends test {
         $_SESSION['grupo_id'] = 2;
         $_GET['session_id'] = mt_rand(1,99999999);
         $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
 
 
         $html = new html();
@@ -318,9 +341,16 @@ class _ctl_baseTest extends test {
         $adm_seccion['descripcion'] = 'adm_accion';
         $adm_seccion['adm_menu_id'] = 1;
         $adm_seccion['adm_namespace_id'] = 1;
-        $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
+        $del = (new adm_seccion($this->link))->elimina_todo();
         if(errores::$error){
-            $error = (new errores())->error('Error al insertar', $alta);
+            $error = (new errores())->error('Error al del', $del);
+            print_r($error);
+            exit;
+        }
+
+        $alta = (new base_test)->alta_adm_accion(link: $this->link,adm_seccion_descripcion: 'adm_accion',descripcion: 'lista');
+        if(errores::$error){
+            $error = (new errores())->error('Error al alta', $alta);
             print_r($error);
             exit;
         }
@@ -384,6 +414,7 @@ class _ctl_baseTest extends test {
         $_SESSION['grupo_id'] = 2;
         $_GET['session_id'] = mt_rand(1,99999999);
         $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
 
         $del = (new adm_seccion($this->link))->elimina_todo();
         if(errores::$error){
@@ -392,13 +423,10 @@ class _ctl_baseTest extends test {
             exit;
         }
 
-        $adm_seccion['id'] = 2;
-        $adm_seccion['descripcion'] = 'adm_accion';
-        $adm_seccion['adm_menu_id'] = 1;
-        $adm_seccion['adm_namespace_id'] = 1;
-        $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
+
+        $del = (new adm_seccion($this->link))->elimina_todo();
         if(errores::$error){
-            $error = (new errores())->error('Error al insertar', $alta);
+            $error = (new errores())->error('Error al del', $del);
             print_r($error);
             exit;
         }
@@ -408,6 +436,13 @@ class _ctl_baseTest extends test {
         $html_controler = new html_controler($html);
         $modelo = new adm_accion($this->link);
         $link_obj = new links_menu($this->link, -1);
+
+        $alta = (new base_test)->alta_adm_accion(link: $this->link,adm_seccion_descripcion: 'adm_accion',descripcion: 'lista');
+        if(errores::$error){
+            $error = (new errores())->error('Error al alta', $alta);
+            print_r($error);
+            exit;
+        }
 
         errores::$error = false;
 
@@ -596,6 +631,7 @@ class _ctl_baseTest extends test {
         $_SESSION['grupo_id'] = 2;
         $_GET['session_id'] = mt_rand(1,99999999);
         $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
 
 
         $html = new html();
@@ -619,6 +655,20 @@ class _ctl_baseTest extends test {
         $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
         if(errores::$error){
             $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_seccion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $alta = (new base_test)->alta_adm_accion(link: $this->link,adm_seccion_descripcion: 'adm_accion',descripcion: 'lista');
+        if(errores::$error){
+            $error = (new errores())->error('Error al alta', $alta);
             print_r($error);
             exit;
         }
@@ -700,6 +750,21 @@ class _ctl_baseTest extends test {
         $modelo = new adm_accion($this->link);
         $link_obj = new links_menu($this->link, -1);
 
+        $_GET['accion'] = 'lista';
+        $del = (new adm_seccion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $alta = (new base_test)->alta_adm_accion(link: $this->link,adm_seccion_descripcion: 'adm_accion',descripcion: 'lista');
+        if(errores::$error){
+            $error = (new errores())->error('Error al alta', $alta);
+            print_r($error);
+            exit;
+        }
+
         errores::$error = false;
 
         $ctl = new _ctl_base(html: $html_controler, link: $this->link,modelo: $modelo,obj_link: $link_obj,paths_conf: $this->paths_conf);
@@ -716,15 +781,7 @@ class _ctl_baseTest extends test {
             exit;
         }
 
-        $adm_seccion['id'] = 1;
-        $adm_seccion['descripcion'] = 'adm_test';
-        $adm_seccion['adm_menu_id'] = 1;
-        $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
-        if(errores::$error){
-            $error = (new errores())->error('Error al insertar', $alta);
-            print_r($error);
-            exit;
-        }
+
 
         $adm_accion['id'] = 1;
         $adm_accion['adm_seccion_id'] = 1;
@@ -809,6 +866,20 @@ class _ctl_baseTest extends test {
         $modelo = new adm_accion($this->link);
         $link_obj = new links_menu($this->link, -1);
 
+        $_GET['accion'] = 'lista';
+        $del = (new adm_seccion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $alta = (new base_test)->alta_adm_accion(link: $this->link,adm_seccion_descripcion: 'adm_accion',descripcion: 'lista');
+        if(errores::$error){
+            $error = (new errores())->error('Error al alta', $alta);
+            print_r($error);
+            exit;
+        }
         errores::$error = false;
 
         $ctl = new _ctl_base(html: $html_controler, link: $this->link,modelo: $modelo,obj_link: $link_obj,paths_conf: $this->paths_conf);
