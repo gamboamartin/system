@@ -888,6 +888,7 @@ class html_controler{
     }
 
     /**
+     * Obtiene un input de tipo monto
      * @param int $cols Columnas en css
      * @param stdClass $row_upd Registro en proceso
      * @param bool $value_vacio is vacio no muestra datos
@@ -897,6 +898,7 @@ class html_controler{
      * @param string $place_holder Info input
      * @param mixed|null $value Valor default
      * @return array|string
+     *
      */
     public function input_monto(int $cols, stdClass $row_upd, bool $value_vacio,bool $con_label = true,
                                 bool $disabled = false, string $name = 'monto', string $place_holder = 'Monto',
