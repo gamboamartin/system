@@ -84,7 +84,7 @@ class select{
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener label', data: $label_);
         }
-        
+
         $keys->values = $values;
         $keys->label = $label_;
         return $keys;
@@ -192,6 +192,13 @@ class select{
         return ucwords($label);
     }
 
+    /**
+     * Ajusta el label de un registro select
+     * @param string $label Label original
+     * @param string $tabla Tabla origen
+     * @return array|string
+     *
+     */
     private function label_(string $label, string $tabla){
         $label_ =$label;
         if($label_ === '') {
