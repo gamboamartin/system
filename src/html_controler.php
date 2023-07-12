@@ -306,6 +306,11 @@ class html_controler{
         return $a;
     }
 
+    /**
+     * Genera el elemento cols en forma de html
+     * @param int $cols No de columnas css
+     * @return string
+     */
     private function cols_html(int $cols): string
     {
         $cols_html = "col-sm-$cols";
@@ -1087,6 +1092,13 @@ class html_controler{
         return $passwords;
     }
 
+    /**
+     * Integra una propiedad css
+     * @param string $propiedad Nombre de la propiedad
+     * @param string $propiedades Propiedades previas cargadas
+     * @param string $valor Valor de la propiedad a integrar
+     * @return string
+     */
     private function integra_propiedad(string $propiedad, string $propiedades, string $valor): string
     {
         $propiedades.= $propiedad.': '.$valor.'; ';
@@ -1489,7 +1501,12 @@ class html_controler{
         return $passwords;
     }
 
-    private function propiedades_css(array $styles){
+    /**
+     * @param array $styles
+     * @return array|string
+     */
+    private function propiedades_css(array $styles): array|string
+    {
         $propiedades = '';
 
         foreach ($styles as $propiedad=>$valor){
@@ -1533,6 +1550,11 @@ class html_controler{
         return $data;
     }
 
+    /**
+     * INtegra el role legible html boostrap
+     * @param string $role Role de button
+     * @return string
+     */
     private function role_button(string $role): string
     {
         $role = trim($role);
