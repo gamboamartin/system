@@ -765,6 +765,7 @@ class system extends controlador_base{
         return $inputs_asignados;
     }
 
+
     public function get_data(bool $header, bool $ws = false, array $not_actions = array()){
 
 

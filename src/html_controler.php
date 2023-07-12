@@ -898,6 +898,7 @@ class html_controler{
      * @param string $place_holder Info input
      * @param mixed|null $value Valor default
      * @return array|string
+     * @version 8.63.0
      *
      */
     public function input_monto(int $cols, stdClass $row_upd, bool $value_vacio,bool $con_label = true,
@@ -905,11 +906,9 @@ class html_controler{
                                 mixed $value = null): array|string
     {
 
-        if($cols<=0){
-            return $this->error->error(mensaje: 'Error cold debe ser mayor a 0', data: $cols);
-        }
-        if($cols>=13){
-            return $this->error->error(mensaje: 'Error cold debe ser menor o igual a  12', data: $cols);
+        $valida = $this->directivas->valida_cols(cols: $cols);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar columnas', data: $valida);
         }
 
         $html =$this->directivas->input_monto_required(disabled: $disabled, name: $name, place_holder: $place_holder,
