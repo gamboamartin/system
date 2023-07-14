@@ -310,6 +310,7 @@ class html_controler{
      * Genera el elemento cols en forma de html
      * @param int $cols No de columnas css
      * @return string
+     * @version 8.65.0
      */
     private function cols_html(int $cols): string
     {

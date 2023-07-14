@@ -243,6 +243,37 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_cols_html(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        //$html = new liberator($html);
+
+
+        $_SESSION['usuario_id'] = 2;
+        $_SESSION['grupo_id'] = 2;
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+        $html_controler = new html_controler($html_);
+        $html_controler = new liberator($html_controler);
+
+
+        $cols = -1;
+        $resultado = $html_controler->cols_html($cols);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("", $resultado);
+        errores::$error = false;
+
+        $cols = 1;
+        $resultado = $html_controler->cols_html($cols);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("col-sm-1", $resultado);
+        errores::$error = false;
+    }
+
     public function test_dates_alta(): void
     {
         errores::$error = false;
@@ -564,6 +595,8 @@ class html_controlerTest extends test {
 
         errores::$error = false;
     }
+
+
 
     /**
      * @throws JsonException
