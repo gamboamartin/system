@@ -645,7 +645,6 @@ class links_menu{
      * @param string $accion Accion en ejecucion
      * @param int $registro_id Registro a integrar link
      * @return array|stdClass
-
      */
     private function link_init(PDO $link, string $seccion, string $accion,int $registro_id): array|stdClass
     {
