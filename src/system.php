@@ -1247,10 +1247,20 @@ class system extends controlador_base{
      * Actualiza elementos por campo
      * @param string $key Elemento a actualizar
      * @return array|stdClass
-     *
+     * @version 8.67.0
      */
-    final public function row_upd(string $key): array|stdClass
+    final protected function row_upd(string $key): array|stdClass
     {
+        if($this->registro_id<=0){
+            return $this->errores->error(mensaje: 'Error this->registro_id debe ser mayor a 0',
+                data:  $this->registro_id);
+        }
+        $key = trim($key);
+        if($key === ''){
+            return $this->errores->error(mensaje: 'Error key esta vacio', data:  $key);
+        }
+
+
         $row_upd = (new row())->integra_row_upd(key: $key, modelo: $this->modelo, registro_id: $this->registro_id);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al obtener row upd',data:  $row_upd);
