@@ -144,6 +144,7 @@ class _ctl_referencias{
     }
 
     /**
+     * Genera los botones de ir en vistas de modificacion
      * @param stdClass $buttons
      * @param system $controler
      * @param stdClass $params
