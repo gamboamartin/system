@@ -949,6 +949,14 @@ class system extends controlador_base{
         return $keys_selects;
     }
 
+    /**
+     * Limpia un filtro para datable
+     * @param string $campo
+     * @param string $campo_filtro
+     * @param stdClass $datatables
+     * @param int $indice
+     * @return stdClass
+     */
     private function limpia_filtro_dt(string $campo, string $campo_filtro, stdClass $datatables, int $indice): stdClass
     {
         if($campo_filtro === $campo){
@@ -1249,7 +1257,7 @@ class system extends controlador_base{
      * @return array|stdClass
      * @version 8.67.0
      */
-    final protected function row_upd(string $key): array|stdClass
+    final public function row_upd(string $key): array|stdClass
     {
         if($this->registro_id<=0){
             return $this->errores->error(mensaje: 'Error this->registro_id debe ser mayor a 0',
