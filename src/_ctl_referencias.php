@@ -145,9 +145,9 @@ class _ctl_referencias{
 
     /**
      * Genera los botones de ir en vistas de modificacion
-     * @param stdClass $buttons
-     * @param system $controler
-     * @param stdClass $params
+     * @param stdClass $buttons Botones previamente cargados
+     * @param system $controler Controlador en ejecucion
+     * @param stdClass $params Parametros GET
      * @return array|stdClass
      */
     private function buttons_modifica(stdClass $buttons, system $controler, stdClass $params): array|stdClass
