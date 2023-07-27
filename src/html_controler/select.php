@@ -43,7 +43,6 @@ class select{
 
     /**
      * Inicializa los datos de un select
-     * @refactorizar Refactorizar metodo
      * @param bool $con_registros Si no con registros integra el select vacio para ser llenado posterior con ajax
      * @param modelo $modelo Modelo en ejecucion para la asignacion de datos
      * @param array $columns_ds Columnas a integrar en options
@@ -55,7 +54,7 @@ class select{
      * @param string $label Etiqueta a mostrar
      * @param string $name Nombre del input
      * @param array $not_in Omite resultado de options
-     * @param array $registros
+     * @param array $registros Registros para integrar en select
      * @return array|stdClass
      */
     final public function init_data_select(bool $con_registros, modelo $modelo, array $columns_ds = array(),
@@ -197,9 +196,15 @@ class select{
      * @param string $label Label original
      * @param string $tabla Tabla origen
      * @return array|string
-     *
+     * @version 8.68.0
      */
-    private function label_(string $label, string $tabla){
+    private function label_(string $label, string $tabla): array|string
+    {
+        $tabla = trim($tabla);
+        if($tabla === ''){
+            return $this->error->error(mensaje: 'Error tabla esta vacia', data: $tabla);
+        }
+
         $label_ =$label;
         if($label_ === '') {
             $label_ = $this->label(tabla: $tabla);

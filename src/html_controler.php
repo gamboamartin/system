@@ -1622,7 +1622,7 @@ class html_controler{
     private function select_aut2(modelo $modelo, stdClass $params_select): array|stdClass|string
     {
         $keys = array('cols','con_registros','id_selected','disabled','extra_params_keys','filtro','label','not_in',
-            'required');
+            'required','registros');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $params_select);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
@@ -1646,7 +1646,7 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
         }
 
-        $keys = array('extra_params_keys','filtro','not_in','columns_ds');
+        $keys = array('extra_params_keys','filtro','not_in','columns_ds','registros');
         $valida = $this->validacion->valida_arrays(keys: $keys, row: $params_select);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
@@ -1656,7 +1656,8 @@ class html_controler{
             id_selected: $params_select->id_selected, modelo: $modelo, columns_ds: $params_select->columns_ds,
             disabled: $params_select->disabled, extra_params_keys: $params_select->extra_params_keys,
             filtro: $params_select->filtro, key_descripcion_select: $params_select->key_descripcion_select,
-            label: $params_select->label, not_in: $params_select->not_in, required: $params_select->required);
+            label: $params_select->label, not_in: $params_select->not_in, registros: $params_select->registros,
+            required: $params_select->required);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $select);
         }

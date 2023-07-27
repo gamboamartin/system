@@ -71,6 +71,7 @@ class params{
         $data->filtro = $params->filtro ?? array();
         $data->not_in = $params->not_in ?? array();
         $data->name = $params->name ?? $name;
+        $data->registros = $params->registros ?? array();
 
         $data->extra_params_keys = array();
         if(isset($params->extra_params_keys) ){

@@ -114,6 +114,23 @@ class selectTest extends test {
         errores::$error = false;
     }
 
+    public function test_label_(): void
+    {
+        errores::$error = false;
+
+        $html = new select();
+        $html = new liberator($html);
+
+        $label = '';
+        $tabla = 'a';
+        $resultado = $html->label_($label, $tabla);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('A',$resultado);
+
+        errores::$error = false;
+    }
+
     public function test_registros_select(): void
     {
         errores::$error = false;
