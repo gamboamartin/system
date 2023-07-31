@@ -53,10 +53,10 @@ class _ctl_referencias{
 
     /**
      * Genera un boton para is al catalogo children
-     * @param array $child
-     * @param system $controler
-     * @param string $entidad
-     * @param array $params
+     * @param array $child Datos del hijo
+     * @param system $controler Controlador en ejecucion
+     * @param string $entidad Nombre de la entidad
+     * @param array $params Parametros de retorno GET
      * @return array|string
      */
     private function boton_children(array $child, system $controler, string $entidad, array $params): array|string
@@ -99,7 +99,7 @@ class _ctl_referencias{
 
     /**
      * Genera los botones para ir a los catalogos children
-     * @param system $controler
+     * @param system $controler Controlador en ejecucion
      * @param array $params
      * @return array
      */
@@ -378,7 +378,7 @@ class _ctl_referencias{
 
     /**
      * Integra los botones para una view con childrens
-     * @param system $controler
+     * @param system $controler Controlador en ejecucion
      * @return array
      */
     final public function integra_buttons_children(system $controler): array
@@ -569,6 +569,7 @@ class _ctl_referencias{
      * Parametros de botones para envio get
      * @param system $controler Controlador en ejecucion
      * @return array
+     * @version 8.75.1
      */
     private function params_btn(system $controler): array
     {
