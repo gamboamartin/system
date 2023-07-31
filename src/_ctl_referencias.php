@@ -510,6 +510,7 @@ class _ctl_referencias{
      * @param string $key_parent_id Key del controlador en ejecucion para envio de registro_id
      * @param array $params_btn_children Parametros previamente cargados
      * @return array
+     * @version 8.73.1
      */
     private function param_btn_children(system $controler, string $key_parent_id, array $params_btn_children): array
     {
