@@ -637,6 +637,7 @@ class _ctl_referencias{
      * @param system $controler Controlador en ejecucion
      * @param array $params Parametros previamente cargados
      * @return array
+     * @version 8.76.1
      */
     private function params_key(system $controler, array $params): array
     {
