@@ -447,6 +447,7 @@ class _ctl_referencias{
      * @param modelo $model_parent Modelo parent a integrar
      * @param array $params_btn_children parametros previamente cargados
      * @return array
+     * @version 8.84.1
      */
     private function integra_params_btn(system $controler, modelo $model_parent, array $params_btn_children): array
     {
@@ -523,6 +524,10 @@ class _ctl_referencias{
             }
         }
         else {
+            if($controler->registro_id <= 0){
+                return $this->error->error(mensaje: 'Error controler->registro_id debe ser mayor a 0',
+                    data:  $controler->registro_id);
+            }
             $params_btn_children = $this->param_children(controler: $controler, key_parent_id: $key_parent_id,
                 params_btn_children: $params_btn_children);
             if (errores::$error) {

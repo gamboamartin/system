@@ -348,6 +348,40 @@ class _ctl_referenciasTest extends test {
         errores::$error = false;
     }
 
+    public function test_integra_params_btn(): void
+    {
+        errores::$error = false;
+        $_SESSION['grupo_id'] = 2;
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
+
+
+        $ctl = (new _ctl_referencias());
+        $ctl = new liberator($ctl);
+
+        $html = new html();
+        $html_controler = new html_controler($html);
+        $modelo = new adm_accion($this->link);
+        $obj_link = new links_menu($this->link, -1);
+
+        $controler = new system(html: $html_controler, link: $this->link, modelo: $modelo, obj_link: $obj_link,
+            paths_conf: $this->paths_conf);
+
+        $controler->registro_id = 1;
+
+        $params_btn_children = array();
+        $model_parent = new adm_seccion(link: $this->link);
+
+        $resultado = $ctl->integra_params_btn($controler, $model_parent, $params_btn_children);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(1,$resultado['adm_seccion_id']);
+        $this->assertIsArray($resultado);
+
+
+        errores::$error = false;
+    }
+
     public function test_key_parent_id(): void
     {
         errores::$error = false;
