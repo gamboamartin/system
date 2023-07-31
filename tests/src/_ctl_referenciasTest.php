@@ -507,6 +507,27 @@ class _ctl_referenciasTest extends test {
         errores::$error = false;
     }
 
+    public function test_value_row_children_proceso(): void
+    {
+        errores::$error = false;
+        $_SESSION['grupo_id'] = 2;
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+
+        $ctl = (new _ctl_referencias());
+        $ctl = new liberator($ctl);
+        $key_parent_id = 'a';
+        $params_btn_children = array();
+        $row_in_proceso = new stdClass();
+        $row_in_proceso->a  = '1';
+        $resultado = $ctl->value_row_children_proceso($key_parent_id, $params_btn_children, $row_in_proceso);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsArray($resultado);
+        $this->assertEquals("1",$resultado['a']);
+        errores::$error = false;
+    }
+
 
 }
 

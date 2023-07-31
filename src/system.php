@@ -724,6 +724,9 @@ class system extends controlador_base{
         return $this->forms_inputs_modifica;
     }
 
+    /**
+     * @return array|string
+     */
     private function genera_form_alta(): array|string
     {
         $this->inputs = new stdClass();
@@ -856,6 +859,9 @@ class system extends controlador_base{
         return $header_retorno;
     }
 
+    /**
+     * @return array|string
+     */
     private function include_inputs_alta(): array|string
     {
         $include_inputs_alta = (new generales())->path_base."templates/inputs/$this->seccion/alta.php";
@@ -868,6 +874,9 @@ class system extends controlador_base{
         return $include_inputs_alta;
     }
 
+    /**
+     * @return string
+     */
     private function include_inputs_alta_seccion(): string
     {
         $include_inputs_alta = (new views())->ruta_templates."inputs/base/alta.php";

@@ -29,6 +29,11 @@ class _ctl_referencias{
         return $controler->valores_asignados_default;
     }
 
+    /**
+     * @param system $controler
+     * @param modelo $model_parent
+     * @return array
+     */
     private function asigna_valores_default(system $controler, modelo $model_parent): array
     {
         $valores = array();
@@ -47,6 +52,7 @@ class _ctl_referencias{
     }
 
     /**
+     * Genera un boton para is al catalogo children
      * @param array $child
      * @param system $controler
      * @param string $entidad
@@ -69,6 +75,7 @@ class _ctl_referencias{
     }
 
     /**
+     * Integra los botones permitidos en una vista
      * @param system $controler
      * @param stdClass $params
      * @return array|stdClass
@@ -91,6 +98,7 @@ class _ctl_referencias{
     }
 
     /**
+     * Genera los botones para ir a los catalogos children
      * @param system $controler
      * @param array $params
      * @return array
@@ -369,6 +377,7 @@ class _ctl_referencias{
     }
 
     /**
+     * Integra los botones para una view con childrens
      * @param system $controler
      * @return array
      */
@@ -623,6 +632,10 @@ class _ctl_referencias{
         return $params;
     }
 
+    /**
+     * @param system $controler
+     * @return array|bool
+     */
     private function parents_alta(system $controler): array|bool
     {
         /**
@@ -651,7 +664,12 @@ class _ctl_referencias{
         return $controler->verifica_parents_alta;
     }
 
-    final public function referencias_alta(system $controler){
+    /**
+     * @param system $controler
+     * @return array|stdClass
+     */
+    final public function referencias_alta(system $controler): array|stdClass
+    {
         $keys_selects = $this->inputs_parent(controler: $controler);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar select', data: $keys_selects);
@@ -741,11 +759,23 @@ class _ctl_referencias{
      * @param array $params_btn_children Parametros previamente cargados
      * @param stdClass $row_in_proceso Registro en proceso
      * @return array
+     * @version 11.14.0
      *
      */
     private function value_row_children_proceso(string $key_parent_id, array $params_btn_children,
                                                 stdClass $row_in_proceso): array
     {
+        $key_parent_id = trim($key_parent_id);
+        if($key_parent_id === ''){
+            return $this->error->error(mensaje: 'Error key_parent_id esta vacio', data:  $key_parent_id);
+        }
+
+        $keys = array($key_parent_id);
+        $valida = $this->validacion->valida_ids(keys: $keys,registro:  $row_in_proceso);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar row_in_proceso', data:  $valida);
+        }
+
         $params_btn_children[$key_parent_id] = $row_in_proceso->$key_parent_id;
         return $params_btn_children;
     }
