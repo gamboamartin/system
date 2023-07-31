@@ -8,6 +8,7 @@ use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\administrador\models\adm_seccion_pertenece;
 use gamboamartin\administrador\models\adm_sistema;
 use gamboamartin\controllers\controlador_adm_grupo;
+use gamboamartin\controllers\controlador_adm_menu;
 use gamboamartin\errores\errores;
 use gamboamartin\system\_ctl_base;
 use gamboamartin\system\_ctl_referencias;
@@ -412,6 +413,38 @@ class _ctl_referenciasTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertIsObject($resultado);
         $this->assertEquals("adm_seccion",$resultado->model_parent->tabla);
+        errores::$error = false;
+    }
+
+    public function test_param_children(): void
+    {
+        errores::$error = false;
+        $_SESSION['grupo_id'] = 2;
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
+
+
+        $ctl = (new _ctl_referencias());
+        $ctl = new liberator($ctl);
+
+        $html = new html();
+        $html_controler = new html_controler($html);
+        $modelo = new adm_accion($this->link);
+        $obj_link = new links_menu($this->link, -1);
+
+        $controler = new system(html: $html_controler, link: $this->link, modelo: $modelo, obj_link: $obj_link,
+            paths_conf: $this->paths_conf);
+
+        $controler->registro_id = 1;
+
+
+        $key_parent_id = '';
+        $params_btn_children = array();
+
+        $resultado = $ctl->param_children($controler, $key_parent_id, $params_btn_children);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsArray($resultado);
         errores::$error = false;
     }
 

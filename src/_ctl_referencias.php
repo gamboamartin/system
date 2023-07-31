@@ -537,9 +537,14 @@ class _ctl_referencias{
      * @param string $key_parent_id Key para registro id de retorno
      * @param array $params_btn_children Parametros previamente cargados
      * @return array
+     * @version 8.72.1
      */
     private function param_children(system $controler, string $key_parent_id, array $params_btn_children): array
     {
+        if($controler->registro_id <= 0){
+            return $this->error->error(mensaje: 'Error controler->registro_id debe ser mayor a 0',
+                data:  $controler->registro_id);
+        }
         $row_in_proceso = $controler->modelo->registro(registro_id: $controler->registro_id,retorno_obj: true);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener registro en proceso',data:  $row_in_proceso);
