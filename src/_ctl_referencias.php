@@ -30,6 +30,7 @@ class _ctl_referencias{
     }
 
     /**
+     * Asigna valores por default
      * @param system $controler
      * @param modelo $model_parent
      * @return array
@@ -84,8 +85,8 @@ class _ctl_referencias{
 
     /**
      * Integra los botones permitidos en una vista
-     * @param system $controler
-     * @param stdClass $params
+     * @param system $controler Controlador en ejecucion
+     * @param stdClass $params Parametros para GET
      * @return array|stdClass
      */
     private function boton_permitido(system $controler, stdClass $params): array|stdClass
@@ -110,6 +111,7 @@ class _ctl_referencias{
      * @param system $controler Controlador en ejecucion
      * @param array $params parametros para anexar a GET
      * @return array
+     * @version 8.78.1
      */
     private function botones_children(system $controler, array $params): array
     {
