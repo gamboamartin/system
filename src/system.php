@@ -725,6 +725,7 @@ class system extends controlador_base{
     }
 
     /**
+     * Genera un form alta en html
      * @return array|string
      */
     private function genera_form_alta(): array|string

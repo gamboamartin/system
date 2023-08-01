@@ -772,6 +772,34 @@ class _ctl_referenciasTest extends test {
 
         errores::$error = false;
     }
+
+    public function test_parents_alta(): void
+    {
+        errores::$error = false;
+        $_SESSION['grupo_id'] = 2;
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
+
+        $ctl = (new _ctl_referencias());
+        $ctl = new liberator($ctl);
+
+        $html = new html();
+        $html_controler = new html_controler($html);
+        $modelo = new adm_accion($this->link);
+        $obj_link = new links_menu($this->link, -1);
+
+        $controler = new system(html: $html_controler, link: $this->link, modelo: $modelo, obj_link: $obj_link,
+            paths_conf: $this->paths_conf);
+
+
+
+        $resultado = $ctl->parents_alta($controler);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue($resultado);
+
+    }
     public function test_style_btn(): void
     {
         errores::$error = false;
