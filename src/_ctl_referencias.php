@@ -167,9 +167,16 @@ class _ctl_referencias{
      * @param system $controler Controlador en ejecucion
      * @param stdClass $params Parametros GET
      * @return array|stdClass
+     * @version 8.80.1
      */
     private function buttons_modifica(stdClass $buttons, system $controler, stdClass $params): array|stdClass
     {
+        if(!isset($params->model_parent)){
+            return $this->error->error(mensaje: 'Error $params->model_parent debe existir', data:  $params);
+        }
+        if(!isset($params->model_parent->tabla)){
+            return $this->error->error(mensaje: 'Error $params->model_parent->tabla no existe', data:  $params);
+        }
         $tengo_permiso = (new adm_accion(link: $controler->link))->permiso(accion: 'modifica',
             seccion:  $params->model_parent->tabla);
         if(errores::$error){
