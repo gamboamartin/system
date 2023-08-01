@@ -316,11 +316,12 @@ class actions{
      * @param string $seccion Seccion en ejecucion
      * @param string $siguiente_view Que accion se ejecutara
      * @param array $params Parametros extra por get
+     * @param bool $valida_permiso Si valida permiso retorna error en caso de no tener permiso
      * @return array|string link para header
      * @version 0.22.2
      */
     final public function retorno_alta_bd(PDO $link, int $registro_id, string $seccion, string $siguiente_view,
-                                    array $params = array()): array|string
+                                    array $params = array(), bool $valida_permiso = false): array|string
     {
         $seccion = trim($seccion);
         if($seccion === ''){
@@ -333,7 +334,8 @@ class actions{
         }
 
         $link = (new links_menu(link: $link, registro_id: $registro_id))->link_con_id(
-            accion:$siguiente_view, link: $link, registro_id: $registro_id, seccion: $seccion,params: $params);
+            accion:$siguiente_view, link: $link, registro_id: $registro_id, seccion: $seccion,params: $params,
+            valida_permiso: $valida_permiso);
 
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar link', data:  $link);

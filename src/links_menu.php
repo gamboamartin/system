@@ -569,15 +569,16 @@ class links_menu{
     /**
      * Funcion que genera un link con un id definido para la ejecucion de una accion
      * @param string $accion Accion a ejecutar
-     * @param PDO $link
+     * @param PDO $link Conexion a la base de datos
      * @param int $registro_id Registro identificador
      * @param string $seccion Seccion de envio
-     * @param array $params
+     * @param array $params Parametros para integrar en GET
+     * @param bool $valida_permiso Si valida retorna error si no tiene permiso
      * @return array|string
      * @version 0.81.32
      */
     final public function link_con_id(string $accion, PDO $link, int $registro_id, string $seccion,
-                                array $params = array()): array|string
+                                array $params = array(), bool $valida_permiso = false): array|string
     {
         $accion = trim($accion);
         if($accion === ''){
@@ -598,6 +599,12 @@ class links_menu{
         $tengo_permiso = (new adm_usuario(link: $link))->tengo_permiso(adm_accion: $accion, adm_seccion: $seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar si tengo permiso', data: $tengo_permiso);
+        }
+        if($valida_permiso){
+            if(!$tengo_permiso){
+                return $this->error->error(mensaje: 'Error permiso denegado '.$seccion.' '.$accion,
+                    data: $tengo_permiso);
+            }
         }
 
         $link_ancla = '';

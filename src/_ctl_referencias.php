@@ -724,6 +724,7 @@ class _ctl_referencias{
      * Obtiene las referencias parent de un controlador
      * @param system $controler Controlador en ejecucion
      * @return array|stdClass
+     * @version 8.85.1
      */
     final public function referencias_alta(system $controler): array|stdClass
     {
