@@ -45,6 +45,7 @@ class _ctl_referencias{
      * @param system $controler Controlador en ejecucion
      * @param modelo $model_parent Modelo parent
      * @return array
+     * @version 8.83.1
      */
     private function asigna_valores_default(system $controler, modelo $model_parent): array
     {
