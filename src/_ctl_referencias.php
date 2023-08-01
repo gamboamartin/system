@@ -22,9 +22,20 @@ class _ctl_referencias{
      * @param system $controler Controlador en ejecucion
      * @param string $key_parent_id Key del parent 0 al input select
      * @return array
+     * @version 8.82.1
      */
     private function asigna_valor_default(system $controler, string $key_parent_id): array
     {
+        $key_parent_id = trim($key_parent_id);
+        if($key_parent_id === ''){
+            return $this->error->error(mensaje: 'Error key_parent_id esta vacio', data:  $key_parent_id);
+        }
+        $keys = array($key_parent_id);
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro: $_GET);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar GET', data:  $valida);
+        }
+
         $controler->valores_asignados_default[$key_parent_id] = $_GET[$key_parent_id];
         return $controler->valores_asignados_default;
     }
@@ -675,7 +686,8 @@ class _ctl_referencias{
     }
 
     /**
-     * @param system $controler
+     * Integra los elementos parent de un controler en alta
+     * @param system $controler Controlador en ejecucion
      * @return array|bool
      */
     private function parents_alta(system $controler): array|bool
@@ -707,7 +719,8 @@ class _ctl_referencias{
     }
 
     /**
-     * @param system $controler
+     * Obtiene las referencias parent de un controlador
+     * @param system $controler Controlador en ejecucion
      * @return array|stdClass
      */
     final public function referencias_alta(system $controler): array|stdClass
