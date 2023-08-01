@@ -31,8 +31,8 @@ class _ctl_referencias{
 
     /**
      * Asigna valores por default
-     * @param system $controler
-     * @param modelo $model_parent
+     * @param system $controler Controlador en ejecucion
+     * @param modelo $model_parent Modelo parent
      * @return array
      */
     private function asigna_valores_default(system $controler, modelo $model_parent): array
@@ -390,6 +390,7 @@ class _ctl_referencias{
      * Integra los botones para una view con childrens
      * @param system $controler Controlador en ejecucion
      * @return array
+     * @version 8.79.1
      */
     final public function integra_buttons_children(system $controler): array
     {
