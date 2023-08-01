@@ -88,9 +88,20 @@ class _ctl_referencias{
      * @param system $controler Controlador en ejecucion
      * @param stdClass $params Parametros para GET
      * @return array|stdClass
+     * @version 8.81.1
      */
     private function boton_permitido(system $controler, stdClass $params): array|stdClass
     {
+        if(!isset($params->model_parent)){
+            return $this->error->error(mensaje: 'Error $params->model_parent no existe', data:  $params);
+        }
+        if(!is_object($params->model_parent)){
+            return $this->error->error(mensaje: 'Error $params->model_parent debe ser un objeto', data:  $params);
+        }
+        if(!isset($params->model_parent->tabla)){
+            return $this->error->error(mensaje: 'Error $params->model_parent->tabla no existe', data:  $params);
+        }
+
         $buttons = new stdClass();
 
         $buttons = $this->buttons_alta(buttons: $buttons,controler:  $controler,params:  $params);
