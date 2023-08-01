@@ -58,9 +58,17 @@ class _ctl_referencias{
      * @param string $entidad Nombre de la entidad
      * @param array $params Parametros de retorno GET
      * @return array|string
+     * @version 8.77.1
      */
     private function boton_children(array $child, system $controler, string $entidad, array $params): array|string
     {
+        $entidad = trim($entidad);
+        if($entidad === ''){
+            return  $this->error->error(mensaje: 'Error entidad esta vacia',data:  $entidad);
+        }
+        if(!isset($child['title'])){
+            $child['title'] = ucwords($entidad);
+        }
         $params = $this->params_key(controler: $controler, params: $params);
         if(errores::$error){
             return  $this->error->error(mensaje: 'Error al generar param',data:  $params);
@@ -100,7 +108,7 @@ class _ctl_referencias{
     /**
      * Genera los botones para ir a los catalogos children
      * @param system $controler Controlador en ejecucion
-     * @param array $params
+     * @param array $params parametros para anexar a GET
      * @return array
      */
     private function botones_children(system $controler, array $params): array
