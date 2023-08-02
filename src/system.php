@@ -950,7 +950,7 @@ class system extends controlador_base{
      * @param array $keys_selects Conjunto de keys para select
      * @return array
      * @version 0.227.37
-     * @final rev
+     * @finalrev
      * @por_doc true
      */
     protected function key_selects_txt(array $keys_selects): array
@@ -1133,6 +1133,7 @@ class system extends controlador_base{
      * @param bool $ws Si ws da salida json
      * @return array|stdClass
      * @finalrev
+     * @version 8.86.1
      */
     public function modifica(bool $header, bool $ws = false): array|stdClass
     {
