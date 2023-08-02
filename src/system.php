@@ -503,8 +503,6 @@ class system extends controlador_base{
     }
 
 
-
-
     /**
      * Genera los botones para modifica view base
      * @return array|stdClass
@@ -736,6 +734,7 @@ class system extends controlador_base{
     /**
      * Genera un form alta en html
      * @return array|string
+     * @version 8.89.1
      */
     private function genera_form_alta(): array|string
     {
@@ -885,6 +884,7 @@ class system extends controlador_base{
     }
 
     /**
+     * Integra los includes de datos para views
      * @return string
      */
     private function include_inputs_alta_seccion(): string
