@@ -40,7 +40,7 @@ class _ctl_parent_sin_codigo extends _ctl_parent {
      * @param bool $header
      * @param bool $ws
      * @return array|string
-     * @final rev
+     * @finalrev
      */
     public function alta(bool $header, bool $ws = false): array|string
     {
