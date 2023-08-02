@@ -68,7 +68,7 @@ class _ctl_parent_sin_codigo extends _ctl_parent {
      * @param bool $ws
      * @param array $keys_selects
      * @return array|stdClass
-     * @final rev
+     * @finalrev
      */
     public function modifica(bool $header, bool $ws = false, array $keys_selects = array()): array|stdClass
     {

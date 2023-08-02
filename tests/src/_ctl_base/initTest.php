@@ -94,6 +94,23 @@ class initTest extends test {
         errores::$error = false;
     }
 
+    public function test_init_keys_get_data(): void
+    {
+        errores::$error = false;
+        $ctl = new _ctl_base\init();
+        $ctl = new liberator($ctl);
+
+
+        $data_init = new stdClass();
+        $_GET['next_seccion'] = 'a';
+        $resultado = $ctl->init_keys_get_data($data_init);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a',$resultado->next_seccion);
+
+        errores::$error = false;
+    }
+
     public function test_init_param_get(): void
     {
         errores::$error = false;

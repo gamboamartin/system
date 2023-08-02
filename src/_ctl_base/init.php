@@ -13,6 +13,12 @@ final class init{
     }
 
 
+    /**
+     * @param stdClass $data_init
+     * @param string $key
+     * @param array $params
+     * @return array
+     */
     private function asigna_data_param(stdClass $data_init, string $key, array $params): array
     {
         $params[$key] = $data_init->$key;
@@ -30,6 +36,10 @@ final class init{
         return $params;
     }
 
+    /**
+     * @param controler $controler
+     * @return array|stdClass
+     */
     private function data_init(controler $controler): array|stdClass
     {
         $data_init = $this->init_data_retornos(controler: $controler);
@@ -152,6 +162,7 @@ final class init{
      * Inicializa los parametros para envio por GET
      * @param stdClass $data_init Datos a inicializar
      * @return array|stdClass
+     * @version 8.88.1
      */
     private function init_keys_get_data(stdClass $data_init): array|stdClass
     {
