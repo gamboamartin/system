@@ -869,6 +869,7 @@ class system extends controlador_base{
     }
 
     /**
+     * Obtiene los includes de templates alta
      * @return array|string
      */
     private function include_inputs_alta(): array|string
@@ -886,12 +887,15 @@ class system extends controlador_base{
     /**
      * Integra los includes de datos para views
      * @return string
+     * @version 8.90.1
      */
     private function include_inputs_alta_seccion(): string
     {
         $include_inputs_alta = (new views())->ruta_templates."inputs/base/alta.php";
 
-        $path_vendor_base = $this->path_base."vendor/$this->path_vendor_views/templates/inputs/$this->seccion/$this->accion.php";
+        $path_vendor_base = $this->path_base
+            ."vendor/$this->path_vendor_views/templates/inputs/$this->seccion/$this->accion.php";
+
         if(file_exists($path_vendor_base)){
             $include_inputs_alta = $path_vendor_base;
         }
