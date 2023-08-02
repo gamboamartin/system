@@ -686,12 +686,21 @@ class system extends controlador_base{
 
     /**
      * Integra los inputs par aun form de tipo alta
-     * @return string
+     * @return string|array
+     * @version 8.87.1
      */
-    private function form_alta(): string
+    private function form_alta(): string|array
     {
         $form_alta = '';
         foreach($this->inputs_alta as $input_alta){
+            $input_alta = trim($input_alta);
+            if($input_alta === ''){
+                return $this->errores->error(mensaje: 'Error input alta esta vacio', data: $this->inputs_alta);
+            }
+            if(!isset($this->inputs->$input_alta)){
+                return $this->errores->error(mensaje: 'Error '.$input_alta.' No esta definido como input',
+                    data: $this->inputs_alta);
+            }
             $form_alta .= $this->inputs->$input_alta;
         }
         return $form_alta;
