@@ -1331,6 +1331,12 @@ class system extends controlador_base{
         return $rows;
     }
 
+    /**
+     * Inicializa valores default para keys selects
+     * @param array $keys_selects Key donde estan los parametros de generacion de inputs
+     * @param array $valores_asignados_default Valores default integrados
+     * @return array
+     */
     private function valores_default_alta(array $keys_selects, array $valores_asignados_default): array
     {
         foreach ($valores_asignados_default as $campo=>$valor){
