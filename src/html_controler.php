@@ -1193,6 +1193,12 @@ class html_controler{
         return $controler->inputs;
     }
 
+    /**
+     * Obtiene el nombre del modelo
+     * @param string $name_model nombre base del modelo
+     * @param stdClass $params parametros precargados
+     * @return string|array
+     */
     private function name_model(string $name_model, stdClass $params): string|array
     {
         $name_model = trim($name_model);
@@ -1207,7 +1213,13 @@ class html_controler{
         return $name_model;
     }
 
-    private function namespace_model(stdClass $params){
+    /**
+     * Obtiene el namespace de los parametros integrados
+     * @param stdClass $params
+     * @return string
+     */
+    private function namespace_model(stdClass $params): string
+    {
         $namespace_model = '';
         if(isset($params->namespace_model)){
             $namespace_model = $params->namespace_model;
@@ -1366,7 +1378,13 @@ class html_controler{
         return $params_get;
     }
 
-    private function params_select_info(string $name_model, stdClass $params){
+    /**
+     * @param string $name_model
+     * @param stdClass $params
+     * @return array|stdClass
+     */
+    private function params_select_info(string $name_model, stdClass $params): array|stdClass
+    {
         $tabla = $name_model;
 
 
@@ -1572,9 +1590,10 @@ class html_controler{
      * @param string $name_model Nombre del modelo
      * @param stdClass $params Parametros a ejecutar para select
      * @param stdClass $selects Selects precargados
-     * @param string $namespace_model
-     * @param string $tabla
+     * @param string $namespace_model Nombre del namespace
+     * @param string $tabla Tabla de datos
      * @return array|stdClass
+     * @version 8.93.1
      */
     private function select_aut(
         PDO $link, string $name_model, stdClass $params, stdClass $selects,string $namespace_model = '' ,
@@ -1681,8 +1700,9 @@ class html_controler{
      * @param bool $required si required agrega el atributo required a input
      * @param array $not_in Omite los elementos en obtencion de datos
      * @return array|string Un string con options en forma de html
+     * @version 8.93.1
      */
-    protected function select_catalogo(int $cols, bool $con_registros, int $id_selected, modelo $modelo,
+    final public function select_catalogo(int $cols, bool $con_registros, int $id_selected, modelo $modelo,
                                        array $columns_ds = array(), bool $disabled = false,
                                        array $extra_params_keys = array(), array $filtro=array(),
                                        string $key_descripcion = '', string $key_descripcion_select = '',

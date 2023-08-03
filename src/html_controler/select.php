@@ -56,6 +56,7 @@ class select{
      * @param array $not_in Omite resultado de options
      * @param array $registros Registros para integrar en select
      * @return array|stdClass
+     * @version 8.93.1
      */
     final public function init_data_select(bool $con_registros, modelo $modelo, array $columns_ds = array(),
                                            array $extra_params_keys = array(), array $filtro = array(),
