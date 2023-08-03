@@ -210,14 +210,13 @@ class system extends controlador_base{
             return $this->retorno_error(mensaje: 'Error al generar data parents', data: $data, header: $header, ws: $ws);
         }
 
-        foreach ($this->valores_asignados_default as $campo=>$valor){
-            if(!isset($this->keys_selects[$campo])) {
-                $this->keys_selects[$campo] = new stdClass();
-            }
-            $this->keys_selects[$campo]->value_vacio = false;
-            $this->keys_selects[$campo]->id_selected = $valor;
+        $keys_select = $this->valores_default_alta(keys_selects: $this->keys_selects,
+            valores_asignados_default:  $this->valores_asignados_default);
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al generar data key selects default', data: $data,
+                header: $header, ws: $ws);
         }
-
+        $this->keys_selects = $keys_select;
 
         $form_alta = $this->genera_form_alta();
         if(errores::$error){
@@ -226,7 +225,6 @@ class system extends controlador_base{
         }
 
         $this->forms_inputs_alta = $form_alta;
-
 
         $include_inputs_alta = $this->include_inputs_alta();
         if(errores::$error){
@@ -939,8 +937,6 @@ class system extends controlador_base{
         return $this->include_inputs_modifica;
     }
 
-
-
     final public function inputs(array $keys_selects): array|stdClass
     {
         $keys_selects = $this->key_selects_txt(keys_selects: $keys_selects);
@@ -953,11 +949,6 @@ class system extends controlador_base{
         }
         return $inputs;
     }
-
-
-
-
-
 
     /**
      * Debe ser operable y sobreescrito en controller de ejecucion
@@ -1338,6 +1329,18 @@ class system extends controlador_base{
             return $this->errores->error(mensaje: 'Error al integrar link',data:  $rows);
         }
         return $rows;
+    }
+
+    private function valores_default_alta(array $keys_selects, array $valores_asignados_default): array
+    {
+        foreach ($valores_asignados_default as $campo=>$valor){
+            if(!isset($keys_selects[$campo])) {
+                $keys_selects[$campo] = new stdClass();
+            }
+            $keys_selects[$campo]->value_vacio = false;
+            $keys_selects[$campo]->id_selected = $valor;
+        }
+        return $keys_selects;
     }
 
 
