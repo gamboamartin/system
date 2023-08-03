@@ -268,7 +268,7 @@ class system extends controlador_base{
      * @param bool $ws Mostrara el resultado en forma de json
      * @return array|stdClass
      * @version 0.230.37
-     * @final rev
+     * @finalrev
      */
     public function alta_bd(bool $header, bool $ws = false): array|stdClass
     {
@@ -1273,8 +1273,9 @@ class system extends controlador_base{
      * @param string $key Elemento a actualizar
      * @return array|stdClass
      * @version 8.67.0
+     * @finalrev
      */
-    final public function row_upd(string $key): array|stdClass
+    public function row_upd(string $key): array|stdClass
     {
         if($this->registro_id<=0){
             return $this->errores->error(mensaje: 'Error this->registro_id debe ser mayor a 0',
