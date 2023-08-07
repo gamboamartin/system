@@ -19,6 +19,9 @@ class out_permisos{
                                         array $params, array $params_ajustados, array $registro, int $registro_id,
                                         array $styles =  array('margin-bottom'=>'5px')): array
     {
+        if(count($registro) === 0){
+            return $this->error->error(mensaje: 'Error registro esta vacio',data:  $registro);
+        }
         $buttons = array();
         foreach ($acciones_permitidas as $accion_permitida){
             $params_btn = $params;
@@ -39,6 +42,9 @@ class out_permisos{
                                  array $params_ajustados = array(),
                                  array $styles = array('margin-bottom'=>'5px')): array
     {
+        if(count($controler->registro) === 0){
+            return $this->error->error(mensaje: 'Error controler->registro esta vacio',data:  $controler->registro);
+        }
         $acciones_permitidas = (new datatables())->acciones_permitidas(link: $controler->link,
             seccion: $controler->seccion, not_actions: $not_actions);
         if(errores::$error){
@@ -192,6 +198,9 @@ class out_permisos{
                                      array $registro, int $registro_id,
                                      array $styles =  array('margin-bottom'=>'5px')): array|string
     {
+        if(count($registro) === 0){
+            return $this->error->error(mensaje: 'Error registro esta vacio',data:  $registro);
+        }
         $valida = $this->valida_data_action(accion_permitida: $accion_permitida);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar accion_permitida',data:  $valida);

@@ -1866,11 +1866,13 @@ class html_controler{
      */
     final public function style_btn(array $accion_permitida, array $row):array|string{
 
+        if(count($row) === 0){
+            return $this->error->error(mensaje: 'Error row esta vacio',data:  $row);
+        }
         $valida = $this->valida_boton_data_accion(accion_permitida: $accion_permitida);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar accion_permitida',data:  $valida);
         }
-
 
         $style = $accion_permitida['adm_accion_css'];
         $es_status = $accion_permitida['adm_accion_es_status'];
@@ -1898,6 +1900,9 @@ class html_controler{
         $key_es_status = trim($key_es_status);
         if($key_es_status === ''){
             return $this->error->error(mensaje: 'Error key_es_status esta vacio',data:  $key_es_status);
+        }
+        if(count($row) === 0){
+            return $this->error->error(mensaje: 'Error row esta vacio',data:  $row);
         }
 
         $keys = array($key_es_status);

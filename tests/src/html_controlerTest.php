@@ -202,6 +202,7 @@ class html_controlerTest extends test {
         $registro_id = 1;
         $rows = array();
         $rows[1] = array();
+        $rows[1]['a'] = 'a';
 
         $resultado = $html->boton_link_permitido($accion_permitida, $indice, $registro_id, $rows);
 
@@ -1110,6 +1111,7 @@ class html_controlerTest extends test {
         $accion_permitida['adm_seccion_descripcion'] = 'a';
 
         $row = array();
+        $row[] = 'a';
 
         $resultado = $html->style_btn($accion_permitida, $row);
         $this->assertIsString($resultado);
