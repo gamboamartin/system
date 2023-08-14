@@ -1106,6 +1106,25 @@ class html_controler{
         return $propiedades;
     }
 
+    private function integra_select(array $keys_selects, mixed $modelo, string $item, stdClass $selects){
+        $valida = $this->valida_data_select(keys_selects: $keys_selects,modelo:  $modelo,item:  $item);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al valida item', data: $valida);
+        }
+
+        $params_select = $this->params_select(item: $item, keys_selects: $keys_selects);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializa params_select', data: $params_select);
+        }
+
+        $select = $this->select_aut2(modelo: $modelo,params_select: $params_select);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar select', data: $select);
+        }
+        $selects->$item = $select;
+        return $selects;
+    }
+
     /**
      * Genera in item para salida de front
      * @param string $item Campo o input
@@ -1378,6 +1397,20 @@ class html_controler{
         return $params_get;
     }
 
+    private function params_select(string $item, array $keys_selects){
+        $params_select = new stdClass();
+
+        if (array_key_exists($item, $keys_selects) ){
+            $params_select = $keys_selects[$item];
+        }
+
+        $params_select = (new params())->params_select_col_6(params: $params_select,label: $item);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar select', data: $params_select);
+        }
+        return $params_select;
+    }
+
     /**
      * @param string $name_model
      * @param stdClass $params
@@ -1637,6 +1670,7 @@ class html_controler{
      * @param stdClass $params_select Parametros visuales
      * @return array|stdClass|string
      * @example $params_select->extra_params_keys[] = 'tabla_id'; integra un extra param al option de un select
+     * @version 10.3.0
      */
     private function select_aut2(modelo $modelo, stdClass $params_select): array|stdClass|string
     {
@@ -1817,42 +1851,11 @@ class html_controler{
         }
 
         foreach ($campos_view['selects'] as $item => $modelo){
-            /**
-             * REFACTORIZAR
-             */
-            $item = trim($item);
-            if($item === ''){
-                return $this->error->error(mensaje: 'Error item esta vacio', data: $item);
-            }
-            if(is_numeric($item)){
-                return $this->error->error(mensaje: 'Error item es un numero', data: $item);
-            }
-
-            if (array_key_exists($item, $keys_selects) && !is_object($keys_selects[$item])){
-                return $this->error->error(mensaje: 'Error $params debe ser un objeto', data: $keys_selects[$item]);
-            }
-
-            if(!is_object($modelo)){
-                return $this->error->error(mensaje: 'Error modelo no es un objeto valido', data: $modelo);
-            }
-
-
-            $params_select = new stdClass();
-
-            if (array_key_exists($item, $keys_selects) ){
-                $params_select = $keys_selects[$item];
-            }
-
-            $params_select = (new params())->params_select_col_6(params: $params_select,label: $item);
+            $selects = $this->integra_select(keys_selects: $keys_selects,modelo:  $modelo,item:  $item,
+                selects:  $selects);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar select', data: $params_select);
+                return $this->error->error(mensaje: 'Error al generar selects', data: $selects);
             }
-
-            $select = $this->select_aut2(modelo: $modelo,params_select: $params_select);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar select', data: $select);
-            }
-            $selects->$item = $select;
         }
         return $selects;
     }
@@ -2059,6 +2062,34 @@ class html_controler{
         $valida = $this->validacion->valida_statuses(keys:$keys,registro:  $accion_permitida);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar $accion_permitida',data:  $valida);
+        }
+        return true;
+    }
+
+    private function valida_data_select(array $keys_selects, mixed $modelo, string $item){
+        $valida = $this->valida_item(item: $item);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al valida item', data: $valida);
+        }
+
+        if (array_key_exists($item, $keys_selects) && !is_object($keys_selects[$item])){
+            return $this->error->error(mensaje: 'Error $params debe ser un objeto', data: $keys_selects[$item]);
+        }
+
+        if(!is_object($modelo)){
+            return $this->error->error(mensaje: 'Error modelo no es un objeto valido', data: $modelo);
+        }
+        return true;
+    }
+
+    private function valida_item(string $item): bool|array
+    {
+        $item = trim($item);
+        if($item === ''){
+            return $this->error->error(mensaje: 'Error item esta vacio', data: $item);
+        }
+        if(is_numeric($item)){
+            return $this->error->error(mensaje: 'Error item es un numero', data: $item);
         }
         return true;
     }

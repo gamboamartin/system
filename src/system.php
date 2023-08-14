@@ -201,6 +201,7 @@ class system extends controlador_base{
      * @param bool $ws Muestra resultado via Json
      * @return array|string
      * @esfinal rev
+     * @version 10.3.0
      */
     public function alta(bool $header, bool $ws = false): array|string
     {
@@ -233,8 +234,6 @@ class system extends controlador_base{
         }
 
         $this->include_inputs_alta = $include_inputs_alta;
-
-
 
         return $this->forms_inputs_alta;
     }
