@@ -1336,6 +1336,7 @@ class system extends controlador_base{
      * @param array $keys_selects Key donde estan los parametros de generacion de inputs
      * @param array $valores_asignados_default Valores default integrados
      * @return array
+     * @version 10.1.0
      */
     private function valores_default_alta(array $keys_selects, array $valores_asignados_default): array
     {
