@@ -668,9 +668,11 @@ class html_controler{
      * @param modelo $modelo Modelo en proceso
      * @param array $keys_selects Parametros visuales de inputs
      * @return array|stdClass
+     * @version 10.10.0
      *
      */
-    final public function init_alta2(stdClass $row_upd, modelo $modelo, array $keys_selects = array()): array|stdClass
+    final public function init_alta2(stdClass $row_upd, modelo $modelo,
+                                     array $keys_selects = array()): array|stdClass
     {
         $selects = $this->selects_alta2(modelo: $modelo, keys_selects: $keys_selects);
         if (errores::$error) {
@@ -1841,6 +1843,7 @@ class html_controler{
      * @param modelo $modelo Modelo en ejecucion
      * @param array $keys_selects Parametros de selects
      * @return array|stdClass
+     * @version 10.10.0
      */
     final protected function selects_alta2(modelo $modelo,array $keys_selects = array()): array|stdClass
     {
@@ -1864,6 +1867,7 @@ class html_controler{
      * @return array|stdClass
      * @example keys_selects['name_input']->extra_params_keys[] = 'tabla_id';
      * integra un extra param al option de un select
+     * @version 10.10.0
      */
     private function selects_integra(array $campos_view, array $keys_selects): array|stdClass
     {

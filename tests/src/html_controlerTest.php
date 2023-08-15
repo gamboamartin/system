@@ -578,6 +578,7 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+
     public function test_input_id(): void
     {
         errores::$error = false;
