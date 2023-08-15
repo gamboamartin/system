@@ -1107,10 +1107,11 @@ class html_controler{
     }
 
     /**
-     * @param array $keys_selects
-     * @param mixed $modelo
-     * @param string $item
-     * @param stdClass $selects
+     * Integra los inputs de tipo selects
+     * @param array $keys_selects Keys a integrar
+     * @param mixed $modelo Modelo de selector
+     * @param string $item Nombre del input
+     * @param stdClass $selects Selects previos cargados
      * @return array|stdClass
      */
     private function integra_select(array $keys_selects, mixed $modelo, string $item, stdClass $selects): array|stdClass
@@ -1410,9 +1411,15 @@ class html_controler{
      * @param string $item Nombre del input
      * @param array $keys_selects Parametros de input select
      * @return array|stdClass
+     * @version 10.8.0
      */
     private function params_select(string $item, array $keys_selects): array|stdClass
     {
+        $item = trim($item);
+        if($item === ''){
+            return $this->error->error(mensaje: 'Error item esta vacio', data: $item);
+        }
+
         $params_select = new stdClass();
 
         if (array_key_exists($item, $keys_selects) ){

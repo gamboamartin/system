@@ -778,6 +778,30 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_params_select(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
+
+        $_SESSION['grupo_id'] = 2;
+
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+        $keys_selects =  array();
+        $item =  'a';
+
+        $resultado = $html->params_select($item, $keys_selects);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(6, $resultado->cols);
+        $this->assertEquals('a', $resultado->label);
+        $this->assertEquals(true, $resultado->con_registros);
+        errores::$error = false;
+    }
+
     public function test_pass_item_init(): void
     {
         errores::$error = false;
