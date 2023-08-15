@@ -1106,7 +1106,15 @@ class html_controler{
         return $propiedades;
     }
 
-    private function integra_select(array $keys_selects, mixed $modelo, string $item, stdClass $selects){
+    /**
+     * @param array $keys_selects
+     * @param mixed $modelo
+     * @param string $item
+     * @param stdClass $selects
+     * @return array|stdClass
+     */
+    private function integra_select(array $keys_selects, mixed $modelo, string $item, stdClass $selects): array|stdClass
+    {
         $valida = $this->valida_data_select(keys_selects: $keys_selects,modelo:  $modelo,item:  $item);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al valida item', data: $valida);
@@ -1398,8 +1406,9 @@ class html_controler{
     }
 
     /**
-     * @param string $item
-     * @param array $keys_selects
+     * Integra los parametros de un select
+     * @param string $item Nombre del input
+     * @param array $keys_selects Parametros de input select
      * @return array|stdClass
      */
     private function params_select(string $item, array $keys_selects): array|stdClass
@@ -2078,6 +2087,7 @@ class html_controler{
      * @param mixed $modelo Modelo a verificar
      * @param string $item Item o nombre del campo
      * @return array|true
+     * @version 10.7.0
      */
     private function valida_data_select(array $keys_selects, mixed $modelo, string $item): bool|array
     {

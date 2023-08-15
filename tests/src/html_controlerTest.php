@@ -1224,6 +1224,28 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_valida_data_select(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
+
+        $_SESSION['grupo_id'] = 2;
+
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+        $keys_selects =  array();
+        $modelo =  new adm_accion(link: $this->link);
+        $item =  'a';
+
+        $resultado = $html->valida_data_select($keys_selects, $modelo, $item);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
     public function test_valida_item(): void
     {
         errores::$error = false;
