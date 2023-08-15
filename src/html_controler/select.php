@@ -62,7 +62,7 @@ class select{
                                            array $extra_params_keys = array(), array $filtro = array(),
                                            string $key_descripcion = '', string $key_descripcion_select= '',
                                            string $key_id = '', string $label = '', string $name = '',
-                                           array $not_in = array(), array $registros = array()): array|stdClass
+                                           array $not_in = array(), array $in = array(), array $registros = array()): array|stdClass
     {
 
         $keys = $this->keys_base(tabla: $modelo->tabla, key_descripcion: $key_descripcion,
@@ -74,7 +74,7 @@ class select{
 
         $values = $this->values_selects(con_registros: $con_registros, keys: $keys, modelo: $modelo,
             columns_ds: $columns_ds, extra_params_keys: $extra_params_keys, filtro: $filtro, not_in: $not_in,
-            registros: $registros);
+            in: $in, registros: $registros);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener valores',data:  $values);
         }
@@ -230,12 +230,12 @@ class select{
      * @version 8.59.0
      */
     private function registros_select(array $columns_ds, bool $con_registros, array $extra_params_keys, array $filtro,
-                                      stdClass $keys, modelo $modelo, array $not_in, array $registros): array
+                                      stdClass $keys, modelo $modelo, array $not_in, array $registros, array $in = array()): array
     {
         if($con_registros) {
             if(count($registros) === 0) {
                 $registros = $this->rows_select(keys: $keys, modelo: $modelo, columns_ds: $columns_ds,
-                    extra_params_keys: $extra_params_keys, filtro: $filtro, not_in: $not_in);
+                    extra_params_keys: $extra_params_keys, filtro: $filtro, not_in: $not_in,in: $in);
                 if (errores::$error) {
                     return $this->error->error(mensaje: 'Error al obtener registros', data: $registros);
                 }
@@ -264,7 +264,7 @@ class select{
      */
     private function rows_select(stdClass $keys, modelo $modelo, array $columns_ds = array(),
                                  array $extra_params_keys = array(), array $filtro = array(),
-                                 array $not_in = array()): array
+                                 array $not_in = array(), array $in = array()): array
     {
         $keys_val = array('id','descripcion_select', 'descripcion');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys_val,registro:  $keys);
@@ -299,7 +299,7 @@ class select{
         }
 
         $filtro[$modelo->tabla.'.status'] = 'activo';
-        $registros = $modelo->filtro_and(columnas: $columnas, filtro: $filtro, not_in: $not_in);
+        $registros = $modelo->filtro_and(columnas: $columnas, filtro: $filtro, in: $in, not_in: $not_in);
 
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener registros',data:  $registros);
@@ -364,7 +364,7 @@ class select{
      */
     private function values_selects( bool $con_registros, stdClass $keys, modelo $modelo, array $columns_ds = array(),
                                      array $extra_params_keys = array(), array $filtro = array(),
-                                     array $not_in = array(), array $registros = array()): array
+                                     array $not_in = array(),  array $in = array(), array $registros = array()): array
     {
         $keys_valida = array('id','descripcion_select','descripcion');
         $valida = (new validacion())->valida_existencia_keys(keys: $keys_valida, registro: $keys);
@@ -374,7 +374,7 @@ class select{
 
         $registros = $this->registros_select(columns_ds: $columns_ds,con_registros:  $con_registros,
             extra_params_keys: $extra_params_keys,filtro:  $filtro,keys:  $keys, modelo: $modelo,not_in:  $not_in,
-            registros:  $registros);
+            registros:  $registros,in: $in);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener registros', data: $registros);
         }
