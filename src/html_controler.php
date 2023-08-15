@@ -1397,7 +1397,13 @@ class html_controler{
         return $params_get;
     }
 
-    private function params_select(string $item, array $keys_selects){
+    /**
+     * @param string $item
+     * @param array $keys_selects
+     * @return array|stdClass
+     */
+    private function params_select(string $item, array $keys_selects): array|stdClass
+    {
         $params_select = new stdClass();
 
         if (array_key_exists($item, $keys_selects) ){
@@ -2066,7 +2072,15 @@ class html_controler{
         return true;
     }
 
-    private function valida_data_select(array $keys_selects, mixed $modelo, string $item){
+    /**
+     * Valida los datos de un select
+     * @param array $keys_selects Keys a verificar
+     * @param mixed $modelo Modelo a verificar
+     * @param string $item Item o nombre del campo
+     * @return array|true
+     */
+    private function valida_data_select(array $keys_selects, mixed $modelo, string $item): bool|array
+    {
         $valida = $this->valida_item(item: $item);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al valida item', data: $valida);
@@ -2086,6 +2100,7 @@ class html_controler{
      * Valida que la entrada de item sea correcta, debe ser un texto con letras
      * @param string $item Valor a verificar
      * @return bool|array
+     * @version 10.6.0
      */
     private function valida_item(string $item): bool|array
     {
