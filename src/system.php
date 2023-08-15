@@ -937,6 +937,12 @@ class system extends controlador_base{
         return $this->include_inputs_modifica;
     }
 
+    /**
+     * Integra los inputs para front
+     * @param array $keys_selects Parametros de inputs
+     * @return array|stdClass
+     * @version 10.11.0
+     */
     final public function inputs(array $keys_selects): array|stdClass
     {
         $keys_selects = $this->key_selects_txt(keys_selects: $keys_selects);

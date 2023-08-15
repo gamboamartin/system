@@ -37,7 +37,8 @@ final class init{
     }
 
     /**
-     * @param controler $controler
+     * Inicializa los parametros por get
+     * @param controler $controler Controlador en ejecucion
      * @return array|stdClass
      */
     private function data_init(controler $controler): array|stdClass
