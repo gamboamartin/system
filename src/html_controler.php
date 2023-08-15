@@ -2082,6 +2082,11 @@ class html_controler{
         return true;
     }
 
+    /**
+     * Valida que la entrada de item sea correcta, debe ser un texto con letras
+     * @param string $item Valor a verificar
+     * @return bool|array
+     */
     private function valida_item(string $item): bool|array
     {
         $item = trim($item);
