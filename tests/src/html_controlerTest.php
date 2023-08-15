@@ -931,6 +931,7 @@ class html_controlerTest extends test {
         $params_select->filtro = array();
         $params_select->label = 'a';
         $params_select->not_in = array();
+        $params_select->in = array();
         $params_select->required = true;
         $params_select->columns_ds = array();
         $params_select->key_descripcion_select = '';
@@ -958,6 +959,7 @@ class html_controlerTest extends test {
         $params_select->filtro = array();
         $params_select->label = 'a';
         $params_select->not_in = array();
+        $params_select->in = array();
         $params_select->required = true;
         $params_select->key_descripcion_select = 'adm_menu_id';
         $params_select->columns_ds = array();

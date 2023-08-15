@@ -70,6 +70,7 @@ class params{
         $data->value_vacio = $params->value_vacio ?? false;
         $data->filtro = $params->filtro ?? array();
         $data->not_in = $params->not_in ?? array();
+        $data->in = $params->in ?? array();
         $data->name = $params->name ?? $name;
         $data->registros = $params->registros ?? array();
 

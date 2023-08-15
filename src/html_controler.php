@@ -1681,7 +1681,7 @@ class html_controler{
     private function select_aut2(modelo $modelo, stdClass $params_select): array|stdClass|string
     {
         $keys = array('cols','con_registros','id_selected','disabled','extra_params_keys','filtro','label','not_in',
-            'required','registros');
+            'required','registros', 'in');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $params_select);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
@@ -1705,7 +1705,7 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
         }
 
-        $keys = array('extra_params_keys','filtro','not_in','columns_ds','registros');
+        $keys = array('extra_params_keys','filtro','not_in', 'in', 'columns_ds','registros');
         $valida = $this->validacion->valida_arrays(keys: $keys, row: $params_select);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
@@ -1715,8 +1715,8 @@ class html_controler{
             id_selected: $params_select->id_selected, modelo: $modelo, columns_ds: $params_select->columns_ds,
             disabled: $params_select->disabled, extra_params_keys: $params_select->extra_params_keys,
             filtro: $params_select->filtro, key_descripcion_select: $params_select->key_descripcion_select,
-            label: $params_select->label, not_in: $params_select->not_in, registros: $params_select->registros,
-            required: $params_select->required);
+            label: $params_select->label, not_in: $params_select->not_in, in: $params_select->in,
+            registros: $params_select->registros, required: $params_select->required);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $select);
         }
@@ -1747,7 +1747,7 @@ class html_controler{
                                        array $extra_params_keys = array(), array $filtro=array(),
                                        string $key_descripcion = '', string $key_descripcion_select = '',
                                        string $key_id = '', string $label = '', string $name = '',
-                                       array $not_in = array(), array $registros = array(),
+                                       array $not_in = array(), array $in = array(), array $registros = array(),
                                        bool $required = false): array|string
     {
 
@@ -1759,7 +1759,7 @@ class html_controler{
         $init = (new select())->init_data_select(con_registros: $con_registros, modelo: $modelo,
             columns_ds: $columns_ds, extra_params_keys: $extra_params_keys, filtro: $filtro,
             key_descripcion: $key_descripcion, key_descripcion_select: $key_descripcion_select, key_id: $key_id,
-            label: $label, name: $name, not_in: $not_in, registros: $registros);
+            label: $label, name: $name, not_in: $not_in, in: $in, registros: $registros);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar datos', data: $init);
         }
