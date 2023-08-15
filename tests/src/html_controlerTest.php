@@ -680,6 +680,29 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_integra_select(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
+
+        $_SESSION['grupo_id'] = 2;
+
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+        $keys_selects =  array();
+        $item =  'a';
+        $modelo = new adm_accion(link: $this->link);
+        $selects = new stdClass();
+        $resultado = $html->integra_select($keys_selects, $modelo, $item, $selects);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase("<div class='control-group col-sm-6'><div class='controls'><select class='form-control selectpicker color-secondary  adm_accion_id' data-live-search='true' id='adm_accion_id' name='adm_accion_id' required >",$resultado->a);
+        errores::$error = false;
+    }
+
 
 
 

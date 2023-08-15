@@ -1113,6 +1113,7 @@ class html_controler{
      * @param string $item Nombre del input
      * @param stdClass $selects Selects previos cargados
      * @return array|stdClass
+     * @version 10.9.0
      */
     private function integra_select(array $keys_selects, mixed $modelo, string $item, stdClass $selects): array|stdClass
     {
