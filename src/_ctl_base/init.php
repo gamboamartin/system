@@ -14,9 +14,10 @@ final class init{
 
 
     /**
-     * @param stdClass $data_init
-     * @param string $key
-     * @param array $params
+     * Asigna el dato al arreglo de parametros para envio por GET
+     * @param stdClass $data_init Datos iniciales
+     * @param string $key Key de parametro
+     * @param array $params Parametros previos cargados
      * @return array
      */
     private function asigna_data_param(stdClass $data_init, string $key, array $params): array
