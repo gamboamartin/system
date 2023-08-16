@@ -40,6 +40,7 @@ final class init{
      * Inicializa los parametros por get
      * @param controler $controler Controlador en ejecucion
      * @return array|stdClass
+     * @version 10.12.0
      */
     private function data_init(controler $controler): array|stdClass
     {
