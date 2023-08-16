@@ -37,6 +37,7 @@ final class init{
     }
 
     /**
+     * Asigna los parametros base de un boton
      * @param stdClass $data_init
      * @param array $keys_params
      * @param array $params
