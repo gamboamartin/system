@@ -19,13 +19,29 @@ final class init{
      * @param string $key Key de parametro
      * @param array $params Parametros previos cargados
      * @return array
+     * @version 10.14.0
      */
     private function asigna_data_param(stdClass $data_init, string $key, array $params): array
     {
+        $key = trim($key);
+        if($key === ''){
+            return $this->error->error(mensaje: 'Error key esta vacio', data: $key);
+        }
+        $keys = array($key);
+        $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $data_init);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar data_init', data: $valida);
+        }
         $params[$key] = $data_init->$key;
         return $params;
     }
 
+    /**
+     * @param stdClass $data_init
+     * @param array $keys_params
+     * @param array $params
+     * @return array
+     */
     private function asigna_datas_param(stdClass $data_init, array $keys_params, array $params): array
     {
         foreach ($keys_params as $key){
@@ -202,6 +218,11 @@ final class init{
         return $data_init;
     }
 
+    /**
+     * @param stdClass $data_init
+     * @param array $params
+     * @return array
+     */
     private function init_params(stdClass $data_init, array $params): array
     {
         $keys_params = array('next_seccion','next_accion','id_retorno');
@@ -213,6 +234,11 @@ final class init{
         return $params;
     }
 
+    /**
+     * @param controler $controler
+     * @param array $params
+     * @return array
+     */
     final public function params(controler $controler, array $params): array
     {
         $data_init = $this->data_init(controler: $controler);
