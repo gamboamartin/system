@@ -540,11 +540,13 @@ class _ctl_base extends system{
      * @param int|null $id_selected Identificador para selected
      * @param string $label Etiqueta a mostrar
      * @param array $columns_ds Columnas para mostrar en select
+     * @param bool $disabled Atributo disabled
      * @return array
      * @version 0.288.38
      */
     final protected function key_select(int $cols, bool $con_registros, array $filtro,string $key, array $keys_selects,
-                                  int|null $id_selected, string $label, array $columns_ds = array()): array
+                                  int|null $id_selected, string $label, array $columns_ds = array(),
+                                        bool $disabled = false): array
     {
         $key = trim($key);
         if($key === ''){
@@ -564,7 +566,7 @@ class _ctl_base extends system{
             $keys_selects[$key] = new stdClass();
         }
 
-        $keys_params = array('cols','con_registros','label','id_selected','filtro','columns_ds');
+        $keys_params = array('cols','con_registros','label','id_selected','filtro','columns_ds','disabled');
 
         foreach ($keys_params as $key_val){
 
