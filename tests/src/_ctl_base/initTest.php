@@ -101,6 +101,26 @@ class initTest extends test {
         errores::$error = false;
     }
 
+    public function test_init_params(): void
+    {
+        errores::$error = false;
+        $ctl = new _ctl_base\init();
+        $ctl = new liberator($ctl);
+
+        $data_init = new stdClass();
+        $params = array();
+        $data_init->next_seccion = 'a';
+        $data_init->next_accion = 'b';
+        $data_init->id_retorno = 'c';
+        $resultado = $ctl->init_params($data_init, $params);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a',$resultado['next_seccion']);
+        $this->assertEquals('b',$resultado['next_accion']);
+        $this->assertEquals('c',$resultado['id_retorno']);
+        errores::$error = false;
+    }
+
     public function test_asigna_datas_param(): void
     {
         errores::$error = false;

@@ -47,6 +47,16 @@ final class init{
     private function asigna_datas_param(stdClass $data_init, array $keys_params, array $params): array
     {
         foreach ($keys_params as $key){
+            $key = trim($key);
+            if($key === ''){
+                return $this->error->error(mensaje: 'Error key esta vacio', data: $key);
+            }
+            $keys = array($key);
+            $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $data_init);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al validar data_init', data: $valida);
+            }
+
             $params = $this->asigna_data_param(data_init: $data_init,key:  $key,params:  $params);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al asignar param', data: $params);
@@ -225,6 +235,7 @@ final class init{
      * @param stdClass $data_init Datos previos cargados
      * @param array $params Parametros precargados
      * @return array
+     * @version 10.19.0
      */
     private function init_params(stdClass $data_init, array $params): array
     {
