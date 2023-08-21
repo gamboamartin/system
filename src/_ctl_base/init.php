@@ -38,9 +38,9 @@ final class init{
 
     /**
      * Asigna los parametros base de un boton
-     * @param stdClass $data_init
-     * @param array $keys_params
-     * @param array $params
+     * @param stdClass $data_init Datos default inicializados
+     * @param array $keys_params Key de parametros a integrar
+     * @param array $params Parametros previamente cargaddos
      * @return array
      */
     private function asigna_datas_param(stdClass $data_init, array $keys_params, array $params): array
@@ -220,6 +220,7 @@ final class init{
     }
 
     /**
+     * Asigna parametros para enviar por GET
      * @param stdClass $data_init
      * @param array $params
      * @return array
@@ -236,6 +237,7 @@ final class init{
     }
 
     /**
+     * Integra parametros para enviar por GET
      * @param controler $controler
      * @param array $params
      * @return array

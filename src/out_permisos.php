@@ -15,6 +15,17 @@ class out_permisos{
         $this->validacion = new validacion();
     }
 
+    /**
+     * @param array $acciones_permitidas
+     * @param int $cols
+     * @param html_controler $html
+     * @param array $params
+     * @param array $params_ajustados
+     * @param array $registro
+     * @param int $registro_id
+     * @param array $styles
+     * @return array
+     */
     private function buttons_permitidos(array $acciones_permitidas, int $cols, html_controler $html,
                                         array $params, array $params_ajustados, array $registro, int $registro_id,
                                         array $styles =  array('margin-bottom'=>'5px')): array
@@ -38,6 +49,14 @@ class out_permisos{
         return $buttons;
     }
 
+    /**
+     * @param system $controler
+     * @param array $not_actions
+     * @param array $params
+     * @param array $params_ajustados
+     * @param array $styles
+     * @return array
+     */
     final public function buttons_view(system $controler, array $not_actions, array $params,
                                  array $params_ajustados = array(),
                                  array $styles = array('margin-bottom'=>'5px')): array
@@ -68,8 +87,8 @@ class out_permisos{
     }
 
     /**
-     *
-     * @param array $acciones_permitidas
+     * Integra las columnas para integrar en los botones de acciones base en upd
+     * @param array $acciones_permitidas Acciones permitidas de usuario
      * @return int
      */
     private function cols_btn_action(array $acciones_permitidas): int

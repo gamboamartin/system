@@ -231,6 +231,12 @@ class _ctl_base extends system{
         return $childrens;
     }
 
+    /**
+     * @param array $keys_selects
+     * @param array $params
+     * @param array $params_ajustados
+     * @return array|stdClass
+     */
     final protected function base_upd(array $keys_selects, array $params, array $params_ajustados): array|stdClass
     {
 
@@ -599,6 +605,10 @@ class _ctl_base extends system{
         return $keys_selects;
     }
 
+    /**
+     * @param array $keys_selects
+     * @return array
+     */
     final protected function key_select_base(array $keys_selects): array
     {
         $keys_selects['descripcion'] = new stdClass();
@@ -754,6 +764,10 @@ class _ctl_base extends system{
         return $seccion_retorno;
     }
 
+    /**
+     * @param array $keys_selects
+     * @return array|stdClass
+     */
     final protected function upd_base_template(array $keys_selects): array|stdClass
     {
         $keys_selects = $this->key_select_base(keys_selects: $keys_selects);
