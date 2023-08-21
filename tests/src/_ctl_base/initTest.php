@@ -101,6 +101,23 @@ class initTest extends test {
         errores::$error = false;
     }
 
+    public function test_asigna_datas_param(): void
+    {
+        errores::$error = false;
+        $ctl = new _ctl_base\init();
+        $ctl = new liberator($ctl);
+
+        $data_init = new stdClass();
+
+        $params = array();
+        $data_init->a = 'z';
+        $keys_params = array();
+        $resultado = $ctl->asigna_datas_param($data_init, $keys_params, $params);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty($resultado);
+    }
+
     public function test_init_get_param(): void
     {
         errores::$error = false;
