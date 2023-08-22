@@ -28,6 +28,35 @@ class out_permisosTest extends test {
         $this->paths_conf->views = '/var/www/html/system/config/views.php';
     }
 
+    public function test_buttons_permitidos(): void
+    {
+        errores::$error = false;
+        $_SESSION['grupo_id'] = 1;
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+
+        $out = new out_permisos();
+        $out = new liberator($out);
+
+        $acciones_permitidas = array();
+        $cols = -1;
+        $html = new html();
+        $html_= new html_controler($html);
+        $params = array();
+        $params_ajustados = array();
+        $registro = array();
+        $registro_id = -1;
+        $registro[] = '';
+        $resultado = $out->buttons_permitidos($acciones_permitidas, $cols, $html_, $params, $params_ajustados,
+            $registro, $registro_id);
+
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty($resultado);
+        errores::$error = false;
+    }
+
     public function test_cols_btn_action(): void
     {
         errores::$error = false;

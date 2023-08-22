@@ -26,6 +26,7 @@ class out_permisos{
      * @param int $registro_id Identificador
      * @param array $styles Estilos css a integrar en contenedor como style
      * @return array
+     * @version 10.24.0
      */
     private function buttons_permitidos(array $acciones_permitidas, int $cols, html_controler $html,
                                         array $params, array $params_ajustados, array $registro, int $registro_id,
@@ -51,11 +52,12 @@ class out_permisos{
     }
 
     /**
-     * @param system $controler
-     * @param array $not_actions
-     * @param array $params
-     * @param array $params_ajustados
-     * @param array $styles
+     * Integra los botones de ejecucion de acciones permitidas en una vista
+     * @param system $controler Controlador en ejecucion
+     * @param array $not_actions Acciones a omitir
+     * @param array $params Parametros para GET
+     * @param array $params_ajustados Parametros para GET
+     * @param array $styles Estilos css por incrustar en div o contenedor
      * @return array
      */
     final public function buttons_view(system $controler, array $not_actions, array $params,
