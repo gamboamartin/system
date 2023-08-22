@@ -16,6 +16,7 @@ class out_permisos{
     }
 
     /**
+     * Obtiene los botones permitidos definidos por la session en ejecucion
      * @param array $acciones_permitidas
      * @param int $cols
      * @param html_controler $html
@@ -90,9 +91,14 @@ class out_permisos{
      * Integra las columnas para integrar en los botones de acciones base en upd
      * @param array $acciones_permitidas Acciones permitidas de usuario
      * @return int
+     * @version 10.22.0
      */
     private function cols_btn_action(array $acciones_permitidas): int
     {
+
+        /**
+         * refactorizar
+         */
         $n_acciones = count($acciones_permitidas);
 
         $cols = (int)($n_acciones / 4);

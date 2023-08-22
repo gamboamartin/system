@@ -28,6 +28,25 @@ class out_permisosTest extends test {
         $this->paths_conf->views = '/var/www/html/system/config/views.php';
     }
 
+    public function test_cols_btn_action(): void
+    {
+        errores::$error = false;
+        $_SESSION['grupo_id'] = 1;
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+
+        $out = new out_permisos();
+        $out = new liberator($out);
+
+        $acciones_permitidas = array();
+
+        $resultado = $out->cols_btn_action($acciones_permitidas);
+        $this->assertIsInt($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(3,$resultado);
+       errores::$error = false;
+    }
     public function test_integra_acciones_permitidas(): void
     {
         errores::$error = false;
