@@ -205,6 +205,30 @@ class initTest extends test {
         errores::$error = false;
     }
 
+    public function test_params(): void
+    {
+        $_SESSION['session_id'] = 1;
+        $_SESSION['grupo_id'] = 1;
+        unset($_GET);
+        errores::$error = false;
+        $ctl = new _ctl_base\init();
+        //$ctl = new liberator($ctl);
+
+        $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
+
+
+        $params = array();
+        $controler = new controlador_adm_seccion(link: $this->link,paths_conf: $this->paths_conf);
+        $resultado = $ctl->params($controler, $params);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('adm_accion', $resultado['next_seccion']);
+        $this->assertEquals('lista', $resultado['next_accion']);
+        $this->assertEquals(-1, $resultado['id_retorno']);
+        errores::$error = false;
+    }
+
 
 
 }

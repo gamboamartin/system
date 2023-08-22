@@ -253,6 +253,7 @@ final class init{
      * @param controler $controler Controlador en ejecucion
      * @param array $params Parametros GET previos cargados
      * @return array
+     * @version 10.21.0
      */
     final public function params(controler $controler, array $params): array
     {
