@@ -17,14 +17,14 @@ class out_permisos{
 
     /**
      * Obtiene los botones permitidos definidos por la session en ejecucion
-     * @param array $acciones_permitidas
-     * @param int $cols
-     * @param html_controler $html
-     * @param array $params
-     * @param array $params_ajustados
-     * @param array $registro
-     * @param int $registro_id
-     * @param array $styles
+     * @param array $acciones_permitidas Conjunto de acciones permitidas
+     * @param int $cols Columnas de div css
+     * @param html_controler $html Html base
+     * @param array $params Parametros para GET
+     * @param array $params_ajustados parametros para GET custom
+     * @param array $registro Registro en proceso
+     * @param int $registro_id Identificador
+     * @param array $styles Estilos css a integrar en contenedor como style
      * @return array
      */
     private function buttons_permitidos(array $acciones_permitidas, int $cols, html_controler $html,
