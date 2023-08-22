@@ -250,8 +250,8 @@ final class init{
 
     /**
      * Integra parametros para enviar por GET
-     * @param controler $controler
-     * @param array $params
+     * @param controler $controler Controlador en ejecucion
+     * @param array $params Parametros GET previos cargados
      * @return array
      */
     final public function params(controler $controler, array $params): array
