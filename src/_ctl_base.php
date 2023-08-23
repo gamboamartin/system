@@ -232,6 +232,7 @@ class _ctl_base extends system{
     }
 
     /**
+     * Integra la base de inputs y botones de una vista de modificacion
      * @param array $keys_selects
      * @param array $params
      * @param array $params_ajustados
