@@ -65,9 +65,9 @@ class _ctl_parent_sin_codigo extends _ctl_parent {
 
     /**
      * Genera una vista parent sin codigo de modificacion de registro
-     * @param bool $header
-     * @param bool $ws
-     * @param array $keys_selects
+     * @param bool $header Si header muestra resultado web
+     * @param bool $ws Si ws genera salida json
+     * @param array $keys_selects Integra parametros de inputs
      * @return array|stdClass
      * @finalrev
      */

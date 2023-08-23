@@ -39,6 +39,7 @@ class _ctl_parent extends _ctl_base {
      * @param array $keys_selects parametros de inputs para diseño y valores
      * @return array|stdClass
      * @finalrev
+     * @version 10.30.0
      */
     public function modifica(bool $header, bool $ws = false, array $keys_selects =  array()): array|stdClass
     {

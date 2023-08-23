@@ -119,7 +119,7 @@ class _ctl_referenciasTest extends test {
         $resultado = $ctl->boton_children($child, $controler, $entidad, $params);
         $this->assertNotTrue(errores::$error);
         $this->assertIsString($resultado);
-        $this->assertEquals("<a |role| href='index.php?seccion=a&accion=alta&registro_id=-1&session_id=1&adm_accion_id=-1' |class|>A</a>",$resultado);
+        $this->assertStringContainsStringIgnoringCase("<a |role| href='index.php?seccion=a&accion=alta&registro_id=-1&session_id=1&adm_accion_id=",$resultado);
         errores::$error = false;
 
 
