@@ -772,6 +772,7 @@ class _ctl_base extends system{
      * Integra los selectores base con codigo disabled
      * @param array $keys_selects Parametros de inputs
      * @return array|stdClass
+     * @version 10.29.0
      */
     final protected function upd_base_template(array $keys_selects): array|stdClass
     {
