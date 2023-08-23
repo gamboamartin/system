@@ -233,9 +233,9 @@ class _ctl_base extends system{
 
     /**
      * Integra la base de inputs y botones de una vista de modificacion
-     * @param array $keys_selects
-     * @param array $params
-     * @param array $params_ajustados
+     * @param array $keys_selects Conjunto de parametros para creacion de inputs
+     * @param array $params Parametros que seran integrados a los botones para enviar por GET
+     * @param array $params_ajustados Parametros que seran integrados a los botones para enviar por GET
      * @return array|stdClass
      */
     final protected function base_upd(array $keys_selects, array $params, array $params_ajustados): array|stdClass
