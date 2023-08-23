@@ -611,6 +611,7 @@ class _ctl_base extends system{
      * Integra los selectores basicos de una vista
      * @param array $keys_selects Parametros previamente cargados para inputs
      * @return array
+     * @version 10.28.0
      */
     final protected function key_select_base(array $keys_selects): array
     {
@@ -768,7 +769,8 @@ class _ctl_base extends system{
     }
 
     /**
-     * @param array $keys_selects
+     * Integra los selectores base con codigo disabled
+     * @param array $keys_selects Parametros de inputs
      * @return array|stdClass
      */
     final protected function upd_base_template(array $keys_selects): array|stdClass

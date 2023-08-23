@@ -1135,6 +1135,40 @@ class _ctl_baseTest extends test {
         errores::$error = false;
     }
 
+    public function test_key_select_base(): void
+    {
+        errores::$error = false;
+
+        $_SESSION['usuario_id'] = 2;
+        $_SESSION['grupo_id'] = 2;
+        $_GET['session_id'] = mt_rand(1,99999999);
+        $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
+
+
+        $html = new html();
+        $html_controler = new html_controler($html);
+        $modelo = new adm_accion($this->link);
+        $link_obj = new links_menu($this->link, -1);
+
+        errores::$error = false;
+
+        $ctl = new _ctl_base(html: $html_controler, link: $this->link,modelo: $modelo,obj_link: $link_obj,paths_conf: $this->paths_conf);
+        $ctl->registro_id = 1;
+        $ctl = new liberator($ctl);
+
+
+        errores::$error = false;
+
+        $keys_selects = array();
+        $resultado = $ctl->key_select_base($keys_selects);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(12,$resultado['descripcion']->cols);
+        $this->assertTrue($resultado['codigo']->disabled);
+        errores::$error = false;
+    }
+
     public function test_label(): void
     {
         errores::$error = false;
