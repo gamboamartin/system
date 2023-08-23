@@ -2,6 +2,7 @@
 namespace tests\src\_ctl_base;
 
 
+use gamboamartin\administrador\tests\base_test;
 use gamboamartin\controllers\controlador_adm_grupo;
 use gamboamartin\controllers\controlador_adm_seccion;
 use gamboamartin\errores\errores;
@@ -82,6 +83,15 @@ class initTest extends test {
     {
         $_SESSION['session_id'] = 1;
         $_SESSION['grupo_id'] = 1;
+        $_SESSION['usuario_id'] = 2;
+
+        $alta = (new base_test)->alta_adm_accion(link: $this->link,adm_seccion_descripcion: 'adm_accion',descripcion: 'lista');
+        if(errores::$error){
+            $error = (new errores())->error('Error al alta', $alta);
+            print_r($error);
+            exit;
+        }
+
         errores::$error = false;
         $ctl = new _ctl_base\init();
         $ctl = new liberator($ctl);

@@ -237,6 +237,7 @@ class _ctl_base extends system{
      * @param array $params Parametros que seran integrados a los botones para enviar por GET
      * @param array $params_ajustados Parametros que seran integrados a los botones para enviar por GET
      * @return array|stdClass
+     * @version 10.27.0
      */
     final protected function base_upd(array $keys_selects, array $params, array $params_ajustados): array|stdClass
     {
@@ -607,7 +608,8 @@ class _ctl_base extends system{
     }
 
     /**
-     * @param array $keys_selects
+     * Integra los selectores basicos de una vista
+     * @param array $keys_selects Parametros previamente cargados para inputs
      * @return array
      */
     final protected function key_select_base(array $keys_selects): array

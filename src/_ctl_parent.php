@@ -33,9 +33,10 @@ class _ctl_parent extends _ctl_base {
     }
 
     /**
-     * @param bool $header
-     * @param bool $ws
-     * @param array $keys_selects
+     * Genera una vista de modificacion de registro
+     * @param bool $header Muestra resultado en web
+     * @param bool $ws Muestra resultado en json
+     * @param array $keys_selects parametros de inputs para diseño y valores
      * @return array|stdClass
      * @finalrev
      */

@@ -158,7 +158,7 @@ class _ctl_baseTest extends test {
 
     }
 
-    public function test_campos_view(): void
+    public function test_base_upd(): void
     {
         errores::$error = false;
 
@@ -168,6 +168,106 @@ class _ctl_baseTest extends test {
         $_GET['seccion'] = 'adm_accion';
 
 
+        $del = (new adm_seccion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al del', $del);
+            print_r($error);
+            exit;
+        }
+
+
+
+        $adm_seccion['id'] = 2;
+        $adm_seccion['descripcion'] = 'adm_accion';
+        $adm_seccion['adm_menu_id'] = 1;
+        $adm_seccion['adm_namespace_id'] = 1;
+        $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
+        $html = new html();
+        $html_controler = new html_controler($html);
+        $modelo = new adm_accion($this->link);
+        $link_obj = new links_menu($this->link, -1);
+
+        $_GET['accion'] = 'lista';
+        $del = (new adm_seccion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $alta = (new base_test)->alta_adm_accion(link: $this->link,adm_seccion_descripcion: 'adm_accion',descripcion: 'lista');
+        if(errores::$error){
+            $error = (new errores())->error('Error al alta', $alta);
+            print_r($error);
+            exit;
+        }
+
+        errores::$error = false;
+
+        $ctl = new _ctl_base(html: $html_controler, link: $this->link,modelo: $modelo,obj_link: $link_obj,paths_conf: $this->paths_conf);
+        $ctl->registro_id = 1;
+        $ctl->inputs = new stdClass();
+        $ctl->row_upd = new stdClass();
+        $ctl->registro = array();
+        $ctl->registro[] = '';
+        $ctl = new liberator($ctl);
+
+
+        errores::$error = false;
+
+        $del = (new adm_accion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+
+
+        $adm_accion['id'] = 1;
+        $adm_accion['adm_seccion_id'] = 1;
+        $adm_accion['descripcion'] = 'test';
+        $adm_accion['muestra_icono_btn'] = 'inactivo';
+        $alta = (new adm_accion($this->link))->alta_registro($adm_accion);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
+        $keys_selects = array();
+        $params = array();
+        $params_ajustados = array();
+        $resultado = $ctl->base_upd($keys_selects, $params, $params_ajustados);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase("index.php?seccion=adm_accion&a",$resultado->buttons[0]);
+        errores::$error = false;
+
+    }
+
+    public function test_campos_view(): void
+    {
+        errores::$error = false;
+
+        $_SESSION['usuario_id'] = 2;
+        $_SESSION['grupo_id'] = 2;
+        $_GET['session_id'] = mt_rand(1,99999999);
+        $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
+
+        $alta = (new base_test)->alta_adm_accion(link: $this->link,adm_seccion_descripcion: 'adm_accion',descripcion: 'lista');
+        if(errores::$error){
+            $error = (new errores())->error('Error al alta', $alta);
+            print_r($error);
+            exit;
+        }
         $html = new html();
         $html_controler = new html_controler($html);
         $modelo = new adm_accion($this->link);
