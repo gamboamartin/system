@@ -26,6 +26,10 @@ class validacion_dt extends validacion{
         return true;
     }
 
+    /**
+     * @param string $seccion
+     * @return bool|array
+     */
     final public function valida_data_column(string $seccion): bool|array
     {
         if(!isset($_SESSION)){

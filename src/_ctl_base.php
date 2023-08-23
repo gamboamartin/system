@@ -552,7 +552,7 @@ class _ctl_base extends system{
      * @return array
      * @version 0.288.38
      */
-    final protected function key_select(int $cols, bool $con_registros, array $filtro,string $key, array $keys_selects,
+    final public function key_select(int $cols, bool $con_registros, array $filtro,string $key, array $keys_selects,
                                   int|null $id_selected, string $label, array $columns_ds = array(),
                                         bool $disabled = false): array
     {

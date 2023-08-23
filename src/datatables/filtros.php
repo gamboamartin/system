@@ -21,6 +21,11 @@ class filtros{
         return $filtro;
     }
 
+    /**
+     * Integra los filtros de una accion permitida
+     * @param string $seccion Seccion en ejecucion
+     * @return array
+     */
     final public function filtro_accion_permitida(string $seccion): array
     {
         $filtro = array();
