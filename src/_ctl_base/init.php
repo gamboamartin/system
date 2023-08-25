@@ -1,4 +1,8 @@
 <?php
+/**+
+ * PRUEBAS COMPLETADAS
+ * POR DOCUMENTAR
+ */
 namespace gamboamartin\system\_ctl_base;
 use base\controller\controler;
 use gamboamartin\errores\errores;
