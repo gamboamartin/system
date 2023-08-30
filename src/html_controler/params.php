@@ -104,6 +104,7 @@ class params{
         $data->place_holder = $params->place_holder ?? $place_holder;
         $data->label = $params->label ?? str_replace('_',' ', strtoupper($place_holder));
         $data->required = $params->required ?? true;
+        $data->regex = $params->regex ?? '';
 
         $data = $this->params_base(data: $data, name: $name ,params:  $params);
         if(errores::$error){
