@@ -81,9 +81,18 @@ class initTest extends test {
 
     public function test_init_data_retornos(): void
     {
+        $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
         $_SESSION['session_id'] = 1;
         $_SESSION['grupo_id'] = 1;
         $_SESSION['usuario_id'] = 2;
+
+        $del = (new base_test)->del_adm_seccion(link: $this->link);
+        if(errores::$error){
+            $error = (new errores())->error('Error al del', $del);
+            print_r($error);
+            exit;
+        }
 
         $alta = (new base_test)->alta_adm_accion(link: $this->link,adm_seccion_descripcion: 'adm_accion',descripcion: 'lista');
         if(errores::$error){

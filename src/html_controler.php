@@ -375,6 +375,7 @@ class html_controler{
      * Integra un input de texto required en un div
      * @param int $cols Columnas css
      * @param bool $disabled attr disabled
+     * @param array $ids_css Identificadores extra de id
      * @param string $name name input
      * @param string $place_holder etiqueta input
      * @param string $regex integra un regex a un pattern
@@ -384,8 +385,9 @@ class html_controler{
      * @return array|string
      * @version 7.43.2
      */
-    private function div_input_text_required(int $cols, bool $disabled, string $name, string $place_holder,
-                                             string $regex, stdClass $row_upd, string $title, bool $value_vacio ): array|string
+    private function div_input_text_required(int $cols, bool $disabled, array $ids_css, string $name,
+                                             string $place_holder, string $regex, stdClass $row_upd,
+                                             string $title, bool $value_vacio ): array|string
     {
 
         $valida = $this->directivas->valida_data_label(name: $name,place_holder:  $place_holder);
@@ -398,8 +400,8 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al validar cols', data: $valida);
         }
 
-        $html =$this->directivas->input_text_required(disabled: $disabled,name: $name,place_holder: $place_holder,
-            row_upd: $row_upd, value_vacio: $value_vacio,regex: $regex, title: $title);
+        $html =$this->directivas->input_text_required(disabled: $disabled, name: $name, place_holder: $place_holder,
+            row_upd: $row_upd, value_vacio: $value_vacio, ids_css: $ids_css, regex: $regex, title: $title);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar input', data: $html);
         }
@@ -946,7 +948,8 @@ class html_controler{
     }
 
     public function input_numero_int(int $cols, string $name, stdClass $row_upd, bool $value_vacio,
-                                     bool $disabled = false, string $place_holder = 'Numero', string $title = 'Numero'): array|string
+                                     bool $disabled = false, array $ids_css = array(), string $place_holder = 'Numero',
+                                     string $title = 'Numero'): array|string
     {
 
         if($cols<=0){
@@ -958,8 +961,8 @@ class html_controler{
 
         $regex = $this->validacion->patterns['entero_positivo_html'];
 
-        $div = $this->div_input_text_required(cols: $cols, disabled: $disabled, name: $name, place_holder: $place_holder,
-            regex: $regex, row_upd: $row_upd, title: $title, value_vacio: $value_vacio);
+        $div = $this->div_input_text_required(cols: $cols, disabled: $disabled, ids_css: $ids_css, name: $name,
+            place_holder: $place_holder, regex: $regex, row_upd: $row_upd, title: $title, value_vacio: $value_vacio);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al integrar div', data: $div);
         }
@@ -1066,14 +1069,15 @@ class html_controler{
      * @param string $place_holder Tag Input
      * @param stdClass $row_upd Registro en proceso
      * @param bool $value_vacio si vacio no valida
+     * @param array $ids_css Identificadores extra id de css y java
      * @param string $regex integra atributo pattern
      * @param string $title integra un title a input
      * @return array|string
-     * @version 0.130.33
+     * @version 11.1.0
      */
     final public function input_text_required(int $cols, bool $disabled, string $name, string $place_holder,
-                                           stdClass $row_upd, bool $value_vacio, string $regex = '',
-                                           string $title = ''): array|string
+                                              stdClass $row_upd, bool $value_vacio, array $ids_css = array(),
+                                              string $regex = '', string $title = ''): array|string
     {
         $valida = $this->directivas->valida_cols(cols: $cols);
         if(errores::$error){
@@ -1084,8 +1088,9 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al validar datos ', data: $valida);
         }
 
-        $div = $this->div_input_text_required(cols: $cols, disabled: $disabled, name: $name,
-            place_holder: $place_holder, regex: $regex, row_upd: $row_upd, title: $title, value_vacio: $value_vacio);
+        $div = $this->div_input_text_required(cols: $cols, disabled: $disabled, ids_css: $ids_css,
+            name: $name, place_holder: $place_holder, regex: $regex, row_upd: $row_upd, title: $title,
+            value_vacio: $value_vacio);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al integrar div', data: $div);
         }
