@@ -371,6 +371,35 @@ class html_controler{
         return $dates;
     }
 
+    private function div_input_text(array $class_css,int $cols, bool $disabled, array $ids_css, string $name,
+                                    string $place_holder, string $regex, bool $required, stdClass $row_upd,
+                                    string $title, bool $value_vacio ): array|string
+    {
+
+        $valida = $this->directivas->valida_data_label(name: $name,place_holder:  $place_holder);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar datos ', data: $valida);
+        }
+
+        $valida = $this->directivas->valida_cols(cols: $cols);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar cols', data: $valida);
+        }
+
+        $html =$this->directivas->input_text_base(disabled: $disabled, name: $name, place_holder: $place_holder,
+            row_upd: $row_upd, value_vacio: $value_vacio, class_css: $class_css, ids_css: $ids_css, regex: $regex,
+            required: $required, title: $title);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar input', data: $html);
+        }
+
+        $div = $this->directivas->html->div_group(cols: $cols,html:  $html);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar div', data: $div);
+        }
+        return $div;
+    }
+
     /**
      * Integra un input de texto required en un div
      * @param int $cols Columnas css
@@ -1053,6 +1082,29 @@ class html_controler{
         }
 
         $div = $this->directivas->html->div_group(cols: $cols,html:  $html);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar div', data: $div);
+        }
+
+        return $div;
+    }
+
+    final public function input_text(int $cols, bool $disabled, string $name, string $place_holder, stdClass $row_upd,
+                                     bool $value_vacio, array $class_css = array(), array $ids_css = array(),
+                                     string $regex = '', bool $required = true, string $title = ''): array|string
+    {
+        $valida = $this->directivas->valida_cols(cols: $cols);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar columnas', data: $valida);
+        }
+        $valida = $this->directivas->valida_data_label(name: $name,place_holder:  $place_holder);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar datos ', data: $valida);
+        }
+
+        $div = $this->div_input_text(class_css: $class_css, cols: $cols, disabled: $disabled,
+            ids_css: $ids_css, name: $name, place_holder: $place_holder, regex: $regex, required: $required,
+            row_upd: $row_upd, title: $title, value_vacio: $value_vacio);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al integrar div', data: $div);
         }
