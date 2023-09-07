@@ -1103,7 +1103,7 @@ class html_controler{
         }
 
         $class_css[] = 'form-control';
-        $class_css[] = 'name';
+        $class_css[] = $name;
 
         $div = $this->div_input_text(class_css: $class_css, cols: $cols, disabled: $disabled,
             ids_css: $ids_css, name: $name, place_holder: $place_holder, regex: $regex, required: $required,
