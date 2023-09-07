@@ -186,6 +186,8 @@ class html_controler{
     }
 
 
+
+
     /**
      * Integra un boton link para rows de lista
      * @param array $accion_permitida Datos de accion
@@ -316,6 +318,12 @@ class html_controler{
         }
 
         return $a;
+    }
+
+    final public function button_para_java(string $id_css, string $style, string $tag): string
+    {
+        return "<a class='btn btn-$style' role='button' id='$id_css'>$tag</a>";
+
     }
 
     /**
