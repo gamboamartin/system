@@ -239,7 +239,7 @@ class _ctl_base extends system{
      * @return array|stdClass
      * @version 10.27.0
      */
-    final protected function base_upd(array $keys_selects, array $params, array $params_ajustados): array|stdClass
+    final public function base_upd(array $keys_selects, array $params, array $params_ajustados): array|stdClass
     {
 
         if(count($params) === 0){
