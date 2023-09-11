@@ -186,8 +186,6 @@ class html_controler{
     }
 
 
-
-
     /**
      * Integra un boton link para rows de lista
      * @param array $accion_permitida Datos de accion
@@ -253,6 +251,17 @@ class html_controler{
         $rows[$indice]['acciones'][$accion_permitida['adm_accion_descripcion']] = $link;
 
         return $rows;
+    }
+
+    final public function boton_submit(string $class_button, string $class_control, string $style, string $tag,
+                                       string $id_button = '' ): string
+    {
+        return "
+            <div class='control-group $class_control'>
+                <div class='controls'>
+                    <button type='submit' class='btn btn-$style $class_button' id='$id_button'>$tag</button>
+                </div>
+            </div>";
     }
 
     /**
