@@ -425,7 +425,7 @@ class _ctl_base extends system{
      * @return array|stdClass|string
      * @version 0.267.38
      */
-    final protected function init_modifica(): array|stdClass|string
+    final public function init_modifica(): array|stdClass|string
     {
         if($this->registro_id<=0){
             return $this->errores->error(mensaje: 'Error registro_id debe ser mayor a 0', data: $this->registro_id);
