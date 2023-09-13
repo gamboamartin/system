@@ -244,6 +244,28 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_button_para_java(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        //$html = new liberator($html);
+
+        $_SESSION['grupo_id'] = 2;
+
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+        $id_css = 'b';
+        $style = 'a';
+        $tag = 'v';
+        $resultado = $html->button_para_java($id_css, $style, $tag);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<a class='btn btn-a' role='button' id='b'>v</a>", $resultado);
+        errores::$error = false;
+    }
+
     public function test_cols_html(): void
     {
         errores::$error = false;

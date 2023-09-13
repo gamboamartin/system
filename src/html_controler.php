@@ -329,8 +329,28 @@ class html_controler{
         return $a;
     }
 
-    final public function button_para_java(string $id_css, string $style, string $tag): string
+    /**
+     * Genera un boton para ser utilizado con java
+     * @param string $id_css Identificador css
+     * @param string $style Estilo del boton
+     * @param string $tag Etiqueta del boton
+     * @return string|array
+     * @version 11.9.0
+     */
+    final public function button_para_java(string $id_css, string $style, string $tag): string|array
     {
+        $style = trim($style);
+        if($style === ''){
+            return $this->error->error(mensaje: 'Error style esta vacio', data: $style);
+        }
+        $id_css = trim($id_css);
+        if($id_css === ''){
+            return $this->error->error(mensaje: 'Error id_css esta vacio', data: $id_css);
+        }
+        $tag = trim($tag);
+        if($tag === ''){
+            return $this->error->error(mensaje: 'Error tag esta vacio', data: $tag);
+        }
         return "<a class='btn btn-$style' role='button' id='$id_css'>$tag</a>";
 
     }
