@@ -73,6 +73,8 @@ class params{
         $data->in = $params->in ?? array();
         $data->name = $params->name ?? $name;
         $data->registros = $params->registros ?? array();
+        $data->entidad_contenedora = $params->entidad_contenedora ?? '';
+        $data->id_preferido = $params->id_preferido ?? false;
 
         $data->extra_params_keys = array();
         if(isset($params->extra_params_keys) ){
@@ -161,6 +163,7 @@ class params{
         $data->label = str_replace('  ', ' ', $data->label);
         $data->key_descripcion_select = $params->key_descripcion_select ?? '';
         $data->columns_ds = $params->columns_ds ?? array();
+
 
         $data = $this->params_base(data: $data,name:  $label,params:  $params);
         if(errores::$error){
