@@ -1838,13 +1838,19 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
         }
 
+        $modelo_preferido = false;
+
+        if(is_object($params_select->modelo_preferido)){
+            $modelo_preferido = $params_select->modelo_preferido;
+        }
 
         $select  = $this->select_catalogo(cols: $params_select->cols, con_registros: $params_select->con_registros,
-            id_selected: $params_select->id_selected, modelo: $modelo, columns_ds: $params_select->columns_ds,
-            disabled: $params_select->disabled, extra_params_keys: $params_select->extra_params_keys,
-            filtro: $params_select->filtro, key_descripcion_select: $params_select->key_descripcion_select,
-            label: $params_select->label, not_in: $params_select->not_in, in: $params_select->in,
-            registros: $params_select->registros, required: $params_select->required);
+            id_selected: $params_select->id_selected, modelo: $modelo, modelo_preferido: $modelo_preferido,
+            columns_ds: $params_select->columns_ds, disabled: $params_select->disabled,
+            extra_params_keys: $params_select->extra_params_keys, filtro: $params_select->filtro,
+            key_descripcion_select: $params_select->key_descripcion_select, label: $params_select->label,
+            not_in: $params_select->not_in, in: $params_select->in, registros: $params_select->registros,
+            required: $params_select->required);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $select);
         }

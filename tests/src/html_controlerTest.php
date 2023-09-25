@@ -1009,7 +1009,7 @@ class html_controlerTest extends test {
         $params_select->registros = array();
         $params_select->entidad_contenedora = '';
         $params_select->entidad_preferida = '';
-        $params_select->id_preferido = false;
+        $params_select->modelo_preferido = false;
 
         $resultado = $html_controler->select_aut2($modelo, $params_select);
 
@@ -1041,7 +1041,7 @@ class html_controlerTest extends test {
         $params_select->registros = array();
         $params_select->entidad_contenedora = '';
         $params_select->entidad_preferida = '';
-        $params_select->id_preferido = false;
+        $params_select->modelo_preferido = false;
 
         $resultado = $html_controler->select_aut2($modelo, $params_select);
        // print_r($resultado);exit;
@@ -1068,7 +1068,7 @@ class html_controlerTest extends test {
         $params_select->registros = array();
         $params_select->entidad_contenedora = 'adm_accion';
         $params_select->entidad_preferida = 'adm_seccion';
-        $params_select->id_preferido = true;
+        $params_select->modelo_preferido = true;
 
         $resultado = $html_controler->select_aut2($modelo, $params_select);
         $this->assertIsString($resultado);
