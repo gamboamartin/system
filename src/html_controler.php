@@ -1815,7 +1815,7 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
         }
 
-        $keys = array('key_descripcion_select','entidad_preferida','entidad_contenedora');
+        $keys = array('key_descripcion_select','entidad_preferida');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $params_select, valida_vacio: false);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
@@ -1839,11 +1839,6 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
         }
         if($params_select->id_preferido){
-            $params_select->entidad_contenedora = trim($params_select->entidad_contenedora);
-            if($params_select->entidad_contenedora === ''){
-                return $this->error->error(mensaje: 'Error existe id_preferido entidad_contenedora debe tener datos',
-                    data:  $params_select->entidad_contenedora);
-            }
             $params_select->entidad_preferida = trim($params_select->entidad_preferida);
             if($params_select->entidad_preferida === ''){
                 return $this->error->error(mensaje: 'Error existe id_preferido entidad_preferida debe tener datos',
@@ -1899,11 +1894,6 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al validar cols', data: $valida);
         }
         if($id_preferido){
-            $entidad_contenedora = trim($entidad_contenedora);
-            if($entidad_contenedora === ''){
-                return $this->error->error(mensaje: 'Error existe id_preferido entidad_contenedora debe tener datos',
-                    data:  $entidad_contenedora);
-            }
             $entidad_preferida = trim($entidad_preferida);
             if($entidad_preferida === ''){
                 return $this->error->error(mensaje: 'Error entidad_preferida esta vacia',data:  $entidad_preferida);

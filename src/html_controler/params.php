@@ -73,7 +73,6 @@ class params{
         $data->in = $params->in ?? array();
         $data->name = $params->name ?? $name;
         $data->registros = $params->registros ?? array();
-        $data->entidad_contenedora = $params->entidad_contenedora ?? '';
         $data->entidad_preferida = $params->entidad_preferida ?? '';
         $data->id_preferido = $params->id_preferido ?? false;
 
