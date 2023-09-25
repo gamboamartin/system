@@ -709,9 +709,9 @@ class html_controler{
         return "<input type='hidden' name='$name' value='$value'>";
     }
 
-    protected function init_alta(array $keys_selects, modelo $modelo): array|stdClass
+    protected function init_alta(array $keys_selects, PDO $link): array|stdClass
     {
-        $selects = $this->selects_alta(keys_selects: $keys_selects, modelo: $modelo);
+        $selects = $this->selects_alta(keys_selects: $keys_selects, link: $link);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar selects', data: $selects);
         }
@@ -1753,16 +1753,18 @@ class html_controler{
 
     /**
      * Genera un select automatico conforme a params
-     * @param modelo $modelo
+     * @param PDO $link Conexion a la BD
      * @param string $name_model Nombre del modelo
      * @param stdClass $params Parametros a ejecutar para select
      * @param stdClass $selects Selects precargados
+     * @param string $namespace_model Nombre del namespace
      * @param string $tabla Tabla de datos
      * @return array|stdClass
      * @version 8.93.1
      */
-    private function select_aut(modelo $modelo, string $name_model, stdClass $params, stdClass $selects ,
-                                string $tabla = ''): array|stdClass
+    private function select_aut(
+        PDO $link, string $name_model, stdClass $params, stdClass $selects,string $namespace_model = '' ,
+        string $tabla = ''): array|stdClass
     {
         $name_model = trim($name_model);
         if($name_model === ''){
@@ -1779,7 +1781,10 @@ class html_controler{
         }
 
         $name_select_id = $tabla.'_id';
-
+        $modelo = (new modelo_base($link))->genera_modelo(modelo: $name_model,namespace_model: $namespace_model);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar modelo', data: $modelo);
+        }
         $select  = $this->select_catalogo(cols: $params_select->cols, con_registros: $params_select->con_registros,
             id_selected: $params_select->id_selected, modelo: $modelo, columns_ds: $params_select->columns_ds,
             disabled: $params_select->disabled, filtro: $params_select->filtro, label: $params_select->label,
@@ -1899,15 +1904,15 @@ class html_controler{
     }
 
 
-    private function selects(modelo $modelo, string $name_model, stdClass $params, stdClass $selects){
+    private function selects(PDO $link, string $name_model, stdClass $params, stdClass $selects){
         $data_params = $this->params_select_info(name_model: $name_model,params:  $params);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar parametros de info select', data: $data_params);
         }
 
 
-        $selects  = $this->select_aut(modelo: $modelo,name_model:  $data_params->name_model,params:  $params,
-            selects: $selects, tabla: $data_params->tabla);
+        $selects  = $this->select_aut(link: $link,name_model:  $data_params->name_model,params:  $params, selects: $selects,
+            namespace_model: $data_params->namespace_model, tabla: $data_params->tabla);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $selects);
         }
@@ -1918,11 +1923,11 @@ class html_controler{
     /**
      * Genera selects en volumen con parametros
      * @param array $keys_selects conjunto de selects
-     * @param modelo $modelo
+     * @param PDO $link Conexion a la base de datos
      * @return array|stdClass
      * @version 0.100.32
      */
-    protected function selects_alta(array $keys_selects, modelo $modelo): array|stdClass
+    protected function selects_alta(array $keys_selects, PDO $link): array|stdClass
     {
 
         $selects = new stdClass();
@@ -1933,7 +1938,7 @@ class html_controler{
                 return $this->error->error(mensaje: 'Error $params debe ser un objeto', data: $params);
             }
 
-            $selects  = $this->selects(modelo: $modelo, name_model: $name_model,params:  $params,selects:  $selects);
+            $selects  = $this->selects(link: $link, name_model: $name_model,params:  $params,selects:  $selects);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar select', data: $selects);
             }

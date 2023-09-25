@@ -976,8 +976,8 @@ class html_controlerTest extends test {
         $name_model = 'adm_seccion';
         $params = new stdClass();
         $selects = new stdClass();
-        //$namespace_model = 'gamboamartin\\administrador\\models';
-        $resultado = $html->select_aut(modelo: $modelo, name_model: $name_model, params: $params, selects: $selects);
+        $namespace_model = 'gamboamartin\\administrador\\models';
+        $resultado = $html->select_aut( link: $this->link, name_model: $name_model, params: $params, selects: $selects, namespace_model: $namespace_model);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase("l selectpicker color-secondary  adm_seccion_id' data-live-search='true' id='adm_seccion_id' n", $resultado->adm_seccion_id);
@@ -1117,7 +1117,7 @@ class html_controlerTest extends test {
         $keys_selects['adm_seccion'] = new stdClass();
         $keys_selects['adm_seccion']->namespace_model = 'gamboamartin\\administrador\\models';
         $modelo = new adm_seccion(link: $this->link);
-        $resultado = $html->selects_alta(keys_selects: $keys_selects,modelo:  $modelo);
+        $resultado = $html->selects_alta(keys_selects: $keys_selects, link: $this->link);
 
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
