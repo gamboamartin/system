@@ -1848,12 +1848,11 @@ class html_controler{
 
         $select  = $this->select_catalogo(cols: $params_select->cols, con_registros: $params_select->con_registros,
             id_selected: $params_select->id_selected, modelo: $modelo, columns_ds: $params_select->columns_ds,
-            disabled: $params_select->disabled, entidad_contenedora: $params_select->entidad_contenedora,
-            entidad_preferida: $params_select->entidad_preferida, extra_params_keys: $params_select->extra_params_keys,
-            filtro: $params_select->filtro, id_preferido: $params_select->id_preferido,
-            key_descripcion_select: $params_select->key_descripcion_select, label: $params_select->label,
-            not_in: $params_select->not_in, in: $params_select->in, registros: $params_select->registros,
-            required: $params_select->required);
+            disabled: $params_select->disabled, entidad_preferida: $params_select->entidad_preferida,
+            extra_params_keys: $params_select->extra_params_keys, filtro: $params_select->filtro,
+            id_preferido: $params_select->id_preferido, key_descripcion_select: $params_select->key_descripcion_select,
+            label: $params_select->label, not_in: $params_select->not_in, in: $params_select->in,
+            registros: $params_select->registros, required: $params_select->required);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $select);
         }
@@ -1881,12 +1880,12 @@ class html_controler{
      */
     final public function select_catalogo(int $cols, bool $con_registros, int $id_selected, modelo $modelo,
                                           array $columns_ds = array(), bool $disabled = false,
-                                          string $entidad_contenedora = '', string $entidad_preferida = '',
-                                          array $extra_params_keys = array(), array $filtro=array(),
-                                          bool $id_preferido = false, string $key_descripcion = '',
-                                          string $key_descripcion_select = '', string $key_id = '', string $label = '',
-                                          string $name = '', array $not_in = array(), array $in = array(),
-                                          array $registros = array(), bool $required = false): array|string
+                                          string $entidad_preferida = '', array $extra_params_keys = array(),
+                                          array $filtro=array(), bool $id_preferido = false,
+                                          string $key_descripcion = '', string $key_descripcion_select = '',
+                                          string $key_id = '', string $label = '', string $name = '',
+                                          array $not_in = array(), array $in = array(), array $registros = array(),
+                                          bool $required = false): array|string
     {
 
         $valida = (new directivas(html:$this->html_base))->valida_cols(cols:$cols);
@@ -1909,9 +1908,9 @@ class html_controler{
         }
 
         $select = $this->html_base->select(cols: $cols, id_selected: $id_selected, label: $init->label,
-            modelo: $modelo, name: $init->name, values: $init->values, columns_ds: $columns_ds,
-            disabled: $disabled, entidad_contenedora: $entidad_contenedora, entidad_preferida: $entidad_preferida,
-            extra_params_key: $extra_params_keys, id_preferido: $id_preferido, required: $required);
+            modelo: $modelo, name: $init->name, values: $init->values, columns_ds: $columns_ds, disabled: $disabled,
+            entidad_preferida: $entidad_preferida, extra_params_key: $extra_params_keys, id_preferido: $id_preferido,
+            required: $required);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $select);
         }
