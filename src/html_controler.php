@@ -1893,8 +1893,8 @@ class html_controler{
         }
 
         $select = $this->html_base->select(cols: $cols, id_selected: $id_selected, label: $init->label,
-            name: $init->name, values: $init->values, columns_ds: $columns_ds, disabled: $disabled,
-            extra_params_key: $extra_params_keys, required: $required);
+            modelo: $modelo, name: $init->name, values: $init->values, columns_ds: $columns_ds,
+            disabled: $disabled, extra_params_key: $extra_params_keys, required: $required);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $select);
         }
