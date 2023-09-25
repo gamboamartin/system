@@ -1007,9 +1007,13 @@ class html_controlerTest extends test {
         $params_select->columns_ds = array();
         $params_select->key_descripcion_select = '';
         $params_select->registros = array();
+        $params_select->entidad_contenedora = '';
+        $params_select->entidad_preferida = '';
+        $params_select->id_preferido = false;
 
         $resultado = $html_controler->select_aut2($modelo, $params_select);
 
+       // print_r($resultado);exit;
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase("s='controls'><select class='form-control selectpicker color-secondary  adm_menu_id' data", $resultado);
@@ -1035,12 +1039,41 @@ class html_controlerTest extends test {
         $params_select->key_descripcion_select = 'adm_menu_id';
         $params_select->columns_ds = array();
         $params_select->registros = array();
+        $params_select->entidad_contenedora = '';
+        $params_select->entidad_preferida = '';
+        $params_select->id_preferido = false;
 
         $resultado = $html_controler->select_aut2($modelo, $params_select);
        // print_r($resultado);exit;
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase("<div class='control-group col-sm-1'><div class='controls'><select class='form-control selectpicker color-secondary  adm_menu_id' data-live-search='true' id='adm_menu_id' name='adm_menu_id' required >", $resultado);
+        errores::$error = false;
+
+        $modelo = new adm_accion($this->link);
+
+        $params_select = new stdClass();
+        $params_select->cols = '1';
+        $params_select->con_registros = true;
+        $params_select->id_selected = '-1';
+        $params_select->disabled = false;
+        $params_select->extra_params_keys = array();
+        $params_select->filtro = array();
+        $params_select->label = 'a';
+        $params_select->not_in = array();
+        $params_select->in = array();
+        $params_select->required = true;
+        $params_select->key_descripcion_select = 'adm_menu_id';
+        $params_select->columns_ds = array();
+        $params_select->registros = array();
+        $params_select->entidad_contenedora = 'adm_accion';
+        $params_select->entidad_preferida = 'adm_seccion';
+        $params_select->id_preferido = true;
+
+        $resultado = $html_controler->select_aut2($modelo, $params_select);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase("<div class='control-group col-sm-1'><div class='controls'><select class='form-control selectpicker color-secondary  adm_accion_id' data-live-search='true' id='adm_accion_id' name='adm_accion_id' required ><option value=''  >Selecciona una opcion</option>", $resultado);
         errores::$error = false;
 
 
