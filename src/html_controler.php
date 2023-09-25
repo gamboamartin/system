@@ -713,7 +713,7 @@ class html_controler{
     {
         $selects = $this->selects_alta(keys_selects: $keys_selects, link: $link);
         if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al generar selects', data: $selects);
+            return $this->error->error(mensaje: 'Error al generar selects', data: $selects); 
         }
 
         $texts = $this->texts_alta(row_upd: new stdClass(), value_vacio: true);
