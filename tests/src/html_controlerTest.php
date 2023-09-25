@@ -719,7 +719,7 @@ class html_controlerTest extends test {
         $item =  'a';
         $modelo = new adm_accion(link: $this->link);
         $selects = new stdClass();
-        $resultado = $html->integra_select($keys_selects, $modelo, $item, $selects);
+        $resultado = $html->integra_select(keys_selects: $keys_selects,modelo:  $modelo,item:  $item,selects:  $selects);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase("<div class='control-group col-sm-6'><div class='controls'><select class='form-control selectpicker color-secondary  adm_accion_id' data-live-search='true' id='adm_accion_id' name='adm_accion_id' required >",$resultado->a);
