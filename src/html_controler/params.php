@@ -73,8 +73,7 @@ class params{
         $data->in = $params->in ?? array();
         $data->name = $params->name ?? $name;
         $data->registros = $params->registros ?? array();
-        $data->entidad_preferida = $params->entidad_preferida ?? '';
-        $data->id_preferido = $params->id_preferido ?? false;
+        $data->modelo_preferido = $params->modelo_preferido ?? '';
 
         $data->extra_params_keys = array();
         if(isset($params->extra_params_keys) ){
