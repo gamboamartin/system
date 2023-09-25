@@ -1775,7 +1775,6 @@ class html_controler{
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al maquetar params', data: $params_select);
         }
-
         if($tabla === ''){
             $tabla = $name_model;
         }
