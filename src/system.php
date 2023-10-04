@@ -6,6 +6,7 @@ use config\generales;
 use config\views;
 use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\errores\errores;
+use gamboamartin\plugins\exportador;
 use gamboamartin\template\directivas;
 use gamboamartin\template\html;
 use PDO;
@@ -616,6 +617,17 @@ class system extends controlador_base{
             return $this->retorno_error(
                 mensaje: 'Error al obtener data', data: $get_data,
                 header: $header, ws: $ws);
+        }
+
+        $nombre_hojas[] = 'Registros';
+        $keys_hojas['Registros'] = new stdClass();
+        $keys_hojas['Registros']->keys = array();
+        $keys_hojas['Registros']->registros = $get_data['data'];
+
+        $xls = (new exportador())->genera_xls(header: $header,name:  $this->seccion,nombre_hojas:  $nombre_hojas,
+            keys_hojas: $keys_hojas, path_base: $this->path_base);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al obtener xls',data:  $xls, header: $header, ws: $ws);
         }
 
         $this->registros = array();
