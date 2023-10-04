@@ -350,6 +350,9 @@ class links_menu{
         if(!isset($this->links->$seccion->lista)){
             $this->links->$seccion->lista = '';
         }
+        if(!isset($this->links->$seccion->descarga_excel)){
+            $this->links->$seccion->descarga_excel = '';
+        }
         if(!isset($this->links->$seccion->modifica)){
             $this->links->$seccion->modifica = '';
         }
@@ -361,6 +364,7 @@ class links_menu{
         $controler->link_alta_bd = $this->links->$seccion->alta_bd;
         $controler->link_elimina_bd = $this->links->$seccion->elimina_bd;
         $controler->link_lista = $this->links->$seccion->lista;
+        $controler->link_descarga_excel = $this->links->$seccion->descarga_excel;
         $controler->link_modifica = $this->links->$seccion->modifica;
         $controler->link_modifica_bd = $this->links->$seccion->modifica_bd;
         return $this->links;
@@ -756,6 +760,12 @@ class links_menu{
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar listas', data: $listas);
         }
+
+        $descarga_excel  = $this->descargas_excel(link: $link);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar descarga excel', data: $descarga_excel);
+        }
+
         $modificas  = $this->modificas(link: $link, registro_id: $registro_id);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar modificas', data: $modificas);
@@ -893,6 +903,22 @@ class links_menu{
 
     }
 
+    private function descargas_excel(PDO $link): array|stdClass
+    {
+
+        $this->session_id = trim($this->session_id);
+        if($this->session_id === ''){
+            return $this->error->error(mensaje: 'Error links_menu->session_id esta vacio', data: $this->session_id);
+        }
+
+        $links = $this->links_sin_id(accion: 'descarga_excel', link: $link);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializa link', data: $links);
+        }
+
+        return $this->links;
+
+    }
     private function modifica(PDO $link, int $registro_id, string $seccion): string|array
     {
 

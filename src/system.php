@@ -606,6 +606,36 @@ class system extends controlador_base{
         return true;
     }
 
+    public function descarga_excel(bool $header, bool $ws = false): array
+    {
+        if(isset($_POST['search'])){
+            $_GET['search']['value'] = $_POST['search'];
+        }
+        $get_data = $this->get_data(header:$header,ws: $ws);
+        if (errores::$error) {
+            return $this->retorno_error(
+                mensaje: 'Error al obtener data', data: $get_data,
+                header: $header, ws: $ws);
+        }
+
+        $this->registros = array();
+
+        if(!$this->lista_get_data) {
+            $registros_view = (new lista())->rows_view_lista(controler: $this);
+            if (errores::$error) {
+                return $this->retorno_error(
+                    mensaje: 'Error al generar rows para lista en '.$this->seccion, data: $registros_view,
+                    header: $header, ws: $ws);
+            }
+
+            $this->registros = $registros_view;
+            $n_registros = count($registros_view);
+            $this->n_registros = $n_registros;
+        }
+
+        return $this->registros;
+    }
+
     public function elimina_bd(bool $header, bool $ws): array|stdClass
     {
         $transaccion_previa = false;
