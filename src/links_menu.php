@@ -694,6 +694,22 @@ class links_menu{
         return $lista_cstp;
     }
 
+    private function link_descarga_excel(PDO $link, string $seccion): array|string
+    {
+        $lista_cstp = $this->descarga_excel(link: $link, seccion: $seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener link de lista', data: $lista_cstp);
+        }
+
+        $adm_menu_id = -1;
+        if(isset($_GET['adm_menu_id'])){
+            $adm_menu_id = $_GET['adm_menu_id'];
+        }
+
+        $lista_cstp.="&session_id=$this->session_id&adm_menu_id=$adm_menu_id";
+        return $lista_cstp;
+    }
+
 
     private function link_modifica(PDO $link, int $registro_id, string $seccion): array|string
     {
@@ -877,6 +893,29 @@ class links_menu{
                 $adm_menu_id = $_GET['adm_menu_id'];
             }
             $lista = "./index.php?seccion=$seccion&accion=lista&adm_menu_id=$adm_menu_id";
+        }
+
+        return $lista;
+    }
+
+    private function descarga_excel(pdo $link, string $seccion): string|array
+    {
+
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(mensaje: 'Error la seccion esta vacia', data: $seccion);
+        }
+        $tengo_permiso = (new adm_usuario(link: $link))->tengo_permiso(adm_accion: 'descarga_excel', adm_seccion: $seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar si tengo permiso', data: $tengo_permiso);
+        }
+        $lista = '';
+        if($tengo_permiso) {
+            $adm_menu_id = -1;
+            if(isset($_GET['adm_menu_id'])){
+                $adm_menu_id = $_GET['adm_menu_id'];
+            }
+            $lista = "./index.php?seccion=$seccion&accion=descarga_excel&adm_menu_id=$adm_menu_id";
         }
 
         return $lista;
