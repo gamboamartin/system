@@ -619,10 +619,23 @@ class system extends controlador_base{
                 header: $header, ws: $ws);
         }
 
+        $keys= array();
+        foreach (array_keys($get_data['data']) as $key) {
+            $keys[$key] = strtoupper(str_replace('_', ' ', $key));
+        }
+
+        $registros = array();
+        foreach ($get_data['data'] as $row) {
+            $registros[] = array_combine(preg_replace(array_map(function ($s) {
+                return "/^$s$/";
+            },
+                array_keys($keys)), $keys, array_keys($row)), $row);
+        }
+
         $nombre_hojas[] = 'Registros';
         $keys_hojas['Registros'] = new stdClass();
-        $keys_hojas['Registros']->keys = array();
-        $keys_hojas['Registros']->registros = $get_data['data'];
+        $keys_hojas['Registros']->keys = $keys;
+        $keys_hojas['Registros']->registros = $registros;
 
         $xls = (new exportador())->genera_xls(header: $header,name:  $this->seccion,nombre_hojas:  $nombre_hojas,
             keys_hojas: $keys_hojas, path_base: $this->path_base);
