@@ -688,6 +688,19 @@ class html_controler{
         return $style_custom;
     }
 
+    final public function header_collapsible(string $id_css_button, string $style_button, string $tag_button,
+                                             string $tag_header){
+
+        $btn = $this->button_para_java(id_css: $id_css_button,style:  $style_button,tag:  $tag_button);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al btn_collapse_all',data:  $btn);
+        }
+
+        return "<div class='col-md-12'>
+                    <hr><h4>$tag_header $btn </h4><hr>
+                    </div>";
+    }
+
     /**
      * Genera un input de tipo hidden
      * @param string $name Nombre del input
