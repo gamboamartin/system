@@ -594,35 +594,33 @@ class system extends controlador_base{
         return true;
     }
 
-    public function descarga_excel(bool $header, bool $ws = false): array
+    public function descarga_excel(bool $header, bool $ws = false): bool|array
     {
-        if(isset($_POST['search'])){
-            $_GET['search']['value'] = $_POST['search'];
+        if(isset($_GET['texto_busqueda'])){
+            $_GET['search']['value'] = $_GET['texto_busqueda'];
         }
-        $get_data = $this->get_data(header:$header,ws: $ws);
+        $get_data = $this->get_data(header:$header,ws: false);
         if (errores::$error) {
             return $this->retorno_error(
                 mensaje: 'Error al obtener data', data: $get_data,
                 header: $header, ws: $ws);
         }
 
-        $keys= array();
-        foreach (array_keys($get_data['data']) as $key) {
-            $keys[$key] = strtoupper(str_replace('_', ' ', $key));
+        $ths = array();
+        foreach ($this->datatables[0]['columns'] as $columna){
+            $ths[] = array('etiqueta'=>$columna->title, 'campo'=>$columna->data);
         }
 
-        $registros = array();
-        foreach ($get_data['data'] as $row) {
-            $registros[] = array_combine(preg_replace(array_map(function ($s) {
-                return "/^$s$/";
-            },
-                array_keys($keys)), $keys, array_keys($row)), $row);
+        $keys = array();
+        foreach ($ths as $data_th){
+            if($data_th['etiqueta'] !== 'Acciones')
+                $keys[] = $data_th['campo'];
         }
 
         $nombre_hojas[] = 'Registros';
         $keys_hojas['Registros'] = new stdClass();
         $keys_hojas['Registros']->keys = $keys;
-        $keys_hojas['Registros']->registros = $registros;
+        $keys_hojas['Registros']->registros = $get_data['data'];
 
         $xls = (new exportador())->genera_xls(header: $header,name:  $this->seccion,nombre_hojas:  $nombre_hojas,
             keys_hojas: $keys_hojas, path_base: $this->path_base);
@@ -630,22 +628,7 @@ class system extends controlador_base{
             return $this->retorno_error(mensaje: 'Error al obtener xls',data:  $xls, header: $header, ws: $ws);
         }
 
-        $this->registros = array();
-
-        if(!$this->lista_get_data) {
-            $registros_view = (new lista())->rows_view_lista(controler: $this);
-            if (errores::$error) {
-                return $this->retorno_error(
-                    mensaje: 'Error al generar rows para lista en '.$this->seccion, data: $registros_view,
-                    header: $header, ws: $ws);
-            }
-
-            $this->registros = $registros_view;
-            $n_registros = count($registros_view);
-            $this->n_registros = $n_registros;
-        }
-
-        return $this->registros;
+        return false;
     }
 
     public function elimina_bd(bool $header, bool $ws): array|stdClass
