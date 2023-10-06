@@ -336,13 +336,32 @@ class datatables{
      * @param string $style Estilo de boton
      * @param array $styles Estilos
      * @return array|stdClass
+     * @version 13.62.0
      */
     private function database_link(array $adm_accion_grupo, html_controler $html, int $registro_id, string $style,
                                   array $styles = array('margin-left'=>'2px', 'margin-bottom'=>'2px') ): array|stdClass
     {
+        $keys = array('adm_accion_muestra_icono_btn','adm_accion_muestra_titulo_btn','adm_accion_descripcion',
+            'adm_accion_titulo','adm_seccion_descripcion');
+        $valida = (new validacion())->valida_existencia_keys(keys: $keys, registro: $adm_accion_grupo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar adm_accion_grupo', data: $valida);
+        }
+        $keys = array('adm_accion_muestra_icono_btn','adm_accion_muestra_titulo_btn');
+        $valida = (new validacion())->valida_statuses(keys: $keys, registro: $adm_accion_grupo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar adm_accion_grupo', data: $valida);
+        }
+        $style = trim($style);
+        if($style === ''){
+            return $this->error->error(mensaje: 'Error la $style esta vacia', data: $style);
+        }
 
-        $icon = $adm_accion_grupo['adm_accion_icono'];
+        if(!isset($adm_accion_grupo['adm_accion_icono'])){
+            $adm_accion_grupo['adm_accion_icono']  = '';
+        }
 
+        $icon = trim($adm_accion_grupo['adm_accion_icono']);
 
 
         $data_icon = (new params())->data_icon(adm_accion: $adm_accion_grupo);
@@ -374,6 +393,10 @@ class datatables{
      * @param array $filtro Filtros
      * @param string $identificador
      * @param array $data
+     * @param array $in
+     * @param bool $multi_selects
+     * @param bool $menu_active
+     * @param string $type
      * @return array
      * @version 0.152.33
      */

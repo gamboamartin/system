@@ -7,6 +7,8 @@ use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\administrador\models\adm_seccion_pertenece;
 use gamboamartin\errores\errores;
 use gamboamartin\system\datatables;
+use gamboamartin\system\html_controler;
+use gamboamartin\template\html;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 
@@ -25,10 +27,6 @@ class datatablesTest extends test {
         $this->paths_conf->database = '/var/www/html/system/config/database.php';
         $this->paths_conf->views = '/var/www/html/system/config/views.php';
     }
-
-
-
-
 
     public function test_acciones_permitidas(): void
     {
@@ -379,6 +377,32 @@ class datatablesTest extends test {
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("A", $resultado['a_a']['titulo']);
+        errores::$error = false;
+    }
+
+    public function test_database_link(): void
+    {
+        errores::$error = false;
+        $datatables = new datatables();
+        $datatables = new liberator($datatables);
+        $_SESSION['grupo_id'] = 1;
+        $_GET['session_id'] = 1;
+        $adm_accion_grupo = array();
+        $_html = new html();
+        $html = new html_controler(html: $_html);
+        $registro_id = -1;
+        $style = 'a';
+
+        $adm_accion_grupo['adm_accion_muestra_icono_btn'] = 'inactivo';
+        $adm_accion_grupo['adm_accion_muestra_titulo_btn'] = 'activo';
+        $adm_accion_grupo['adm_accion_descripcion'] = 'c';
+        $adm_accion_grupo['adm_accion_titulo'] = 'c';
+        $adm_accion_grupo['adm_seccion_descripcion'] = 'c';
+
+        $resultado = $datatables->database_link($adm_accion_grupo, $html, $registro_id, $style);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<a role='button' title='c' href='index.php?seccion=c&accion=c&registro_id=-1&session_id=1&adm_menu_id=-1' class='btn btn-a ' style='margin-left: 2px; margin-bottom: 2px; '>c</a>", $resultado->link_con_id);
         errores::$error = false;
     }
 
