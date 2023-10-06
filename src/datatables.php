@@ -24,7 +24,8 @@ class datatables{
      * Obtiene las acciones permitidas de un grupo de usuario
      * @param PDO $link Conexion a la base de datos
      * @param string $seccion Seccion de controlador
-     * @param array $not_actions
+     * @param array $not_actions Acciones que no seran mostradas
+     * @param array $columnas Columnas a mostrar en la lista
      * @return array
      * @version 0.153.33
      */
@@ -307,7 +308,8 @@ class datatables{
 
 
 
-    final public function data_link(array $adm_accion_grupo, array $data_result, html $html_base, string $key, int $registro_id): array|stdClass
+    final public function data_link(array $adm_accion_grupo, array $data_result, html $html_base, string $key,
+                                    int $registro_id): array|stdClass
     {
         $style = (new html_controler(html: $html_base))->style_btn(
             accion_permitida: $adm_accion_grupo, row: $data_result['registros'][$key]);
@@ -316,7 +318,7 @@ class datatables{
         }
 
 
-        $data_link = (new datatables())->database_link(adm_accion_grupo: $adm_accion_grupo,
+        $data_link = $this->database_link(adm_accion_grupo: $adm_accion_grupo,
             html: (new html_controler(html: $html_base)),registro_id:  $registro_id, style: $style);
 
         if(errores::$error){
@@ -326,7 +328,16 @@ class datatables{
         return $data_link;
     }
 
-    final public function database_link(array $adm_accion_grupo, html_controler $html, int $registro_id, string $style,
+    /**
+     * Obtiene el link de accion
+     * @param array $adm_accion_grupo Permiso
+     * @param html_controler $html Base html
+     * @param int $registro_id Identificador de registro en row
+     * @param string $style Estilo de boton
+     * @param array $styles Estilos
+     * @return array|stdClass
+     */
+    private function database_link(array $adm_accion_grupo, html_controler $html, int $registro_id, string $style,
                                   array $styles = array('margin-left'=>'2px', 'margin-bottom'=>'2px') ): array|stdClass
     {
 
