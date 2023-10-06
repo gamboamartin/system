@@ -32,11 +32,22 @@ class init{
         return $draw;
     }
 
+    final public function in(){
+        $in  = array();
+        if (isset($_GET['in'])){
+            $in = $_GET['in'];
+        }
+        return $in;
+    }
+
     /**
      * Inicializa datatables
      * @param array $filtro Filtro
      * @param string $identificador
      * @param array $data
+     * @param array $in
+     * @param bool $multi_selects
+     * @param string $type
      * @return array
      * @version 0.151.33
      */
@@ -86,9 +97,22 @@ class init{
         return $filtro;
     }
 
+    final public function order(array $datatable): array
+    {
+        $order  = array();
+        if (isset($_GET['order'])){
+            if (count($datatable['columns']) - 1 > $_GET['order'][0]['column']){
+                $campo = $datatable['columns'][$_GET['order'][0]['column']]->data;
+                $order = array($campo => $_GET['order'][0]['dir'] );
+            }
+        }
+        return $order;
+    }
+
     /**
      * Integra el numero de registros por pagina en el get data
      * @return int
+     * @version 13.63.0
      */
     final public function n_rows_for_page(): int
     {
@@ -99,6 +123,11 @@ class init{
         return $n_rows_for_page;
     }
 
+    /**
+     * Obtiene la pagina de ejecucion
+     * @param int $n_rows_for_page Registros por pagina
+     * @return int
+     */
     final public function pagina(int $n_rows_for_page): int
     {
         $pagina = 1;

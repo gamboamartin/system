@@ -68,6 +68,13 @@ class filtros{
         return $filtro_especial;
     }
 
+    /**
+     * Genera el filtro especial para ser ejecutado en listas GET
+     * @param array $datatable datos de datable
+     * @param array $filtro_especial Filtro a integrar
+     * @param string $str Datos para filtro
+     * @return array
+     */
     private function filtros_especiales_datatable(array $datatable, array $filtro_especial, string $str): array
     {
         foreach ($datatable["filtro"] as $indice=>$column) {
@@ -81,6 +88,10 @@ class filtros{
         return $filtro_especial;
     }
 
+    /**
+     * @param array $datatable
+     * @return array
+     */
     final public function genera_filtro_especial_datatable(array $datatable): array
     {
         $filtro_especial = array();

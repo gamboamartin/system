@@ -93,5 +93,20 @@ class initTest extends test {
         errores::$error = false;
 
     }
+
+    public function test_n_rows_for_page(): void
+    {
+        errores::$error = false;
+        $datatables = new init();
+        //$datatables = new liberator($datatables);
+
+        $_GET['length'] = '999';
+
+        $resultado = $datatables->n_rows_for_page();
+        $this->assertIsInt($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(999,$resultado);
+        errores::$error = false;
+    }
 }
 

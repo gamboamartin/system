@@ -1,5 +1,6 @@
 <?php
 namespace gamboamartin\system;
+use config\generales;
 use gamboamartin\administrador\models\adm_accion_grupo;
 use gamboamartin\errores\errores;
 use gamboamartin\system\datatables\acciones;
@@ -306,11 +307,57 @@ class datatables{
         return $columns;
     }
 
-
-
+    /**
+     * Integra los datos de un link
+     * @param array $adm_accion_grupo Registro de permiso
+     * @param array $data_result Resultado previo
+     * @param html $html_base Html lib
+     * @param string $key Key de link
+     * @param int $registro_id Registro de ejecucion
+     * @return array|stdClass
+     * @version 13.63.0
+     */
     final public function data_link(array $adm_accion_grupo, array $data_result, html $html_base, string $key,
                                     int $registro_id): array|stdClass
     {
+
+        if(!isset($data_result['registros'])){
+            return $this->error->error(mensaje: 'Error data_result[registros] no existe',data:  $data_result);
+        }
+        if(!is_array($data_result['registros'])){
+            return $this->error->error(mensaje: 'Error data_result[registros] debe ser una array',data:  $data_result);
+        }
+
+        $key = trim($key);
+        if($key === ''){
+            return $this->error->error(mensaje: 'Error key esta vacio',data:  $key);
+        }
+
+        if(!isset($data_result['registros'][$key])){
+            return $this->error->error(mensaje: 'Error $data_result[registros][key] no existe',data:  $data_result);
+        }
+        if(!is_array($data_result['registros'][$key])){
+            return $this->error->error(mensaje: 'Error $data_result[registros][key] debe ser un array',
+                data:  $data_result);
+        }
+        if(count($data_result['registros'][$key]) === 0){
+            return $this->error->error(mensaje: 'Error $data_result[registros][key] esta vacio', data:  $data_result);
+        }
+        $valida = (new html_controler(html: $html_base))->valida_boton_data_accion(accion_permitida: $adm_accion_grupo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar adm_accion_grupo',data:  $valida);
+        }
+
+        $valida = $this->valida_data_permiso(adm_accion_grupo: $adm_accion_grupo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar adm_accion_grupo', data: $valida);
+        }
+        $session_id = (new generales())->session_id;
+
+        if($session_id === ''){
+            return $this->error->error(mensaje: 'Error la $session_id esta vacia', data: $session_id);
+        }
+
         $style = (new html_controler(html: $html_base))->style_btn(
             accion_permitida: $adm_accion_grupo, row: $data_result['registros'][$key]);
         if(errores::$error){
@@ -341,20 +388,18 @@ class datatables{
     private function database_link(array $adm_accion_grupo, html_controler $html, int $registro_id, string $style,
                                   array $styles = array('margin-left'=>'2px', 'margin-bottom'=>'2px') ): array|stdClass
     {
-        $keys = array('adm_accion_muestra_icono_btn','adm_accion_muestra_titulo_btn','adm_accion_descripcion',
-            'adm_accion_titulo','adm_seccion_descripcion');
-        $valida = (new validacion())->valida_existencia_keys(keys: $keys, registro: $adm_accion_grupo);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar adm_accion_grupo', data: $valida);
-        }
-        $keys = array('adm_accion_muestra_icono_btn','adm_accion_muestra_titulo_btn');
-        $valida = (new validacion())->valida_statuses(keys: $keys, registro: $adm_accion_grupo);
+        $valida = $this->valida_data_permiso(adm_accion_grupo: $adm_accion_grupo);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar adm_accion_grupo', data: $valida);
         }
         $style = trim($style);
         if($style === ''){
             return $this->error->error(mensaje: 'Error la $style esta vacia', data: $style);
+        }
+        $session_id = (new generales())->session_id;
+
+        if($session_id === ''){
+            return $this->error->error(mensaje: 'Error la $session_id esta vacia', data: $session_id);
         }
 
         if(!isset($adm_accion_grupo['adm_accion_icono'])){
@@ -634,18 +679,16 @@ class datatables{
             return $this->error->error(mensaje: 'Error al obtener filtro_especial', data: $filtro_especial);
         }
 
-        $in  = array();
-        if (isset($_GET['in'])){
-            $in = $_GET['in'];
+        $in = (new \gamboamartin\system\datatables\init())->in();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener in', data: $in);
         }
 
-        $order  = array();
-        if (isset($_GET['order'])){
-            if (count($datatable['columns']) - 1 > $_GET['order'][0]['column']){
-                $campo = $datatable['columns'][$_GET['order'][0]['column']]->data;
-                $order = array($campo => $_GET['order'][0]['dir'] );
-            }
+        $order = (new \gamboamartin\system\datatables\init())->order(datatable: $datatable);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener order', data: $order);
         }
+
 
         $data = new stdClass();
         $data->draw = $draw;
@@ -714,6 +757,28 @@ class datatables{
             $type = $column["type"];
         }
         return $type;
+    }
+
+    /**
+     * Valida los datos de un permiso
+     * @param array $adm_accion_grupo Permiso a validar
+     * @return array|true
+     * @version 13.63.0
+     */
+    private function valida_data_permiso(array $adm_accion_grupo): bool|array
+    {
+        $keys = array('adm_accion_muestra_icono_btn','adm_accion_muestra_titulo_btn','adm_accion_descripcion',
+            'adm_accion_titulo','adm_seccion_descripcion');
+        $valida = (new validacion())->valida_existencia_keys(keys: $keys, registro: $adm_accion_grupo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar adm_accion_grupo', data: $valida);
+        }
+        $keys = array('adm_accion_muestra_icono_btn','adm_accion_muestra_titulo_btn');
+        $valida = (new validacion())->valida_statuses(keys: $keys, registro: $adm_accion_grupo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar adm_accion_grupo', data: $valida);
+        }
+        return true;
     }
 
 

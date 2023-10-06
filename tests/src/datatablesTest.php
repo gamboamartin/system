@@ -380,6 +380,36 @@ class datatablesTest extends test {
         errores::$error = false;
     }
 
+    public function test_data_link(): void
+    {
+        $_GET['session_id'] = 1;
+        errores::$error = false;
+        $datatables = new datatables();
+        //$datatables = new liberator($datatables);
+
+        $adm_accion_grupo = array();
+        $data_result = array();
+        $html_base = new html();
+        $key = 'a';
+        $registro_id = -1;
+
+        $data_result['registros']['a']['a_a'] = 'activo';
+        $adm_accion_grupo['adm_accion_css'] = 'danger';
+        $adm_accion_grupo['adm_accion_es_status'] = 'activo';
+        $adm_accion_grupo['adm_accion_descripcion'] = 'a';
+        $adm_accion_grupo['adm_seccion_descripcion'] = 'a';
+        $adm_accion_grupo['adm_accion_muestra_icono_btn'] = 'activo';
+        $adm_accion_grupo['adm_accion_muestra_titulo_btn'] = 'activo';
+        $adm_accion_grupo['adm_accion_titulo'] = 'a';
+        $adm_accion_grupo['adm_accion_icono'] = 'a';
+
+        $resultado = $datatables->data_link($adm_accion_grupo, $data_result, $html_base, $key, $registro_id);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<a role='button' title='a' href='index.php?seccion=a&accion=a&registro_id=-1&session_id=1&adm_menu_id=-1' class='btn btn-success ' style='margin-left: 2px; margin-bottom: 2px; '><span class='a'></span> a</a>", $resultado->link_con_id);
+        errores::$error = false;
+    }
+
     public function test_database_link(): void
     {
         errores::$error = false;
@@ -579,6 +609,32 @@ class datatablesTest extends test {
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('text', $resultado);
+        errores::$error = false;
+    }
+
+    public function test_valida_data_permiso(): void
+    {
+        $_GET['session_id'] = 1;
+        errores::$error = false;
+        $datatables = new datatables();
+        $datatables = new liberator($datatables);
+
+        $adm_accion_grupo = array();
+        $data_result = array();
+
+        $adm_accion_grupo['adm_accion_css'] = 'danger';
+        $adm_accion_grupo['adm_accion_es_status'] = 'activo';
+        $adm_accion_grupo['adm_accion_descripcion'] = 'a';
+        $adm_accion_grupo['adm_seccion_descripcion'] = 'a';
+        $adm_accion_grupo['adm_accion_muestra_icono_btn'] = 'activo';
+        $adm_accion_grupo['adm_accion_muestra_titulo_btn'] = 'activo';
+        $adm_accion_grupo['adm_accion_titulo'] = 'a';
+        $adm_accion_grupo['adm_accion_icono'] = 'a';
+
+        $resultado = $datatables->valida_data_permiso($adm_accion_grupo);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+
         errores::$error = false;
     }
 
