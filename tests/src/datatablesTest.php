@@ -385,7 +385,7 @@ class datatablesTest extends test {
         $_GET['session_id'] = 1;
         errores::$error = false;
         $datatables = new datatables();
-        //$datatables = new liberator($datatables);
+        $datatables = new liberator($datatables);
 
         $adm_accion_grupo = array();
         $data_result = array();

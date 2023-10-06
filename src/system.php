@@ -417,12 +417,12 @@ class system extends controlador_base{
                     }
 
                     if (!array_key_exists("operador", $filtro)){
-                        return $this->retorno_error(mensaje: 'Error no exite la clave operador', data: $filtro, header: $header,
+                        return $this->retorno_error(mensaje: 'Error no existe la clave operador', data: $filtro, header: $header,
                             ws: $ws);
                     }
 
                     if (!array_key_exists("comparacion", $filtro)){
-                        return $this->retorno_error(mensaje: 'Error no exite la clave comparacion', data: $filtro,
+                        return $this->retorno_error(mensaje: 'Error no existe la clave comparacion', data: $filtro,
                             header: $header, ws: $ws);
                     }
 
@@ -440,22 +440,22 @@ class system extends controlador_base{
                     $keys = array_keys($filtro);
 
                     if (!array_key_exists("entidad", $filtro)){
-                        return $this->retorno_error(mensaje: 'Error no exite la clave entidad', data: $filtro, header: $header,
+                        return $this->retorno_error(mensaje: 'Error no existe la clave entidad', data: $filtro, header: $header,
                             ws: $ws);
                     }
 
                     if (!array_key_exists("key", $filtro)){
-                        return $this->retorno_error(mensaje: 'Error no exite la clave key', data: $filtro, header: $header,
+                        return $this->retorno_error(mensaje: 'Error no existe la clave key', data: $filtro, header: $header,
                             ws: $ws);
                     }
 
                     if (!array_key_exists("enlace", $filtro)){
-                        return $this->retorno_error(mensaje: 'Error no exite la clave enlace', data: $filtro, header: $header,
+                        return $this->retorno_error(mensaje: 'Error no existe la clave enlace', data: $filtro, header: $header,
                             ws: $ws);
                     }
 
                     if (!array_key_exists("key_enlace", $filtro)){
-                        return $this->retorno_error(mensaje: 'Error no exite la clave key_enlace', data: $filtro, header: $header,
+                        return $this->retorno_error(mensaje: 'Error no existe la clave key_enlace', data: $filtro, header: $header,
                             ws: $ws);
                     }
 
@@ -479,25 +479,12 @@ class system extends controlador_base{
             return $this->retorno_error(mensaje: 'Error al obtener data result', data: $data_result,header:  $header, ws: $ws);
         }
 
-        $salida = array(
-            "draw"         => $params->draw,
-            "recordsTotal"    => intval( $data_result['n_registros']),
-            "recordsFiltered" => intval( $data_result['n_registros'] ),
-            "data"            => $data_result['registros']);
-
-        if($ws) {
-            ob_clean();
-            header('Content-Type: application/json');
-            try {
-                echo json_encode($salida, JSON_THROW_ON_ERROR);
-            } catch (Throwable $e) {
-                $error = $this->errores->error(mensaje: 'Error al obtener registros', data: $e);
-                print_r($error);
-            }
-            exit;
+        $out = (new datatables())->out_result(data_result: $data_result,params:  $params,ws: $ws);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al integrar out', data: $out, header:  $header, ws: $ws);
         }
 
-        return $salida;
+        return $out;
     }
 
 
@@ -843,59 +830,33 @@ class system extends controlador_base{
             n_rows_for_page: $params->n_rows_for_page, pagina: $params->pagina,in: $params->in,order: $params->order);
 
         if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al obtener data result', data: $data_result,header:  $header, ws: $ws);
+            return $this->retorno_error(mensaje: 'Error al obtener data result', data: $data_result,
+                header:  $header, ws: $ws);
         }
 
         $acciones_permitidas = (new datatables())->acciones_permitidas(
             link:$this->link,seccion:  $this->tabla, not_actions: $not_actions);
 
         if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al obtener data result', data: $acciones_permitidas,header:  $header, ws: $ws);
+            return $this->retorno_error(mensaje: 'Error al obtener data result', data: $acciones_permitidas,
+                header:  $header, ws: $ws);
         }
 
-        foreach ($data_result['registros'] as $key => $row){
 
-            $links = array();
-            foreach ($acciones_permitidas as $indice=>$adm_accion_grupo){
-                /**
-                 * REFCATORIZAR
-                 */
+        $data_result = (new datatables())->ajusta_data_result(acciones_permitidas: $acciones_permitidas,
+            data_result:  $data_result,html_base:  $this->html_base,seccion:  $this->seccion);
 
-                $registro_id = $row[$this->seccion.'_id'];
-
-                $data_link = (new datatables())->data_link(adm_accion_grupo: $adm_accion_grupo,
-                    data_result: $data_result, html_base: $this->html_base, key: $key,registro_id:  $registro_id);
-
-                if(errores::$error){
-                    return $this->retorno_error(mensaje: 'Error al obtener data para link', data: $data_link,
-                        header:  $header, ws: $ws);
-                }
-
-                $links[$data_link->accion] = $data_link->link_con_id;
-            }
-
-
-            $data_result['registros'][$key] = array_merge($row,$links);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al integrar data_result', data: $data_result,
+                header:  $header, ws: $ws);
         }
 
-        $salida = array(
-            "draw"         => $params->draw,
-            "recordsTotal"    => intval( $data_result['n_registros']),
-            "recordsFiltered" => intval( $data_result['n_registros'] ),
-            "data"            => $data_result['registros']);
-
-        if($ws) {
-            ob_clean();
-            header('Content-Type: application/json');
-            try {
-                echo json_encode($salida, JSON_THROW_ON_ERROR);
-            } catch (Throwable $e) {
-                $error = $this->errores->error(mensaje: 'Error al obtener registros', data: $e);
-                print_r($error);
-            }
-            exit;
+        $out = (new datatables())->out_result(data_result: $data_result,params:  $params,ws: $ws);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al integrar out', data: $out, header:  $header, ws: $ws);
         }
-        return $salida;
+
+        return $out;
     }
 
     protected function header_retorno(string $accion, string $seccion, int $id_retorno = -1): array|string

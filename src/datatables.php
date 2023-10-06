@@ -11,6 +11,7 @@ use gamboamartin\template\html;
 use gamboamartin\validacion\validacion;
 use PDO;
 use stdClass;
+use Throwable;
 
 class datatables{
     private errores $error;
@@ -56,6 +57,23 @@ class datatables{
         }
 
         return $r_accion_grupo->registros;
+    }
+
+    final public function ajusta_data_result(array $acciones_permitidas, array $data_result, html $html_base,
+                                             string $seccion){
+        foreach ($data_result['registros'] as $key => $row){
+
+
+            $links = $this->integra_links(acciones_permitidas: $acciones_permitidas,
+                data_result:  $data_result,html_base:  $html_base,key:  $key,row:  $row,seccion:  $seccion);
+
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al integrar link', data: $links);
+            }
+
+            $data_result['registros'][$key] = array_merge($row,$links);
+        }
+        return $data_result;
     }
 
 
@@ -317,7 +335,7 @@ class datatables{
      * @return array|stdClass
      * @version 13.63.0
      */
-    final public function data_link(array $adm_accion_grupo, array $data_result, html $html_base, string $key,
+    private function data_link(array $adm_accion_grupo, array $data_result, html $html_base, string $key,
                                     int $registro_id): array|stdClass
     {
 
@@ -548,7 +566,8 @@ class datatables{
      * @return array|stdClass
      * @version 0.149.33
      */
-    private function genera_column(array|string $column, array $columns, array $datatable, string $indice, int $index_button): array|stdClass
+    private function genera_column(array|string $column, array $columns, array $datatable, string $indice,
+                                   int $index_button): array|stdClass
     {
         $valida = (new validacion_dt())->valida_base(column: $column,indice:  $indice);
         if(errores::$error){
@@ -591,6 +610,49 @@ class datatables{
         $data->index_button = $index_button;
         return $data;
     }
+
+    private function get_salida_format(array $data_result, stdClass $params): array
+    {
+        $salida = array(
+            "draw"         => $params->draw,
+            "recordsTotal"    => intval( $data_result['n_registros']),
+            "recordsFiltered" => intval( $data_result['n_registros'] ),
+            "data"            => $data_result['registros']);
+
+        return $salida;
+    }
+
+    private function integra_data_link(array $adm_accion_grupo, array $data_result, html $html_base, string $key,
+                                            array $links, array $row, string $seccion){
+        $registro_id = $row[$seccion.'_id'];
+
+        $data_link = $this->data_link(adm_accion_grupo: $adm_accion_grupo,
+            data_result: $data_result, html_base: $html_base, key: $key,registro_id:  $registro_id);
+
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener data para link', data: $data_link);
+        }
+
+        $links[$data_link->accion] = $data_link->link_con_id;
+        return $links;
+    }
+
+    private function integra_links(array $acciones_permitidas, array $data_result, html $html_base,
+                                        string $key, array $row, string $seccion){
+        $links = array();
+        foreach ($acciones_permitidas as $indice=>$adm_accion_grupo){
+
+            $links = $this->integra_data_link(adm_accion_grupo: $adm_accion_grupo, data_result:  $data_result,
+                html_base:  $html_base, key: $key,links:  $links,row:  $row, seccion:  $seccion);
+
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al integrar link', data: $links);
+            }
+        }
+        return $links;
+    }
+
+
 
 
     /**
@@ -652,6 +714,37 @@ class datatables{
             $not_in['values'] = $not_actions;
         }
         return $not_in;
+    }
+
+    final public function out_result(array $data_result, stdClass $params, bool $ws){
+        $salida = $this->get_salida_format(data_result: $data_result,params:  $params);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar salida', data: $salida);
+        }
+
+        if($ws) {
+            $out = $this->out_ws(salida: $salida);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al integrar out', data: $out);
+            }
+        }
+        return $salida;
+    }
+
+    private function out_ws(array|stdClass $salida, bool $header = false)
+    {
+        ob_clean();
+        header('Content-Type: application/json');
+        try {
+            echo json_encode($salida, JSON_THROW_ON_ERROR);
+        } catch (Throwable $e) {
+            $error = $this->error->error(mensaje: 'Error al obtener registros', data: $e);
+            print_r($error);
+        }
+        if(!$header){
+            exit;
+        }
+        return $salida;
     }
 
     final public function params(array $datatable): array|stdClass
