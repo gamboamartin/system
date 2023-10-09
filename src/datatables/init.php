@@ -1,15 +1,19 @@
 <?php
+
 namespace gamboamartin\system\datatables;
+
 use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
 use stdClass;
 
 
-class init{
+class init
+{
     private errores $error;
 
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->error = new errores();
 
     }
@@ -21,20 +25,21 @@ class init{
      */
     final public function draw(): int|array
     {
-        $draw = mt_rand(1,999);
-        if (isset ( $_GET['draw'] )) {
+        $draw = mt_rand(1, 999);
+        if (isset ($_GET['draw'])) {
             $draw = $_GET['draw'];
         }
-        if(!is_numeric($draw)){
+        if (!is_numeric($draw)) {
             return $this->error->error(mensaje: 'Error draw debe ser un numero', data: $draw);
         }
 
         return $draw;
     }
 
-    final public function in(){
-        $in  = array();
-        if (isset($_GET['in'])){
+    final public function in()
+    {
+        $in = array();
+        if (isset($_GET['in'])) {
             $in = $_GET['in'];
         }
         return $in;
@@ -51,7 +56,7 @@ class init{
      * @return array
      * @version 0.151.33
      */
-    final public function init_datatable(array $filtro,string $identificador = ".datatable", array $data = array(),
+    final public function init_datatable(array $filtro, string $identificador = ".datatable", array $data = array(),
                                          array $in = array(), bool $multi_selects = false, string $type = "datatable"): array
     {
         $datatable["columns"] = array();
@@ -77,21 +82,20 @@ class init{
     final public function init_filtro_datatables(stdClass $datatables, array $rows_lista, string $seccion): array
     {
         $seccion = trim($seccion);
-        if($seccion === ''){
+        if ($seccion === '') {
             return $this->error->error(mensaje: 'Error seccion esta vacia', data: $seccion);
         }
         $filtro = array();
-        if(!isset($datatables->filtro)){
-            foreach ($rows_lista as $key_row_lista){
+        if (!isset($datatables->filtro)) {
+            foreach ($rows_lista as $key_row_lista) {
                 $key_row_lista = trim($key_row_lista);
-                if($key_row_lista === ''){
+                if ($key_row_lista === '') {
                     return $this->error->error(mensaje: 'Error key_row_lista esta vacia', data: $key_row_lista);
                 }
 
-                $filtro[] = $seccion.'.'.$key_row_lista;
+                $filtro[] = $seccion . '.' . $key_row_lista;
             }
-        }
-        else{
+        } else {
             $filtro = $datatables->filtro;
         }
         return $filtro;
@@ -99,11 +103,17 @@ class init{
 
     final public function order(array $datatable): array
     {
-        $order  = array();
-        if (isset($_GET['order'])){
-            if (count($datatable['columns']) - 1 > $_GET['order'][0]['column']){
+        if (count($_GET['order']) > 0 && $_GET['order'][0]['dir'] !== "desc") {
+            $_GET['order'][0]['dir'] = "DESC";
+        } else {
+            $_GET['order'][0]['dir'] = "ASC";
+        }
+
+        $order = array();
+        if (isset($_GET['order'])) {
+            if (count($datatable['columns']) - 1 > $_GET['order'][0]['column']) {
                 $campo = $datatable['columns'][$_GET['order'][0]['column']]->data;
-                $order = array($campo => $_GET['order'][0]['dir'] );
+                $order = array($campo => $_GET['order'][0]['dir']);
             }
         }
         return $order;
@@ -117,7 +127,7 @@ class init{
     final public function n_rows_for_page(): int
     {
         $n_rows_for_page = 10;
-        if (isset ( $_GET['length'] )) {
+        if (isset ($_GET['length'])) {
             $n_rows_for_page = (int)$_GET['length'];
         }
         return $n_rows_for_page;
@@ -131,10 +141,10 @@ class init{
     final public function pagina(int $n_rows_for_page): int
     {
         $pagina = 1;
-        if (isset ( $_GET['start'] )) {
-            $pagina = (int)($_GET['start'] /  $n_rows_for_page) + 1;
+        if (isset ($_GET['start'])) {
+            $pagina = (int)($_GET['start'] / $n_rows_for_page) + 1;
         }
-        if($pagina <= 0){
+        if ($pagina <= 0) {
             $pagina = 1;
         }
         return $pagina;
