@@ -657,6 +657,29 @@ class html_controlerTest extends test {
 
     }
 
+    public function test_input_fecha(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        //$html = new liberator($html);
+
+        $_SESSION['grupo_id'] = 2;
+
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+        $cols =  12;
+        $row_upd =  new stdClass();
+        $value_vacio = false;
+
+        $resultado = $html->input_fecha($cols, $row_upd, $value_vacio);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<div |class|><div |class|><input type='date' name='fecha' value='' |class| required id='fecha' placeholder='Fecha' /></div></div>", $resultado);
+        errores::$error = false;
+    }
+
     public function test_input_monto(): void
     {
         errores::$error = false;

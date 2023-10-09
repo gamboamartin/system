@@ -927,6 +927,19 @@ class html_controler{
         return $div;
     }
 
+    /**
+     * Genera un input de tipo fecha
+     * @param int $cols Cols css
+     * @param stdClass $row_upd registro en proceso
+     * @param bool $value_vacio is vacio no muestra datos
+     * @param bool $disabled attr disabled
+     * @param string $name Name input
+     * @param string $place_holder Tag de input
+     * @param mixed|null $value value input
+     * @param bool $value_hora Integra hora si true
+     * @return array|string
+     * @version 13.66.1
+     */
     public function input_fecha(int $cols, stdClass $row_upd, bool $value_vacio, bool $disabled = false,
                                 string $name ='fecha', string $place_holder = 'Fecha', mixed $value = null,
                                 bool $value_hora = false): array|string
