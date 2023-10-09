@@ -335,7 +335,7 @@ class datatables{
      * @return array|stdClass
      * @version 13.63.0
      */
-    private function data_link(array $adm_accion_grupo, array $data_result, html $html_base, string $key,
+    final public function data_link(array $adm_accion_grupo, array $data_result, html $html_base, string $key,
                                     int $registro_id): array|stdClass
     {
 
@@ -622,8 +622,19 @@ class datatables{
         return $salida;
     }
 
+    /**
+     * @param array $adm_accion_grupo
+     * @param array $data_result
+     * @param html $html_base
+     * @param string $key
+     * @param array $links
+     * @param array $row
+     * @param string $seccion
+     * @return array
+     */
     private function integra_data_link(array $adm_accion_grupo, array $data_result, html $html_base, string $key,
-                                            array $links, array $row, string $seccion){
+                                            array $links, array $row, string $seccion): array
+    {
         $registro_id = $row[$seccion.'_id'];
 
         $data_link = $this->data_link(adm_accion_grupo: $adm_accion_grupo,

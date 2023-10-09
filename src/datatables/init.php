@@ -103,10 +103,16 @@ class init
 
     final public function order(array $datatable): array
     {
+        if(!isset($_GET['order'][0]['dir'])){
+            $_GET['order'][0]['dir'] = "ASC";
+        }
+        if(!isset($_GET['order'][0]['column'])){
+            $_GET['order'][0]['column'] = 0;
+        }
+
+
         if (count($_GET['order']) > 0 && $_GET['order'][0]['dir'] !== "desc") {
             $_GET['order'][0]['dir'] = "DESC";
-        } else {
-            $_GET['order'][0]['dir'] = "ASC";
         }
 
         $order = array();
