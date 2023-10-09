@@ -1763,9 +1763,10 @@ class html_controler{
     }
 
     /**
-     * INtegra el role legible html boostrap
+     * Integra el role legible html boostrap
      * @param string $role Role de button
      * @return string
+     * @version 13.67.1
      */
     private function role_button(string $role): string
     {

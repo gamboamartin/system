@@ -213,8 +213,6 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
-
-
     /**
      */
     public function test_button_href(): void
@@ -378,8 +376,6 @@ class html_controlerTest extends test {
 
     }
 
-
-
     public function test_file_items(): void
     {
         errores::$error = false;
@@ -461,8 +457,6 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
-
-
     /**
      */
     public function test_hidden(): void
@@ -513,8 +507,6 @@ class html_controlerTest extends test {
 
         errores::$error = false;
     }
-
-
 
     public function test_input_codigo(): void
     {
@@ -600,7 +592,6 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
-
     public function test_input_id(): void
     {
         errores::$error = false;
@@ -619,8 +610,6 @@ class html_controlerTest extends test {
 
         errores::$error = false;
     }
-
-
 
     /**
      * @throws JsonException
@@ -703,8 +692,6 @@ class html_controlerTest extends test {
         $this->assertEquals("<div |class|><div |class|><input type='text' name='monto' value='' |class| required id='monto' placeholder='Monto' /></div></div>", $resultado);
     }
 
-
-
     public function test_input_text_required(): void
     {
         errores::$error = false;
@@ -748,10 +735,6 @@ class html_controlerTest extends test {
         $this->assertStringContainsStringIgnoringCase("<div class='control-group col-sm-6'><div class='controls'><select class='form-control selectpicker color-secondary  adm_accion_id' data-live-search='true' id='adm_accion_id' name='adm_accion_id' required >",$resultado->a);
         errores::$error = false;
     }
-
-
-
-
 
     public function test_menu_lateral_title(): void
     {
@@ -983,6 +966,27 @@ class html_controlerTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("<input type='hidden' name='id_retorno' value='1'>",$resultado->hidden_id_retorno);
         $this->assertEquals("<input type='hidden' name='seccion_retorno' value='a'>",$resultado->hidden_seccion_retorno);
+        errores::$error = false;
+    }
+
+    public function test_role_button(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
+
+        $_SESSION['grupo_id'] = 2;
+
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+        $role =  '';
+
+        $resultado = $html->role_button($role);
+        $this->assertIsString($resultado);
+        $this->assertFalse(errores::$error);
+        $this->assertEquals('button',$resultado);
         errores::$error = false;
     }
 
