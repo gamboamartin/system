@@ -1240,14 +1240,12 @@ class html_controler{
      */
     private function integra_propiedad(string $propiedad, string $propiedades, string $valor): string|array
     {
-        $propiedad = trim($propiedad);
-        if($propiedad === ''){
-            return $this->error->error(mensaje: 'Error propiedad esta vacio', data: $propiedad);
+
+        $valida = $this->valida_propiedad(propiedad: $propiedad,valor:  $valor);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar propiedad', data: $valida);
         }
-        $valor = trim($valor);
-        if($valor === ''){
-            return $this->error->error(mensaje: 'Error valor esta vacio', data: $valor);
-        }
+
         $propiedades.= $propiedad.': '.$valor.'; ';
         return $propiedades;
     }
@@ -1723,7 +1721,8 @@ class html_controler{
     }
 
     /**
-     * @param array $styles
+     * Integra las propiedades css integradas en el elemento
+     * @param array $styles Estilos previos css
      * @return array|string
      */
     private function propiedades_css(array $styles): array|string
@@ -1731,6 +1730,12 @@ class html_controler{
         $propiedades = '';
 
         foreach ($styles as $propiedad=>$valor){
+
+            $valida = $this->valida_propiedad(propiedad: $propiedad,valor:  $valor);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al validar propiedad', data: $valida);
+            }
+
             $propiedades = $this->integra_propiedad(propiedad: $propiedad,propiedades:  $propiedades,valor:  $valor);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar propiedades', data: $propiedades);
@@ -2292,6 +2297,22 @@ class html_controler{
         }
         if(is_numeric($item)){
             return $this->error->error(mensaje: 'Error item es un numero', data: $item);
+        }
+        return true;
+    }
+
+    private function valida_propiedad(string $propiedad, string $valor): bool|array
+    {
+        $propiedad = trim($propiedad);
+        if($propiedad === ''){
+            return $this->error->error(mensaje: 'Error propiedad esta vacio', data: $propiedad);
+        }
+        $valor = trim($valor);
+        if($valor === ''){
+            return $this->error->error(mensaje: 'Error valor esta vacio', data: $valor);
+        }
+        if(is_numeric($propiedad)){
+            return $this->error->error(mensaje: 'Error propiedad debe ser texto', data: $propiedad);
         }
         return true;
     }

@@ -972,6 +972,22 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_propiedades_css(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
+
+        $styles = array();
+        $styles['x'] = 'z';
+        $resultado = $html->propiedades_css($styles);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("x: z; ",$resultado);
+        errores::$error = false;
+    }
+
     public function test_retornos(): void
     {
         errores::$error = false;
