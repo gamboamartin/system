@@ -2301,6 +2301,12 @@ class html_controler{
         return true;
     }
 
+    /**
+     * valida los parametros de entrada de una propiedad css
+     * @param string $propiedad Propiedad a integrar
+     * @param string $valor Valor a integrar
+     * @return bool|array
+     */
     private function valida_propiedad(string $propiedad, string $valor): bool|array
     {
         $propiedad = trim($propiedad);
