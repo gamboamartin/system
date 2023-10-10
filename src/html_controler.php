@@ -1235,10 +1235,19 @@ class html_controler{
      * @param string $propiedad Nombre de la propiedad
      * @param string $propiedades Propiedades previas cargadas
      * @param string $valor Valor de la propiedad a integrar
-     * @return string
+     * @return string|array
+     * @version 13.68.1
      */
-    private function integra_propiedad(string $propiedad, string $propiedades, string $valor): string
+    private function integra_propiedad(string $propiedad, string $propiedades, string $valor): string|array
     {
+        $propiedad = trim($propiedad);
+        if($propiedad === ''){
+            return $this->error->error(mensaje: 'Error propiedad esta vacio', data: $propiedad);
+        }
+        $valor = trim($valor);
+        if($valor === ''){
+            return $this->error->error(mensaje: 'Error valor esta vacio', data: $valor);
+        }
         $propiedades.= $propiedad.': '.$valor.'; ';
         return $propiedades;
     }
