@@ -332,11 +332,12 @@ class datatables{
      * @param html $html_base Html lib
      * @param string $key Key de link
      * @param int $registro_id Registro de ejecucion
+     * @param array $params_get Parametros adicionales para integrar en link por GET
      * @return array|stdClass
      * @version 13.63.0
      */
     final public function data_link(array $adm_accion_grupo, array $data_result, html $html_base, string $key,
-                                    int $registro_id): array|stdClass
+                                    int $registro_id, array $params_get = array()): array|stdClass
     {
 
         if(!isset($data_result['registros'])){
@@ -384,7 +385,8 @@ class datatables{
 
 
         $data_link = $this->database_link(adm_accion_grupo: $adm_accion_grupo,
-            html: (new html_controler(html: $html_base)),registro_id:  $registro_id, style: $style);
+            html: (new html_controler(html: $html_base)), params_get: $params_get, registro_id: $registro_id,
+            style: $style);
 
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener data para link', data: $data_link);
@@ -397,14 +399,16 @@ class datatables{
      * Obtiene el link de accion
      * @param array $adm_accion_grupo Permiso
      * @param html_controler $html Base html
+     * @param array $params_get Parametros adicionales para integrar por GET
      * @param int $registro_id Identificador de registro en row
      * @param string $style Estilo de boton
      * @param array $styles Estilos
      * @return array|stdClass
      * @version 13.62.0
      */
-    private function database_link(array $adm_accion_grupo, html_controler $html, int $registro_id, string $style,
-                                  array $styles = array('margin-left'=>'2px', 'margin-bottom'=>'2px') ): array|stdClass
+    private function database_link(array $adm_accion_grupo, html_controler $html, array $params_get, int $registro_id,
+                                   string $style,
+                                   array $styles = array('margin-left'=>'2px', 'margin-bottom'=>'2px') ): array|stdClass
     {
         $valida = $this->valida_data_permiso(adm_accion_grupo: $adm_accion_grupo);
         if(errores::$error){
@@ -433,10 +437,10 @@ class datatables{
         }
 
         $link_con_id = $html->button_href(accion: $adm_accion_grupo['adm_accion_descripcion'],
-            etiqueta:   $adm_accion_grupo['adm_accion_titulo'],registro_id:  $registro_id,
-            seccion:  $adm_accion_grupo['adm_seccion_descripcion'],style:  $style, cols: -1,icon: $icon,
-            muestra_icono_btn: $data_icon->muestra_icono_btn,muestra_titulo_btn: $data_icon->muestra_titulo_btn,
-            styles: $styles );
+            etiqueta: $adm_accion_grupo['adm_accion_titulo'], registro_id: $registro_id,
+            seccion: $adm_accion_grupo['adm_seccion_descripcion'], style: $style, cols: -1, icon: $icon,
+            muestra_icono_btn: $data_icon->muestra_icono_btn, muestra_titulo_btn: $data_icon->muestra_titulo_btn,
+            params: $params_get, styles: $styles);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al asignar button', data: $link_con_id);
         }
