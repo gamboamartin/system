@@ -67,7 +67,7 @@ class select{
 
         $keys = $this->keys_base(tabla: $modelo->tabla, key_descripcion: $key_descripcion,
             key_descripcion_select: $key_descripcion_select,
-            key_id: $key_id, name: $name);
+            key_id: $key_id, name: $name,columns_ds: $columns_ds);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar keys',data:  $keys);
         }
@@ -114,7 +114,7 @@ class select{
      * @verfuncion 0.2.0 Se carga name
      */
     private function keys_base(string $tabla, string $key_descripcion = '', string $key_descripcion_select = '',
-                               string $key_id = '', string $name = ''): stdClass|array
+                               string $key_id = '', string $name = '', array $columns_ds = array()): stdClass|array
     {
         $tabla = trim($tabla);
         if($tabla === ''){
@@ -134,6 +134,11 @@ class select{
         $key_descripcion = trim($key_descripcion);
         if($key_descripcion === ''){
             $key_descripcion = $tabla.'_descripcion';
+        }
+
+        if (count($columns_ds) > 0){
+            $key_descripcion = $columns_ds[0];
+            $key_descripcion_select = $columns_ds[0];
         }
 
 
