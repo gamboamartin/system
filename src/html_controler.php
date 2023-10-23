@@ -688,8 +688,16 @@ class html_controler{
         return $style_custom;
     }
 
+    /**
+     * @param string $id_css_button
+     * @param string $style_button
+     * @param string $tag_button
+     * @param string $tag_header
+     * @return array|string
+     */
     final public function header_collapsible(string $id_css_button, string $style_button, string $tag_button,
-                                             string $tag_header){
+                                             string $tag_header): array|string
+    {
 
         $btn = $this->button_para_java(id_css: $id_css_button,style:  $style_button,tag:  $tag_button);
         if(errores::$error){
