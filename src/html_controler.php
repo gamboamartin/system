@@ -935,14 +935,15 @@ class html_controler{
      * @param bool $disabled attr disabled
      * @param string $name Name input
      * @param string $place_holder Tag de input
+     * @param bool $required Atributo required default true
      * @param mixed|null $value value input
      * @param bool $value_hora Integra hora si true
      * @return array|string
      * @version 13.66.1
      */
     public function input_fecha(int $cols, stdClass $row_upd, bool $value_vacio, bool $disabled = false,
-                                string $name ='fecha', string $place_holder = 'Fecha', mixed $value = null,
-                                bool $value_hora = false): array|string
+                                string $name ='fecha', string $place_holder = 'Fecha', bool $required = true,
+                                mixed $value = null, bool $value_hora = false): array|string
     {
 
         if($cols<=0){
@@ -952,8 +953,8 @@ class html_controler{
             return $this->error->error(mensaje: 'Error cold debe ser menor o igual a  12', data: $cols);
         }
 
-        $html =$this->directivas->input_fecha_required(disabled: $disabled,name: $name,place_holder: $place_holder,
-            row_upd: $row_upd, value_vacio: $value_vacio, value: $value,value_hora: $value_hora);
+        $html =$this->directivas->input_fecha_required(disabled: $disabled, name: $name, place_holder: $place_holder,
+            row_upd: $row_upd, value_vacio: $value_vacio, required: $required, value: $value, value_hora: $value_hora);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar input', data: $html);
         }
