@@ -1924,16 +1924,17 @@ class html_controler{
      * @param string $name Nombre del input
      * @param bool $required si required agrega el atributo required a input
      * @param array $not_in Omite los elementos en obtencion de datos
+     * @param array $class_css Integra elementos css como class en select
      * @return array|string Un string con options en forma de html
-     * @version 8.93.1
      */
     final public function select_catalogo(int $cols, bool $con_registros, int $id_selected, modelo $modelo,
-                                          modelo|bool $modelo_preferido = false, array $columns_ds = array(),
-                                          bool $disabled = false, array $extra_params_keys = array(),
-                                          array $filtro=array(), string $key_descripcion = '',
-                                          string $key_descripcion_select = '', string $key_id = '', string $label = '',
-                                          string $name = '', array $not_in = array(), array $in = array(),
-                                          array $registros = array(), bool $required = false): array|string
+                                          modelo|bool $modelo_preferido = false, array $class_css = array(),
+                                          array $columns_ds = array(), bool $disabled = false,
+                                          array $extra_params_keys = array(), array $filtro=array(),
+                                          string $key_descripcion = '', string $key_descripcion_select = '',
+                                          string $key_id = '', string $label = '', string $name = '',
+                                          array $not_in = array(), array $in = array(), array $registros = array(),
+                                          bool $required = false): array|string
     {
 
         $valida = (new directivas(html:$this->html_base))->valida_cols(cols:$cols);
@@ -1959,8 +1960,8 @@ class html_controler{
         }
 
         $select = $this->html_base->select(cols: $cols, id_selected: $id_selected, label: $init->label,
-            name: $init->name, values: $init->values, columns_ds: $columns_ds, disabled: $disabled,
-            extra_params_key: $extra_params_keys, required: $required);
+            name: $init->name, values: $init->values, class_css: $class_css, columns_ds: $columns_ds,
+            disabled: $disabled, extra_params_key: $extra_params_keys, required: $required);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $select);
         }
