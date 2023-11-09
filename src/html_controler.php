@@ -337,7 +337,7 @@ class html_controler{
      * @return string|array
      * @version 11.9.0
      */
-    final public function button_para_java(string $id_css, string $style, string $tag): string|array
+    private function button_para_java(string $id_css, string $style, string $tag): string|array
     {
         $style = trim($style);
         if($style === ''){
@@ -689,6 +689,7 @@ class html_controler{
     }
 
     /**
+     * Integra un header collapsible
      * @param string $id_css_button
      * @param string $style_button
      * @param string $tag_button
