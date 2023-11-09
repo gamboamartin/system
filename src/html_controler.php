@@ -691,7 +691,7 @@ class html_controler{
     /**
      * Integra un header collapsible
      * @param string $id_css_button Identificador css
-     * @param string $style_button
+     * @param string $style_button Estilo de boton
      * @param string $tag_button
      * @param string $tag_header
      * @return array|string
