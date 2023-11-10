@@ -695,19 +695,34 @@ class html_controler{
      * @param string $tag_button Etiqueta de boton
      * @param string $tag_header Etiqueta de seccion
      * @return array|string
+     * @version 13.83.2
      */
     final public function header_collapsible(string $id_css_button, string $style_button, string $tag_button,
                                              string $tag_header): array|string
     {
+        $style_button = trim($style_button);
+        if($style_button === ''){
+            return $this->error->error(mensaje: 'Error style_button esta vacio', data: $style_button);
+        }
+        $id_css_button = trim($id_css_button);
+        if($id_css_button === ''){
+            return $this->error->error(mensaje: 'Error id_css_button esta vacio', data: $id_css_button);
+        }
+        $tag_button = trim($tag_button);
+        if($tag_button === ''){
+            return $this->error->error(mensaje: 'Error tag_button esta vacio', data: $tag_button);
+        }
 
         $btn = $this->button_para_java(id_css: $id_css_button,style:  $style_button,tag:  $tag_button);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al btn_collapse_all',data:  $btn);
         }
 
-        return "<div class='col-md-12'>
-                    <hr><h4>$tag_header $btn </h4><hr>
-                    </div>";
+        $html = "<div class='col-md-12'>";
+        $html .= "<hr><h4>$tag_header $btn </h4><hr>";
+        $html .= "</div>";
+
+        return trim($html);
     }
 
     /**

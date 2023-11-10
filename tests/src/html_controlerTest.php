@@ -457,6 +457,33 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_header_collapsible(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        //$html = new liberator($html);
+
+        $_SESSION['grupo_id'] = 2;
+
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+
+
+        $id_css_button = 'b';
+        $style_button = 'a';
+        $tag_button = 'c';
+        $tag_header = '';
+
+        $resultado = $html->header_collapsible($id_css_button, $style_button, $tag_button, $tag_header);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<div class='col-md-12'><hr><h4> <a class='btn btn-a' role='button' id='b'>c</a> </h4><hr></div>",$resultado);
+
+        errores::$error = false;
+    }
+
     /**
      */
     public function test_hidden(): void
