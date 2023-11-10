@@ -1749,6 +1749,7 @@ class html_controler{
      * Integra las propiedades css integradas en el elemento
      * @param array $styles Estilos previos css
      * @return array|string
+     * @version 13.85.2
      */
     private function propiedades_css(array $styles): array|string
     {
@@ -2140,6 +2141,10 @@ class html_controler{
         return $style;
     }
 
+    /**
+     * @param string $propiedades
+     * @return string
+     */
     private function style_custom(string $propiedades): string
     {
         $style_custom = '';
