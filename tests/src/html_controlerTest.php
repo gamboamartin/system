@@ -1283,8 +1283,6 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
-
-
     public function test_selects_integra(): void
     {
         errores::$error = false;
@@ -1475,6 +1473,31 @@ class html_controlerTest extends test {
         $resultado = $html->valida_item($item);
         $this->assertIsBool($resultado);
         $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
+    public function test_valida_propiedad(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
+
+        $_SESSION['grupo_id'] = 2;
+
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+
+
+        $propiedad = 'a';
+        $valor = 'v';
+
+        $resultado = $html->valida_propiedad($propiedad, $valor);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
 
         errores::$error = false;
     }

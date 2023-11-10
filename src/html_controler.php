@@ -90,7 +90,6 @@ class html_controler{
      * @param string $target Ejecucion de ventana resultado
      * @param string $title Titulo a mostrar del button
      * @return string|array
-     * @por_doc = true
      */
     private function a_role(int $cols, string $etiqueta_html, string $icon_html, string $link, string $role,
                             string $style, array $styles, string $target, string $title): string|array
@@ -2334,6 +2333,7 @@ class html_controler{
      * @param string $propiedad Propiedad a integrar
      * @param string $valor Valor a integrar
      * @return bool|array
+     * @version 13.84.2
      */
     private function valida_propiedad(string $propiedad, string $valor): bool|array
     {
