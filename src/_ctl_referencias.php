@@ -3,6 +3,7 @@ namespace gamboamartin\system;
 
 use base\controller\controler;
 use base\orm\modelo;
+use Exception;
 use gamboamartin\administrador\models\adm_accion;
 use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
@@ -22,7 +23,6 @@ class _ctl_referencias{
      * @param system $controler Controlador en ejecucion
      * @param string $key_parent_id Key del parent 0 al input select
      * @return array
-     * @version 8.82.1
      */
     private function asigna_valor_default(system $controler, string $key_parent_id): array
     {
@@ -45,7 +45,6 @@ class _ctl_referencias{
      * @param system $controler Controlador en ejecucion
      * @param modelo $model_parent Modelo parent
      * @return array
-     * @version 8.83.1
      */
     private function asigna_valores_default(system $controler, modelo $model_parent): array
     {
@@ -288,7 +287,7 @@ class _ctl_referencias{
      * @param system $controler Controlador en ejecucion
      * @param array|modelo $parent Modelos a integrar
      * @return array|stdClass
-     * @version 7.104.3
+     * @throws Exception
      */
     private function genera_keys_parents(system $controler, array|modelo $parent): array|stdClass
     {
@@ -510,7 +509,6 @@ class _ctl_referencias{
      * Genera el name id de la tabla a relacionar
      * @param modelo $model_parent Modelo parent
      * @return string|array
-     * @version 7.81.3
      */
     private function key_parent_id(modelo $model_parent): string|array
     {
@@ -522,10 +520,19 @@ class _ctl_referencias{
     }
 
     /**
-     * Verifica la estructura del parent y retorna el modelo
-     * @param array|modelo $parent Dato a verificar
-     * @return modelo|array
-     * @version 7.79.3
+     * Esta función se encarga de devolver el modelo padre en caso de que este exista y sea válido.
+     *
+     * Si el parámetro proporcionado es un array y contiene el índice 'model_parent', intenta usarlo como el modelo padre.
+     * Devuelve un error si 'model_parent' en el array no es un objeto modelo válido.
+     * También devuelve un error si el resultado final no es un objeto modelo.
+     *
+     * @param array|modelo $parent: Parámetro que puede ser un modelo padre o un array que posiblemente contenga el modelo padre.
+     *
+     * @return modelo|array:  Retorna el modelo padre si es validado correctamente; de lo contrario, devuelve un array de error.
+     *
+     * @throws Exception: Se lanzará una excepción si 'model_parent' en el array no es un objeto modelo.
+     *                    También se lanzará una excepción si el resultado final no es un objeto modelo.
+     * @version 15.1.0
      */
     private function model_parent(array|modelo $parent): modelo|array
     {
@@ -690,7 +697,6 @@ class _ctl_referencias{
      * Integra los elementos parent de un controler en alta
      * @param system $controler Controlador en ejecucion
      * @return array|bool
-     * @version 8.84.1
      */
     private function parents_alta(system $controler): array|bool
     {
@@ -724,7 +730,6 @@ class _ctl_referencias{
      * Obtiene las referencias parent de un controlador
      * @param system $controler Controlador en ejecucion
      * @return array|stdClass
-     * @version 8.85.1
      */
     final public function referencias_alta(system $controler): array|stdClass
     {

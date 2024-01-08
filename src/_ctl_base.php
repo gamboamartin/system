@@ -237,7 +237,6 @@ class _ctl_base extends system{
      * @param array $params Parametros que seran integrados a los botones para enviar por GET
      * @param array $params_ajustados Parametros que seran integrados a los botones para enviar por GET
      * @return array|stdClass
-     * @version 10.27.0
      */
     final public function base_upd(array $keys_selects, array $params, array $params_ajustados): array|stdClass
     {
@@ -365,7 +364,6 @@ class _ctl_base extends system{
     /**
      * Inicializa loe elementos para un alta
      * @return array|stdClass|string
-     * @version 10.3.0
      */
     final public function init_alta(): array|stdClass|string
     {
@@ -611,7 +609,6 @@ class _ctl_base extends system{
      * Integra los selectores basicos de una vista
      * @param array $keys_selects Parametros previamente cargados para inputs
      * @return array
-     * @version 10.28.0
      */
     final protected function key_select_base(array $keys_selects): array
     {
@@ -772,7 +769,6 @@ class _ctl_base extends system{
      * Integra los selectores base con codigo disabled
      * @param array $keys_selects Parametros de inputs
      * @return array|stdClass
-     * @version 10.29.0
      */
     final protected function upd_base_template(array $keys_selects): array|stdClass
     {

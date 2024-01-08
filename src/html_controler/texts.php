@@ -24,7 +24,6 @@ class texts{
      * @param stdClass $row_upd Registro en proceso
      * @param stdClass $texts inputs precargados
      * @return array|stdClass
-     * @version 0.251.37
      */
     private function text_input_integra(
         directivas $directivas, string $item, array $keys_selects, stdClass $row_upd, stdClass $texts): array|stdClass
@@ -64,7 +63,6 @@ class texts{
      * @param array $keys_selects Parametros
      * @param stdClass $row_upd Registro en proceso
      * @return array|stdClass
-     * @version 0.254.37
      */
     final public function texts_integra(array $campos_view, directivas $directivas, array $keys_selects, stdClass $row_upd): array|stdClass
     {

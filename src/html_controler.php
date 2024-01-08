@@ -375,7 +375,6 @@ class html_controler{
      * @param stdClass $row_upd Registro en proceso
      * @param array $keys_selects Parametros de inputs
      * @return array|stdClass
-     * @version 2.279.38
      */
     final protected function dates_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
     {
@@ -784,7 +783,6 @@ class html_controler{
      * @param modelo $modelo Modelo en proceso
      * @param array $keys_selects Parametros visuales de inputs
      * @return array|stdClass
-     * @version 10.10.0
      *
      */
     final public function init_alta2(stdClass $row_upd, modelo $modelo,
@@ -1428,7 +1426,6 @@ class html_controler{
     /**
      * @param array|stdClass $campos_view Campos definidos desde modelo
      * @return array|stdClass
-     * @version 0.211.37
      */
     final protected function obtener_inputs(array|stdClass $campos_view): array|stdClass
     {
@@ -1526,7 +1523,6 @@ class html_controler{
      * Obtiene el tipo de input para templates
      * @param array|stdClass $campo
      * @return string|array
-     * @version 0.205.36
      */
     final protected function obtener_tipo_input(array|stdClass $campo): string|array
     {
@@ -2036,7 +2032,6 @@ class html_controler{
      * @param modelo $modelo Modelo en ejecucion
      * @param array $keys_selects Parametros de selects
      * @return array|stdClass
-     * @version 10.10.0
      */
     final protected function selects_alta2(modelo $modelo,array $keys_selects = array()): array|stdClass
     {
@@ -2252,7 +2247,6 @@ class html_controler{
      * @param stdClass $row_upd Registro en proceso
      * @param array $keys_selects Params de inputs
      * @return array|stdClass
-     * @version 0.255.37
      */
     final protected function texts_alta2(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
     {

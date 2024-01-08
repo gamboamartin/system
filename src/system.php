@@ -202,7 +202,6 @@ class system extends controlador_base{
      * @param bool $ws Muestra resultado via Json
      * @return array|string
      * @esfinal rev
-     * @version 10.3.0
      */
     public function alta(bool $header, bool $ws = false): array|string
     {
@@ -778,7 +777,6 @@ class system extends controlador_base{
      * Integra los inputs para front alta y modifica
      * @param array $keys_selects Parametros inicializados
      * @return array|stdClass
-     * @version 10.10.0
      */
     final public function genera_inputs(array $keys_selects = array()): array|stdClass
     {
@@ -940,7 +938,6 @@ class system extends controlador_base{
      * Integra los inputs para front
      * @param array $keys_selects Parametros de inputs
      * @return array|stdClass
-     * @version 10.11.0
      */
     final public function inputs(array $keys_selects): array|stdClass
     {

@@ -54,7 +54,6 @@ class params{
      * @param string $name Nombre del input
      * @param stdClass $params Parametros
      * @return stdClass|array
-     * @version 0.185.34
      */
     private function params_base(stdClass $data, string $name, stdClass $params): stdClass|array
     {
@@ -90,7 +89,6 @@ class params{
      * @param string $name Name input
      * @param string $place_holder Label del input
      * @return stdClass|array
-     * @version 0.228.37
      */
     private function params_input2(stdClass $params, string $name,string $place_holder): stdClass|array
     {
@@ -178,7 +176,6 @@ class params{
      * @param string $item Row
      * @param array $keys_selects keys con datos de inputs
      * @return array|stdClass
-     * @version 0.245.37
      */
     final public function params_select_init(string $item, array $keys_selects): array|stdClass
     {
