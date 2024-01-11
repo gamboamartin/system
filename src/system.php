@@ -598,11 +598,30 @@ class system extends controlador_base{
         if(isset($_GET['texto_busqueda'])){
             $_GET['search']['value'] = $_GET['texto_busqueda'];
         }
-        $get_data = $this->get_data(header:$header,ws: false);
-        if (errores::$error) {
-            return $this->retorno_error(
-                mensaje: 'Error al obtener data', data: $get_data,
-                header: $header, ws: $ws);
+
+        $params = (new datatables())->params(datatable: $this->datatable);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al obtener params', data: $params,header:  $header, ws: $ws);
+        }
+
+        if(count($params->order) === 0){
+            $params->order[$this->tabla.'.id'] = 'DESC';
+        }
+
+        $result = $this->modelo->filtro_and(filtro: $params->filtro, filtro_especial: $params->filtro_especial,
+            in: $params->in, order: $params->order);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al obtener registros', data: $result,header:  $header, ws: $ws);
+        }
+
+        $out = array();
+        $out['n_registros'] = $result->n_registros;
+        $out['registros'] = $result->registros;
+        $out['data_result'] = $result;
+
+        $out = (new datatables())->out_result(data_result: $out,params:  $params,ws: $ws);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al integrar out', data: $out, header:  $header, ws: $ws);
         }
 
         $ths = array();
@@ -619,7 +638,7 @@ class system extends controlador_base{
         $nombre_hojas[] = 'Registros';
         $keys_hojas['Registros'] = new stdClass();
         $keys_hojas['Registros']->keys = $keys;
-        $keys_hojas['Registros']->registros = $get_data['data'];
+        $keys_hojas['Registros']->registros = $out['data'];
 
         $xls = (new exportador())->genera_xls(header: $header,name:  $this->seccion,nombre_hojas:  $nombre_hojas,
             keys_hojas: $keys_hojas, path_base: $this->path_base);
