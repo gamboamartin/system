@@ -287,7 +287,6 @@ class _ctl_referencias{
      * @param system $controler Controlador en ejecucion
      * @param array|modelo $parent Modelos a integrar
      * @return array|stdClass
-     * @throws Exception
      */
     private function genera_keys_parents(system $controler, array|modelo $parent): array|stdClass
     {
@@ -340,7 +339,6 @@ class _ctl_referencias{
      * Integra los botones de parents para alta
      * @param system $controler Controlador en proceso
      * @return array|stdClass
-     * @version 8.11.0
      */
     private function inputs_parent(system $controler): array|stdClass
     {
@@ -506,9 +504,12 @@ class _ctl_referencias{
     }
 
     /**
-     * Genera el name id de la tabla a relacionar
-     * @param modelo $model_parent Modelo parent
-     * @return string|array
+     * Obtiene la clave del id del modelo padre.
+     *
+     * @param modelo $model_parent El modelo padre del cual se desea obtener la clave del id.
+     *
+     * @return string|array Retorna la clave del id si todo va bien, si no, retorna un error.
+     * La clave del id es simplemente el nombre de la tabla seguido por '_id'.
      */
     private function key_parent_id(modelo $model_parent): string|array
     {
@@ -520,6 +521,7 @@ class _ctl_referencias{
     }
 
     /**
+     * POR DOCUMENTAR WIKI
      * Esta función se encarga de devolver el modelo padre en caso de que este exista y sea válido.
      *
      * Si el parámetro proporcionado es un array y contiene el índice 'model_parent', intenta usarlo como el modelo padre.
@@ -530,8 +532,6 @@ class _ctl_referencias{
      *
      * @return modelo|array:  Retorna el modelo padre si es validado correctamente; de lo contrario, devuelve un array de error.
      *
-     * @throws Exception: Se lanzará una excepción si 'model_parent' en el array no es un objeto modelo.
-     *                    También se lanzará una excepción si el resultado final no es un objeto modelo.
      * @version 15.1.0
      */
     private function model_parent(array|modelo $parent): modelo|array
