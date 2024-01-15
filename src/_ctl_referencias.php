@@ -504,12 +504,15 @@ class _ctl_referencias{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
      * Obtiene la clave del id del modelo padre.
      *
      * @param modelo $model_parent El modelo padre del cual se desea obtener la clave del id.
      *
      * @return string|array Retorna la clave del id si todo va bien, si no, retorna un error.
      * La clave del id es simplemente el nombre de la tabla seguido por '_id'.
+     *
+     * @version 15.3.0
      */
     private function key_parent_id(modelo $model_parent): string|array
     {
