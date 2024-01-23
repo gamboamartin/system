@@ -311,11 +311,14 @@ class _ctl_referencias{
     }
 
     /**
-     * Integra los inputs de tipo parent
-     * @param system $controler Controlador en ejecucion
-     * @param string $key_parent_id Key a integrar para select
-     * @return array|stdClass
-     * @version 7.90.3
+     * POR DOCUMENTAR EN WIKI
+     * Esta función maneja las entradas padre dentro del sistema de inputs de tipo select.
+     *
+     * @param system $controler Controlador en ejecución
+     * @param string $key_parent_id Key del "parent" o elemento padre
+     *
+     * @return array|stdClass Devuelve un arreglo o un objecto stdClass dependiendo del caso específico de la ejecución
+     * @version 17.3.0
      */
     private function input_parent(system $controler, string $key_parent_id): array|stdClass
     {
@@ -439,7 +442,6 @@ class _ctl_referencias{
      * @param system $controler Controlador en ejecucion
      * @param string $key_parent_id Key de valor
      * @return array|stdClass
-     * @version 7.95.3
      */
     private function integra_key_parent(system $controler, string $key_parent_id): array|stdClass
     {
@@ -461,7 +463,6 @@ class _ctl_referencias{
      * @param system $controler Controlador en ejecucion
      * @param string $key_parent_id Key del campo a obtener info
      * @return array|stdClass
-     * @version 7.102.3
      */
     private function integra_key_parent_get(system $controler, string $key_parent_id): array|stdClass
     {
