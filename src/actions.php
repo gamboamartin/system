@@ -109,7 +109,6 @@ class actions{
      * Inicializa los datos para una accion de tipo alta bd
      * @param string $siguiente_view Siguiente view default
      * @return array|string
-     * @version v0.15.5
      */
     final public function init_alta_bd(string $siguiente_view = 'modifica'): array|string
     {
@@ -346,10 +345,21 @@ class actions{
     }
 
     /**
-     * Determina que funcion se ejecutara despues del alta bd
-     * @param string $siguiente_view Siguiente view base a la que se dirigira el retorno header
-     * @return string
-     * @version 1.16.1
+     * POR DOCUMENTAR EN WIKI
+     * Esta es la función "siguiente_view" en el archivo actions.php
+     *
+     * @param string $siguiente_view - Es la próxima vista a mostrar por defecto, que es 'modifica'.
+     * Si no se especifica un valor por parte del usuario, se toma este valor por defecto
+     *
+     * @return string Retorna la próxima vista a mostrar dependiendo de las acciones del usuario.
+     * Si el usuario ha hecho clic en el botón 'guarda_otro',
+     * el valor devuelto por la función será 'alta'.
+     * Si el usuario ha hecho clic en algún botón con nombre 'btn_action_next',
+     * la función devolverá el valor que tenga asignado dicho botón.
+     * Si no se cumple ninguna de las condiciones anteriores,
+     * la función devuelve el valor del parámetro que se le pasó.
+     *
+     * @version 17.2.0
      */
     final public function siguiente_view(string $siguiente_view = 'modifica'): string
     {

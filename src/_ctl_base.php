@@ -22,7 +22,6 @@ class _ctl_base extends system{
     /**
      * Alta base de controllers
      * @return array|stdClass
-     * @version 4.31.1
      */
     final protected function alta_bd_base(): array|stdClass
     {
@@ -299,7 +298,6 @@ class _ctl_base extends system{
      * Genera los datos de retorno despues de una transaccion de controller
      * @return array|stdClass
      * Retorna despues de transaccion con header
-     * @version 0.305.39
      */
     final protected function data_retorno_base(): array|stdClass
     {
