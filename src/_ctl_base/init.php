@@ -23,7 +23,6 @@ final class init{
      * @param string $key Key de parametro
      * @param array $params Parametros previos cargados
      * @return array
-     * @version 10.14.0
      */
     private function asigna_data_param(stdClass $data_init, string $key, array $params): array
     {
@@ -46,7 +45,6 @@ final class init{
      * @param array $keys_params Key de parametros a integrar
      * @param array $params Parametros previamente cargados
      * @return array
-     * @version 10.18.0
      */
     private function asigna_datas_param(stdClass $data_init, array $keys_params, array $params): array
     {
@@ -73,7 +71,6 @@ final class init{
      * Inicializa los parametros por get
      * @param controler $controler Controlador en ejecucion
      * @return array|stdClass
-     * @version 10.12.0
      */
     private function data_init(controler $controler): array|stdClass
     {
@@ -94,7 +91,6 @@ final class init{
      * @param stdClass $data_init datos previamente inicializados
      * @param string $key Key de GET
      * @return array|stdClass
-     * @version 4.6.1
      */
     private function init_data_param_get(string $compare, stdClass $data_init, string $key): array|stdClass
     {
@@ -118,10 +114,23 @@ final class init{
     }
 
     /**
-     * Inicializa loe elementos para un retorno
-     * @param controler $controler Controlador en ejecucion
-     * @return stdClass|array
-     * @version 0.273.38
+     * POR DOCUMENTAR EN WIKI
+     * Método que inicializa datos de retorno.
+     *
+     * Este método recibe un objeto de controlador y realiza las siguientes operaciones:
+     * 1. Limpia los valores de la tabla y la acción del controlador.
+     * 2. Comprueba si los valores de la tabla y la acción están vacíos. Si están vacíos, llama al método de error y
+     *      pasa un mensaje de error y los datos.
+     * 3. Inicializa las variables next_seccion, next_accion e id_retorno con los valores de la tabla, la acción
+     *      y el registro_id del controlador respectivamente.
+     * 4. Crea un nuevo objeto stdClass y le asigna las variables next_seccion, next_accion e id_retorno.
+     * 5. Retorna el objeto.
+     *
+     * @param controler $controler El objeto de controlador.
+     * @return stdClass|array Si no hay errores, retorna un objeto stdClass con la sección siguiente,
+     *  la acción siguiente y el id de retorno. En caso de errores, se retorna un array.
+     *
+     * @version 17.0.0
      */
     private function init_data_retornos(controler $controler): stdClass|array
     {
@@ -151,7 +160,6 @@ final class init{
      * @param stdClass $data_init Datos previos cargados
      * @param string $key Key a integrar
      * @return array|stdClass
-     * @version 4.39.2
      */
     private function init_get_param(stdClass $data_init, string $key): array|stdClass
     {
@@ -175,7 +183,6 @@ final class init{
      * @param stdClass $data_init Datos precargados
      * @param array $keys_init Keys  inicializar
      * @return array|stdClass
-     * @version 5.9.0
      */
     private function init_keys_get(stdClass $data_init, array $keys_init): array|stdClass
     {
@@ -197,7 +204,6 @@ final class init{
      * Inicializa los parametros para envio por GET
      * @param stdClass $data_init Datos a inicializar
      * @return array|stdClass
-     * @version 8.88.1
      */
     private function init_keys_get_data(stdClass $data_init): array|stdClass
     {
@@ -215,7 +221,6 @@ final class init{
      * @param stdClass $data_init Datos de controller para view
      * @param string $key Key a verificar e integrar
      * @return stdClass|array
-     * @version 0.257.37
      */
     private function init_param_get(stdClass $data_init, string $key): stdClass|array
     {
@@ -239,7 +244,6 @@ final class init{
      * @param stdClass $data_init Datos previos cargados
      * @param array $params Parametros precargados
      * @return array
-     * @version 10.19.0
      */
     private function init_params(stdClass $data_init, array $params): array
     {
@@ -257,7 +261,6 @@ final class init{
      * @param controler $controler Controlador en ejecucion
      * @param array $params Parametros GET previos cargados
      * @return array
-     * @version 10.21.0
      */
     final public function params(controler $controler, array $params): array
     {
