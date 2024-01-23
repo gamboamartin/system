@@ -243,14 +243,18 @@ class init{
     }
 
     /**
-     * Limpia los elementos de tipo row previos al alta de un registro
-     * @param string $key Key a limpiar
-     * @param array $row Registro a aplicar limpieza
-     * @version 0.27.30
-     * @verfuncion 0.1.0
-     * @author mgamboa
-     * @fecha 2022-07-29 11:21
-     * @return array
+     * POR DOCUMENTAR EN WIKI
+     * Limpia una fila de datos especificada por una clave.
+     *
+     * Esta función toma una clave y una matriz de datos, y la función busca la clave en la matriz.
+     * Si la clave existe en la matriz, la función la elimina.
+     * Una vez realizada la operación, la matriz modificada se devuelve como resultado.
+     *
+     * @param string $key La clave que se debe buscar en la matriz de datos para eliminar.
+     * @param array $row La matriz de datos donde se debe buscar la clave.
+     *
+     * @return array Una matriz de datos modificada después de eliminar la clave especificada.
+     * @version 17.4.0
      */
     private function limpia_data_row(string $key, array $row): array
     {
@@ -264,8 +268,6 @@ class init{
      * Limpiar los elementos de un registro previo a su insersion
      * @param array $keys Keys a limpiar
      * @param array $row Registro a limpiar
-     * @version 0.29.30
-     * @verfuncion 0.1.0
      * @author mgamboa
      * @fecha 2022-07-29 12:08
      * @return array
