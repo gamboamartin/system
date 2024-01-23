@@ -59,7 +59,6 @@ class out_permisos{
      * @param array $params_ajustados Parametros para GET
      * @param array $styles Estilos css por incrustar en div o contenedor
      * @return array
-     * @version 10.25.0
      */
     final public function buttons_view(system $controler, array $not_actions, array $params,
                                  array $params_ajustados = array(),

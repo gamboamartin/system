@@ -29,7 +29,6 @@ class datatables{
      * @param array $not_actions Acciones que no seran mostradas
      * @param array $columnas Columnas a mostrar en la lista
      * @return array
-     * @version 0.153.33
      */
     final public function acciones_permitidas(PDO $link, string $seccion, array $not_actions = array(),
                                               array $columnas = array()): array
