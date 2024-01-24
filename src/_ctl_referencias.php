@@ -438,10 +438,36 @@ class _ctl_referencias{
     }
 
     /**
-     * Integra el key para un parent button para alta
-     * @param system $controler Controlador en ejecucion
-     * @param string $key_parent_id Key de valor
-     * @return array|stdClass
+     * POR DOCUMENTAR EN WIKI
+     * Función que integra una clave padre al sistema de control.
+     *
+     * Este método se encarga de integrar una clave padre a un controlador dado, realizando varias operaciones de validación
+     * y asociación en el proceso. Primero verifica si la clave padre no está vacía y en caso afirmativo, retorna un error con
+     * una descripción relevante. Luego verifica si la clave padre ya está presente en el array de claves del controlador. En caso
+     * afirmativo, llama al método input_parent para llevar a cabo operaciones adicionales.
+     *
+     * Finalmente, si se encuentra algún error durante la ejecución de input_parent, se retorna un error con una descripción relevante.
+     * Si no se encuentran errores, el método retorna el array de claves del controlador actualizado.
+     *
+     * @param system $controler El sistema de control al cual se integra la clave padre.
+     * @param string $key_parent_id La id de la clave padre que se quiere integrar.
+     * @return array|stdClass Returns el array de claves del controlador en caso de éxito, o un objeto de error en caso de fallo.
+     *
+     * @example
+     * ```
+     * $system = new system();
+     * $key_parent_id = 'abc123';
+     * // Llama al método para integrar la clave padre
+     * $result = $this->integra_key_parent($system, $key_parent_id);
+     * if (is_object($result)) {
+     *     // handle error
+     *     echo $result->getMessage();
+     * } else {
+     *     // Proceso exitoso
+     *     print_r($result);
+     * }
+     * ```
+     * @version 17.5.0
      */
     private function integra_key_parent(system $controler, string $key_parent_id): array|stdClass
     {
