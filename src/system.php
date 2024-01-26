@@ -343,11 +343,15 @@ class system extends controlador_base{
 
 
     /**
-     * Asigna las propiedades de un input
-     * @param string $identificador Name input
-     * @param array $propiedades Propiedades a integrar
-     * @return array|stdClass
-     * @version 7.52.3
+     * POR DOCUMENTAR EN WIKI
+     * Función para asignar propiedades a un objeto identificado por un identificador en particular.
+     *
+     * @param string $identificador Representa la clave única utilizada para identificar el objeto a modificar.
+     * @param array $propiedades Una matriz clave-valor donde la clave es el nombre de la propiedad y el valor es el valor de la propiedad a asignar.
+     *
+     * @return array|stdClass Devuelve un objeto stdClass actualizado o un array con todos los objetos stdClass.
+     * @throws errores Si el identificador proporcionado está vacío, se lanzará una excepción.
+     * @version 17.6.0
      */
     public function asignar_propiedad(string $identificador, array $propiedades): array|stdClass
     {
