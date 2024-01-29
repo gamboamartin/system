@@ -18,11 +18,15 @@ final class init{
 
 
     /**
-     * Asigna el dato al arreglo de parametros para envio por GET
-     * @param stdClass $data_init Datos iniciales
-     * @param string $key Key de parametro
-     * @param array $params Parametros previos cargados
-     * @return array
+     * POR DOCUMENTAR EN WIKI
+     * Asigna valor a una clave en un arreglo de parametros.
+     * @param stdClass $data_init Datos iniciales donde se busca la clave y su valor.
+     * @param string $key Key de parametro a ser agregada al array `$params`.
+     * @param array $params Parametros previos cargados.
+     * @return array Retorna el array de parametros actualizado con la nueva clave y su valor.
+     * @throws errores Si la clave proporcionada es invalida o no es encontrada en `$data_init`.
+     *
+     * @version 18.0.0
      */
     private function asigna_data_param(stdClass $data_init, string $key, array $params): array
     {
