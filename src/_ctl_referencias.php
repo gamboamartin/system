@@ -283,10 +283,23 @@ class _ctl_referencias{
     }
 
     /**
-     * Genera los keys para buttons parent en alta
-     * @param system $controler Controlador en ejecucion
-     * @param array|modelo $parent Modelos a integrar
-     * @return array|stdClass
+     * POR DOCUMENTAR EN WIKI
+     * Genera llaves principales o padres dependiendo del controlador y modelo padre proporcionados.
+     *
+     * Esta función privada genera una "model parent" y una "key parent id" a partir de los parámetros
+     * proporcionados y los asigna a los "keys_selects" del controlador. Si se encuentran errores durante este proceso,
+     * se registra y se devuelve un error.
+     *
+     * @param system $controler Un objeto de sistema/controlador que necesita las "keys" primarias o padres.
+     * @param array|modelo $parent Un array o un objeto modelo que sirve como el "parent" o "padre".
+     *
+     * @return array|stdClass Retorna los "keys_selects" del controlador si todo va bien. Si hay un error, retorna un
+     * objeto de error estándar.
+     *
+     * @throws errores Error al generar model parent.
+     * @throws errores Error al generar key parent.
+     * @throws errores Error al generar select.
+     * @version 18.3.0
      */
     private function genera_keys_parents(system $controler, array|modelo $parent): array|stdClass
     {
