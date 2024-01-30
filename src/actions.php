@@ -177,9 +177,16 @@ class actions{
     }
 
     /**
-     * Limpia los valores POST de botones
-     * @version 0.6.5 Se ajusta modelo base
-     * @return array
+     * POR DOCUMENTAR EN WIKI
+     * Limpieza de botones
+     *
+     * Este método se utiliza para limpiar ciertos botones de la entrada POST.
+     * Específicamente, elimina los siguientes botones si están presentes:
+     * 'guarda', 'guarda_otro' y 'btn_action_next'.
+     * Una vez que los botones se han eliminado, devuelve el array POST modificado.
+     *
+     * @return array $_POST El array POST después de que se han eliminado los botones.
+     * @version 18.1.0
      */
     private function limpia_butons(): array
     {
