@@ -485,10 +485,17 @@ class _ctl_referencias{
     }
 
     /**
-     * Integra un elemento para buttons parent para alta
-     * @param system $controler Controlador en ejecucion
-     * @param string $key_parent_id Key del campo a obtener info
-     * @return array|stdClass
+     * POR DOCUMENTAR EN WIKI
+     * Recupera información de una clave principal especificada y la procesa.
+     *
+     * @param system $controler         Controlador del sistema
+     * @param string $key_parent_id     La clave (ID) del padre que será procesado
+     *
+     * @return array|stdClass           Retorna un array o un objeto con las claves seleccionadas si el proceso fue exitoso,
+     *                                  de lo contrario un mensaje de error.
+     *
+     * @throws errores                Lanzará una excepción si la `$key_parent_id` esta vacia o en caso de error al generar el select.
+     * @version 18.1.0
      */
     private function integra_key_parent_get(system $controler, string $key_parent_id): array|stdClass
     {
