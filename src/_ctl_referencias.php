@@ -697,9 +697,26 @@ class _ctl_referencias{
     }
 
     /**
-     * Obtiene los parametros para ejecucion de referencias
-     * @param modelo|array $parent Data de integracion
-     * @return stdClass|array
+     * POR DOCUMENTAR EN WIKI
+     * La función params_btn_parent se utiliza para manejar los parámetros
+     * necesarios para la creación de un botón padre en la interfaz del usuario.
+     * El botón padre por lo general se utiliza para navegar a la página de un
+     * objeto padre en la jerarquía de datos.
+     *
+     * @param modelo|array $parent Este puede ser una instancia del modelo que se está usando o un array.
+     *                      Si es un array, debe contener la clave 'model_parent' que apunta a la instancia
+     *                      del modelo padre y la clave 'etiqueta' que representa el nombre de la etiqueta
+     *                      a mostrar en el botón. Opcionalmente, el array puede contener la clave 'etiqueta_ir',
+     *                      que representa la etiqueta cuando el usuario pasa el mouse sobre el botón.
+     *                      Si $parent es una instancia de un modelo, se utilizará para obtener la etiqueta
+     *                      por defecto de la instancia del modelo.
+     *
+     * @return stdClass|array Se devuelve un stdClass que contiene tres propiedades:
+     *                        'model_parent' que es la instancia del modelo padre,
+     *                        'etiqueta' que es la etiqueta a mostrar en el botón,
+     *                        y 'etiqueta_ir' que es la etiqueta a mostrar cuando el usuario pasa el mouse sobre el botón.
+     *                        Si ocurre un error durante la validación, se devuelve una matriz de error.
+     * @version 18.5.0
      */
     private function params_btn_parent(modelo|array $parent): stdClass|array
     {
