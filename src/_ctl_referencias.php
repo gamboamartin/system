@@ -352,9 +352,16 @@ class _ctl_referencias{
     }
 
     /**
-     * Integra los botones de parents para alta
-     * @param system $controler Controlador en proceso
-     * @return array|stdClass
+     * POR DOCUMENTAR EN WIKI
+     * Genera y devuelve las claves para los elementos padres de tipos de botones.
+     *
+     * Este método recorre cada elemento padre verificado dentro del controlador
+     * y genera las claves correspondientes. Si ocurre algún error durante la generación
+     * de las claves, este se registra y se devuelve un mensaje de error.
+     *
+     * @param system $controler  El controlador del sistema donde se verifican los elementos padres.
+     * @return array|stdClass    Las claves generadas en caso de éxito, o un objeto estándar en caso de un error.
+     * @version 18.4.0
      */
     private function inputs_parent(system $controler): array|stdClass
     {
@@ -693,7 +700,6 @@ class _ctl_referencias{
      * Obtiene los parametros para ejecucion de referencias
      * @param modelo|array $parent Data de integracion
      * @return stdClass|array
-     * @version 7.92.3
      */
     private function params_btn_parent(modelo|array $parent): stdClass|array
     {
