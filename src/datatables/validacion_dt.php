@@ -30,7 +30,7 @@ class validacion_dt extends validacion{
      * @param string $seccion
      * @return bool|array
      */
-    final public function valida_data_column(string $seccion): bool|array
+    final public function valida_data_column(string $seccion): true|array
     {
         if(!isset($_SESSION)){
             return $this->error->error(mensaje: 'Error no hay SESSION iniciada', data: array());
