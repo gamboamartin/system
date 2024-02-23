@@ -106,9 +106,24 @@ class actions{
     }
 
     /**
-     * Inicializa los datos para una accion de tipo alta bd
-     * @param string $siguiente_view Siguiente view default
-     * @return array|string
+     * POR DOCUMENTAR EN WIKI
+     * Resumen: Esta función inicializa la creación de la base de datos
+     *
+     * Descripción extendida: Esta función implementa la lógica necesaria para
+     * inicializar el proceso de creación de una nueva base de datos. Primero
+     * verifica si hay algún error al obtener la vista siguiente. En caso de
+     * error, devuelve un mensaje de error. Posteriormente, limpia los botones.
+     * Si ocurre algún error, devuelve un mensaje de error. Finalmente, retorna
+     * la vista siguiente.
+     *
+     * @param string $siguiente_view La vista a la que se redireccionará después
+     * de la función. Por default, es 'modifica'.
+     *
+     * @return array|string Retorna un array en caso de éxito o un string en caso de error.
+     *
+     * @throws errores En caso de que ocurran errores al obtener la vista siguiente
+     * o al limpiar los botones, se lanza una excepción.
+     * @version 18.7.0
      */
     final public function init_alta_bd(string $siguiente_view = 'modifica'): array|string
     {
