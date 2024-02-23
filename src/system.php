@@ -264,7 +264,6 @@ class system extends controlador_base{
      * @param bool $header Si header mostrara el resultado en el navegador
      * @param bool $ws Mostrara el resultado en forma de json
      * @return array|stdClass
-     * @version 0.230.37
      * @finalrev
      */
     public function alta_bd(bool $header, bool $ws = false): array|stdClass
@@ -318,24 +317,13 @@ class system extends controlador_base{
             $this->link->commit();
         }
 
-        if($header){
-            if($id_retorno === -1) {
-                $id_retorno = $r_alta_bd->registro_id;
-            }
-            $this->retorno_base(registro_id:$id_retorno, result: $r_alta_bd, siguiente_view: $siguiente_view,
-                ws:  $ws,seccion_retorno: $seccion_retorno, valida_permiso: true);
+        $out = $this->out_alta(header: $header,id_retorno:  $id_retorno,r_alta_bd:  $r_alta_bd,
+            seccion_retorno:  $seccion_retorno,siguiente_view:  $siguiente_view,ws:  $ws);
+        if(errores::$error){
+            print_r($out);
+            die('Error');
         }
-        if($ws){
-            header('Content-Type: application/json');
-            try {
-                echo json_encode($r_alta_bd, JSON_THROW_ON_ERROR);
-            }
-            catch (Throwable $e){
-                $error = (new errores())->error(mensaje: 'Error al maquetar JSON' , data: $e);
-                print_r($error);
-            }
-            exit;
-        }
+
         $r_alta_bd->siguiente_view = $siguiente_view;
         return $r_alta_bd;
     }
@@ -1249,6 +1237,31 @@ class system extends controlador_base{
         $this->header_out(result: $r_modifica_bd, header: $header,ws:  $ws);
 
         return $r_modifica_bd;
+    }
+
+    final protected function out_alta(bool $header, int $id_retorno, stdClass $r_alta_bd, string $seccion_retorno,
+                                      string $siguiente_view, bool $ws): true
+    {
+        if($header){
+            if($id_retorno === -1) {
+                $id_retorno = $r_alta_bd->registro_id;
+            }
+            $this->retorno_base(registro_id:$id_retorno, result: $r_alta_bd, siguiente_view: $siguiente_view,
+                ws:  $ws,seccion_retorno: $seccion_retorno, valida_permiso: true);
+        }
+        if($ws){
+            header('Content-Type: application/json');
+            try {
+                echo json_encode($r_alta_bd, JSON_THROW_ON_ERROR);
+            }
+            catch (Throwable $e){
+                $error = (new errores())->error(mensaje: 'Error al maquetar JSON' , data: $e);
+                print_r($error);
+            }
+            exit;
+        }
+        return true;
+
     }
 
     function reemplazar_id_link($str, $start, $end, $replacement) {
