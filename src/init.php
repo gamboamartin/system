@@ -265,14 +265,23 @@ class init{
     }
 
     /**
-     * Limpiar los elementos de un registro previo a su insersion
-     * @param array $keys Keys a limpiar
-     * @param array $row Registro a limpiar
-     * @author mgamboa
-     * @fecha 2022-07-29 12:08
-     * @return array
+     * POR DOCUMENTAR EN WIKI
+     * Limpia los datos de las filas proporcionadas.
+     *
+     * @final
+     * @param array $keys Las claves de los datos a limpiar.
+     * @param array $row Los datos de la fila a limpiar.
+     * @return array $row Los datos de la fila después de la limpieza.
+     *
+     * La función `limpia_rows` recorre cada clave proporcionada en el parámetro `$keys`.
+     * Para cada clave, intenta limpiar los datos en la fila correspondiente usando la función `limpia_data_row`.
+     * Si se produce un error durante este proceso, la función registra el error y devuelve un mensaje de error utilizando la función `error`.
+     * Si todas las claves se procesan con éxito, la función devuelve la fila con los datos limpios.
+     *
+     * @throws errores Si ocurre un error al limpiar los datos, se lanza una excepción.
+     * @version 18.9.0
      */
-    public function limpia_rows(array $keys, array $row): array
+    final public function limpia_rows(array $keys, array $row): array
     {
         foreach ($keys as $key){
             $row = $this->limpia_data_row(key: $key,row:  $row);
