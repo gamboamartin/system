@@ -99,7 +99,6 @@ class _ctl_referencias{
      * @param system $controler Controlador en ejecucion
      * @param stdClass $params Parametros para GET
      * @return array|stdClass
-     * @version 8.81.1
      */
     private function boton_permitido(system $controler, stdClass $params): array|stdClass
     {
@@ -153,7 +152,6 @@ class _ctl_referencias{
      * @param system $controler Controlador en ejecucion
      * @param stdClass $params parametros get
      * @return array|stdClass
-     * @version 8.57.0
      */
     private function buttons_alta(stdClass $buttons, system $controler, stdClass $params): array|stdClass
     {
@@ -227,7 +225,6 @@ class _ctl_referencias{
      * @param string $etiqueta Etiqueta de boton parent
      * @param modelo $model_parent Modelo parent
      * @return array|stdClass
-     * @version 8.35.0
      */
     private function genera_botones_parent(system $controler, string $etiqueta, modelo $model_parent): array|stdClass
     {
@@ -382,7 +379,6 @@ class _ctl_referencias{
      * @param modelo $model_parent Modelo parent
      * @param string $style Stilo css
      * @return array|stdClass
-     * @version 7.67.3
      */
     private function integra_button_parent(system $controler, string $etiqueta, modelo $model_parent, string $style): array|stdClass
     {

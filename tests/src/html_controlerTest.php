@@ -880,6 +880,39 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_params_get(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
+
+        $_SESSION['grupo_id'] = 2;
+
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+        $params = array();
+
+        $resultado = $html->params_get($params);
+        //print_r($resultado);exit;
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('',$resultado);
+        errores::$error = false;
+
+        $params = array();
+        $params['a'] = 'ddd';
+
+        $resultado = $html->params_get($params);
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("&a=ddd", $resultado);
+        errores::$error = false;
+
+    }
+
     public function test_params_select(): void
     {
         errores::$error = false;

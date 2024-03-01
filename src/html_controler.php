@@ -279,7 +279,6 @@ class html_controler{
      * @param array $styles Propiedades css custom
      * @param string $target Ejecucion de ventana resultado
      * @return string|array
-     * @version 0.164.34
      */
     final public function button_href(string $accion, string $etiqueta, int $registro_id, string $seccion,
                                       string $style, int $cols = 12, string $icon = '', bool $muestra_icono_btn = false,
@@ -1561,12 +1560,23 @@ class html_controler{
     /**
      * Integra parametros para salida GET
      * @param array $params Parametros a integrar
-     * @return string
+     * @return string|array
      */
-    private function params_get(array $params): string
+    private function params_get(array $params): string|array
     {
         $params_get = '';
         foreach ($params as $key=>$value){
+            $key = trim($key);
+            if($key === ''){
+                return $this->error->error(mensaje: 'Error en key no puede venir vacio', data: $key);
+            }
+            if(is_numeric($key)){
+                return $this->error->error(mensaje: 'Error en key debe ser un texto', data: $key);
+            }
+            $value = trim($value);
+            if($value === ''){
+                return $this->error->error(mensaje: 'Error en value no puede venir vacio', data: $value);
+            }
             $params_get .= "&$key=$value";
         }
         return $params_get;
