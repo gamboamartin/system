@@ -274,7 +274,6 @@ class _ctl_base extends system{
     /**
      * Obtiene los datos de retorno
      * @return array|stdClass
-     * @version 0.287.38
      */
     private function data_retorno(): array|stdClass
     {
@@ -752,7 +751,6 @@ class _ctl_base extends system{
     /**
      * Obtiene la seccion de retorno
      * @return string
-     * @version 0.282.38
      */
     private function seccion_retorno():string{
         $seccion_retorno = $this->tabla;
