@@ -134,7 +134,6 @@ class init{
      * @param system $controller Controlador en ejecucion
      * @param html $html Html de template
      * @return array|stdClass
-     * @version 0.163.34
      */
     final public function init_controller(system $controller, html $html): array|stdClass
     {

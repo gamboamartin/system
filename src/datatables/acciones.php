@@ -46,7 +46,6 @@ class acciones{
      * @param string $seccion Seccion en ejecucion
      * @param array $not_actions Acciones para exclusion
      * @return array
-     * @version 0.226.37
      */
     final public function acciones_columnas(array $columns, PDO $link, string $seccion, array $not_actions = array()): array
     {

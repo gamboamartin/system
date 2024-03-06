@@ -25,7 +25,6 @@ class mensajeria{
      * @param controlador_base $controler Controlador en ejecucion
      * @param html $html
      * @return array|stdClass
-     * @version 0.20.1
      */
     final public function init_mensajes(controlador_base $controler, html $html): array|stdClass
     {

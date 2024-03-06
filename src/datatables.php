@@ -267,8 +267,8 @@ class datatables{
      * @param array $not_actions Acciones no mostrables
      * @param array $rows_lista Registros de la lista
      * @param string $seccion Seccion en ejecucion
+     * @param string $type
      * @return array
-     * @version 7.58.3
      */
     private function columns_dt(stdClass $datatables, PDO $link, array $not_actions, array $rows_lista,
                                 string $seccion, string $type = "datatable"): array
@@ -498,7 +498,6 @@ class datatables{
      * @param string $seccion Seccion en ejecucion
      * @param array $not_actions Acciones a omitir
      * @return array|stdClass
-     * @version 7.85.3
      *
      */
     final public function datatable_base_init(stdClass $datatables, PDO $link, array $rows_lista, string $seccion,
