@@ -160,7 +160,6 @@ class _ctl_base extends system{
     /**
      * Genera los datos de un children para view de controller
      * @return array|stdClass
-     * @version 0.309.39
      */
     final protected function children_base(): array|stdClass
     {
@@ -396,7 +395,6 @@ class _ctl_base extends system{
     /**
      * Inicializa los elementos de datos de un children para una view
      * @return array|stdClass
-     * @version 0.264.38
      */
     private function init_data_children(): array|stdClass
     {
