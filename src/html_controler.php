@@ -1558,9 +1558,23 @@ class html_controler{
     }
 
     /**
-     * Integra parametros para salida GET
-     * @param array $params Parametros a integrar
-     * @return string|array
+     * POR DOCUMENTAR EN WIKI
+     * Esta función toma un arreglo de parámetros y los convierte en una string tipo GET.
+     * Esto es útil para hacer peticiones HTTP GET con múltiples parámetros.
+     *
+     * @param array $params Arreglo de parámetros que se convertirán en string tipo GET.
+     *                      Cada llave y valor del arreglo se transforma en la forma 'llave=valor'.
+     *                      Luego se unen todos los pares 'llave=valor' con el simbolo '&' entre ellos.
+     *                      Es necesario que cada llave y valor estén no sean vacíos y que la llave no sea numérica.
+     *
+     *
+     * @return string|array Devuelve la cadena formada con parámetros tipo GET.
+     *                      En caso de error, devolverá un error indicando el problema encontrado con detallado en la data.
+     *                      Los errores pueden ser 'Error en key no puede venir vacio', 'Error en key debe ser un texto' ó
+     *                      'Error en value no puede venir vacio' con la data correspondiente al valor o llave con error.
+     *
+     * @throws errores Si ocurre alguna excepción, se arroja tal cual.
+     * @version 18.15.0
      */
     private function params_get(array $params): string|array
     {
