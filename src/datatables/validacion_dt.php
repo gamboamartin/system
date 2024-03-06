@@ -27,8 +27,19 @@ class validacion_dt extends validacion{
     }
 
     /**
-     * @param string $seccion
-     * @return bool|array
+     * POR DOCUMENTAR EN WIKI
+     * Valida los datos de una determinada columna.
+     *
+     * Esta función realiza varias validaciones:
+     * - Verifica si una sesión está iniciada. Si no hay ninguna, genera un error.
+     * - Valida ciertos campos (en este caso, 'grupo_id') en la sesión actual. Si hay errores, genera un error.
+     * - Verifica si el parámetro $seccion está vacío. Si lo está, genera un error.
+     *
+     * @param string $seccion - El nombre de la sección a validar
+     *
+     * @return true|array - Retorna verdadero si todas las validaciones pasan exitosamente. Si alguna validación falla,
+     * retorna un array con detalles del error.
+     * @version 18.13.0
      */
     final public function valida_data_column(string $seccion): true|array
     {
