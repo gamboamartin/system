@@ -102,6 +102,15 @@ class select{
         return $registro;
     }
 
+    private function key_id(string $key_id, string $tabla): string
+    {
+        if($key_id === '') {
+            $key_id = $tabla . '_id';
+        }
+        return $key_id;
+
+    }
+
 
     /**
      * Asigna los keys necesarios para un select
@@ -110,8 +119,6 @@ class select{
      * @param string $key_id identificador key
      * @param string $name Name del input
      * @return stdClass|array obj->id, obj->descripcion_select
-     * @version 0.2.5
-     * @verfuncion 0.2.0 Se carga name
      */
     private function keys_base(string $tabla, string $key_descripcion = '', string $key_descripcion_select = '',
                                string $key_id = '', string $name = '', array $columns_ds = array()): stdClass|array
@@ -120,13 +127,17 @@ class select{
         if($tabla === ''){
             return $this->error->error(mensaje: 'Error tabla esta vacia',data:  $tabla);
         }
-        if($key_id === '') {
-            $key_id = $tabla . '_id';
+
+        $key_id = $this->key_id(key_id: $key_id,tabla:  $tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al asignar key_id',data:  $key_id);
         }
-        $name = trim($name);
-        if($name === ''){
-            $name = $key_id;
+
+        $name = $this->name(key_id: $key_id,name:  $name);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al asignar name',data:  $name);
         }
+
         if($key_descripcion_select === '') {
             $key_descripcion_select = $tabla.'_descripcion_select';
         }
@@ -221,6 +232,16 @@ class select{
         return $label_;
     }
 
+    private function name(string $key_id, string $name): string
+    {
+        $name = trim($name);
+        if($name === ''){
+            $name = $key_id;
+        }
+        return $name;
+
+    }
+
     /**
      * Obtiene los registros para un select
      * @param array $columns_ds Columnas a mostrar en cada registro
@@ -231,6 +252,7 @@ class select{
      * @param modelo $modelo Modelo de datos
      * @param array $not_in Integra elementos que se quieran omitir en los rows
      * @param array $registros Registros a integrar
+     * @param array $in
      * @return array
      * @version 8.59.0
      */
