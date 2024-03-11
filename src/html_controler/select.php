@@ -154,6 +154,21 @@ class select{
         return $key_descripcion_select;
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Función key_id
+     *
+     * Esta función se encarga de devolver la clave única para un registro de una tabla específica en la base de datos.
+     * Se le proporciona inicialmente una clave y el nombre de una tabla.
+     * Primero, verifica que el nombre de la tabla no esté vacío. Si está vacío, devuelve un error.
+     * Luego, verifica si se le proporcionó una clave. Si no se proporcionó ninguna clave, la genera automáticamente
+     * agregando el sufijo '_id' al nombre de la tabla.
+     *
+     * @param string $key_id La clave única proporcionada. Si está vacía, la función genera una automáticamente.
+     * @param string $tabla El nombre de la tabla en cuestión
+     * @return string|array Devuelve la clave única, o un error si el nombre de la tabla está vacío
+     * @version 18.19.0
+     */
     private function key_id(string $key_id, string $tabla): string|array
     {
         $tabla = trim($tabla);
