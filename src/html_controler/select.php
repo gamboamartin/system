@@ -14,6 +14,40 @@ class select{
         $this->validacion = new validacion();
     }
 
+    private function data_keys(array $columns_ds, string $key_descripcion, string $key_descripcion_select): stdClass
+    {
+        $data = new stdClass();
+        $data->key_descripcion = $key_descripcion;
+        $data->key_descripcion_select = $key_descripcion_select;
+        if (count($columns_ds) > 0){
+            $data->key_descripcion = $columns_ds[0];
+            $data->key_descripcion_select = $columns_ds[0];
+        }
+        return $data;
+
+    }
+
+    private function genera_data_keys(array $columns_ds, string $key_descripcion, string $key_descripcion_select, string $tabla)
+    {
+        $key_descripcion_select = $this->key_descripcion_select(key_descripcion_select: $key_descripcion_select,tabla:  $tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al asignar key_descripcion_select',data:  $key_descripcion_select);
+        }
+
+        $key_descripcion = $this->key_descripcion(key_descripcion: $key_descripcion,tabla:  $tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al asignar key_descripcion',data:  $key_descripcion);
+        }
+
+        $data_keys = $this->data_keys(columns_ds: $columns_ds,key_descripcion: $key_descripcion,key_descripcion_select:  $key_descripcion_select);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al asignar data_keys',data:  $data_keys);
+        }
+
+        return $data_keys;
+
+    }
+
     /**
      * Asigna los values de un select
      * @refactorizar Refactorizar
@@ -90,6 +124,16 @@ class select{
         return $keys;
     }
 
+    private function key_descripcion(string $key_descripcion, string $tabla): string
+    {
+        $key_descripcion = trim($key_descripcion);
+        if($key_descripcion === ''){
+            $key_descripcion = $tabla.'_descripcion';
+        }
+        return $key_descripcion;
+
+    }
+
 
     private function integra_descripcion_select(stdClass $keys, array $registro, string $tabla){
         $key_descripcion = $tabla.'_descripcion';
@@ -100,6 +144,14 @@ class select{
             }
         }
         return $registro;
+    }
+
+    private function key_descripcion_select(string $key_descripcion_select, string $tabla): string
+    {
+        if($key_descripcion_select === '') {
+            $key_descripcion_select = $tabla.'_descripcion_select';
+        }
+        return $key_descripcion_select;
     }
 
     private function key_id(string $key_id, string $tabla): string
@@ -138,26 +190,19 @@ class select{
             return $this->error->error(mensaje: 'Error al asignar name',data:  $name);
         }
 
-        if($key_descripcion_select === '') {
-            $key_descripcion_select = $tabla.'_descripcion_select';
-        }
 
-        $key_descripcion = trim($key_descripcion);
-        if($key_descripcion === ''){
-            $key_descripcion = $tabla.'_descripcion';
+        $data_keys = $this->genera_data_keys(
+            columns_ds: $columns_ds,key_descripcion: $key_descripcion,key_descripcion_select:  $key_descripcion_select,
+            tabla:  $tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al asignar data_keys',data:  $data_keys);
         }
-
-        if (count($columns_ds) > 0){
-            $key_descripcion = $columns_ds[0];
-            $key_descripcion_select = $columns_ds[0];
-        }
-
 
         $data = new stdClass();
         $data->id = $key_id;
-        $data->descripcion_select = $key_descripcion_select;
+        $data->descripcion_select = $data_keys->key_descripcion_select;
         $data->name = $name;
-        $data->descripcion = $key_descripcion;
+        $data->descripcion = $data_keys->key_descripcion;
 
         return $data;
     }
