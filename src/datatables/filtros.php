@@ -28,6 +28,13 @@ class filtros{
      */
     final public function filtro_accion_permitida(string $seccion): array
     {
+        if(!isset($_SESSION['grupo_id'])){
+            return $this->error->error(mensaje: 'Error $_SESSION[grupo_id] debe existir', data: $seccion);
+        }
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(mensaje: 'Error seccion esta vacio', data: $seccion);
+        }
         $filtro = array();
         $filtro['adm_grupo.id'] = $_SESSION['grupo_id'];
         $filtro['adm_seccion.descripcion'] = $seccion;

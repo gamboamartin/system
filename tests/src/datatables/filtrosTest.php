@@ -31,6 +31,27 @@ class filtrosTest extends test {
         $this->paths_conf->views = '/var/www/html/cat_sat/config/views.php';
     }
 
+    public function test_filtro_accion_permitida(): void
+    {
+        $_SESSION['grupo_id'] = 2;
+        errores::$error = false;
+        $datatables = new filtros();
+        //$datatables = new liberator($datatables);
+
+        $seccion = 'a';
+        $resultado = $datatables->filtro_accion_permitida($seccion);
+        //print_r($resultado);exit;
+
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(2, $resultado['adm_grupo.id']);
+        $this->assertEquals('a', $resultado['adm_seccion.descripcion']);
+        $this->assertEquals('activo', $resultado['adm_accion.es_lista']);
+        $this->assertEquals('activo', $resultado['adm_accion.status']);
+        $this->assertEquals('activo', $resultado['adm_grupo.status']);
+        errores::$error = false;
+    }
+
     public function test_filtro_especial_datatable(): void
     {
         errores::$error = false;
