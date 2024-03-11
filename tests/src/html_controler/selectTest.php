@@ -98,6 +98,35 @@ class selectTest extends test {
         $this->assertEquals('a_descripcion_select', $resultado->descripcion_select);
         errores::$error = false;
     }
+    public function test_key_id(): void
+    {
+        errores::$error = false;
+
+        $html = new select();
+        $html = new liberator($html);
+
+        $key_id = '';
+        $tabla = 'a';
+
+        $resultado = $html->key_id($key_id, $tabla);
+        //print_r($resultado);exit;
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a_id', $resultado);
+        errores::$error = false;
+
+        $key_id = 'b';
+        $tabla = 'a';
+
+        $resultado = $html->key_id($key_id, $tabla);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('b', $resultado);
+
+        errores::$error = false;
+
+    }
 
     public function test_label(): void
     {

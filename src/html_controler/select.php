@@ -154,8 +154,12 @@ class select{
         return $key_descripcion_select;
     }
 
-    private function key_id(string $key_id, string $tabla): string
+    private function key_id(string $key_id, string $tabla): string|array
     {
+        $tabla = trim($tabla);
+        if($tabla === ''){
+            return $this->error->error(mensaje: 'Error tabla esta vacia',data:  $tabla);
+        }
         if($key_id === '') {
             $key_id = $tabla . '_id';
         }
