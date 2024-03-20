@@ -378,5 +378,24 @@ class links_menuTest extends test {
         errores::$error = false;
     }
 
+    public function test_valida_link(): void
+    {
+        errores::$error = false;
+        $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_GET['session_id'] = '1';
+        $html = new links_menu($this->link,-1);
+        $html = new liberator($html);
+
+        $accion = 'a';
+        $seccion = 'b';
+        $resultado = $html->valida_link($accion, $seccion);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+    }
+
 }
 

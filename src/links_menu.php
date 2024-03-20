@@ -190,6 +190,26 @@ class links_menu{
         return $init;
     }
 
+    private function data_link(string $accion, PDO $link, array $params, string $seccion)
+    {
+        $vars_get = $this->var_gets(params_get: $params);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar params get', data: $vars_get);
+        }
+
+        $tengo_permiso = (new adm_usuario(link: $link))->tengo_permiso(adm_accion: $accion, adm_seccion: $seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar si tengo permiso', data: $tengo_permiso);
+        }
+
+        $data = new stdClass();
+        $data->vars_get = $vars_get;
+        $data->tengo_permiso = $tengo_permiso;
+        return $data;
+
+
+    }
+
     private function elimina_bd(PDO $link, int $registro_id, string $seccion): string
     {
 
@@ -225,6 +245,19 @@ class links_menu{
         return $this->links;
     }
 
+    private function genera_link_ancla(string $accion, int $registro_id, string $seccion, bool $tengo_permiso, string $vars_get)
+    {
+        $link_ancla = '';
+        if($tengo_permiso) {
+            $link_ancla = $this->link_ancla(accion: $accion,registro_id:  $registro_id,seccion:  $seccion,vars_get:  $vars_get);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al obtener link', data: $link_ancla);
+            }
+        }
+        return $link_ancla;
+
+    }
+
     final public function genera_links(controler $controler): array|stdClass
     {
         $filtro['adm_seccion.descripcion']  = $controler->modelo->tabla;
@@ -240,6 +273,21 @@ class links_menu{
         }
 
         return $this->links;
+    }
+
+    private function get_datos_ancla(string $accion, PDO $link, array $params, string $seccion, bool $valida_permiso)
+    {
+        $data_link = $this->data_link(accion: $accion,link:  $link,params:  $params,seccion:  $seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar data_link', data: $data_link);
+        }
+        $valida = $this->valida_permiso(accion: $accion,data_link:  $data_link,seccion:  $seccion,valida_permiso:  $valida_permiso);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar permiso', data: $valida);
+        }
+
+        return $data_link;
+
     }
 
     /**
@@ -396,6 +444,21 @@ class links_menu{
         }
         $tabla = $controler->tabla;
         return trim($tabla);
+    }
+
+    private function integra_link_ancla(string $accion, PDO $link, array $params, int $registro_id, string $seccion, bool $valida_permiso)
+    {
+        $data_link = $this->get_datos_ancla(accion: $accion,link:  $link,params:  $params,seccion:  $seccion,valida_permiso:  $valida_permiso);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar data_link', data: $data_link);
+        }
+        $link_ancla = $this->genera_link_ancla(accion: $accion,registro_id:  $registro_id,seccion:  $seccion,
+            tengo_permiso:  $data_link->tengo_permiso,vars_get:  $data_link->vars_get);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener link', data: $link_ancla);
+        }
+        return $link_ancla;
+
     }
 
     private function integra_links(stdClass $acciones, controler $controler){
@@ -570,6 +633,23 @@ class links_menu{
         return $alta_bd;
     }
 
+    private function link_ancla(string $accion, int $registro_id, string $seccion, string $vars_get): string
+    {
+        $adm_menu_id = $this->adm_menu_id();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener menu id', data: $adm_menu_id);
+        }
+
+        $param_registro_id = '';
+        if($registro_id > 0){
+            $param_registro_id = "&registro_id=$registro_id";
+        }
+        $link_ancla = "./index.php?seccion=$seccion&accion=$accion$param_registro_id&adm_menu_id=$adm_menu_id";
+        $link_ancla.="&session_id=$this->session_id$vars_get";
+        return $link_ancla;
+
+    }
+
     /**
      * Funcion que genera un link con un id definido para la ejecucion de una accion
      * @param string $accion Accion a ejecutar
@@ -585,40 +665,16 @@ class links_menu{
                                 array $params = array(), bool $valida_permiso = false): array|string
     {
         $accion = trim($accion);
-        if($accion === ''){
-            return $this->error->error(mensaje: 'Error al accion esta vacia', data: $accion);
-        }
         $seccion = trim($seccion);
-        if($seccion === ''){
-            return $this->error->error(mensaje: 'Error al $seccion esta vacia', data: $seccion);
-        }
 
-        $vars_get = '';
-        foreach ($params as $var=>$value){
-            $vars_get.="&$var=$value";
-        }
-
-
-
-        $tengo_permiso = (new adm_usuario(link: $link))->tengo_permiso(adm_accion: $accion, adm_seccion: $seccion);
+        $valida = $this->valida_link(accion: $accion,seccion:  $seccion);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar si tengo permiso', data: $tengo_permiso);
-        }
-        if($valida_permiso){
-            if(!$tengo_permiso){
-                return $this->error->error(mensaje: 'Error permiso denegado '.$seccion.' '.$accion,
-                    data: $tengo_permiso);
-            }
+            return $this->error->error(mensaje: 'Error al validar entrada de datos', data: $valida);
         }
 
-        $link_ancla = '';
-        if($tengo_permiso) {
-            $adm_menu_id = -1;
-            if(isset($_GET['adm_menu_id'])){
-                $adm_menu_id = $_GET['adm_menu_id'];
-            }
-            $link_ancla = "./index.php?seccion=$seccion&accion=$accion&registro_id=$registro_id&adm_menu_id=$adm_menu_id";
-            $link_ancla.="&session_id=$this->session_id$vars_get";
+        $link_ancla = $this->integra_link_ancla(accion: $accion,link:  $link,params:  $params,registro_id:  $registro_id,seccion:  $seccion,valida_permiso:  $valida_permiso);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener link', data: $link_ancla);
         }
 
 
@@ -758,6 +814,26 @@ class links_menu{
             $modifica .= "&session_id=$this->session_id&adm_menu_id=$adm_menu_id";
         }
         return $modifica;
+    }
+
+    final public function link_sin_id(string $accion, PDO $link, string $seccion, array $params = array(), bool $valida_permiso = false): array|string
+    {
+        $accion = trim($accion);
+        $seccion = trim($seccion);
+
+        $valida = $this->valida_link(accion: $accion,seccion:  $seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar entrada de datos', data: $valida);
+        }
+
+
+        $link_ancla = $this->integra_link_ancla(accion: $accion,link:  $link,params:  $params,registro_id:  -1,seccion:  $seccion,valida_permiso:  $valida_permiso);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener link', data: $link_ancla);
+        }
+
+
+        return $link_ancla;
     }
 
     /**
@@ -1078,6 +1154,42 @@ class links_menu{
         }
 
         return $init;
+
+    }
+
+    private function valida_link(string $accion, string $seccion): true|array
+    {
+        $accion = trim($accion);
+        if($accion === ''){
+            return $this->error->error(mensaje: 'Error al accion esta vacia', data: $accion);
+        }
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(mensaje: 'Error al $seccion esta vacia', data: $seccion);
+        }
+        return true;
+
+    }
+
+    private function valida_permiso(string $accion,stdClass $data_link, string $seccion, bool $valida_permiso): true|array
+    {
+        if($valida_permiso){
+            if(!$data_link->tengo_permiso){
+                return $this->error->error(mensaje: 'Error permiso denegado '.$seccion.' '.$accion,
+                    data: $data_link->tengo_permiso);
+            }
+        }
+        return true;
+
+    }
+
+    private function var_gets(array $params_get): string
+    {
+        $vars_get = '';
+        foreach ($params_get as $var=>$value){
+            $vars_get.="&$var=$value";
+        }
+        return $vars_get;
 
     }
 }

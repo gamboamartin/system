@@ -741,7 +741,7 @@ class systemTest extends test {
             exit;
         }
 
-        $alta = (new base_test())->alta_adm_accion(link: $this->link, adm_seccion_descripcion: 'adm_accion');
+        $alta = (new base_test())->alta_adm_seccion(link: $this->link, descripcion: 'adm_accion');
         if(errores::$error){
             $error = (new errores())->error('Error al insertar', $alta);
             print_r($error);
@@ -1034,6 +1034,7 @@ class systemTest extends test {
         $_GET['session_id'] = 1;
         $_GET['registro_id'] = 1;
         $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
         $html = new html();
         $html_controler = new html_controler($html);
 
@@ -1107,6 +1108,13 @@ class systemTest extends test {
             exit;
         }
 
+        $del = (new adm_accion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
         $adm_accion['id'] = 1;
         $adm_accion['descripcion'] = 'test';
         $adm_accion['titulo'] = 'test';
@@ -1135,8 +1143,29 @@ class systemTest extends test {
     {
         errores::$error = false;
         $_SESSION['grupo_id'] = 2;
+        $_SESSION['usuario_id'] = 2;
         $_GET['session_id'] = 1;
         $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
+
+        $del = (new adm_seccion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $adm_seccion['id'] = 1;
+        $adm_seccion['descripcion'] = 'adm_accion';
+        $adm_seccion['adm_menu_id'] = 1;
+        $adm_seccion['adm_namespace_id'] = 1;
+        $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
         $html = new html();
         $html_controler = new html_controler($html);
 

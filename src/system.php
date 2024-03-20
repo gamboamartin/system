@@ -192,6 +192,15 @@ class system extends controlador_base{
 
         $this->key_id_row = $this->tabla.'_id';
 
+        $link_importa_previo = $this->obj_link->link_sin_id(accion: 'importa_previo',link:  $link,seccion:  $this->seccion);
+        if(errores::$error){
+            $error = $this->errores->error(mensaje:
+                'Error al cargar link importa previo', data: $link_importa_previo);
+            print_r($error);
+            die('Error');
+        }
+        $this->link_importa_previo = $link_importa_previo;
+
     }
 
 
