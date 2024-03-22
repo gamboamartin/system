@@ -786,6 +786,7 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+
     public function test_menu_lateral_title(): void
     {
         errores::$error = false;

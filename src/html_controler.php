@@ -1968,6 +1968,7 @@ class html_controler{
      * @param array $in
      * @param array $registros
      * @param bool $required si required agrega el atributo required a input
+     * @param bool $valida_key_id
      * @return array|string Un string con options en forma de html
      */
     final public function select_catalogo(int $cols, bool $con_registros, int|null|string|float $id_selected,
@@ -1978,7 +1979,7 @@ class html_controler{
                                           string $key_descripcion_select = '', string $key_id = '',
                                           string $key_value_custom = '', string $label = '', string $name = '',
                                           array $not_in = array(), array $in = array(), array $registros = array(),
-                                          bool $required = false): array|string
+                                          bool $required = false, bool $valida_key_id = true): array|string
     {
 
         $valida = (new directivas(html:$this->html_base))->valida_cols(cols:$cols);
@@ -1999,7 +2000,7 @@ class html_controler{
             columns_ds: $columns_ds, extra_params_keys: $extra_params_keys, filtro: $filtro,
             key_descripcion: $key_descripcion, key_descripcion_select: $key_descripcion_select, key_id: $key_id,
             key_value_custom: $key_value_custom, label: $label, name: $name, not_in: $not_in, in: $in,
-            registros: $registros);
+            registros: $registros, valida_key_id: $valida_key_id);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar datos', data: $init);
         }

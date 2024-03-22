@@ -47,7 +47,7 @@ class selectTest extends test {
         $registros[0]['b'] = 'd';
         $registros[0]['a_id'] = 'd';
         $registros[0]['a_descripcion'] = 'd';
-        $resultado = $html->genera_values_selects($keys, $registros,'a');
+        $resultado = $html->genera_values_selects($keys, $registros,'a', true);
        // print_r($resultado);exit;
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
@@ -96,6 +96,25 @@ class selectTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('a_id', $resultado->id);
         $this->assertEquals('a_descripcion_select', $resultado->descripcion_select);
+        errores::$error = false;
+    }
+
+    public function test_key_descripcion_select(): void
+    {
+        errores::$error = false;
+
+        $html = new select();
+        $html = new liberator($html);
+
+        $key_descripcion_select = '';
+        $tabla = 'a';
+
+        $resultado = $html->key_descripcion_select($key_descripcion_select, $tabla);
+
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a_descripcion_select', $resultado);
         errores::$error = false;
     }
     public function test_key_id(): void
@@ -356,7 +375,7 @@ class selectTest extends test {
         $extra_params_keys = array();
         $resultado = $html->values_selects(columns_ds: array(), con_registros: $con_registros,
             extra_params_keys: $extra_params_keys, filtro: array(), in: array(), key_value_custom: '',
-            keys: $keys, modelo: $modelo, not_in: array(), registros: array());
+            keys: $keys, modelo: $modelo, not_in: array(), registros: array(), valida_key_id: true);
 
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
@@ -381,7 +400,7 @@ class selectTest extends test {
         $extra_params_keys = array();
         $resultado = $html->values_selects(columns_ds: array(), con_registros: $con_registros,
             extra_params_keys: $extra_params_keys, filtro: array(), in: array(), key_value_custom: 'a',
-            keys: $keys, modelo: $modelo, not_in: array(), registros: array());
+            keys: $keys, modelo: $modelo, not_in: array(), registros: array(),valida_key_id: true);
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
 

@@ -54,13 +54,14 @@ class select{
      * @param stdClass $keys Keys para asignacion basica
      * @param array $registros Conjunto de registros a integrar
      * @param string $tabla Tabla del modelo en ejecucion
+     * @param bool $valida_key_id
      * @return array
      * @version 0.48.32
      * @verfuncion 0.1.0
      * @fecha 2022-08-02 18:12
      * @author mgamboa
      */
-    private function genera_values_selects(stdClass $keys, array $registros, string $tabla): array
+    private function genera_values_selects(stdClass $keys, array $registros, string $tabla, bool $valida_key_id): array
     {
         $keys_valida = array('id','descripcion_select');
         $valida = (new validacion())->valida_existencia_keys(keys: $keys_valida, registro: $keys);
@@ -68,7 +69,7 @@ class select{
             return $this->error->error(mensaje: 'Error al validar keys',data:  $valida);
         }
 
-        $values = $this->values(keys: $keys,registros:  $registros,tabla:  $tabla);
+        $values = $this->values(keys: $keys,registros:  $registros,tabla:  $tabla, valida_key_id: $valida_key_id);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al integra values para select',data:  $values);
         }
@@ -91,6 +92,7 @@ class select{
      * @param array $not_in Omite resultado de options
      * @param array $in
      * @param array $registros Registros para integrar en select
+     * @param bool $valida_key_id
      * @return array|stdClass
      */
     final public function init_data_select(bool $con_registros, modelo $modelo, array $columns_ds = array(),
@@ -98,7 +100,7 @@ class select{
                                            string $key_descripcion = '', string $key_descripcion_select= '',
                                            string $key_id = '', string $key_value_custom = '', string $label = '',
                                            string $name = '', array $not_in = array(), array $in = array(),
-                                           array $registros = array()): array|stdClass
+                                           array $registros = array(), bool $valida_key_id = true): array|stdClass
     {
 
         $keys = $this->keys_base(tabla: $modelo->tabla, key_descripcion: $key_descripcion,
@@ -110,7 +112,7 @@ class select{
 
         $values = $this->values_selects(columns_ds: $columns_ds, con_registros: $con_registros,
             extra_params_keys: $extra_params_keys, filtro: $filtro, in: $in, key_value_custom: $key_value_custom,
-            keys: $keys, modelo: $modelo, not_in: $not_in, registros: $registros);
+            keys: $keys, modelo: $modelo, not_in: $not_in, registros: $registros, valida_key_id: $valida_key_id);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener valores',data:  $values);
         }
@@ -137,10 +139,10 @@ class select{
     }
 
 
-    private function integra_descripcion_select(stdClass $keys, array $registro, string $tabla){
+    private function integra_descripcion_select(stdClass $keys, array $registro, string $tabla, bool $valida_key_id){
         $key_descripcion = $tabla.'_descripcion';
         if(!isset($registro[$keys->descripcion_select])){
-            $registro = $this->key_descripcion_select_default(key_descripcion: $key_descripcion, keys: $keys, registro: $registro);
+            $registro = $this->key_descripcion_select_default(key_descripcion: $key_descripcion, keys: $keys, registro: $registro, valida_key_id: $valida_key_id);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al asignar descripcion_select',data:  $registro);
             }
@@ -148,8 +150,21 @@ class select{
         return $registro;
     }
 
-    private function key_descripcion_select(string $key_descripcion_select, string $tabla): string
+    /**
+     * POR DOCUMENTAR EN WIKI ERROR FINAL
+     * Genera una key para obtener el elemento de la descripcion a mostrar en un option
+     * @param string $key_descripcion_select key a validar
+     * @param string $tabla Tabla de select
+     * @return string|array
+     * @version 20.1.0
+     */
+    private function key_descripcion_select(string $key_descripcion_select, string $tabla): string|array
     {
+        $tabla = trim($tabla);
+        if($tabla === ''){
+            return $this->error->error(mensaje: 'Error tabla esta vacia',data:  $tabla,es_final: true);
+        }
+        $key_descripcion_select = trim($key_descripcion_select);
         if($key_descripcion_select === '') {
             $key_descripcion_select = $tabla.'_descripcion_select';
         }
@@ -234,18 +249,30 @@ class select{
      * @param string $key_descripcion Key de la descripcion
      * @param stdClass $keys keys con key_id
      * @param array $registro Registro en proceso
+     * @param bool $valida_key_id
      * @return array
-
      */
-    private function key_descripcion_select_default(string $key_descripcion, stdClass $keys, array $registro): array
+    private function key_descripcion_select_default(string $key_descripcion, stdClass $keys, array $registro,
+                                                    bool $valida_key_id): array
     {
-        $keys_val_row = array($keys->id,$key_descripcion);
+        $keys_val_row = array($key_descripcion);
+        if($valida_key_id){
+            $keys_val_row[] = $keys->id;
+        }
+
         $valida = $this->validacion->valida_existencia_keys(keys: $keys_val_row, registro: $registro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar registro',data:  $valida);
         }
 
-        $registro[$keys->descripcion_select] = $registro[$keys->id].' '.$registro[$key_descripcion];
+        if($valida_key_id) {
+            $descripcion_select = $registro[$keys->id] . ' ' . $registro[$key_descripcion];
+        }
+        else{
+            $descripcion_select = $registro[$key_descripcion];
+        }
+
+        $registro[$keys->descripcion_select] = $descripcion_select;
         return $registro;
     }
 
@@ -429,8 +456,8 @@ class select{
         return $values;
     }
 
-    private function value_select_row(stdClass $keys, array $registro, string $tabla, array $values){
-        $registro = $this->integra_descripcion_select(keys: $keys,registro:  $registro, tabla: $tabla);
+    private function value_select_row(stdClass $keys, array $registro, string $tabla, bool $valida_key_id, array $values){
+        $registro = $this->integra_descripcion_select(keys: $keys,registro:  $registro, tabla: $tabla, valida_key_id: $valida_key_id);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al asignar descripcion_select',data:  $registro);
         }
@@ -442,13 +469,13 @@ class select{
         return $values;
     }
 
-    private function values(stdClass $keys, array $registros, string $tabla){
+    private function values(stdClass $keys, array $registros, string $tabla, bool $valida_key_id){
         $values = array();
         foreach ($registros as $registro){
             if(!is_array($registro)){
                 return $this->error->error(mensaje: 'Error registro debe ser un array',data:  $registro);
             }
-            $values = $this->value_select_row(keys: $keys,registro:  $registro, tabla: $tabla,values:  $values);
+            $values = $this->value_select_row(keys: $keys, registro: $registro, tabla: $tabla, valida_key_id: $valida_key_id, values: $values);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al integra values para select',data:  $values);
             }
@@ -469,13 +496,14 @@ class select{
      * @param modelo $modelo Modelo para asignacion de datos
      * @param array $not_in Omite resultados para options
      * @param array $registros registros a mostrar en caso de que este vacio los obtiene de la entidad
+     * @param bool $valida_key_id
      * @return array
      * @author mgamboa
      * @version 8.60.0
      */
     private function values_selects(array $columns_ds, bool $con_registros, array $extra_params_keys, array $filtro,
                                     array $in, string $key_value_custom, stdClass $keys, modelo $modelo, array $not_in ,
-                                    array $registros ): array
+                                    array $registros , bool $valida_key_id): array
     {
         $keys_valida = array('id','descripcion_select','descripcion');
         $valida = (new validacion())->valida_existencia_keys(keys: $keys_valida, registro: $keys);
@@ -490,7 +518,7 @@ class select{
             return $this->error->error(mensaje: 'Error al obtener registros', data: $registros);
         }
 
-        $values = $this->genera_values_selects(keys: $keys,registros: $registros, tabla: $modelo->tabla);
+        $values = $this->genera_values_selects(keys: $keys,registros: $registros, tabla: $modelo->tabla, valida_key_id: $valida_key_id);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al asignar valores',data:  $values);
         }
