@@ -514,9 +514,12 @@ class select{
             return $this->error->error(mensaje: 'Error al obtener registros', data: $registros);
         }
 
-        $values = $this->genera_values_selects(aplica_default: $aplica_default, keys: $keys, registros: $registros, tabla: $modelo->tabla);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar valores',data:  $values);
+        $values = $registros;
+        if($aplica_default) {
+            $values = $this->genera_values_selects(aplica_default: $aplica_default, keys: $keys, registros: $registros, tabla: $modelo->tabla);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al asignar valores', data: $values);
+            }
         }
 
         return $values;
