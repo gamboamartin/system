@@ -456,9 +456,11 @@ class select{
             return $this->error->error(mensaje: 'Error al asignar descripcion_select',data:  $registro);
         }
 
-        $values = $this->value_select(keys: $keys,registro:  $registro,values:  $values);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al integra values para select',data:  $values);
+        if($aplica_default) {
+            $values = $this->value_select(keys: $keys, registro: $registro, values: $values);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al integra values para select', data: $values);
+            }
         }
         return $values;
     }
