@@ -1949,26 +1949,32 @@ class html_controler{
      * @param int $cols Numero de columnas boostrap
      * @param bool $con_registros Si con registros , obtiene todos los registros activos del modelo en ejecucion
      *  para la asignacion de options, Si no, deja el select en blanco o vacio
-     * @param int $id_selected Identificador de un registro y cargado utilizado para modifica, aplica selected
+     * @param int|string|float|null $id_selected Identificador de un registro y cargado utilizado para modifica, aplica selected
      * @param modelo $modelo Modelo de datos ejecucion
+     * @param modelo|bool $modelo_preferido
+     * @param array $class_css Integra elementos css como class en select
+     * @param array $columns_ds
      * @param bool $disabled Si disabled el input queda deshabilitado
      * @param array $extra_params_keys Extraparams datos a obtener para integrar en data-extra
      * @param array $filtro Filtro para obtencion de datos
+     * @param string $id_css Si esta vacio integra el id como name
+     * @param string $key_descripcion
      * @param string $key_descripcion_select Key para mostrar en options
      * @param string $key_id Key para integrar el value
+     * @param string $key_value_custom
      * @param string $label Etiqueta a mostrar en select
      * @param string $name Nombre del input
-     * @param bool $required si required agrega el atributo required a input
      * @param array $not_in Omite los elementos en obtencion de datos
-     * @param array $class_css Integra elementos css como class en select
-     * @param string $id_css Si esta vacio integra el id como name
+     * @param array $in
+     * @param array $registros
+     * @param bool $required si required agrega el atributo required a input
      * @return array|string Un string con options en forma de html
      */
-    final public function select_catalogo(int $cols, bool $con_registros, int $id_selected, modelo $modelo,
-                                          modelo|bool $modelo_preferido = false, array $class_css = array(),
-                                          array $columns_ds = array(), bool $disabled = false,
-                                          array $extra_params_keys = array(), array $filtro=array(),
-                                          string $id_css = '', string $key_descripcion = '',
+    final public function select_catalogo(int $cols, bool $con_registros, int|null|string|float $id_selected,
+                                          modelo $modelo, modelo|bool $modelo_preferido = false,
+                                          array $class_css = array(), array $columns_ds = array(),
+                                          bool $disabled = false, array $extra_params_keys = array(),
+                                          array $filtro=array(), string $id_css = '', string $key_descripcion = '',
                                           string $key_descripcion_select = '', string $key_id = '',
                                           string $key_value_custom = '', string $label = '', string $name = '',
                                           array $not_in = array(), array $in = array(), array $registros = array(),

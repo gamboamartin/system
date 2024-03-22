@@ -92,7 +92,6 @@ class select{
      * @param array $in
      * @param array $registros Registros para integrar en select
      * @return array|stdClass
-     * @version 8.93.1
      */
     final public function init_data_select(bool $con_registros, modelo $modelo, array $columns_ds = array(),
                                            array $extra_params_keys = array(), array $filtro = array(),
@@ -300,6 +299,15 @@ class select{
         return $label_;
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Este método se encarga de asignar un nombre a la clave dada.
+     *
+     * @param string $key_id La clave a la que se asignará el nombre.
+     * @param string $name El nombre que se asignará a la clave.
+     * @return string El nombre que se ha asignado a la clave. Si el nombre proporcionado estaba vacío, se devolverá la misma clave.
+     * @version 19.3.0
+     */
     private function name(string $key_id, string $name): string
     {
         $name = trim($name);

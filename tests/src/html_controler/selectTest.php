@@ -160,6 +160,27 @@ class selectTest extends test {
         errores::$error = false;
     }
 
+    public function test_name(): void
+    {
+        errores::$error = false;
+
+        $html = new select();
+        $html = new liberator($html);
+
+        $key_id = '';
+        $name = '';
+
+        $resultado = $html->name($key_id, $name);
+
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('', $resultado);
+        errores::$error = false;
+
+
+    }
+
     public function test_registros_select(): void
     {
         errores::$error = false;
