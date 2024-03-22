@@ -182,12 +182,35 @@ class selectTest extends test {
         $columns_ds[] = 'a';
         $extra_params_keys[] = 'b';
 
-        $resultado = $html->registros_select($columns_ds, $con_registros, $extra_params_keys,
-            $filtro, $keys, $modelo, $not_in, $registros);
+        $resultado = $html->registros_select(columns_ds: $columns_ds, con_registros: $con_registros, extra_params_keys: $extra_params_keys,
+            filtro: $filtro, in: array(), key_value_custom: '', keys: $keys, modelo: $modelo, not_in: $not_in, registros: $registros);
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
 
         errores::$error = false;
+
+        $keys = new stdClass();
+        $keys->id = 'adm_accion_id';
+        $keys->descripcion_select = 'adm_accion_descripcion';
+        $keys->descripcion = 'adm_accion_descripcion';
+
+        $con_registros = true;
+        $modelo = new adm_accion($this->link);
+        $extra_params_keys = array();
+        $columns_ds = array();
+        $filtro = array();
+        $not_in = array();
+        $registros = array();
+        $columns_ds[] = 'a';
+        $extra_params_keys[] = 'b';
+        $key_value_custom = 's';
+
+        $resultado = $html->registros_select(columns_ds: $columns_ds, con_registros: $con_registros, extra_params_keys: $extra_params_keys,
+            filtro: $filtro, in: array(), key_value_custom: $key_value_custom, keys: $keys, modelo: $modelo, not_in: $not_in, registros: $registros);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+
+
     }
     public function test_rows_select(): void
     {
@@ -264,7 +287,8 @@ class selectTest extends test {
         $extra_params_keys = array();
         $extra_params_keys[] = 'adm_seccion_descripcion';
 
-        $resultado = $html->rows_select(keys:$keys, modelo:$modelo,extra_params_keys:$extra_params_keys);
+        $resultado = $html->rows_select(columns_ds: array(), extra_params_keys: $extra_params_keys, filtro: array(),
+            in: array(), key_value_custom: '', keys: $keys, modelo: $modelo, not_in: array());
 
 
         $this->assertIsArray($resultado);
@@ -274,6 +298,24 @@ class selectTest extends test {
         $this->assertEquals('adm_accion', $resultado[0]['adm_seccion_descripcion']);
 
         errores::$error = false;
+
+        $modelo = new adm_accion($this->link);
+        $keys = new stdClass();
+        $keys->id = 'adm_accion_id';
+        $keys->descripcion_select = 'adm_accion_descripcion';
+        $keys->descripcion = 'adm_accion_descripcion';
+        $extra_params_keys = array();
+        $extra_params_keys[] = 'adm_seccion_descripcion';
+
+        $resultado = $html->rows_select(columns_ds: array(), extra_params_keys: $extra_params_keys, filtro: array(),
+            in: array(), key_value_custom: 'a', keys: $keys, modelo: $modelo, not_in: array());
+
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsNumeric( $resultado[0]['adm_accion_id']);
+        $this->assertEquals('test', $resultado[0]['adm_accion_descripcion']);
+        $this->assertEquals('adm_accion', $resultado[0]['adm_seccion_descripcion']);
+
     }
 
     public function test_values_selects(): void
@@ -291,7 +333,9 @@ class selectTest extends test {
         $con_registros = true;
         $modelo = new adm_accion($this->link);
         $extra_params_keys = array();
-        $resultado = $html->values_selects($con_registros, $keys, $modelo,$extra_params_keys);
+        $resultado = $html->values_selects(columns_ds: array(), con_registros: $con_registros,
+            extra_params_keys: $extra_params_keys, filtro: array(), in: array(), key_value_custom: '',
+            keys: $keys, modelo: $modelo, not_in: array(), registros: array());
 
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
@@ -304,6 +348,31 @@ class selectTest extends test {
         }
 
         errores::$error = false;
+
+
+        $keys = new stdClass();
+        $keys->id = 'adm_accion_id';
+        $keys->descripcion_select = 'adm_accion_descripcion';
+        $keys->descripcion = 'adm_accion_descripcion';
+
+        $con_registros = true;
+        $modelo = new adm_accion($this->link);
+        $extra_params_keys = array();
+        $resultado = $html->values_selects(columns_ds: array(), con_registros: $con_registros,
+            extra_params_keys: $extra_params_keys, filtro: array(), in: array(), key_value_custom: 'a',
+            keys: $keys, modelo: $modelo, not_in: array(), registros: array());
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        foreach ($resultado as $key=>$res){
+
+            $this->assertIsNumeric( $res['adm_accion_id']);
+            $this->assertIsString( $res['adm_accion_descripcion']);
+            $this->assertIsString( $res['descripcion_select']);
+        }
+
+        errores::$error = false;
+
     }
 
 

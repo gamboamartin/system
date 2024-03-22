@@ -1219,7 +1219,7 @@ class html_controlerTest extends test {
         errores::$error = false;
         $html_ = new html();
         $html = new html_controler($html_);
-        $html = new liberator($html);
+        //$html = new liberator($html);
 
         $cols = -1;
         $con_registros = false;
@@ -1274,6 +1274,27 @@ class html_controlerTest extends test {
 
 
         errores::$error = false;
+
+
+        errores::$error = false;
+
+
+        $cols = 1;
+        $con_registros = true;
+        $id_selected = -1;
+        $modelo = new adm_menu($this->link);
+        $key_value_custom = 'adm_menu_icono';
+        $resultado = $html->select_catalogo(cols: $cols, con_registros: $con_registros, id_selected: $id_selected,
+            modelo: $modelo, key_descripcion_select: 'adm_menu_id', key_value_custom: $key_value_custom, name: 'x');
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase(" >742</option><option value='SI'  >743</option><option ", $resultado);
+        $this->assertStringContainsStringIgnoringCase("n value='SI'  >744</option><option value='SI'  >745</o", $resultado);
+        $this->assertStringContainsStringIgnoringCase("n><option value='SI'  >826</option><option val", $resultado);
+        $this->assertStringContainsStringIgnoringCase("><option value='SI'  >894</option><option value='SI'  >895", $resultado);
+        $this->assertStringContainsStringIgnoringCase("='SI'  >1053</option><option value='SI'  >1054</option", $resultado);
+
     }
 
     public function test_selects_alta(): void

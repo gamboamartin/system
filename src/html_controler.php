@@ -1969,9 +1969,10 @@ class html_controler{
                                           array $columns_ds = array(), bool $disabled = false,
                                           array $extra_params_keys = array(), array $filtro=array(),
                                           string $id_css = '', string $key_descripcion = '',
-                                          string $key_descripcion_select = '', string $key_id = '', string $label = '',
-                                          string $name = '', array $not_in = array(), array $in = array(),
-                                          array $registros = array(), bool $required = false): array|string
+                                          string $key_descripcion_select = '', string $key_id = '',
+                                          string $key_value_custom = '', string $label = '', string $name = '',
+                                          array $not_in = array(), array $in = array(), array $registros = array(),
+                                          bool $required = false): array|string
     {
 
         $valida = (new directivas(html:$this->html_base))->valida_cols(cols:$cols);
@@ -1991,14 +1992,16 @@ class html_controler{
         $init = (new select())->init_data_select(con_registros: $con_registros, modelo: $modelo,
             columns_ds: $columns_ds, extra_params_keys: $extra_params_keys, filtro: $filtro,
             key_descripcion: $key_descripcion, key_descripcion_select: $key_descripcion_select, key_id: $key_id,
-            label: $label, name: $name, not_in: $not_in, in: $in, registros: $registros);
+            key_value_custom: $key_value_custom, label: $label, name: $name, not_in: $not_in, in: $in,
+            registros: $registros);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar datos', data: $init);
         }
 
         $select = $this->html_base->select(cols: $cols, id_selected: $id_selected, label: $init->label,
             name: $init->name, values: $init->values, class_css: $class_css, columns_ds: $columns_ds,
-            disabled: $disabled, extra_params_key: $extra_params_keys, id_css: $id_css, required: $required);
+            disabled: $disabled, extra_params_key: $extra_params_keys, id_css: $id_css,
+            key_value_custom: $key_value_custom, required: $required);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $select);
         }

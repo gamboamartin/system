@@ -85,9 +85,11 @@ class select{
      * @param string $key_descripcion Key de descripcion
      * @param string $key_descripcion_select key del registro para mostrar en un select
      * @param string $key_id key Id de value para option
+     * @param string $key_value_custom
      * @param string $label Etiqueta a mostrar
      * @param string $name Nombre del input
      * @param array $not_in Omite resultado de options
+     * @param array $in
      * @param array $registros Registros para integrar en select
      * @return array|stdClass
      * @version 8.93.1
@@ -95,8 +97,9 @@ class select{
     final public function init_data_select(bool $con_registros, modelo $modelo, array $columns_ds = array(),
                                            array $extra_params_keys = array(), array $filtro = array(),
                                            string $key_descripcion = '', string $key_descripcion_select= '',
-                                           string $key_id = '', string $label = '', string $name = '',
-                                           array $not_in = array(), array $in = array(), array $registros = array()): array|stdClass
+                                           string $key_id = '', string $key_value_custom = '', string $label = '',
+                                           string $name = '', array $not_in = array(), array $in = array(),
+                                           array $registros = array()): array|stdClass
     {
 
         $keys = $this->keys_base(tabla: $modelo->tabla, key_descripcion: $key_descripcion,
@@ -106,9 +109,9 @@ class select{
             return $this->error->error(mensaje: 'Error al generar keys',data:  $keys);
         }
 
-        $values = $this->values_selects(con_registros: $con_registros, keys: $keys, modelo: $modelo,
-            columns_ds: $columns_ds, extra_params_keys: $extra_params_keys, filtro: $filtro, not_in: $not_in,
-            in: $in, registros: $registros);
+        $values = $this->values_selects(columns_ds: $columns_ds, con_registros: $con_registros,
+            extra_params_keys: $extra_params_keys, filtro: $filtro, in: $in, key_value_custom: $key_value_custom,
+            keys: $keys, modelo: $modelo, not_in: $not_in, registros: $registros);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener valores',data:  $values);
         }
@@ -223,6 +226,7 @@ class select{
         $data->name = $name;
         $data->descripcion = $data_keys->key_descripcion;
 
+
         return $data;
     }
 
@@ -312,21 +316,24 @@ class select{
      * @param bool $con_registros Si con registros integrara los elementos del modelo
      * @param array $extra_params_keys Parametros para data extra
      * @param array $filtro Filtro de datos
+     * @param array $in
+     * @param string $key_value_custom
      * @param stdClass $keys Keys para la obtencion de campos
      * @param modelo $modelo Modelo de datos
      * @param array $not_in Integra elementos que se quieran omitir en los rows
      * @param array $registros Registros a integrar
-     * @param array $in
      * @return array
      * @version 8.59.0
      */
     private function registros_select(array $columns_ds, bool $con_registros, array $extra_params_keys, array $filtro,
-                                      stdClass $keys, modelo $modelo, array $not_in, array $registros, array $in = array()): array
+                                      array $in, string $key_value_custom, stdClass $keys, modelo $modelo,
+                                      array $not_in, array $registros ): array
     {
         if($con_registros) {
             if(count($registros) === 0) {
-                $registros = $this->rows_select(keys: $keys, modelo: $modelo, columns_ds: $columns_ds,
-                    extra_params_keys: $extra_params_keys, filtro: $filtro, not_in: $not_in,in: $in);
+                $registros = $this->rows_select(columns_ds: $columns_ds, extra_params_keys: $extra_params_keys,
+                    filtro: $filtro, in: $in, key_value_custom: $key_value_custom, keys: $keys, modelo: $modelo,
+                    not_in: $not_in);
                 if (errores::$error) {
                     return $this->error->error(mensaje: 'Error al obtener registros', data: $registros);
                 }
@@ -338,26 +345,24 @@ class select{
 
     /**
      * Obtiene los registros para un select
-     * @param stdClass $keys Keys para obtencion de campos
-     * @param modelo $modelo Modelo del select
      * @param array $columns_ds Columnas a integrar en option
      * @param array $extra_params_keys Datos a integrar para extra params
      * @param array $filtro Filtro de datos para filtro and
+     * @param array $in
+     * @param string $key_value_custom
+     * @param stdClass $keys Keys para obtencion de campos
+     * @param modelo $modelo Modelo del select
      * @param array $not_in Omite resultados para options
      * @return array
-     * @version 0.47.32
-     * @version 0.53.32
-     * @verfuncion 0.1.0 UT fin
-     * @verfuncion 0.2.0 Se integra param filtro
      * @fecha 2022-08-02 17:32
      * @fecha 2022-08-02 17:32
      * @author mgamboa
      */
-    private function rows_select(stdClass $keys, modelo $modelo, array $columns_ds = array(),
-                                 array $extra_params_keys = array(), array $filtro = array(),
-                                 array $not_in = array(), array $in = array()): array
+    private function rows_select(array $columns_ds, array $extra_params_keys, array $filtro, array $in,
+                                 string $key_value_custom, stdClass $keys, modelo $modelo, array $not_in): array
     {
         $keys_val = array('id','descripcion_select', 'descripcion');
+
         $valida = $this->validacion->valida_existencia_keys(keys: $keys_val,registro:  $keys);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar keys ',data:  $valida);
@@ -366,6 +371,11 @@ class select{
         $columnas[] = $keys->id;
         $columnas[] = $keys->descripcion_select;
         $columnas[] = $keys->descripcion;
+
+        if($key_value_custom !== ''){
+            $columnas[] = $key_value_custom;
+        }
+
 
         foreach ($columns_ds as $column){
             /**
@@ -441,21 +451,23 @@ class select{
 
     /**
      * Genera los values para ser utilizados en los selects options
-     * @param bool $con_registros si con registros muestra todos los registros
-     * @param stdClass $keys Keys para obtencion de campos
-     * @param modelo $modelo Modelo para asignacion de datos
      * @param array $columns_ds Columnas a integrar en option
+     * @param bool $con_registros si con registros muestra todos los registros
      * @param array $extra_params_keys Keys para asignacion de extra params para ser utilizado en javascript
      * @param array $filtro Filtro para obtencion de datos del select
+     * @param array $in
+     * @param string $key_value_custom
+     * @param stdClass $keys Keys para obtencion de campos
+     * @param modelo $modelo Modelo para asignacion de datos
      * @param array $not_in Omite resultados para options
      * @param array $registros registros a mostrar en caso de que este vacio los obtiene de la entidad
      * @return array
      * @author mgamboa
      * @version 8.60.0
      */
-    private function values_selects( bool $con_registros, stdClass $keys, modelo $modelo, array $columns_ds = array(),
-                                     array $extra_params_keys = array(), array $filtro = array(),
-                                     array $not_in = array(),  array $in = array(), array $registros = array()): array
+    private function values_selects(array $columns_ds, bool $con_registros, array $extra_params_keys, array $filtro,
+                                    array $in, string $key_value_custom, stdClass $keys, modelo $modelo, array $not_in ,
+                                    array $registros ): array
     {
         $keys_valida = array('id','descripcion_select','descripcion');
         $valida = (new validacion())->valida_existencia_keys(keys: $keys_valida, registro: $keys);
@@ -463,9 +475,9 @@ class select{
             return $this->error->error(mensaje: 'Error al validar keys',data:  $valida);
         }
 
-        $registros = $this->registros_select(columns_ds: $columns_ds,con_registros:  $con_registros,
-            extra_params_keys: $extra_params_keys,filtro:  $filtro,keys:  $keys, modelo: $modelo,not_in:  $not_in,
-            registros:  $registros,in: $in);
+        $registros = $this->registros_select(columns_ds: $columns_ds, con_registros: $con_registros,
+            extra_params_keys: $extra_params_keys, filtro: $filtro, in: $in, key_value_custom: $key_value_custom,
+            keys: $keys, modelo: $modelo, not_in: $not_in, registros: $registros);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener registros', data: $registros);
         }
