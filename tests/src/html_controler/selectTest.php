@@ -47,7 +47,7 @@ class selectTest extends test {
         $registros[0]['b'] = 'd';
         $registros[0]['a_id'] = 'd';
         $registros[0]['a_descripcion'] = 'd';
-        $resultado = $html->genera_values_selects($keys, $registros,'a', true);
+        $resultado = $html->genera_values_selects(true, $keys, $registros,'a');
        // print_r($resultado);exit;
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
@@ -375,7 +375,7 @@ class selectTest extends test {
         $extra_params_keys = array();
         $resultado = $html->values_selects(columns_ds: array(), con_registros: $con_registros,
             extra_params_keys: $extra_params_keys, filtro: array(), in: array(), key_value_custom: '',
-            keys: $keys, modelo: $modelo, not_in: array(), registros: array(), valida_key_id: true);
+            keys: $keys, modelo: $modelo, not_in: array(), registros: array(), aplica_default: true);
 
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
@@ -400,7 +400,7 @@ class selectTest extends test {
         $extra_params_keys = array();
         $resultado = $html->values_selects(columns_ds: array(), con_registros: $con_registros,
             extra_params_keys: $extra_params_keys, filtro: array(), in: array(), key_value_custom: 'a',
-            keys: $keys, modelo: $modelo, not_in: array(), registros: array(),valida_key_id: true);
+            keys: $keys, modelo: $modelo, not_in: array(), registros: array(),aplica_default: true);
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
 

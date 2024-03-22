@@ -1951,6 +1951,7 @@ class html_controler{
      *  para la asignacion de options, Si no, deja el select en blanco o vacio
      * @param int|string|float|null $id_selected Identificador de un registro y cargado utilizado para modifica, aplica selected
      * @param modelo $modelo Modelo de datos ejecucion
+     * @param bool $aplica_default
      * @param modelo|bool $modelo_preferido
      * @param array $class_css Integra elementos css como class en select
      * @param array $columns_ds
@@ -1968,18 +1969,18 @@ class html_controler{
      * @param array $in
      * @param array $registros
      * @param bool $required si required agrega el atributo required a input
-     * @param bool $valida_key_id
      * @return array|string Un string con options en forma de html
      */
     final public function select_catalogo(int $cols, bool $con_registros, int|null|string|float $id_selected,
-                                          modelo $modelo, modelo|bool $modelo_preferido = false,
-                                          array $class_css = array(), array $columns_ds = array(),
-                                          bool $disabled = false, array $extra_params_keys = array(),
-                                          array $filtro=array(), string $id_css = '', string $key_descripcion = '',
+                                          modelo $modelo, bool $aplica_default = true,
+                                          modelo|bool $modelo_preferido = false, array $class_css = array(),
+                                          array $columns_ds = array(), bool $disabled = false,
+                                          array $extra_params_keys = array(), array $filtro=array(),
+                                          string $id_css = '', string $key_descripcion = '',
                                           string $key_descripcion_select = '', string $key_id = '',
                                           string $key_value_custom = '', string $label = '', string $name = '',
                                           array $not_in = array(), array $in = array(), array $registros = array(),
-                                          bool $required = false, bool $valida_key_id = true): array|string
+                                          bool $required = false): array|string
     {
 
         $valida = (new directivas(html:$this->html_base))->valida_cols(cols:$cols);
@@ -1997,10 +1998,10 @@ class html_controler{
         }
 
         $init = (new select())->init_data_select(con_registros: $con_registros, modelo: $modelo,
-            columns_ds: $columns_ds, extra_params_keys: $extra_params_keys, filtro: $filtro,
-            key_descripcion: $key_descripcion, key_descripcion_select: $key_descripcion_select, key_id: $key_id,
-            key_value_custom: $key_value_custom, label: $label, name: $name, not_in: $not_in, in: $in,
-            registros: $registros, valida_key_id: $valida_key_id);
+            aplica_default: $aplica_default, columns_ds: $columns_ds, extra_params_keys: $extra_params_keys,
+            filtro: $filtro, key_descripcion: $key_descripcion, key_descripcion_select: $key_descripcion_select,
+            key_id: $key_id, key_value_custom: $key_value_custom, label: $label, name: $name, not_in: $not_in,
+            in: $in, registros: $registros);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar datos', data: $init);
         }
