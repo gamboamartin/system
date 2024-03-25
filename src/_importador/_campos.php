@@ -102,6 +102,20 @@ class _campos
 
     }
 
+    final public function rows_importa(array $rows_xls): array
+    {
+        $rows = array();
+        foreach ($rows_xls as $row){
+            $row_importa = array();
+            foreach ($_POST as $campo_db=>$campo_xls) {
+                $row_importa[$campo_db] = $row->$campo_xls;
+            }
+            $rows[] = $row_importa;
+        }
+        return $rows;
+
+    }
+
     final public function tipo_dato_valida(array $adm_campos, string $campo_db): array|string
     {
         $campo_valida = $this->campo_valida(adm_campos: $adm_campos,campo_db:  $campo_db);
