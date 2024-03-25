@@ -45,6 +45,29 @@ class _campos
 
     }
 
+    private function init_row_final(string $campo_db, string $key, array $rows_finals, bool $valida): array
+    {
+        $rows_finals[$key][$campo_db]['exito'] = $valida;
+        $rows_finals[$key][$campo_db]['mensaje'] = 'valido';
+        $rows_finals[$key][$campo_db]['contexto'] = 'success';
+        return $rows_finals;
+
+    }
+
+    final public function integra_row_final(string $campo_db, string $contexto_error, string $key, string $mensaje, array $rows_finals, bool $valida): array
+    {
+        $rows_finals = $this->init_row_final(campo_db: $campo_db,key:  $key,rows_finals:  $rows_finals,valida:  $valida);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar rows_finals',data:  $rows_finals);
+        }
+        if(!$valida){
+            $rows_finals[$key][$campo_db]['mensaje'] = $mensaje;
+            $rows_finals[$key][$campo_db]['contexto'] = $contexto_error;
+        }
+        return $rows_finals;
+
+    }
+
     private function limpia_adm_campos_full(array $adm_campos): array
     {
         foreach ($adm_campos as $indice=>$adm_campo){
@@ -79,7 +102,7 @@ class _campos
 
     }
 
-    private function tipo_dato_valida(array $adm_campos, string $campo_db): array|string
+    final public function tipo_dato_valida(array $adm_campos, string $campo_db): array|string
     {
         $campo_valida = $this->campo_valida(adm_campos: $adm_campos,campo_db:  $campo_db);
         if(errores::$error){
