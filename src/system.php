@@ -901,6 +901,19 @@ class system extends controlador_base{
         return $header_retorno;
     }
 
+    final public function importa(bool $header = true, bool $ws = false): array|stdClass
+    {
+        $this->inputs = new stdClass();
+        $input_file = $this->html->input_file(cols: 12,name:  'doc_origen',row_upd:  new stdClass(),value_vacio:  false);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al generar input',data:  $input_file, header: $header,ws:  $ws);
+        }
+
+        $this->inputs->input_file = $input_file;
+
+        return $this->inputs;
+    }
+
     /**
      * Obtiene los includes de templates alta
      * @return array|string
