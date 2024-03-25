@@ -210,6 +210,15 @@ class system extends controlador_base{
         }
         $this->link_importa_previo_muestra = $link_importa_previo_muestra;
 
+        $link_importa_previo_muestra_bd = $this->obj_link->link_sin_id(accion: 'importa_previo_muestra_bd',link:  $link,seccion:  $this->seccion);
+        if(errores::$error){
+            $error = $this->errores->error(mensaje:
+                'Error al cargar link link_importa_previo_muestra_bd previo', data: $link_importa_previo_muestra_bd);
+            print_r($error);
+            die('Error');
+        }
+        $this->link_importa_previo_muestra_bd = $link_importa_previo_muestra_bd;
+
     }
 
 
