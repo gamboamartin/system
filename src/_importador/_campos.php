@@ -32,6 +32,19 @@ class _campos
 
     }
 
+    private function campo_valida(array $adm_campos, string $campo_db)
+    {
+        $campo_valida = array();
+        foreach ($adm_campos as $adm_campo){
+            if($adm_campo['adm_campo_descripcion'] === $campo_db){
+                $campo_valida = $adm_campo;
+                break;
+            }
+        }
+        return $campo_valida;
+
+    }
+
     private function limpia_adm_campos_full(array $adm_campos): array
     {
         foreach ($adm_campos as $indice=>$adm_campo){
@@ -63,6 +76,17 @@ class _campos
         }
 
         return $adm_campos;
+
+    }
+
+    private function tipo_dato_valida(array $adm_campos, string $campo_db): array|string
+    {
+        $campo_valida = $this->campo_valida(adm_campos: $adm_campos,campo_db:  $campo_db);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener campo_valida',data:  $campo_valida);
+        }
+
+        return trim($campo_valida['adm_tipo_dato_codigo']);
 
     }
 
