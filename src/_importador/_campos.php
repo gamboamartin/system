@@ -1,5 +1,6 @@
 <?php
 namespace gamboamartin\system\_importador;
+use base\controller\controler;
 use gamboamartin\administrador\models\adm_campo;
 use gamboamartin\errores\errores;
 use PDO;
@@ -102,7 +103,7 @@ class _campos
 
     }
 
-    final public function rows_importa(array $rows_xls): array
+    final public function rows_importa(controler $controler, array $rows_xls): array
     {
         $rows = array();
         foreach ($rows_xls as $row){
@@ -112,6 +113,11 @@ class _campos
             }
             $rows[] = $row_importa;
         }
+
+        $params = serialize($_POST);
+        $params = base64_encode($params);
+        $controler->params_importa = $params;
+
         return $rows;
 
     }
