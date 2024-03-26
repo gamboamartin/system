@@ -133,4 +133,16 @@ class _campos
 
     }
 
+    final public function valida_doc_importa(string $extension): true|array
+    {
+        $extensiones_permitidas = array('csv','ods','xls','xlsx');
+
+        if(!in_array($extension, $extensiones_permitidas)){
+            return $this->error->error(mensaje: 'Error el documento no tiene una extension permitida',data: $extension
+                , es_final: true);
+        }
+        return true;
+
+    }
+
 }
