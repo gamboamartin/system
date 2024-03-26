@@ -34,7 +34,7 @@ class _xls
     }
 
 
-    private function adm_campos_inputs(array $columnas_doc, PDO $link, string $tabla)
+    final public function adm_campos_inputs(array $columnas_doc, PDO $link, string $tabla)
     {
         $adm_campos = (new _campos())->adm_campos(link: $link, tabla: $tabla);
         if(errores::$error){
