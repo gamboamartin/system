@@ -16,7 +16,25 @@ class _doc
 
     }
 
-    final public function genera_doc_importa(int $doc_tipo_documento_id, modelo $modelo_doc_documento): array|stdClass
+    final public function doc_importa(int $doc_tipo_documento_id, modelo $modelo_doc_documento): array|stdClass
+    {
+        $alta_doc = $this->genera_doc_importa(doc_tipo_documento_id:$doc_tipo_documento_id, modelo_doc_documento: $modelo_doc_documento);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al insertar documento', data: $alta_doc);
+        }
+        $ruta = $alta_doc->registro_obj->doc_documento_ruta_absoluta;
+        $extension = $alta_doc->registro_obj->doc_extension_codigo;
+
+        $data = new stdClass();
+        $data->ruta = $ruta;
+        $data->extension = $extension;
+        $data->doc_documento_id = $alta_doc->registro_id;
+
+        return $data;
+
+    }
+
+    private function genera_doc_importa(int $doc_tipo_documento_id, modelo $modelo_doc_documento): array|stdClass
     {
 
         $doc_documento_ins = array();
