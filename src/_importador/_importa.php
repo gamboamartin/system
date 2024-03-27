@@ -36,7 +36,7 @@ class _importa
 
     }
 
-    final public function importa_registros_xls(modelo $modelo, string $ruta_absoluta): array
+    final public function importa_registros_xls(modelo $modelo, string $ruta_absoluta): array|stdClass
     {
         $datos = (new Importador())->leer(ruta_absoluta: $ruta_absoluta);
         if(errores::$error){
@@ -52,7 +52,12 @@ class _importa
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inserta registro', data: $altas);
         }
-        return $altas;
+
+        $rs = new stdClass();
+        $rs->datos = $datos;
+        $rs->rows_a_importar_db = $rows_a_importar_db;
+        $rs->altas = $altas;
+        return $rs;
 
     }
 
