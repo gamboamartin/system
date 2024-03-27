@@ -65,25 +65,25 @@ class system extends controlador_base{
 
     public int $doc_tipo_documento_id = -1;
 
-    public modelo $modelo_doc_documento;
+    protected modelo $modelo_doc_documento;
 
     /**
      * @param html_controler $html Html base
      * @param PDO $link Conexion a la base de datos
      * @param modelo $modelo
      * @param links_menu $obj_link
+     * @param string $campo_busca
      * @param array $datatables_custom_cols
      * @param array $datatables_custom_cols_omite
      * @param stdClass $datatables
      * @param array $filtro_boton_lista
-     * @param string $campo_busca
      * @param string $valor_busca_fault
      * @param stdClass $paths_conf
      */
     public function __construct(html_controler $html,PDO $link, modelo $modelo, links_menu $obj_link,
-                                array $datatables_custom_cols = array(), array $datatables_custom_cols_omite = array(),
-                                stdClass $datatables = new stdClass(), array $filtro_boton_lista = array(),
-                                string $campo_busca = 'registro_id', string $valor_busca_fault = '',
+                                string $campo_busca = 'registro_id', array $datatables_custom_cols = array(),
+                                array $datatables_custom_cols_omite = array(), stdClass $datatables = new stdClass(),
+                                array $filtro_boton_lista = array(), string $valor_busca_fault = '',
                                 stdClass $paths_conf = new stdClass())
     {
         $this->msj_con_html = false;
@@ -225,6 +225,7 @@ class system extends controlador_base{
             die('Error');
         }
         $this->link_importa_previo_muestra_bd = $link_importa_previo_muestra_bd;
+
 
     }
 
