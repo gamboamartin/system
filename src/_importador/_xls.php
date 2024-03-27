@@ -121,7 +121,7 @@ class _xls
 
     }
 
-    private function genera_columnas_calc_def(string $ruta): array|stdClass
+    final public function genera_columnas_calc_def(string $ruta): array|stdClass
     {
         $columnas_calc = (new Importador())->primer_row(celda_inicio: 'A1',ruta_absoluta: $ruta);
         if(errores::$error){
