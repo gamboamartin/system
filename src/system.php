@@ -7,6 +7,9 @@ use config\views;
 use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\errores\errores;
 use gamboamartin\plugins\exportador;
+use gamboamartin\system\_importador\_campos;
+use gamboamartin\system\_importador\_doc;
+use gamboamartin\system\_importador\_xls;
 use gamboamartin\template\directivas;
 use gamboamartin\template\html;
 use PDO;
@@ -59,6 +62,10 @@ class system extends controlador_base{
     protected string $key_id_row = '';
 
     public string $template_lista = "";
+
+    public int $doc_tipo_documento_id = -1;
+
+    public modelo $modelo_doc_documento;
 
     /**
      * @param html_controler $html Html base
@@ -912,6 +919,34 @@ class system extends controlador_base{
         $this->inputs->input_file = $input_file;
 
         return $this->inputs;
+    }
+
+    final public function importa_previo(bool $header = true, bool $ws = false): array|stdClass
+    {
+
+        $doc = (new _doc())->doc_importa(doc_tipo_documento_id: $this->doc_tipo_documento_id,
+            modelo_doc_documento:  $this->modelo_doc_documento);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al integrar documento', data: $doc, header: $header,
+                ws: $ws, class: __CLASS__, file: __FILE__, function: __FUNCTION__, line: __LINE__);
+        }
+
+        $valida = (new _campos())->valida_doc_importa(extension: $doc->extension);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al validar documento', data: $valida, header: $header,
+                ws: $ws, class: __CLASS__, file: __FILE__, function: __FUNCTION__, line: __LINE__);
+        }
+
+        $columnas_xls = (new _xls())->columnas_xls(ruta: $doc->ruta, html_controler: $this->html, link: $this->link, tabla: $this->tabla);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al generar columnas_xls', data: $columnas_xls, header: $header, ws: $ws,
+                class: __CLASS__, file: __FILE__, function: __FUNCTION__, line: __LINE__);
+        }
+
+        $this->columnas_calc = $columnas_xls;
+        $this->link_importa_previo_muestra.='&doc_documento_id='.$doc->doc_documento_id;
+
+        return $columnas_xls;
     }
 
     /**
