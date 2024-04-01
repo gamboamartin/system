@@ -33,10 +33,23 @@ class _campos
 
     }
 
-    private function campo_valida(array $adm_campos, string $campo_db)
+    private function campo_valida(array $adm_campos, string $campo_db): array
     {
+        $campo_db = trim($campo_db);
+        if($campo_db === ''){
+            return $this->error->error(mensaje: 'Error campo_db esta vacio',data:  $campo_db,es_final: true);
+        }
+
         $campo_valida = array();
         foreach ($adm_campos as $adm_campo){
+            if(!is_array($adm_campo)){
+                return $this->error->error(mensaje: 'Error adm_campo debe ser un array',data:  $adm_campo,
+                    es_final: true);
+            }
+            if(!isset($adm_campo['adm_campo_descripcion'])){
+                return $this->error->error(mensaje: 'Error adm_campo_descripcion debe existir',data:  $adm_campos,
+                    es_final: true);
+            }
             if($adm_campo['adm_campo_descripcion'] === $campo_db){
                 $campo_valida = $adm_campo;
                 break;

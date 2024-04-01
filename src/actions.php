@@ -106,7 +106,7 @@ class actions{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Resumen: Esta función inicializa la creación de la base de datos
      *
      * Descripción extendida: Esta función implementa la lógica necesaria para
@@ -192,7 +192,7 @@ class actions{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Limpieza de botones
      *
      * Este método se utiliza para limpiar ciertos botones de la entrada POST.
@@ -367,7 +367,7 @@ class actions{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta es la función "siguiente_view" en el archivo actions.php
      *
      * @param string $siguiente_view - Es la próxima vista a mostrar por defecto, que es 'modifica'.
