@@ -1,8 +1,10 @@
 <?php
 namespace gamboamartin\system\_importador;
 
+use base\controller\controler;
 use base\orm\modelo;
 use gamboamartin\errores\errores;
+use gamboamartin\plugins\Importador;
 use gamboamartin\validacion\validacion;
 
 class _maquetacion
@@ -16,8 +18,35 @@ class _maquetacion
 
     }
 
+    final public function genera_rows(controler $controler, string $ruta_absoluta)
+    {
+        $datos_calc = (new Importador())->leer(ruta_absoluta: $ruta_absoluta);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al leer archivo',data:  $datos_calc);
+        }
+        $columnas_doc = (new Importador())->primer_row(celda_inicio: 'A1', ruta_absoluta: $ruta_absoluta);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener columnas_doc',data:  $columnas_doc);
+        }
+        $adm_campos = (new _xls())->adm_campos_inputs(columnas_doc: $columnas_doc,link:  $controler->link,tabla:  $controler->tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener adm_campos',data:  $adm_campos);
+        }
 
-    final public function init_rows(array $adm_campos, modelo $modelo_imp, array $rows): array
+        $rows_importa = (new _campos())->rows_importa(controler: $controler, rows_xls: $datos_calc->rows);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener tipos de doc ',data:  $rows_importa);
+        }
+
+        $rows_importa_final = (new _maquetacion())->init_rows(adm_campos: $adm_campos,modelo_imp:  $controler->modelo,rows:  $rows_importa);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener tipos de doc ',data:  $rows_importa_final);
+        }
+
+        return $rows_importa_final;
+    }
+
+    private function init_rows(array $adm_campos, modelo $modelo_imp, array $rows): array
     {
         $rows_final = array();
         foreach ($rows as $key=>$row){
