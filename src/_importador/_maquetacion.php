@@ -18,6 +18,44 @@ class _maquetacion
 
     }
 
+    private function checked(bool $existe_error): string
+    {
+        $checked = '';
+        if(!$existe_error){
+            $checked = 'checked';
+        }
+        return $checked;
+
+    }
+
+    private function existe_error(array $row_a_importar): bool
+    {
+        $existe_error = false;
+        foreach ($row_a_importar as $dato){
+            if($dato['contexto'] === 'danger'){
+                $existe_error = true;
+                break;
+            }
+        }
+        return $existe_error;
+
+    }
+
+    private function genera_checked(array $row_a_importar): array|string
+    {
+        $existe_error = $this->existe_error(row_a_importar: $row_a_importar);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al verificar si existe error', data: $existe_error);
+        }
+
+        $checked = $this->checked(existe_error: $existe_error);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al verificar checked', data: $checked);
+        }
+        return $checked;
+
+    }
+
     final public function genera_rows(controler $controler, string $ruta_absoluta)
     {
         $datos_calc = (new Importador())->leer(ruta_absoluta: $ruta_absoluta);
@@ -54,6 +92,30 @@ class _maquetacion
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al integrar rows_final',data:  $rows_final);
             }
+        }
+        return $rows_final;
+
+    }
+
+    private function input_checked(int $indice, array $row_a_importar): array|string
+    {
+        $checked = $this->genera_checked(row_a_importar: $row_a_importar);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al verificar checked', data: $checked);
+        }
+        return "<input type='checkbox' name=row[$indice] $checked>";
+
+    }
+
+    final public function integra_chks(array $rows_final): array
+    {
+
+        foreach ($rows_final as $indice=>$row_a_importar){
+            $input = $this->input_checked(indice: $indice,row_a_importar:  $row_a_importar);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al verificar input', data: $input);
+            }
+            $rows_final[$indice]['selecciona'] = $input;
         }
         return $rows_final;
 

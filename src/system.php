@@ -9,6 +9,8 @@ use gamboamartin\errores\errores;
 use gamboamartin\plugins\exportador;
 use gamboamartin\system\_importador\_campos;
 use gamboamartin\system\_importador\_doc;
+use gamboamartin\system\_importador\_importa;
+use gamboamartin\system\_importador\_maquetacion;
 use gamboamartin\system\_importador\_xls;
 use gamboamartin\template\directivas;
 use gamboamartin\template\html;
@@ -362,8 +364,6 @@ class system extends controlador_base{
         $r_alta_bd->siguiente_view = $siguiente_view;
         return $r_alta_bd;
     }
-
-
 
     /**
      * POR DOCUMENTAR EN WIKI
@@ -844,7 +844,6 @@ class system extends controlador_base{
         return $inputs_asignados;
     }
 
-
     public function get_data(bool $header, bool $ws = false, array $not_actions = array()){
 
 
@@ -950,6 +949,54 @@ class system extends controlador_base{
         return $columnas_xls;
     }
 
+    final public function importa_previo_muestra(bool $header = true, bool $ws = false): array|stdClass
+    {
+
+        $doc_documento = $this->modelo_doc_documento->registro(registro_id: $_GET['doc_documento_id'],
+            columnas_en_bruto: true, retorno_obj: true);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al obtener documento', data: $doc_documento,
+                header: $header, ws: $ws, class: __CLASS__, file: __FILE__, function: __FUNCTION__, line: __LINE__);
+        }
+
+        unset($_POST['btn_action_next']);
+
+
+        $tipos_doc_final = (new _maquetacion())->genera_rows(controler: $this,ruta_absoluta:  $doc_documento->ruta_absoluta);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al integrar tipos_doc_final', data: $tipos_doc_final,
+                header: $header, ws: $ws, class: __CLASS__, file: __FILE__, function: __FUNCTION__, line: __LINE__);
+        }
+
+        $input_params_importa = $this->html->hidden(name:'params_importa',value: $this->params_importa);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al generar input', data: $input_params_importa,
+                header: $header, ws: $ws, class: __CLASS__, file: __FILE__, function: __FUNCTION__, line: __LINE__);
+        }
+
+        $this->input_params_importa = $input_params_importa;
+
+
+        $tipos_doc_final = (new _maquetacion())->integra_chks(rows_final: $tipos_doc_final);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al integrar inputs', data: $tipos_doc_final,
+                header: $header, ws: $ws, class: __CLASS__, file: __FILE__, function: __FUNCTION__, line: __LINE__);
+        }
+
+        $headers = (new _importa())->headers(controler: $this, ruta_absoluta: $doc_documento->ruta_absoluta);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al obtener adm_campos',data:  $headers);
+        }
+
+        $this->registros = $tipos_doc_final;
+        $this->ths = $headers;
+
+
+        $this->link_importa_previo_muestra_bd.='&doc_documento_id='.$_GET['doc_documento_id'];
+
+        return $this->inputs;
+    }
+
     /**
      * Obtiene los includes de templates alta
      * @return array|string
@@ -1038,6 +1085,8 @@ class system extends controlador_base{
         }
         return $inputs;
     }
+
+
 
     /**
      * Debe ser operable y sobreescrito en controller de ejecucion

@@ -1,5 +1,6 @@
 <?php
 namespace gamboamartin\system\_importador;
+use base\controller\controler;
 use base\orm\modelo;
 use gamboamartin\errores\errores;
 use gamboamartin\plugins\Importador;
@@ -13,6 +14,26 @@ class _importa
     public function __construct()
     {
         $this->error = new errores();
+
+    }
+
+    final public function headers(controler $controler, string $ruta_absoluta): array
+    {
+        $columnas_doc = (new Importador())->primer_row(celda_inicio: 'A1', ruta_absoluta: $ruta_absoluta);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener columnas_doc',data:  $columnas_doc);
+        }
+        $adm_campos = (new _xls())->adm_campos_inputs(columnas_doc: $columnas_doc,link:  $controler->link,tabla:  $controler->tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener adm_campos',data:  $adm_campos);
+        }
+        $headers = array();
+        foreach ($adm_campos as $adm_campo){
+            $headers[] = $adm_campo['adm_campo_descripcion'];
+        }
+        $headers[] = 'Selecciona';
+
+        return $headers;
 
     }
 
