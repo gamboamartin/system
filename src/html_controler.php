@@ -723,21 +723,29 @@ class html_controler{
     }
 
     /**
-     * Genera un input de tipo hidden
-     * @param string $name Nombre del input
-     * @param string $value Valor del input
-     * @return array|string
-     * @version 0.159.34
+     * POR DOCUMENTAR EN WIKI FINAL REV
+     * Genera un campo hidden en un formulario HTML
+     *
+     * @param string $name Nombre del campo hidden
+     * @param string $value Valor del campo hidden
+     *
+     * @return array|string Retorna una cadena que contiene el elemento hidden si todo está bien,
+     * de lo contrario retorna un array con el error
+     * @version 20.25.0
      */
     final public function hidden(string $name, string $value): array|string
     {
+        $data_err = new stdClass();
+        $data_err->name = $name;
+        $data_err->value = $value;
+
         $name = trim($name);
         if($name === ''){
-            return $this->error->error(mensaje: 'Error name esta vacio',data:  $name);
+            return $this->error->error(mensaje: 'Error name esta vacio',data:  $data_err, es_final: true);
         }
         $value = trim($value);
         if($value === ''){
-            return $this->error->error(mensaje: 'Error value esta vacio',data:  $value);
+            return $this->error->error(mensaje: 'Error value esta vacio',data:  $data_err, es_final: true);
         }
         
         return "<input type='hidden' name='$name' value='$value'>";
@@ -1800,11 +1808,12 @@ class html_controler{
 
         $tabla = trim($tabla);
         if($tabla === ''){
-            return $this->error->error(mensaje: 'Error tabla esta vacia',data:  $tabla);
+            return $this->error->error(mensaje: 'Error tabla esta vacia',data:  $tabla, es_final: true);
         }
         $registro_id = trim($registro_id);
         if($registro_id === ''){
-            return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0',data:  $registro_id);
+            return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0',data:  $registro_id,
+                es_final: true);
         }
 
         $hidden_id_retorno = $this->hidden(name: 'id_retorno', value: $registro_id);
