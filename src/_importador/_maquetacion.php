@@ -32,6 +32,11 @@ class _maquetacion
     {
         $existe_error = false;
         foreach ($row_a_importar as $dato){
+            $keys = array('contexto');
+            $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $dato);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al validar dato', data: $valida);
+            }
             if($dato['contexto'] === 'danger'){
                 $existe_error = true;
                 break;
@@ -66,7 +71,8 @@ class _maquetacion
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener columnas_doc',data:  $columnas_doc);
         }
-        $adm_campos = (new _xls())->adm_campos_inputs(columnas_doc: $columnas_doc,link:  $controler->link,tabla:  $controler->tabla);
+        $adm_campos = (new _xls())->adm_campos_inputs(columnas_doc: $columnas_doc,
+            link:  $controler->link,tabla:  $controler->tabla);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener adm_campos',data:  $adm_campos);
         }
@@ -76,7 +82,8 @@ class _maquetacion
             return $this->error->error(mensaje: 'Error al obtener tipos de doc ',data:  $rows_importa);
         }
 
-        $rows_importa_final = (new _maquetacion())->init_rows(adm_campos: $adm_campos,modelo_imp:  $controler->modelo,rows:  $rows_importa);
+        $rows_importa_final = (new _maquetacion())->init_rows(adm_campos: $adm_campos,
+            modelo_imp:  $controler->modelo,rows:  $rows_importa);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener tipos de doc ',data:  $rows_importa_final);
         }
@@ -88,7 +95,8 @@ class _maquetacion
     {
         $rows_final = array();
         foreach ($rows as $key=>$row){
-            $rows_final = $this->integra_row_final(adm_campos: $adm_campos, key: $key, modelo_imp: $modelo_imp, row: $row, rows_final: $rows_final);
+            $rows_final = $this->integra_row_final(adm_campos: $adm_campos, key: $key, modelo_imp: $modelo_imp,
+                row: $row, rows_final: $rows_final);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al integrar rows_final',data:  $rows_final);
             }
@@ -121,7 +129,8 @@ class _maquetacion
 
     }
 
-    private function integra_row_final(array $adm_campos, string $key, modelo $modelo_imp,  array $row, array $rows_final): array
+    private function integra_row_final(array $adm_campos, string $key, modelo $modelo_imp,
+                                       array $row, array $rows_final): array
     {
 
         $rows_final[$key] = array();
@@ -136,7 +145,8 @@ class _maquetacion
 
     }
 
-    private function integra_row(array $adm_campos, string $campo_db, string $key, modelo $modelo_imp, array $rows_final, string $value): array
+    private function integra_row(array $adm_campos, string $campo_db, string $key, modelo $modelo_imp,
+                                 array $rows_final, string $value): array
     {
         $rows_final[$key][$campo_db]['value'] = $value;
         $tipo_dato = (new _campos())->tipo_dato_valida(adm_campos: $adm_campos,campo_db:  $campo_db);
@@ -150,7 +160,8 @@ class _maquetacion
             return $this->error->error(mensaje: 'Error al integrar tipos_doc_final',data:  $rows_final);
         }
 
-        $rows_final = $this->por_duplicate(campo_db: $campo_db, key: $key, modelo_imp: $modelo_imp, rows_final: $rows_final, value: $value);
+        $rows_final = $this->por_duplicate(campo_db: $campo_db, key: $key, modelo_imp: $modelo_imp,
+            rows_final: $rows_final, value: $value);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al integrar tipos_doc_final',data:  $rows_final);
         }
@@ -159,7 +170,8 @@ class _maquetacion
 
     }
 
-    private function por_duplicate(string $campo_db, string $key, modelo $modelo_imp, array $rows_final, string $value): array
+    private function por_duplicate(string $campo_db, string $key, modelo $modelo_imp, array $rows_final,
+                                   string $value): array
     {
         if($campo_db === 'id'){
             $existe = $modelo_imp->existe_by_id(registro_id: $value);
@@ -266,6 +278,30 @@ class _maquetacion
             $valida = (new validacion())->valida_pattern(key: 'fecha', txt: $value);
 
             $mensaje_error = 'Error formato fecha';
+            $rows_final = (new _campos())->integra_row_final(campo_db: $campo_db,contexto_error: 'danger',
+                key:  $key,mensaje:  $mensaje_error,
+                rows_finals:  $rows_final,valida:  $valida);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al integrar tipos_doc_final',data:  $rows_final);
+            }
+        }
+
+        if($tipo_dato === 'DOUBLE'){
+            $valida = (new validacion())->valida_pattern(key: 'double', txt: $value);
+
+            $mensaje_error = 'Error formato double';
+            $rows_final = (new _campos())->integra_row_final(campo_db: $campo_db,contexto_error: 'danger',
+                key:  $key,mensaje:  $mensaje_error,
+                rows_finals:  $rows_final,valida:  $valida);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al integrar tipos_doc_final',data:  $rows_final);
+            }
+        }
+
+        if($tipo_dato === 'FLOAT'){
+            $valida = (new validacion())->valida_pattern(key: 'double', txt: $value);
+
+            $mensaje_error = 'Error formato double';
             $rows_final = (new _campos())->integra_row_final(campo_db: $campo_db,contexto_error: 'danger',
                 key:  $key,mensaje:  $mensaje_error,
                 rows_finals:  $rows_final,valida:  $valida);

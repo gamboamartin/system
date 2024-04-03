@@ -962,9 +962,9 @@ class system extends controlador_base{
         unset($_POST['btn_action_next']);
 
 
-        $tipos_doc_final = (new _maquetacion())->genera_rows(controler: $this,ruta_absoluta:  $doc_documento->ruta_absoluta);
+        $rows_final = (new _maquetacion())->genera_rows(controler: $this,ruta_absoluta:  $doc_documento->ruta_absoluta);
         if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al integrar tipos_doc_final', data: $tipos_doc_final,
+            return $this->retorno_error(mensaje: 'Error al integrar rows_final', data: $rows_final,
                 header: $header, ws: $ws, class: __CLASS__, file: __FILE__, function: __FUNCTION__, line: __LINE__);
         }
 
@@ -977,9 +977,9 @@ class system extends controlador_base{
         $this->input_params_importa = $input_params_importa;
 
 
-        $tipos_doc_final = (new _maquetacion())->integra_chks(rows_final: $tipos_doc_final);
+        $rows_final = (new _maquetacion())->integra_chks(rows_final: $rows_final);
         if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al integrar inputs', data: $tipos_doc_final,
+            return $this->retorno_error(mensaje: 'Error al integrar inputs', data: $rows_final,
                 header: $header, ws: $ws, class: __CLASS__, file: __FILE__, function: __FUNCTION__, line: __LINE__);
         }
 
@@ -988,7 +988,7 @@ class system extends controlador_base{
             return $this->errores->error(mensaje: 'Error al obtener adm_campos',data:  $headers);
         }
 
-        $this->registros = $tipos_doc_final;
+        $this->registros = $rows_final;
         $this->ths = $headers;
 
 

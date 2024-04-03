@@ -61,6 +61,15 @@ class _campos
 
     private function init_row_final(string $campo_db, string $key, array $rows_finals, bool $valida): array
     {
+        $key = trim($key);
+        if($key === ''){
+            return $this->error->error(mensaje: 'Error key esta vacio',data:  $key, es_final: true);
+        }
+        $campo_db = trim($campo_db);
+        if($campo_db === ''){
+            return $this->error->error(mensaje: 'Error campo_db esta vacio',data:  $campo_db, es_final: true);
+        }
+
         $rows_finals[$key][$campo_db]['exito'] = $valida;
         $rows_finals[$key][$campo_db]['mensaje'] = 'valido';
         $rows_finals[$key][$campo_db]['contexto'] = 'success';
@@ -68,7 +77,8 @@ class _campos
 
     }
 
-    final public function integra_row_final(string $campo_db, string $contexto_error, string $key, string $mensaje, array $rows_finals, bool $valida): array
+    final public function integra_row_final(string $campo_db, string $contexto_error, string $key, string $mensaje,
+                                            array $rows_finals, bool $valida): array
     {
         $rows_finals = $this->init_row_final(campo_db: $campo_db,key:  $key,rows_finals:  $rows_finals,valida:  $valida);
         if(errores::$error){

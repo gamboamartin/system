@@ -42,6 +42,42 @@ class _camposTest extends test {
         errores::$error = false;
     }
 
+    public function test_init_row_final(): void
+    {
+        $_SESSION['grupo_id'] = 2;
+        errores::$error = false;
+        $_campo = new _campos();
+        $_campo = new liberator($_campo);
+
+        $campo_db = 'b';
+        $key = 'a';
+        $rows_finals = array();
+        $valida = true;
+        $resultado = $_campo->init_row_final($campo_db, $key, $rows_finals, $valida);
+
+
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('valido', $resultado['a']['b']['mensaje']);
+        $this->assertEquals('success', $resultado['a']['b']['contexto']);
+        $this->assertTrue( $resultado['a']['b']['exito']);
+        errores::$error = false;
+
+        $campo_db = 'p';
+        $key = 'g';
+        $rows_finals = array();
+        $valida = false;
+        $resultado = $_campo->init_row_final($campo_db, $key, $rows_finals, $valida);
+
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('valido', $resultado['g']['p']['mensaje']);
+        $this->assertEquals('success', $resultado['g']['p']['contexto']);
+        $this->assertNotTrue( $resultado['a']['b']['exito']);
+        errores::$error = false;
+
+    }
+
 
 }
 
