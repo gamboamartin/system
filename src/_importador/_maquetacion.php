@@ -197,7 +197,7 @@ class _maquetacion
 
         if($campo_db === 'codigo_bis'){
             $filtro = array();
-            $filtro['com_tipo_cliente.codigo_bis'] = $value;
+            $filtro[$modelo_imp->tabla.'.codigo_bis'] = $value;
             $existe = $modelo_imp->existe(filtro: $filtro);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al validar si existe elemento',data:  $existe);
