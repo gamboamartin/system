@@ -4,6 +4,7 @@ use gamboamartin\administrador\models\adm_campo;
 use gamboamartin\errores\errores;
 use gamboamartin\plugins\Importador;
 use gamboamartin\system\html_controler;
+use gamboamartin\validacion\validacion;
 use PDO;
 use stdClass;
 
@@ -20,7 +21,7 @@ class _xls
 
     private function adm_campos_limpios(array $adm_campos, array $columnas_doc)
     {
-        $no_obligatorios = array('id');
+        $no_obligatorios = array('id','descripcion_select','alias','codigo_bis');
         foreach ($adm_campos as $indice=>$adm_campo){
 
             $adm_campos = $this->limpia_campo_opcional(adm_campo: $adm_campo,adm_campos:  $adm_campos,
@@ -108,11 +109,37 @@ class _xls
         return $columnas_xls;
     }
 
-    private function existe_campo(array $adm_campo, array $columnas_doc): bool
+    /**
+     * POR DOCUMENTAR EN WIKI FINAL REV
+     * Comprueba si un campo específico existe en un conjunto de columnas
+     *
+     * @param   array $adm_campo        Los campos del administrador a comparar
+     * @param  array $columnas_doc     Las columnas en las que buscar el campo
+     *
+     * @return     bool|array             Devuelve verdadero si el campo existe,
+     *                                    Devuelve un error si no se encuentran las claves necesarias o si alguna columna está vacía
+     * @version 20.31.0
+     */
+    private function existe_campo(array $adm_campo, array $columnas_doc): bool|array
     {
+        $keys = array('adm_campo_descripcion');
+
+        $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $adm_campo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error columna_doc esta vacia', data: $valida);
+        }
+
         $existe_campo = false;
         foreach ($columnas_doc as $columna_doc){
-            if($adm_campo['adm_campo_descripcion']===$columna_doc){
+            $columna_doc = trim($columna_doc);
+            if($columna_doc === ''){
+                return $this->error->error(mensaje: 'Error columna_doc esta vacia', data: $columnas_doc,
+                    es_final: true);
+            }
+
+            $adm_campo_descripcion = trim($adm_campo['adm_campo_descripcion']);
+
+            if($adm_campo_descripcion === $columna_doc){
                 $existe_campo = true;
                 break;
             }
@@ -190,7 +217,8 @@ class _xls
 
     }
 
-    private function limpia_campo_opcional(array $adm_campo, array $adm_campos, array $columnas_doc, int $indice, array $no_obligatorios)
+    private function limpia_campo_opcional(array $adm_campo, array $adm_campos, array $columnas_doc,
+                                           int $indice, array $no_obligatorios)
     {
         $existe_campo = $this->existe_campo(adm_campo: $adm_campo,columnas_doc:  $columnas_doc);
         if(errores::$error){

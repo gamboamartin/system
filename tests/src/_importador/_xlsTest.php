@@ -39,6 +39,25 @@ class _xlsTest extends test {
         errores::$error = false;
     }
 
+    public function test_existe_campo(): void
+    {
+        $_SESSION['grupo_id'] = 2;
+        errores::$error = false;
+        $xls = new _xls();
+        $xls = new liberator($xls);
+
+        $adm_campo = array();
+        $columnas_doc = array();
+        $columnas_doc[] = 'a';
+        $adm_campo['adm_campo_descripcion'] = 'a';
+        $resultado = $xls->existe_campo($adm_campo, $columnas_doc);
+
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+    }
+
 
 }
 
