@@ -78,6 +78,25 @@ class _camposTest extends test {
 
     }
 
+    public function test_tipo_dato_valida(): void
+    {
+        $_SESSION['grupo_id'] = 2;
+        errores::$error = false;
+        $_campo = new _campos();
+        //$_campo = new liberator($_campo);
+
+        $adm_campos = array();
+        $campo_db  = 'a';
+        $adm_campos[0]['adm_campo_descripcion'] = 'a';
+        $adm_campos[0]['adm_tipo_dato_codigo'] = 'a';
+        $resultado = $_campo->tipo_dato_valida($adm_campos, $campo_db);
+        //print_r($resultado);exit;
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a', $resultado);
+        errores::$error = false;
+    }
+
 
 }
 

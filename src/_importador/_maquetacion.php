@@ -135,6 +135,7 @@ class _maquetacion
 
         $rows_final[$key] = array();
         foreach ($row as $campo_db=>$value) {
+
             $rows_final = $this->integra_row(adm_campos: $adm_campos, campo_db: $campo_db, key: $key,
                 modelo_imp: $modelo_imp, rows_final: $rows_final, value: $value);
             if(errores::$error){
@@ -146,8 +147,13 @@ class _maquetacion
     }
 
     private function integra_row(array $adm_campos, string $campo_db, string $key, modelo $modelo_imp,
-                                 array $rows_final, string $value): array
+                                 array $rows_final, string|null $value): array
     {
+        if(is_null($value)){
+            $value = '';
+        }
+        $value = trim($value);
+
         $rows_final[$key][$campo_db]['value'] = $value;
         $tipo_dato = (new _campos())->tipo_dato_valida(adm_campos: $adm_campos,campo_db:  $campo_db);
         if(errores::$error){

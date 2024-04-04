@@ -3,6 +3,7 @@ namespace gamboamartin\system\_importador;
 use base\controller\controler;
 use gamboamartin\administrador\models\adm_campo;
 use gamboamartin\errores\errores;
+use gamboamartin\validacion\validacion;
 use PDO;
 
 class _campos
@@ -33,6 +34,24 @@ class _campos
 
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI FINAL REV
+     * Esta función valida un campo dada una lista de campos y una descripción de campo de la base de datos.
+     *
+     * @param array $adm_campos Una lista de campos administrativos a validar.
+     * @param string $campo_db Una descripción de campo de la base de datos a validar.
+     *
+     * @return array Si la descripción del campo de la base de datos coincide con alguna de las descripciones de campo en $adm_campos,
+     * la función devuelve ese campo. Si no, devuelve un array vacío.
+     *
+     * Errores:
+     * - Si $campo_db está vacío, se devuelve un error indicando que 'campo_db está vacío'.
+     * - Si algún elemento de $adm_campos no es un array, se devuelve un error indicando que 'adm_campo debe ser un array'.
+     * - Si algún campo en $adm_campos no contiene una descripción ('adm_campo_descripcion'),
+     * se devuelve un error indicando que 'adm_campo_descripcion debe existir'.
+     *
+     * @version 21.1.0
+     */
     private function campo_valida(array $adm_campos, string $campo_db): array
     {
         $campo_db = trim($campo_db);
@@ -147,9 +166,20 @@ class _campos
 
     final public function tipo_dato_valida(array $adm_campos, string $campo_db): array|string
     {
+        $campo_db = trim($campo_db);
+        if($campo_db === ''){
+            return $this->error->error(mensaje: 'Error campo_db esta vacio',data:  $campo_db,es_final: true);
+        }
+
         $campo_valida = $this->campo_valida(adm_campos: $adm_campos,campo_db:  $campo_db);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener campo_valida',data:  $campo_valida);
+        }
+
+        $keys = array('adm_tipo_dato_codigo');
+        $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $campo_valida);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar campo',data:  $valida);
         }
 
         return trim($campo_valida['adm_tipo_dato_codigo']);
