@@ -172,6 +172,8 @@ class _exporta
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al obtener data_hojas', data: $data_hojas);
             }
+
+            $contador_hojas = $data_hojas->contador_hojas;
         }
         return $data_hojas;
 
@@ -299,6 +301,23 @@ class _exporta
         return $xls;
 
     }
+
+    /**
+     * POR DOCUMENTAR EN WIKI FINAL REV
+     * Limpia el campo del administrador.
+     *
+     * Esta función acepta un array de campos del administrador, verifica si la descripción del campo se encuentra
+     * en la lista de campos que deben ser limpiados y devuelve un objeto.
+     * Los campos que se buscan son 'id', 'usuario_alta_id', 'usuario_update_id', 'fecha_alta', 'fecha_update'.
+     *
+     * @param   array   $adm_campo Array de campos del administrador que deben ser limpiados.
+     *
+     * @return  stdClass Retorna un objeto con dos propiedades.
+     * $continue se establece en true si el campo del administrador se encuentra en la lista de campos para limpiar, y false si no.
+     * $adm_campo es el campo original del administrador recibido como parámetro.
+     *
+     * @version 21.3.0
+     */
     private function limpia_adm_campo(array $adm_campo): stdClass
     {
         $continue = false;
