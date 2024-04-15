@@ -82,7 +82,7 @@ class _exporta
 
     }
 
-    private function datos_full_xls(modelo $modelo)
+    PUBLIC function datos_full_xls(modelo $modelo)
     {
         $params = $this->params_xls(modelo: $modelo);
         if(errores::$error){

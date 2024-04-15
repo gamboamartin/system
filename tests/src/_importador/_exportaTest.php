@@ -1,6 +1,9 @@
 <?php
 namespace tests\controllers;
 
+use gamboamartin\administrador\instalacion\instalacion;
+use gamboamartin\administrador\models\adm_accion;
+use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\errores\errores;
 use gamboamartin\system\_importador\_exporta;
 use gamboamartin\system\_importador\_xls;
@@ -22,6 +25,8 @@ class _exportaTest extends test {
         $this->paths_conf->database = '/var/www/html/cat_sat/config/database.php';
         $this->paths_conf->views = '/var/www/html/cat_sat/config/views.php';
     }
+
+
 
     public function test_limpia_adm_campo(): void
     {

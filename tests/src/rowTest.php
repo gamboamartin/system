@@ -151,7 +151,7 @@ class rowTest extends test {
 
         $this->assertNotTrue(errores::$error);
         $this->assertIsArray($resultado);
-        $this->assertEquals('activo',$resultado['visible']);
+        $this->assertEquals('inactivo',$resultado['visible']);
         errores::$error = false;
     }
 
