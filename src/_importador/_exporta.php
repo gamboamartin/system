@@ -225,7 +225,7 @@ class _exporta
         }
 
         $datos_plantilla = $this->datos_plantilla(adm_campo: $adm_campo,campos_hd:  $campos_hd,
-            foraneas:  $foraneas,letras:  $letras,registros_plantilla:  $registros_plantilla );
+            foraneas:  $foraneas,letras:  $letras,registros_plantilla:  $registros_plantilla);
 
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener datos_plantilla', data: $datos_plantilla);
