@@ -173,6 +173,8 @@ class _exporta
                 return $this->error->error(mensaje: 'Error al obtener data_hojas', data: $data_hojas);
             }
 
+            $campos_hd = $data_hojas->campos_hd;
+            $registros_plantilla = $data_hojas->registros_plantilla;
             $contador_hojas = $data_hojas->contador_hojas;
         }
         return $data_hojas;
