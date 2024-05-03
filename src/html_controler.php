@@ -18,13 +18,15 @@ use gamboamartin\validacion\validacion;
 use PDO;
 use stdClass;
 
-class html_controler{
+class html_controler
+{
     public directivas $directivas;
     protected errores $error;
     public html $html_base;
     protected validacion_html $validacion;
 
-    public function __construct(html $html){
+    public function __construct(html $html)
+    {
         $this->directivas = new directivas(html: $html);
         $this->error = new errores();
         $this->html_base = $html;
@@ -47,31 +49,31 @@ class html_controler{
                               string $target, string $title): string|array
     {
         $style = trim($style);
-        if($style === ''){
-            return $this->error->error(mensaje: 'Error style esta vacio',data:  $style);
+        if ($style === '') {
+            return $this->error->error(mensaje: 'Error style esta vacio', data: $style);
         }
         $title = trim($title);
-        if($title === ''){
-            return $this->error->error(mensaje: 'Error title esta vacio',data:  $title);
+        if ($title === '') {
+            return $this->error->error(mensaje: 'Error title esta vacio', data: $title);
         }
         $role = trim($role);
-        if($role === ''){
-            return $this->error->error(mensaje: 'Error role esta vacio',data:  $role);
+        if ($role === '') {
+            return $this->error->error(mensaje: 'Error role esta vacio', data: $role);
         }
 
         $target_html = '';
         $target = trim($target);
-        if($target !==''){
+        if ($target !== '') {
             $target_html = "target='$target'";
         }
 
         $params = "role='$role' title='$title' href='$link' class='btn btn-$style $cols_html' $style_custom";
         $params .= " $target_html";
         $params = trim($params);
-        $i=0;
+        $i = 0;
         $iteraciones = 5;
-        while ($i<=$iteraciones){
-            $params =  str_replace('  ', ' ', $params);
+        while ($i <= $iteraciones) {
+            $params = str_replace('  ', ' ', $params);
             $i++;
         }
         return $params;
@@ -91,46 +93,46 @@ class html_controler{
      * @param string $title Titulo a mostrar del button
      * @return string|array
      */
-    private function a_role(int $cols, string $etiqueta_html, string $icon_html, string $link, string $role,
+    private function a_role(int    $cols, string $etiqueta_html, string $icon_html, string $link, string $role,
                             string $style, array $styles, string $target, string $title): string|array
     {
 
         $style = trim($style);
-        if($style === ''){
-            return $this->error->error(mensaje: 'Error style esta vacio',data:  $style);
+        if ($style === '') {
+            return $this->error->error(mensaje: 'Error style esta vacio', data: $style);
         }
         $title = trim($title);
-        if($title === ''){
+        if ($title === '') {
             $title = $etiqueta_html;
         }
 
-        if($title === ''){
-            return $this->error->error(mensaje: 'Error title esta vacio',data:  $title);
+        if ($title === '') {
+            return $this->error->error(mensaje: 'Error title esta vacio', data: $title);
         }
 
         $cols_html = $this->cols_html(cols: $cols);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar cols html', data: $cols_html);
         }
 
         $role = $this->role_button(role: $role);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar role', data: $role);
         }
 
         $style_custom = $this->genera_styles_custom(styles: $styles);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar style_custom', data: $style_custom);
         }
 
         $params = $this->a_params(cols_html: $cols_html, link: $link, role: $role, style: $style,
             style_custom: $style_custom, target: $target, title: $title);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar params', data: $params);
         }
 
-        $a = $this->a_role_button(etiqueta_html: $etiqueta_html,icon_html:  $icon_html, params: $params);
-        if(errores::$error){
+        $a = $this->a_role_button(etiqueta_html: $etiqueta_html, icon_html: $icon_html, params: $params);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar button', data: $a);
         }
 
@@ -142,20 +144,20 @@ class html_controler{
         $etiqueta_html = trim($etiqueta_html);
         $icon_html = trim($icon_html);
         $params = trim($params);
-        if($params === ''){
+        if ($params === '') {
             return $this->error->error(mensaje: 'Error al params esta vacio', data: $params);
         }
 
-        $data_a = $icon_html.' '.$etiqueta_html;
+        $data_a = $icon_html . ' ' . $etiqueta_html;
         $data_a = trim($data_a);
-        if($data_a === ''){
+        if ($data_a === '') {
             return $this->error->error(mensaje: 'Error al data_a esta vacio', data: $data_a);
         }
 
         $a = "<a $params>$data_a</a>";
 
         $i = 0;
-        while($i<=5){
+        while ($i <= 5) {
             $a = str_replace('  ', ' ', $a);
             $i++;
         }
@@ -176,8 +178,8 @@ class html_controler{
         $cols = new stdClass();
         $cols->codigo = 6;
         $cols->codigo_bis = 6;
-        $inputs_base = $this->inputs_base(cols:$cols, controler: $controler, value_vacio: true);
-        if(errores::$error){
+        $inputs_base = $this->inputs_base(cols: $cols, controler: $controler, value_vacio: true);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar inputs', data: $inputs_base);
         }
 
@@ -196,22 +198,22 @@ class html_controler{
      * @version 0.165.34
      */
     final public function boton_link_permitido(array $accion_permitida, int $indice, int $registro_id, array $rows,
-                                         array $params = array()): array
+                                               array $params = array()): array
     {
         $valida = $this->validacion->valida_boton_link(
-            accion_permitida: $accion_permitida,indice:  $indice,registro_id:  $registro_id,rows:  $rows);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar datos',data:  $valida);
+            accion_permitida: $accion_permitida, indice: $indice, registro_id: $registro_id, rows: $rows);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
         }
         $valida = $this->valida_boton_data_accion(accion_permitida: $accion_permitida);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar accion_permitida',data:  $valida);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar accion_permitida', data: $valida);
         }
 
 
         $style = $this->style_btn(accion_permitida: $accion_permitida, row: $rows[$indice]);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener style',data:  $style);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener style', data: $style);
         }
 
         $accion = $accion_permitida['adm_accion_descripcion'];
@@ -221,30 +223,29 @@ class html_controler{
         $icon = $accion_permitida['adm_accion_icono'];
 
 
-
         $data_icon = (new params())->data_icon(adm_accion: $accion_permitida);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al asignar data_icon', data: $data_icon);
         }
 
 
         $link = $this->button_href(accion: $accion, etiqueta: $etiqueta, registro_id: $registro_id, seccion: $seccion,
             style: $style, cols: -1, icon: $icon, muestra_icono_btn: $data_icon->muestra_icono_btn,
-            muestra_titulo_btn: $data_icon->muestra_titulo_btn, params: $params, styles: array('margin-right'=>'2px'));
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar link',data:  $link);
+            muestra_titulo_btn: $data_icon->muestra_titulo_btn, params: $params, styles: array('margin-right' => '2px'));
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar link', data: $link);
         }
 
-        if(!is_array($rows[$indice])){
-            return $this->error->error(mensaje: 'rows['.$indice.'] debe ser una array',data:  $rows);
+        if (!is_array($rows[$indice])) {
+            return $this->error->error(mensaje: 'rows[' . $indice . '] debe ser una array', data: $rows);
         }
 
-        if(!isset($rows[$indice]['acciones'])){
+        if (!isset($rows[$indice]['acciones'])) {
             $rows[$indice]['acciones'] = array();
         }
 
-        if(array_key_exists($accion_permitida['adm_accion_descripcion'], $rows[$indice]['acciones'])){
-            return $this->error->error(mensaje: 'Error la accion esta repetida',data:  $accion_permitida);
+        if (array_key_exists($accion_permitida['adm_accion_descripcion'], $rows[$indice]['acciones'])) {
+            return $this->error->error(mensaje: 'Error la accion esta repetida', data: $accion_permitida);
         }
 
         $rows[$indice]['acciones'][$accion_permitida['adm_accion_descripcion']] = $link;
@@ -253,7 +254,7 @@ class html_controler{
     }
 
     final public function boton_submit(string $class_button, string $class_control, string $style, string $tag,
-                                       string $id_button = '' ): string
+                                       string $id_button = ''): string
     {
         return "
             <div class='control-group $class_control'>
@@ -282,27 +283,27 @@ class html_controler{
      */
     final public function button_href(string $accion, string $etiqueta, int $registro_id, string $seccion,
                                       string $style, int $cols = 12, string $icon = '', bool $muestra_icono_btn = false,
-                                      bool $muestra_titulo_btn = true, array $params = array(),
+                                      bool   $muestra_titulo_btn = true, array $params = array(),
                                       string $role = 'button', array $styles = array(),
                                       string $target = ''): string|array
     {
 
-        $valida = $this->html_base->valida_input(accion: $accion,etiqueta:  $etiqueta, seccion: $seccion,style:  $style);
-        if(errores::$error){
+        $valida = $this->html_base->valida_input(accion: $accion, etiqueta: $etiqueta, seccion: $seccion, style: $style);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
         }
 
         $session_id = (new generales())->session_id;
 
-        if($session_id === ''){
+        if ($session_id === '') {
             return $this->error->error(mensaje: 'Error la $session_id esta vacia', data: $session_id);
         }
 
 
-        $params_btn = $this->params_btn(icon: $icon,etiqueta:  $etiqueta,muestra_icono_btn:  $muestra_icono_btn,
-            muestra_titulo_btn:  $muestra_titulo_btn,params:  $params);
+        $params_btn = $this->params_btn(icon: $icon, etiqueta: $etiqueta, muestra_icono_btn: $muestra_icono_btn,
+            muestra_titulo_btn: $muestra_titulo_btn, params: $params);
 
-        if(errores::$error){
+        if (errores::$error) {
             $params_error = array();
             $params_error['accion'] = $accion;
             $params_error['seccion'] = $seccion;
@@ -313,14 +314,14 @@ class html_controler{
         }
 
         $link = $this->link_a(accion: $accion, params_get: $params_btn->params_get, registro_id: $registro_id,
-            seccion:  $seccion,session_id:  $session_id);
-        if(errores::$error){
+            seccion: $seccion, session_id: $session_id);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar link', data: $link);
         }
 
         $a = $this->a_role(cols: $cols, etiqueta_html: $params_btn->etiqueta_html, icon_html: $params_btn->icon_html,
             link: $link, role: $role, style: $style, styles: $styles, target: $target, title: $etiqueta);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar a', data: $a);
         }
 
@@ -338,15 +339,15 @@ class html_controler{
     final public function button_para_java(string $id_css, string $style, string $tag): string|array
     {
         $style = trim($style);
-        if($style === ''){
+        if ($style === '') {
             return $this->error->error(mensaje: 'Error style esta vacio', data: $style);
         }
         $id_css = trim($id_css);
-        if($id_css === ''){
+        if ($id_css === '') {
             return $this->error->error(mensaje: 'Error id_css esta vacio', data: $id_css);
         }
         $tag = trim($tag);
-        if($tag === ''){
+        if ($tag === '') {
             return $this->error->error(mensaje: 'Error tag esta vacio', data: $tag);
         }
         return "<a class='btn btn-$style' role='button' id='$id_css'>$tag</a>";
@@ -362,7 +363,7 @@ class html_controler{
     private function cols_html(int $cols): string
     {
         $cols_html = "col-sm-$cols";
-        if($cols === -1){
+        if ($cols === -1) {
             $cols_html = '';
         }
         return $cols_html;
@@ -378,25 +379,25 @@ class html_controler{
     final protected function dates_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
     {
         $campos_view = $this->obtener_inputs($modelo->campos_view);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener campos de la vista del modelo', data: $campos_view);
         }
 
         $dates = new stdClass();
 
-        foreach ($campos_view['dates'] as $item){
+        foreach ($campos_view['dates'] as $item) {
 
             $item = trim($item);
-            if(is_numeric($item)){
+            if (is_numeric($item)) {
                 return $this->error->error(mensaje: 'Error item debe ser un string no un numero', data: $item);
             }
 
-            $params_select = (new params())->params_select_init(item:$item,keys_selects:  $keys_selects);
-            if(errores::$error){
+            $params_select = (new params())->params_select_init(item: $item, keys_selects: $keys_selects);
+            if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al generar select', data: $params_select);
             }
-            $date = (new template())->dates_template(directivas: $this->directivas, params_select: $params_select,row_upd: $row_upd);
-            if(errores::$error){
+            $date = (new template())->dates_template(directivas: $this->directivas, params_select: $params_select, row_upd: $row_upd);
+            if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al generar input', data: $date);
             }
             $dates->$item = $date;
@@ -405,30 +406,30 @@ class html_controler{
         return $dates;
     }
 
-    private function div_input_text(array $class_css,int $cols, bool $disabled, array $ids_css, string $name,
+    private function div_input_text(array  $class_css, int $cols, bool $disabled, array $ids_css, string $name,
                                     string $place_holder, string $regex, bool $required, stdClass $row_upd,
-                                    string $title, bool $value_vacio, string|null $value = '' ): array|string
+                                    string $title, bool $value_vacio, string|null $value = ''): array|string
     {
 
-        $valida = $this->directivas->valida_data_label(name: $name,place_holder:  $place_holder);
-        if(errores::$error){
+        $valida = $this->directivas->valida_data_label(name: $name, place_holder: $place_holder);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar datos ', data: $valida);
         }
 
         $valida = $this->directivas->valida_cols(cols: $cols);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar cols', data: $valida);
         }
 
-        $html =$this->directivas->input_text_base(disabled: $disabled, name: $name, place_holder: $place_holder,
+        $html = $this->directivas->input_text_base(disabled: $disabled, name: $name, place_holder: $place_holder,
             row_upd: $row_upd, value_vacio: $value_vacio, class_css: $class_css, ids_css: $ids_css, regex: $regex,
-            required: $required, title: $title,value: $value);
-        if(errores::$error){
+            required: $required, title: $title, value: $value);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar input', data: $html);
         }
 
-        $div = $this->directivas->html->div_group(cols: $cols,html:  $html);
-        if(errores::$error){
+        $div = $this->directivas->html->div_group(cols: $cols, html: $html);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al integrar div', data: $div);
         }
         return $div;
@@ -448,29 +449,29 @@ class html_controler{
      * @return array|string
      * @version 7.43.2
      */
-    private function div_input_text_required(int $cols, bool $disabled, array $ids_css, string $name,
+    private function div_input_text_required(int    $cols, bool $disabled, array $ids_css, string $name,
                                              string $place_holder, string $regex, stdClass $row_upd,
-                                             string $title, bool $value_vacio ): array|string
+                                             string $title, bool $value_vacio): array|string
     {
 
-        $valida = $this->directivas->valida_data_label(name: $name,place_holder:  $place_holder);
-        if(errores::$error){
+        $valida = $this->directivas->valida_data_label(name: $name, place_holder: $place_holder);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar datos ', data: $valida);
         }
 
         $valida = $this->directivas->valida_cols(cols: $cols);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar cols', data: $valida);
         }
 
-        $html =$this->directivas->input_text_required(disabled: $disabled, name: $name, place_holder: $place_holder,
+        $html = $this->directivas->input_text_required(disabled: $disabled, name: $name, place_holder: $place_holder,
             row_upd: $row_upd, value_vacio: $value_vacio, ids_css: $ids_css, regex: $regex, title: $title);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar input', data: $html);
         }
 
-        $div = $this->directivas->html->div_group(cols: $cols,html:  $html);
-        if(errores::$error){
+        $div = $this->directivas->html->div_group(cols: $cols, html: $html);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al integrar div', data: $div);
         }
         return $div;
@@ -488,20 +489,20 @@ class html_controler{
     protected function emails_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
     {
         $campos_view = $this->obtener_inputs($modelo->campos_view);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener campos de la vista del modelo', data: $campos_view);
         }
 
         $emails = new stdClass();
 
-        foreach ($campos_view['emails'] as $item){
+        foreach ($campos_view['emails'] as $item) {
 
-            $params_select = (new params())->params_select_init(item:$item,keys_selects:  $keys_selects);
-            if(errores::$error){
+            $params_select = (new params())->params_select_init(item: $item, keys_selects: $keys_selects);
+            if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al generar select', data: $params_select);
             }
-            $date = (new template())->emails_template(directivas: $this->directivas, params_select: $params_select,row_upd: $row_upd);
-            if(errores::$error){
+            $date = (new template())->emails_template(directivas: $this->directivas, params_select: $params_select, row_upd: $row_upd);
+            if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al generar input', data: $date);
             }
             $emails->$item = $date;
@@ -519,9 +520,9 @@ class html_controler{
     private function etiqueta_html(string $etiqueta, bool $muestra_titulo_btn): array|string
     {
         $etiqueta_html = '';
-        if($muestra_titulo_btn){
+        if ($muestra_titulo_btn) {
             $etiqueta = trim($etiqueta);
-            if($etiqueta === ''){
+            if ($etiqueta === '') {
                 return $this->error->error(
                     mensaje: 'Error si muestra_titulo_btn entonces etiqueta no puede venir vacio', data: $etiqueta);
             }
@@ -542,20 +543,20 @@ class html_controler{
     protected function fechas_alta(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
     {
         $campos_view = $this->obtener_inputs(campos_view: $modelo->campos_view);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener campos de la vista del modelo', data: $campos_view);
         }
 
         $fechas = new stdClass();
 
-        foreach ($campos_view['fechas'] as $item){
+        foreach ($campos_view['fechas'] as $item) {
 
-            $params_select = (new params())->params_select_init(item:$item,keys_selects:  $keys_selects);
-            if(errores::$error){
+            $params_select = (new params())->params_select_init(item: $item, keys_selects: $keys_selects);
+            if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al generar select', data: $params_select);
             }
-            $fecha = (new template())->fechas_template(directivas: $this->directivas, params_select: $params_select,row_upd: $row_upd);
-            if(errores::$error){
+            $fecha = (new template())->fechas_template(directivas: $this->directivas, params_select: $params_select, row_upd: $row_upd);
+            if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al generar input', data: $fecha);
             }
             $fechas->$item = $fecha;
@@ -574,25 +575,25 @@ class html_controler{
      */
     private function file_items(array $campos_view, array $keys_selects, stdClass $row_upd): array|stdClass
     {
-        if(!isset($campos_view['files'])){
+        if (!isset($campos_view['files'])) {
             $campos_view['files'] = array();
         }
 
-        if(!is_array($campos_view['files'])){
+        if (!is_array($campos_view['files'])) {
             return $this->error->error(mensaje: 'Error campos_view[files] debe ser un array', data: $campos_view);
         }
         $files = new stdClass();
-        foreach ($campos_view['files'] as $item){
+        foreach ($campos_view['files'] as $item) {
             $item = trim($item);
-            if(is_numeric($item)){
+            if (is_numeric($item)) {
                 return $this->error->error(mensaje: 'Error item debe ser un string no un numero', data: $item);
             }
-            if($item === ''){
+            if ($item === '') {
                 return $this->error->error(mensaje: 'Error item esta vacio', data: $item);
             }
 
-            $files = $this->text_item(item: $item,keys_selects:  $keys_selects,row_upd:  $row_upd, texts: $files);
-            if(errores::$error){
+            $files = $this->text_item(item: $item, keys_selects: $keys_selects, row_upd: $row_upd, texts: $files);
+            if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al generar input', data: $files);
             }
         }
@@ -611,12 +612,12 @@ class html_controler{
     final protected function files_alta2(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
     {
         $campos_view = $this->obtener_inputs(campos_view: $modelo->campos_view);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener campos de la vista del modelo', data: $campos_view);
         }
 
-        $files = $this->file_items(campos_view: $campos_view,keys_selects:  $keys_selects,row_upd:  $row_upd);
-        if(errores::$error){
+        $files = $this->file_items(campos_view: $campos_view, keys_selects: $keys_selects, row_upd: $row_upd);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar input', data: $files);
         }
 
@@ -632,54 +633,55 @@ class html_controler{
      */
     public function file_template(stdClass $params_select, stdClass $row_upd): array|string
     {
-        $keys = array('cols','disabled','name','place_holder','required','value_vacio');
-        $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $params_select, valida_vacio: false);
-        if(errores::$error){
+        $keys = array('cols', 'disabled', 'name', 'place_holder', 'required', 'value_vacio');
+        $valida = (new validacion())->valida_existencia_keys(keys: $keys, registro: $params_select, valida_vacio: false);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
         }
 
         $keys = array('cols');
-        $valida = (new validacion())->valida_ids(keys: $keys,registro:  $params_select);
-        if(errores::$error){
+        $valida = (new validacion())->valida_ids(keys: $keys, registro: $params_select);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
         }
 
-        $keys = array('name','place_holder');
-        $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $params_select);
-        if(errores::$error){
+        $keys = array('name', 'place_holder');
+        $valida = (new validacion())->valida_existencia_keys(keys: $keys, registro: $params_select);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
         }
 
         $valida = $this->directivas->valida_cols(cols: $params_select->cols);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar columnas', data: $valida);
         }
 
 
-        $html =$this->directivas->input_file(disabled: $params_select->disabled, name: $params_select->name,
+        $html = $this->directivas->input_file(disabled: $params_select->disabled, name: $params_select->name,
             place_holder: $params_select->place_holder, required: $params_select->required, row_upd: $row_upd,
             value_vacio: $params_select->value_vacio);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar input', data: $html);
         }
 
-        $div = $this->directivas->html->div_group(cols: $params_select->cols,html:  $html);
-        if(errores::$error){
+        $div = $this->directivas->html->div_group(cols: $params_select->cols, html: $html);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al integrar div', data: $div);
         }
 
         return $div;
     }
 
-    private function genera_styles_custom(array $styles){
+    private function genera_styles_custom(array $styles)
+    {
         $propiedades = $this->propiedades_css(styles: $styles);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar propiedades', data: $propiedades);
         }
 
 
         $style_custom = $this->style_custom(propiedades: $propiedades);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar style_custom', data: $style_custom);
         }
         return $style_custom;
@@ -692,10 +694,10 @@ class html_controler{
      * @param string $tag_button Etiqueta de boton
      * @param string $tag_header Etiqueta de seccion
      * @return array|string
-     * @version 13.83.2
      */
-    final public function header_collapsible(string $id_css_button, string $style_button, string $tag_button,
-                                             string $tag_header): array|string
+    public function header_collapsible(string $id_css_button, string $style_button, string $tag_button,
+                                             string $tag_header, array $acciones_headers = array(),
+                                             string $n_apartado = ''): array|string
     {
         $style_button = trim($style_button);
         if($style_button === ''){
@@ -715,8 +717,20 @@ class html_controler{
             return $this->error->error(mensaje: 'Error al btn_collapse_all',data:  $btn);
         }
 
+        $html_acc = "";
+        foreach ($acciones_headers as $n_part => $accion){
+            if((string)$n_part === $n_apartado){
+                $btn_acc = $this->button_para_java(id_css: $accion->id_css_button_acc,
+                    style:  $accion->style_button_acc,tag:  $accion->tag_button_acc);
+                if(errores::$error){
+                    return $this->error->error(mensaje: 'Error al btn_collapse_all',data:  $btn);
+                }
+                $html_acc .= $btn_acc;
+            }
+        }
+
         $html = "<div class='col-md-12'>";
-        $html .= "<hr><h4>$tag_header $btn </h4><hr>";
+        $html .= "<hr><h4>$tag_header $btn $html_acc</h4><hr>";
         $html .= "</div>";
 
         return trim($html);
