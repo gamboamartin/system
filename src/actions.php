@@ -367,7 +367,6 @@ class actions{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta es la función "siguiente_view" en el archivo actions.php
      *
      * @param string $siguiente_view - Es la próxima vista a mostrar por defecto, que es 'modifica'.
@@ -382,8 +381,9 @@ class actions{
      * la función devuelve el valor del parámetro que se le pasó.
      *
      * @version 17.2.0
+     * @url https://github.com/gamboamartin/system/wiki/src-actions#funci%C3%B3n-siguiente_view
      */
-    final public function siguiente_view(string $siguiente_view = 'modifica'): string
+    private function siguiente_view(string $siguiente_view = 'modifica'): string
     {
 
         if(isset($_POST['guarda_otro'])){

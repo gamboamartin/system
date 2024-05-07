@@ -441,7 +441,6 @@ class actionsTest extends test {
     }
 
     /**
-     * @throws JsonException
      */
     public function test_siguiente_view(): void
     {
