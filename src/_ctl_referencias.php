@@ -28,7 +28,8 @@ class _ctl_referencias{
     {
         $key_parent_id = trim($key_parent_id);
         if($key_parent_id === ''){
-            return $this->error->error(mensaje: 'Error key_parent_id esta vacio', data:  $key_parent_id);
+            return $this->error->error(mensaje: 'Error key_parent_id esta vacio', data:  $key_parent_id,
+                es_final: true);
         }
         $keys = array($key_parent_id);
         $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro: $_GET);
@@ -568,7 +569,7 @@ class _ctl_referencias{
     {
         $tabla = trim($model_parent->tabla);
         if($tabla === ''){
-            return $this->error->error(mensaje: 'Error la tabla del modelo esta vacia',data:  $tabla);
+            return $this->error->error(mensaje: 'Error la tabla del modelo esta vacia',data:  $tabla, es_final: true);
         }
         return $tabla.'_id';
     }
@@ -593,14 +594,16 @@ class _ctl_referencias{
         if(is_array($parent) && isset($parent['model_parent'])){
 
             if(!is_object($parent['model_parent'])){
-                return $this->error->error(mensaje: 'Error el model_parent no es de tipo modelo',data:  $parent);
+                return $this->error->error(mensaje: 'Error el model_parent no es de tipo modelo',data:  $parent,
+                    es_final: true);
             }
 
             $model_parent = $parent['model_parent'];
         }
 
         if(!is_object($model_parent)){
-            return $this->error->error(mensaje: 'Error el resultado no es de tipo modelo',data:  $model_parent);
+            return $this->error->error(mensaje: 'Error el resultado no es de tipo modelo',data:  $model_parent,
+                es_final: true);
         }
 
         return $model_parent;
