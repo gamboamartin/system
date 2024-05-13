@@ -271,8 +271,10 @@ class _ctl_base extends system{
     }
 
     /**
+     * TOTAL
      * Obtiene los datos de retorno
      * @return array|stdClass
+     * @url https://github.com/gamboamartin/system/wiki/src._ctl_base.data_retorno.22.4.0
      */
     private function data_retorno(): array|stdClass
     {
@@ -293,9 +295,11 @@ class _ctl_base extends system{
     }
 
     /**
+     * TOTAL
      * Genera los datos de retorno despues de una transaccion de controller
      * @return array|stdClass
      * Retorna despues de transaccion con header
+     * @url https://github.com/gamboamartin/system/wiki/src._ctl_base.data_retorno_base.22.4.0
      */
     final protected function data_retorno_base(): array|stdClass
     {
@@ -378,9 +382,11 @@ class _ctl_base extends system{
     }
 
     /**
+     * TOTAL
      * Obtiene el id de retorno depsues de una transaccion
      * @return int
      * @version 0.285.38
+     * @url https://github.com/gamboamartin/system/wiki/src._ctl_base.id_retorno.22.4.0
      */
     private function id_retorno(): int
     {
@@ -747,8 +753,10 @@ class _ctl_base extends system{
     }
 
     /**
+     * TOTAL
      * Obtiene la seccion de retorno
      * @return string
+     * @url https://github.com/gamboamartin/system/wiki/src._ctl_base.seccion_retorno.22.4.0
      */
     private function seccion_retorno():string{
         $seccion_retorno = $this->tabla;

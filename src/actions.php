@@ -106,7 +106,7 @@ class actions{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Resumen: Esta función inicializa la creación de la base de datos
      *
      * Descripción extendida: Esta función implementa la lógica necesaria para
@@ -124,6 +124,7 @@ class actions{
      * @throws errores En caso de que ocurran errores al obtener la vista siguiente
      * o al limpiar los botones, se lanza una excepción.
      * @version 18.7.0
+     * @url https://github.com/gamboamartin/system/wiki/src.actions.init_alta_bd.22.4.0
      */
     final public function init_alta_bd(string $siguiente_view = 'modifica'): array|string
     {
@@ -192,7 +193,7 @@ class actions{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Limpieza de botones
      *
      * Este método se utiliza para limpiar ciertos botones de la entrada POST.
@@ -202,6 +203,7 @@ class actions{
      *
      * @return array $_POST El array POST después de que se han eliminado los botones.
      * @version 18.1.0
+     * @url https://github.com/gamboamartin/system/wiki/src.actions.limpia_butons.22.4.0
      */
     private function limpia_butons(): array
     {
@@ -367,6 +369,7 @@ class actions{
     }
 
     /**
+     * TOTAL
      * Esta es la función "siguiente_view" en el archivo actions.php
      *
      * @param string $siguiente_view - Es la próxima vista a mostrar por defecto, que es 'modifica'.
@@ -381,7 +384,7 @@ class actions{
      * la función devuelve el valor del parámetro que se le pasó.
      *
      * @version 17.2.0
-     * @url https://github.com/gamboamartin/system/wiki/src-actions#funci%C3%B3n-siguiente_view
+     * @url https://github.com/gamboamartin/system/wiki/src.actions.siguiente_view.22.4.0
      */
     private function siguiente_view(string $siguiente_view = 'modifica'): string
     {
