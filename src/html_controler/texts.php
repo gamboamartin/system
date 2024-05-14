@@ -56,6 +56,37 @@ class texts{
         return $texts;
     }
 
+    private function textarea_input_integra(
+        directivas $directivas, string $item, array $keys_selects, stdClass $row_upd, stdClass $texts): array|stdClass
+    {
+
+        $item = trim($item);
+        if($item === ''){
+            return $this->error->error(mensaje: 'Error item esta vacio', data: $item);
+        }
+        if(is_numeric($item)){
+            return $this->error->error(mensaje: 'Error item debe ser un texto', data: $item);
+        }
+
+        $params_select = (new params())->params_select_init(item:$item,keys_selects:  $keys_selects);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar select', data: $params_select);
+        }
+
+        $valida = $this->validacion->valida_params(directivas: $directivas, params_select: $params_select);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
+        }
+
+        $input = (new template())->textarea_template(
+            directivas: $directivas, params_select: $params_select,row_upd: $row_upd);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar input', data: $input);
+        }
+        $texts->$item = $input;
+        return $texts;
+    }
+
     /**
      * Integra los inputs de tipo text
      * @param array $campos_view Campos de modelo
@@ -97,6 +128,35 @@ class texts{
         return $texts;
     }
 
+    public function textareas_integra(array $campos_view, directivas $directivas, array $keys_selects, stdClass $row_upd): array|stdClass
+    {
 
+        $keys = array('textareas');
+        $valida = $this->validacion->valida_existencia_keys(keys:$keys,registro:  $campos_view);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar campos_view', data: $valida);
+        }
+
+        $texts = new stdClass();
+
+        foreach ($campos_view['textareas'] as $item){
+
+            $item = trim($item);
+            if($item === ''){
+                return $this->error->error(mensaje: 'Error item esta vacio', data: $item);
+            }
+            if(is_numeric($item)){
+                return $this->error->error(mensaje: 'Error item debe ser un texto', data: $item);
+            }
+
+            $texts = $this->textarea_input_integra(
+                directivas: $directivas, item: $item,keys_selects:  $keys_selects,row_upd:  $row_upd,texts:  $texts);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar input', data: $texts);
+            }
+
+        }
+        return $texts;
+    }
 
 }
