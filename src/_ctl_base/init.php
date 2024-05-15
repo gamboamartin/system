@@ -18,7 +18,7 @@ final class init{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * TOTAL
      * Asigna valor a una clave en un arreglo de parametros.
      * @param stdClass $data_init Datos iniciales donde se busca la clave y su valor.
      * @param string $key Key de parametro a ser agregada al array `$params`.
@@ -27,12 +27,13 @@ final class init{
      * @throws errores Si la clave proporcionada es invalida o no es encontrada en `$data_init`.
      *
      * @version 18.0.0
+     * @url https://github.com/gamboamartin/system/wiki/src-_ctl_base.asigna_data_param.23.1.0
      */
     private function asigna_data_param(stdClass $data_init, string $key, array $params): array
     {
         $key = trim($key);
         if($key === ''){
-            return $this->error->error(mensaje: 'Error key esta vacio', data: $key);
+            return $this->error->error(mensaje: 'Error key esta vacio', data: $key, es_final: true);
         }
         $keys = array($key);
         $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $data_init);
@@ -55,7 +56,7 @@ final class init{
         foreach ($keys_params as $key){
             $key = trim($key);
             if($key === ''){
-                return $this->error->error(mensaje: 'Error key esta vacio', data: $key);
+                return $this->error->error(mensaje: 'Error key esta vacio', data: $key, es_final: true);
             }
             $keys = array($key);
             $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $data_init);
