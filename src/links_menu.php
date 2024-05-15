@@ -281,7 +281,8 @@ class links_menu{
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al integrar data_link', data: $data_link);
         }
-        $valida = $this->valida_permiso(accion: $accion,data_link:  $data_link,seccion:  $seccion,valida_permiso:  $valida_permiso);
+        $valida = $this->valida_permiso(accion: $accion,data_link:  $data_link,seccion:  $seccion,
+            valida_permiso:  $valida_permiso);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar permiso', data: $valida);
         }
@@ -448,7 +449,8 @@ class links_menu{
 
     private function integra_link_ancla(string $accion, PDO $link, array $params, int $registro_id, string $seccion, bool $valida_permiso)
     {
-        $data_link = $this->get_datos_ancla(accion: $accion,link:  $link,params:  $params,seccion:  $seccion,valida_permiso:  $valida_permiso);
+        $data_link = $this->get_datos_ancla(accion: $accion,link:  $link,params:  $params,
+            seccion:  $seccion,valida_permiso:  $valida_permiso);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al integrar data_link', data: $data_link);
         }
@@ -672,7 +674,8 @@ class links_menu{
             return $this->error->error(mensaje: 'Error al validar entrada de datos', data: $valida);
         }
 
-        $link_ancla = $this->integra_link_ancla(accion: $accion,link:  $link,params:  $params,registro_id:  $registro_id,seccion:  $seccion,valida_permiso:  $valida_permiso);
+        $link_ancla = $this->integra_link_ancla(accion: $accion,link:  $link,params:  $params,
+            registro_id:  $registro_id,seccion:  $seccion,valida_permiso:  $valida_permiso);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener link', data: $link_ancla);
         }
@@ -1157,15 +1160,43 @@ class links_menu{
 
     }
 
+    /**
+     * TOTAL
+     * Valida si la acción y la sección no están vacías.
+     *
+     * Esta función verifica que los valores de acción y sección no estén vacíos.
+     * Si ambos valores están presentes, devuelve verdadero; de lo contrario,
+     * devuelve un mensaje de error indicando qué valor está vacío.
+     *
+     * @param string $accion La acción a validar.
+     * @param string $seccion La sección a validar.
+     *
+     * @return true|array Retorna true si tanto la acción como la sección no están vacías.
+     *                     Retorna un array con un mensaje de error si uno de los valores está vacío.
+     *
+     * @example
+     * ```php
+     * $validador = new links_menu();
+     * $accion = "alta";
+     * $seccion = "contrato";
+     * $resultado = $validador->valida_link($accion, $seccion);
+     * if ($resultado === true) {
+     *     echo "Los valores de acción y sección son válidos.";
+     * } else {
+     *     echo "Error: " . $resultado['mensaje'];
+     * }
+     * ```
+     * @url https://github.com/gamboamartin/system/wiki/src.links_menu.valida_link.22.5.0
+     */
     private function valida_link(string $accion, string $seccion): true|array
     {
         $accion = trim($accion);
         if($accion === ''){
-            return $this->error->error(mensaje: 'Error al accion esta vacia', data: $accion);
+            return $this->error->error(mensaje: 'Error al accion esta vacia', data: $accion, es_final: true);
         }
         $seccion = trim($seccion);
         if($seccion === ''){
-            return $this->error->error(mensaje: 'Error al $seccion esta vacia', data: $seccion);
+            return $this->error->error(mensaje: 'Error al $seccion esta vacia', data: $seccion, es_final: true);
         }
         return true;
 
@@ -1183,10 +1214,29 @@ class links_menu{
 
     }
 
-    private function var_gets(array $params_get): string
+    /**
+     * TOTAL
+     * Construye una cadena de consulta GET a partir de un array de parámetros GET.
+     *
+     * @param array $params_get Un array asociativo donde las claves son los nombres de las variables GET y los valores
+     * son los valores asociados.
+     *
+     * @return string|array Retorna una cadena de consulta GET si todos los parámetros son válidos. Si hay algún error,
+     * retorna un array con un mensaje de error indicando el problema encontrado.
+     * @url https://github.com/gamboamartin/system/wiki/src.links_menu.var_gets.22.5.0
+     */
+    private function var_gets(array $params_get): string|array
     {
         $vars_get = '';
         foreach ($params_get as $var=>$value){
+            $var = trim($var);
+            if($var === ''){
+                return $this->error->error(mensaje: 'Error var esta vacio', data: $params_get, es_final: true);
+            }
+            $value = trim($value);
+            if($value === ''){
+                return $this->error->error(mensaje: 'Error value esta vacio', data: $params_get, es_final: true);
+            }
             $vars_get.="&$var=$value";
         }
         return $vars_get;

@@ -292,7 +292,6 @@ class links_menuTest extends test {
     }
 
 
-
     /**
      */
     #[NoReturn] public function test_links_sin_id(): void
@@ -394,6 +393,44 @@ class links_menuTest extends test {
         $this->assertIsBool($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertTrue($resultado);
+        errores::$error = false;
+    }
+
+    public function test_var_gets(): void
+    {
+        errores::$error = false;
+        $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_GET['session_id'] = '1';
+        $html = new links_menu($this->link,-1);
+        $html = new liberator($html);
+
+        $params_get = array();
+        $resultado = $html->var_gets($params_get);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('',$resultado);
+        errores::$error = false;
+
+        $params_get = array();
+        $params_get[] = '';
+        $resultado = $html->var_gets($params_get);
+        //print_r($resultado);exit;
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertEquals('Error value esta vacio',$resultado['mensaje_limpio']);
+        errores::$error = false;
+
+        errores::$error = false;
+
+        $params_get = array();
+        $params_get[] = 'x';
+        $resultado = $html->var_gets($params_get);
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('&0=x',$resultado);
         errores::$error = false;
     }
 
