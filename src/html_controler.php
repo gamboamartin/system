@@ -819,6 +819,11 @@ class html_controler
             return $this->error->error(mensaje: 'Error al generar texts', data: $texts);
         }
 
+        $textareas = $this->textareas_alta2(modelo: $modelo,row_upd: $row_upd,keys_selects: $keys_selects);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar texts', data: $textareas);
+        }
+
         $files = $this->files_alta2(modelo: $modelo,row_upd: $row_upd,keys_selects: $keys_selects);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar files', data: $texts);
@@ -851,6 +856,7 @@ class html_controler
         $fields = array();
         $fields['selects'] = $selects;
         $fields['inputs'] = $texts;
+        $fields['textareas'] = $textareas;
         $fields['files'] = $files;
         $fields['dates'] = $dates;
         $fields['passwords'] = $passwords;
@@ -1448,10 +1454,11 @@ class html_controler
      * @param array|stdClass $campos_view Campos definidos desde modelo
      * @return array|stdClass
      */
-    final protected function obtener_inputs(array|stdClass $campos_view): array|stdClass
+    protected function obtener_inputs(array|stdClass $campos_view): array|stdClass
     {
         $selects = array();
         $inputs = array();
+        $textareas = array();
         $files = array();
         $dates = array();
         $passwords = array();
@@ -1495,6 +1502,9 @@ class html_controler
                 case 'inputs':
                     $inputs[] = $item;
                     break;
+                case 'textareas':
+                    $textareas[] = $item;
+                    break;
                 case 'files':
                     $files[] = $item;
                     break;
@@ -1517,8 +1527,8 @@ class html_controler
             }
 
         }
-        return ['selects' => $selects,'inputs' => $inputs,'files' => $files,'dates' => $dates,'passwords'=>$passwords,
-            'telefonos'=>$telefonos,'emails'=>$emails,'fechas'=>$fechas];
+        return ['selects' => $selects,'inputs' => $inputs,'textareas'=>$textareas,'files' => $files,'dates' => $dates,
+            'passwords'=>$passwords, 'telefonos'=>$telefonos,'emails'=>$emails,'fechas'=>$fechas];
     }
 
     /**
@@ -2314,6 +2324,22 @@ class html_controler
         }
 
         $texts = (new texts())->texts_integra(campos_view: $campos_view, directivas: $this->directivas,
+            keys_selects:  $keys_selects,row_upd:  $row_upd);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar input', data: $texts);
+        }
+
+        return $texts;
+    }
+
+    protected function textareas_alta2(modelo $modelo, stdClass $row_upd, array $keys_selects = array()): array|stdClass
+    {
+        $campos_view = $this->obtener_inputs($modelo->campos_view);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener campos de la vista del modelo', data: $campos_view);
+        }
+
+        $texts = (new texts())->textareas_integra(campos_view: $campos_view, directivas: $this->directivas,
             keys_selects:  $keys_selects,row_upd:  $row_upd);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar input', data: $texts);

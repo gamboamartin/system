@@ -223,10 +223,27 @@ class template{
         return $div;
     }
 
+    public function textarea_template(directivas $directivas, stdClass $params_select, stdClass $row_upd): array|string
+    {
 
+        $valida = $this->validacion->valida_params(directivas: $directivas, params_select: $params_select);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar params_select', data: $valida);
+        }
 
+        $html =$directivas->textarea(disabled: $params_select->disabled, name: $params_select->name,
+            place_holder: $params_select->place_holder, required: $params_select->required, row_upd: $row_upd,
+            value_vacio: $params_select->value_vacio);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar input', data: $html);
+        }
 
+        $div = $directivas->html->div_group(cols: $params_select->cols,html:  $html);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar div', data: $div);
+        }
 
-
+        return $div;
+    }
 
 }
