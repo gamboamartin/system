@@ -36,6 +36,7 @@ class html_controler
     /**
      * Genera los parametros para un link de tipo button
      * @param string $cols_html Columnas css
+     * @param string $id_css Identificador de boton para uso de java
      * @param string $link Link referencia ejecucion
      * @param string $role Role de boton submit o button
      * @param string $style Estilos base del boton
@@ -45,8 +46,8 @@ class html_controler
      * @return string|array
      * @version 8.83.0
      */
-    private function a_params(string $cols_html, string $link, string $role, string $style, string $style_custom,
-                              string $target, string $title): string|array
+    private function a_params(string $cols_html, string $id_css, string $link, string $role, string $style,
+                              string $style_custom, string $target, string $title): string|array
     {
         $style = trim($style);
         if ($style === '') {
@@ -67,8 +68,13 @@ class html_controler
             $target_html = "target='$target'";
         }
 
+        $id_css_html = '';
+        if($id_css!==''){
+            $id_css_html = "id='$id_css'";
+        }
+
         $params = "role='$role' title='$title' href='$link' class='btn btn-$style $cols_html' $style_custom";
-        $params .= " $target_html";
+        $params .= " $id_css_html $target_html";
         $params = trim($params);
         $i = 0;
         $iteraciones = 5;
@@ -85,6 +91,7 @@ class html_controler
      * @param int $cols Columnas css
      * @param string $etiqueta_html Etiqueta a mostrar
      * @param string $icon_html Icono a mostrar
+     * @param string $id_css Identificador para uso de java
      * @param string $link Liga de href
      * @param string $role tipo de sole button o submit
      * @param string $style Stilo de boton
@@ -93,8 +100,8 @@ class html_controler
      * @param string $title Titulo a mostrar del button
      * @return string|array
      */
-    private function a_role(int    $cols, string $etiqueta_html, string $icon_html, string $link, string $role,
-                            string $style, array $styles, string $target, string $title): string|array
+    private function a_role(int    $cols, string $etiqueta_html, string $icon_html, string $id_css, string $link,
+                            string $role, string $style, array $styles, string $target, string $title): string|array
     {
 
         $style = trim($style);
@@ -125,8 +132,8 @@ class html_controler
             return $this->error->error(mensaje: 'Error al generar style_custom', data: $style_custom);
         }
 
-        $params = $this->a_params(cols_html: $cols_html, link: $link, role: $role, style: $style,
-            style_custom: $style_custom, target: $target, title: $title);
+        $params = $this->a_params(cols_html: $cols_html, id_css: $id_css, link: $link, role: $role,
+            style: $style, style_custom: $style_custom, target: $target, title: $title);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar params', data: $params);
         }
@@ -219,7 +226,10 @@ class html_controler
         $accion = $accion_permitida['adm_accion_descripcion'];
         $etiqueta = $accion_permitida['adm_accion_titulo'];
         $seccion = $accion_permitida['adm_seccion_descripcion'];
-
+        $id_css = '';
+        if(isset($accion_permitida['adm_accion_id_css'])) {
+            $id_css = $accion_permitida['adm_accion_id_css'];
+        }
         $icon = $accion_permitida['adm_accion_icono'];
 
 
@@ -230,8 +240,9 @@ class html_controler
 
 
         $link = $this->button_href(accion: $accion, etiqueta: $etiqueta, registro_id: $registro_id, seccion: $seccion,
-            style: $style, cols: -1, icon: $icon, muestra_icono_btn: $data_icon->muestra_icono_btn,
-            muestra_titulo_btn: $data_icon->muestra_titulo_btn, params: $params, styles: array('margin-right' => '2px'));
+            style: $style, cols: -1, icon: $icon, id_css: $id_css,
+            muestra_icono_btn: $data_icon->muestra_icono_btn, muestra_titulo_btn: $data_icon->muestra_titulo_btn,
+            params: $params, styles: array('margin-right' => '2px'));
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar link', data: $link);
         }
@@ -273,6 +284,7 @@ class html_controler
      * @param string $style Stilo del boton
      * @param int $cols N columnas css
      * @param string $icon Icono a mostrar en boton
+     * @param string|null $id_css Identificador css
      * @param bool $muestra_icono_btn Si true entonces muestra icono definido en icon
      * @param bool $muestra_titulo_btn Si true entonces muestra etiqueta definido en etiqueta
      * @param array $params extra-params
@@ -282,11 +294,14 @@ class html_controler
      * @return string|array
      */
     final public function button_href(string $accion, string $etiqueta, int $registro_id, string $seccion,
-                                      string $style, int $cols = 12, string $icon = '', bool $muestra_icono_btn = false,
-                                      bool   $muestra_titulo_btn = true, array $params = array(),
-                                      string $role = 'button', array $styles = array(),
+                                      string $style, int $cols = 12, string $icon = '', string|null $id_css = '',
+                                      bool $muestra_icono_btn = false, bool   $muestra_titulo_btn = true,
+                                      array $params = array(), string $role = 'button', array $styles = array(),
                                       string $target = ''): string|array
     {
+        if(is_null($id_css)){
+            $id_css = '';
+        }
 
         $valida = $this->html_base->valida_input(accion: $accion, etiqueta: $etiqueta, seccion: $seccion, style: $style);
         if (errores::$error) {
@@ -320,7 +335,8 @@ class html_controler
         }
 
         $a = $this->a_role(cols: $cols, etiqueta_html: $params_btn->etiqueta_html, icon_html: $params_btn->icon_html,
-            link: $link, role: $role, style: $style, styles: $styles, target: $target, title: $etiqueta);
+            id_css: $id_css, link: $link, role: $role, style: $style, styles: $styles, target: $target,
+            title: $etiqueta);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar a', data: $a);
         }

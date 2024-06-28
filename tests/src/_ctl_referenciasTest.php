@@ -255,6 +255,7 @@ class _ctl_referenciasTest extends test {
         $_SESSION['grupo_id'] = 2;
         $_GET['session_id'] = 1;
         $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
         $html = new html();
         $html_controler = new html_controler($html);
 
