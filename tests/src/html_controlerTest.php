@@ -48,7 +48,7 @@ class html_controlerTest extends test {
         $title = 'b';
 
         $resultado = $html->a_params(cols_html: $cols_html, id_css: '', link: $link, role: $role, style: $style,
-            style_custom: $style_custom, target: '', title: $title);
+            style_custom: $style_custom, target: '', title: $title, css_extra: '');
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("role='b' title='b' href='' class='btn btn-a '",$resultado);
@@ -71,7 +71,7 @@ class html_controlerTest extends test {
         $style = 'a';
         $styles = array();
         $title = '';
-        $resultado = $html->a_role($cols, $etiqueta_html, $icon_html,'', $link, $role, $style, $styles,'', $title);
+        $resultado = $html->a_role('',$cols, $etiqueta_html, $icon_html,'', $link, $role, $style, $styles,'', $title);
 
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);

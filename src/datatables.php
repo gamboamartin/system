@@ -436,14 +436,16 @@ class datatables{
         }
 
         $id_css = '';
+        $css_extra = '';
         if(isset($adm_accion_grupo['adm_accion_id_css'])){
             $id_css = $adm_accion_grupo['adm_accion_id_css'];
+            $css_extra = $adm_accion_grupo['adm_accion_id_css'];
         }
 
         $link_con_id = $html->button_href(accion: $adm_accion_grupo['adm_accion_descripcion'],
             etiqueta: $adm_accion_grupo['adm_accion_titulo'], registro_id: $registro_id,
-            seccion: $adm_accion_grupo['adm_seccion_descripcion'], style: $style, cols: -1, icon: $icon,
-            id_css: $id_css, muestra_icono_btn: $data_icon->muestra_icono_btn,
+            seccion: $adm_accion_grupo['adm_seccion_descripcion'], style: $style, css_extra: $css_extra, cols: -1,
+            icon: $icon, id_css: $id_css, muestra_icono_btn: $data_icon->muestra_icono_btn,
             muestra_titulo_btn: $data_icon->muestra_titulo_btn, params: $params_get, styles: $styles);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al asignar button', data: $link_con_id);
