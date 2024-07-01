@@ -79,7 +79,7 @@ class html_controler
         $onclick = "";
         $onclick_event = trim($onclick_event);
         if($onclick_event !== ''){
-            $onclick = "onclick='$onclick_event()'";
+            $onclick = "onclick='$onclick_event(event)'";
         }
         $params = "role='$role' title='$title' href='$link' class='btn btn-$style $cols_html $css_extra' $style_custom";
         $params .= " $id_css_html $target_html $onclick";
