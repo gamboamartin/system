@@ -48,7 +48,9 @@ class html_controlerTest extends test {
         $title = 'b';
 
         $resultado = $html->a_params(cols_html: $cols_html, id_css: '', link: $link, role: $role, style: $style,
-            style_custom: $style_custom, target: '', title: $title, css_extra: '');
+            style_custom: $style_custom, target: '', title: $title, css_extra: '', onclick_event: '');
+
+        //print_r($resultado);exit;
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("role='b' title='b' href='' class='btn btn-a '",$resultado);
@@ -71,7 +73,7 @@ class html_controlerTest extends test {
         $style = 'a';
         $styles = array();
         $title = '';
-        $resultado = $html->a_role('',$cols, $etiqueta_html, $icon_html,'', $link, $role, $style, $styles,'', $title);
+        $resultado = $html->a_role('',$cols, $etiqueta_html, $icon_html,'', $link,'', $role, $style, $styles,'', $title);
 
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
@@ -237,9 +239,10 @@ class html_controlerTest extends test {
         $style = 'c';
         $resultado = $html->button_href(accion: $accion,etiqueta:  $etiqueta,registro_id:  $registro_id,
             seccion:  $seccion,style:  $style);
+
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<a role='button' title='d' href='index.php?seccion=a&accion=b&registro_id=-1&session_id=1&adm_menu_id=-1' class='btn btn-c col-sm-12'>d</a>", $resultado);
+        $this->assertEquals("<a role='button' title='d' href='index.php?seccion=a&accion=b&registro_id=-1&session_id=1&adm_menu_id=-1' class='btn btn-c col-sm-12 '>d</a>", $resultado);
         errores::$error = false;
     }
 
