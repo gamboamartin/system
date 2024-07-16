@@ -564,7 +564,7 @@ class _ctl_referencias{
      * La clave del id es simplemente el nombre de la tabla seguido por '_id'.
      *
      * @version 15.3.0
-     * @url https://github.com/gamboamartin/system/wiki/src._ctl_referencias.key_parent_id.22.3.0
+     * @url https://github.com/gamboamartin/system/wiki/src._ctl_referencias.key_parent_id
      */
     private function key_parent_id(modelo $model_parent): string|array
     {
@@ -588,7 +588,7 @@ class _ctl_referencias{
      * @return modelo|array:  Retorna el modelo padre si es validado correctamente; de lo contrario, devuelve un array de error.
      *
      * @version 15.1.0
-     * @url https://github.com/gamboamartin/system/wiki/src._ctl_referencias.model_parent.22.3.0
+     * @url https://github.com/gamboamartin/system/wiki/src._ctl_referencias.model_parent
      */
     private function model_parent(array|modelo $parent): modelo|array
     {
