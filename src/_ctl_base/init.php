@@ -27,7 +27,7 @@ final class init{
      * @throws errores Si la clave proporcionada es invalida o no es encontrada en `$data_init`.
      *
      * @version 18.0.0
-     * @url https://github.com/gamboamartin/system/wiki/src-_ctl_base.asigna_data_param.23.1.0
+     * @url https://github.com/gamboamartin/system/wiki/src-_ctl_base.asigna_data_param
      */
     private function asigna_data_param(stdClass $data_init, string $key, array $params): array
     {
