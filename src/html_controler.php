@@ -1212,7 +1212,7 @@ class html_controler
     }
 
     public function input_file(int $cols, string $name, stdClass $row_upd, bool $value_vacio,bool $disabled = false,
-                               string $place_holder = 'Documento', bool $required = true, bool $multiple): array|string
+                               string $place_holder = 'Documento', bool $required = true, bool $multiple = false): array|string
     {
 
         if($cols<=0){
