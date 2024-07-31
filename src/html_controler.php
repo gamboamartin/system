@@ -1212,7 +1212,7 @@ class html_controler
     }
 
     public function input_file(int $cols, string $name, stdClass $row_upd, bool $value_vacio,bool $disabled = false,
-                               string $place_holder = 'Documento', bool $required = true): array|string
+                               string $place_holder = 'Documento', bool $required = true, bool $multiple): array|string
     {
 
         if($cols<=0){
@@ -1223,7 +1223,7 @@ class html_controler
         }
 
         $html =$this->directivas->input_file(disabled: $disabled, name: $name, place_holder: $place_holder,
-            required: $required, row_upd: $row_upd, value_vacio: $value_vacio);
+            required: $required, row_upd: $row_upd, value_vacio: $value_vacio,multiple: $multiple);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar input', data: $html);
         }
