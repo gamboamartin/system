@@ -233,7 +233,8 @@ class system extends controlador_base{
 
             $button = $this->html->button_href(accion: $accion_vis->adm_accion_descripcion,
                 etiqueta: $accion_vis->adm_accion_titulo, registro_id: $this->registro_id,
-                seccion: $accion_vis->adm_seccion_descripcion, style: $accion_vis->adm_accion_css);
+                seccion: $accion_vis->adm_seccion_descripcion, style: $accion_vis->adm_accion_css,
+                css_extra: 'item-br', cols: -1);
             if(errores::$error){
                 $error = $this->errores->error(mensaje: 'Error al cargar button', data: $button);
                 print_r($error);
