@@ -402,7 +402,7 @@ class html_controlerTest extends test {
         $resultado = $html->file_items($campos_view, $keys_selects, $row_upd);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='file' name='a' value='' class = 'form-control' required id='a'/></div></div>",$resultado->a);
+        $this->assertEquals("<div |class|><div |class|><input type='file' name='a' value='' class = 'form-control' required id='a' /></div></div>",$resultado->a);
         errores::$error = false;
     }
 
@@ -432,7 +432,7 @@ class html_controlerTest extends test {
         $resultado = $html->file_template($params_select, $row_upd);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='file' name='1' value='' class = 'form-control' id='1'/></div></div>",$resultado);
+        $this->assertEquals("<div |class|><div |class|><input type='file' name='1' value='' class = 'form-control' id='1' /></div></div>",$resultado);
         errores::$error = false;
 
     }
@@ -1464,7 +1464,7 @@ class html_controlerTest extends test {
         $resultado = $html->text_item($item, $keys_selects, $row_upd, $texts);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='file' name='a' value='' class = 'form-control' required id='a'/></div></div>", $resultado->a);
+        $this->assertEquals("<div |class|><div |class|><input type='file' name='a' value='' class = 'form-control' required id='a' /></div></div>", $resultado->a);
 
         errores::$error = false;
     }

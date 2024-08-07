@@ -229,6 +229,22 @@ class system extends controlador_base{
         $this->link_importa_previo_muestra_bd = $link_importa_previo_muestra_bd;
 
 
+        foreach ($this->acciones_visibles_permitidas as $indice=>$accion_vis){
+
+            $button = $this->html->button_href(accion: $accion_vis->adm_accion_descripcion,
+                etiqueta: $accion_vis->adm_accion_titulo, registro_id: $this->registro_id,
+                seccion: accion_vis->adm_seccion_descripcion, style: $accion_vis->adm_accion_css);
+            if(errores::$error){
+                $error = $this->errores->error(mensaje: 'Error al cargar button', data: $button);
+                print_r($error);
+                die('Error');
+            }
+
+            $this->acciones_visibles_permitidas[$indice]['boton'] = $button;
+
+        }
+
+
     }
 
 
