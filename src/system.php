@@ -9,6 +9,7 @@ use gamboamartin\errores\errores;
 use gamboamartin\plugins\exportador;
 use gamboamartin\system\_importador\_campos;
 use gamboamartin\system\_importador\_doc;
+use gamboamartin\system\_importador\_exporta;
 use gamboamartin\system\_importador\_importa;
 use gamboamartin\system\_importador\_maquetacion;
 use gamboamartin\system\_importador\_xls;
@@ -528,6 +529,19 @@ class system extends controlador_base{
         }
 
         return $out;
+    }
+
+    public function descarga_layout(bool $header, bool $ws = true): array|stdClass
+    {
+
+        $xls = (new _exporta())->layout(header: true,modelo:  $this->modelo);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al exportar', data: $xls, header: $header,
+                ws: $ws, class: __CLASS__, file: __FILE__, function: __FUNCTION__, line: __LINE__);
+        }
+
+        return $xls;
+
     }
 
 
