@@ -338,7 +338,7 @@ class system extends controlador_base{
                 $this->link->rollBack();
             }
             return $this->retorno_error(mensaje: 'Error al obtener siguiente view', data: $siguiente_view,
-                header:  $header, ws: $ws);
+                header: $header, ws: $ws, class: __CLASS__, file: __FILE__, function: __FUNCTION__, line: __LINE__);
         }
         $seccion_retorno = $this->tabla;
         if(isset($_POST['seccion_retorno'])){
@@ -357,7 +357,8 @@ class system extends controlador_base{
             if(!$transaccion_previa) {
                 $this->link->rollBack();
             }
-            return $this->retorno_error(mensaje: 'Error al validar datos', data: $valida,header:  $header,ws:  $ws);
+            return $this->retorno_error(mensaje: 'Error al validar datos', data: $valida,header:  $header,ws:  $ws,
+                class: __CLASS__, file: __FILE__, function: __FUNCTION__, line: __LINE__);
         }
 
         $r_alta_bd = parent::alta_bd(header: false,ws: false);
@@ -366,7 +367,7 @@ class system extends controlador_base{
                 $this->link->rollBack();
             }
             return $this->retorno_error(mensaje: 'Error al dar de alta registro', data: $r_alta_bd, header:  $header,
-                ws: $ws);
+                ws: $ws,class: __CLASS__, file: __FILE__, function: __FUNCTION__, line: __LINE__);
         }
         if(!$transaccion_previa) {
             $this->link->commit();
