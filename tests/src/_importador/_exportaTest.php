@@ -43,6 +43,26 @@ class _exportaTest extends test {
         errores::$error = false;
     }
 
+    public function test_nombre_tabla_relacion(): void
+    {
+        $_SESSION['grupo_id'] = 2;
+        errores::$error = false;
+        $exporta = new _exporta();
+        $exporta = new liberator($exporta);
+
+        $adm_campo = array();
+        $foraneas = new stdClass();
+        $adm_campo['adm_campo_descripcion'] = 'a';
+        $foraneas->a = new stdClass();
+        $foraneas->a->nombre_tabla_relacion = 'v';
+        $resultado = $exporta->nombre_tabla_relacion(adm_campo: $adm_campo,foraneas:  $foraneas);
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('v',$resultado);
+        errores::$error = false;
+    }
+
 
 
 }

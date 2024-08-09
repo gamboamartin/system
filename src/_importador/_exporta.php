@@ -6,6 +6,7 @@ use gamboamartin\administrador\models\adm_campo;
 use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\errores\errores;
 use gamboamartin\plugins\exportador;
+use gamboamartin\validacion\validacion;
 use PDO;
 use stdClass;
 
@@ -339,11 +340,42 @@ class _exporta
 
     }
 
-    private function nombre_tabla_relacion(array $adm_campo, stdClass $foraneas)
+    /**
+     * TEST
+     * @param array $adm_campo
+     * @param stdClass $foraneas
+     * @return array|string
+     */
+    private function nombre_tabla_relacion(array $adm_campo, stdClass $foraneas): array|string
     {
+        $keys = array('adm_campo_descripcion');
+        $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $adm_campo);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al validar adm_campo',data:  $valida);
+        }
         $campo_name = $adm_campo['adm_campo_descripcion'];
+        $keys = array($campo_name);
+        $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $foraneas);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al validar foraneas',data:  $valida);
+        }
+
+        if(!is_object($foraneas->$campo_name)){
+            return (new errores())->error(mensaje: 'Error foraneas->'.$campo_name.' debe ser un objeto',
+                data:  $foraneas,es_final: true);
+        }
+
+        if(!isset($foraneas->$campo_name->nombre_tabla_relacion)){
+            return (new errores())->error(mensaje: 'Error foraneas->'.$campo_name.'->nombre_tabla_relacion no existe',
+                data:  $foraneas,es_final: true);
+        }
+        if(trim($foraneas->$campo_name->nombre_tabla_relacion) === ''){
+            return (new errores())->error(mensaje: 'Error foraneas->'.$campo_name.'->nombre_tabla_relacion esta vacia',
+                data:  $foraneas,es_final: true);
+        }
+
         $fk_info = $foraneas->$campo_name;
-        return $fk_info->nombre_tabla_relacion;
+        return trim($fk_info->nombre_tabla_relacion);
 
     }
 
@@ -376,7 +408,8 @@ class _exporta
 
         $registros = $this->rows_rel(link: $link,nombre_tabla_relacion:  $nombre_tabla_relacion);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener registros', data: $registros);
+            return $this->error->error(mensaje: 'Error al obtener registros de la tabla: '.$nombre_tabla_relacion,
+                data: $registros);
         }
         return $registros;
 
@@ -421,7 +454,8 @@ class _exporta
     {
         $modelo_relacion = (new adm_seccion(link: $link))->crea_modelo(adm_seccion_descricpion: $nombre_tabla_relacion);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener modelo_relacion', data: $modelo_relacion);
+            return $this->error->error(mensaje: 'Error al obtener modelo_relacion de la tabla: '.$nombre_tabla_relacion,
+                data: $modelo_relacion);
         }
 
         $registros = $this->registros_rel(modelo_relacion: $modelo_relacion);
