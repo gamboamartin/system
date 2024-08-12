@@ -27,6 +27,24 @@ class _exportaTest extends test {
     }
 
 
+    public function test_celda_busqueda(): void
+    {
+        $_SESSION['grupo_id'] = 2;
+        errores::$error = false;
+        $exporta = new _exporta();
+        $exporta = new liberator($exporta);
+
+        $campos_hd = array();
+        $letras = array();
+        $nombre_tabla_relacion = 'x';
+        $campos_hd[] = 'x_id';
+        $letras[0] = 'x';
+        $resultado = $exporta->celda_busqueda($campos_hd, $letras, $nombre_tabla_relacion);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('X2',$resultado);
+        errores::$error = false;
+    }
 
     public function test_limpia_adm_campo(): void
     {
