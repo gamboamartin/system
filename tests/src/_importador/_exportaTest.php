@@ -26,6 +26,23 @@ class _exportaTest extends test {
         $this->paths_conf->views = '/var/www/html/cat_sat/config/views.php';
     }
 
+    public function test_celda(): void
+    {
+        $_SESSION['grupo_id'] = 2;
+        errores::$error = false;
+        $exporta = new _exporta();
+        $exporta = new liberator($exporta);
+
+        $indice = 0;
+        $letras = array();
+        $letras[0] = 'x';
+        $resultado = $exporta->celda(indice: $indice, letras: $letras);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('X2',$resultado);
+        errores::$error = false;
+    }
+
 
     public function test_celda_busqueda(): void
     {

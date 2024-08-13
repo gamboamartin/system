@@ -35,6 +35,25 @@ class _exporta
 
     }
 
+    private function celda(int $indice, array $letras): array|string
+    {
+        if($indice < 0){
+            return (new errores())->error(mensaje: 'Error indice debe ser mayor o igual a 0', data:  $indice,
+                es_final: true);
+        }
+        if(!isset($letras[$indice])){
+            return (new errores())->error(mensaje: 'Error $letras['.$indice.'] no existe',
+                data:  $letras,es_final: true);
+        }
+        if(trim($letras[$indice]) === ''){
+            return (new errores())->error(mensaje: 'Error $letras['.$indice.'] esta vacia',
+                data:  $letras,es_final: true);
+        }
+        $letra = trim(strtoupper($letras[$indice]));
+        return $letra.'2';
+
+    }
+
     private function celda_busqueda(array $campos_hd, array $letras, string $nombre_tabla_relacion): array|string
     {
         $nombre_tabla_relacion = trim($nombre_tabla_relacion);
@@ -42,24 +61,16 @@ class _exporta
             return (new errores())->error(mensaje: 'Error nombre_tabla_relacion esta vacia',
                 data:  $nombre_tabla_relacion,es_final: true);
         }
+
         $celda_busqueda = 'A2';
         foreach ($campos_hd as $indice=>$campo_hd){
-            $campo_hd = trim($campo_hd);
-            if($campo_hd === ''){
-                return (new errores())->error(mensaje: 'Error campo_hd esta vacia',
-                    data:  $campo_hd,es_final: true);
+            $data_celda = $this->get_celda(campo_hd: $campo_hd,indice:  $indice,letras:  $letras,
+                nombre_tabla_relacion:  $nombre_tabla_relacion);
+            if(errores::$error){
+                return (new errores())->error(mensaje: 'Error al obtener celda', data:  $data_celda);
             }
-            if($campo_hd === $nombre_tabla_relacion.'_id'){
-                if(!isset($letras[$indice])){
-                    return (new errores())->error(mensaje: 'Error $letras['.$indice.'] no existe',
-                        data:  $letras,es_final: true);
-                }
-                if(trim($letras[$indice]) === ''){
-                    return (new errores())->error(mensaje: 'Error $letras['.$indice.'] esta vacia',
-                        data:  $letras,es_final: true);
-                }
-                $letra = trim(strtoupper($letras[$indice]));
-                $celda_busqueda = $letra.'2';
+            if($data_celda->encontrada){
+                $celda_busqueda = $data_celda->celda_busqueda;
                 break;
             }
         }
@@ -213,6 +224,27 @@ class _exporta
         }
         return $vlookup;
 
+
+    }
+
+    private function get_celda(string $campo_hd, int $indice, array $letras, string $nombre_tabla_relacion): array|stdClass
+    {
+        $data = new stdClass();
+        $data->celda_busqueda = '';
+        $data->encontrada = false;
+        $campo_hd = trim($campo_hd);
+        if($campo_hd === ''){
+            return (new errores())->error(mensaje: 'Error campo_hd esta vacia', data:  $campo_hd,es_final: true);
+        }
+        if($campo_hd === $nombre_tabla_relacion.'_id'){
+            $celda_busqueda = $this->celda(indice: $indice,letras:  $letras);
+            if(errores::$error){
+                return (new errores())->error(mensaje: 'Error al obtener celda', data:  $celda_busqueda);
+            }
+            $data->celda_busqueda = $celda_busqueda;
+            $data->encontrada = true;
+        }
+        return $data;
 
     }
 
