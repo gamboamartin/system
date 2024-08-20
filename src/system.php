@@ -249,7 +249,24 @@ class system extends controlador_base{
 
     }
 
+    public function acciones_permitidas(bool $header, bool $ws = false): array
+    {
+        $acciones_permitidas = (new datatables())->acciones_permitidas(
+            link:$this->link,seccion:  $this->tabla);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al obtener data result', data: $acciones_permitidas,
+                header:  $header, ws: $ws);
+        }
 
+        $salida['draw'] = count($acciones_permitidas);
+        $salida['recordsTotal'] = count($acciones_permitidas);
+        $salida['recordsFiltered'] = count($acciones_permitidas);
+        $salida['data'] = $acciones_permitidas;
+
+        header('Content-Type: application/json');
+        echo json_encode($salida);
+        exit;
+    }
 
     /**
      * Funcion que genera los inputs y templates base para un alta
