@@ -386,7 +386,7 @@ class actions{
      * @version 17.2.0
      * @url https://github.com/gamboamartin/system/wiki/src.actions.siguiente_view.22.4.0
      */
-    private function siguiente_view(string $siguiente_view = 'modifica'): string
+    public function siguiente_view(string $siguiente_view = 'modifica'): string
     {
 
         if(isset($_POST['guarda_otro'])){
