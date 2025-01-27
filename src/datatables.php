@@ -729,15 +729,63 @@ class datatables{
         return $column_obj;
     }
 
+    /**
+     * REG
+     * Genera un arreglo que representa un filtro de exclusión ("not_in") para la columna `adm_accion.descripcion`
+     * basado en la lista de acciones proporcionada en `$not_actions`.
+     *
+     * - Si `$not_actions` está vacío, se retorna un arreglo vacío.
+     * - Si `$not_actions` contiene elementos, se incluye la clave `'llave'` con el valor `'adm_accion.descripcion'`
+     *   y la clave `'values'` con el contenido de `$not_actions`.
+     *
+     * @param array $not_actions Lista de acciones que se desean excluir (por ejemplo, ['editar', 'eliminar']).
+     *
+     * @return array Estructura de exclusión en formato:
+     *  [
+     *      'llave'  => 'adm_accion.descripcion',
+     *      'values' => ['accion1', 'accion2', ...]
+     *  ]
+     * Si `$not_actions` está vacío, retorna un arreglo vacío (ej. `[]`).
+     *
+     * @example
+     *  // Ejemplo 1: Lista vacía de acciones
+     *  ----------------------------------------------------------------------------------
+     *  $not_actions = [];
+     *  $resultado = $this->not_in_accion($not_actions);
+     *  // $resultado será [], indicando que no hay exclusión alguna.
+     *
+     * @example
+     *  // Ejemplo 2: Lista con acciones para excluir
+     *  ----------------------------------------------------------------------------------
+     *  $not_actions = ['crear', 'editar'];
+     *  $resultado = $this->not_in_accion($not_actions);
+     *  // $resultado será:
+     *  // [
+     *  //   'llave'  => 'adm_accion.descripcion',
+     *  //   'values' => ['crear', 'editar']
+     *  // ]
+     *
+     * @example
+     *  // Ejemplo 3: Uso en una consulta
+     *  ----------------------------------------------------------------------------------
+     *  // Supongamos que el método not_in_accion() se usa para construir filtros en un Query Builder.
+     *  // Podrías utilizarlo así:
+     *  $exclusion = $this->not_in_accion(['crear', 'eliminar']);
+     *  if(!empty($exclusion)) {
+     *      // Lógica para aplicar un WHERE NOT IN 'adm_accion.descripcion' con los valores del array
+     *      // ...
+     *  }
+     */
     private function not_in_accion(array $not_actions): array
     {
-        $not_in = array();
-        if(count($not_actions) > 0){
-            $not_in['llave'] = 'adm_accion.descripcion';
+        $not_in = [];
+        if (count($not_actions) > 0) {
+            $not_in['llave']  = 'adm_accion.descripcion';
             $not_in['values'] = $not_actions;
         }
         return $not_in;
     }
+
 
     final public function out_result(array $data_result, stdClass $params, bool $ws){
         $salida = $this->get_salida_format(data_result: $data_result,params:  $params);

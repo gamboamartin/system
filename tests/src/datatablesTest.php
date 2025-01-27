@@ -587,6 +587,58 @@ class datatablesTest extends test {
         errores::$error = false;
     }
 
+    public function test_not_in_accion(): void
+    {
+        errores::$error = false;
+        $datatables = new datatables();
+        $datatables = new liberator($datatables);
+
+        //$datatables = new datatables();
+        $result = $datatables->not_in_accion([]);
+
+        // Aserciones
+        $this->assertIsArray($result, 'El resultado debe ser un array');
+        $this->assertEmpty($result, 'Si no hay acciones a excluir, el resultado debe estar vacío');
+        errores::$error = false;
+
+        //$datatables = new datatables();
+        $notActions = ['accion1', 'accion2'];
+
+        $result = $datatables->not_in_accion($notActions);
+
+        $this->assertIsArray($result, 'El resultado debe ser un array');
+        $this->assertArrayHasKey('llave', $result, 'Debe existir la clave "llave" en el array retornado');
+        $this->assertArrayHasKey('values', $result, 'Debe existir la clave "values" en el array retornado');
+
+        $this->assertEquals(
+            'adm_accion.descripcion',
+            $result['llave'],
+            'La llave debe ser "adm_accion.descripcion"'
+        );
+        $this->assertEquals(
+            $notActions,
+            $result['values'],
+            'Los valores deben coincidir con el array de not_actions'
+        );
+
+        errores::$error = false;
+
+        //$datatables = new datatables();
+        $notActions = ['accion_unica'];
+
+        $result = $datatables->not_in_accion($notActions);
+
+        $this->assertIsArray($result, 'El resultado debe ser un array');
+        $this->assertArrayHasKey('llave', $result);
+        $this->assertArrayHasKey('values', $result);
+
+        $this->assertCount(1, $result['values'], 'Debe haber exactamente 1 valor en "values"');
+        $this->assertEquals('accion_unica', $result['values'][0]);
+
+        errores::$error = false;
+
+    }
+
     public function test_titulo_column_datatable(): void
     {
         errores::$error = false;
