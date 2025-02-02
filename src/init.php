@@ -108,11 +108,31 @@ class init{
     }
 
     /**
-     * Inicializa las acciones basicas para botones
-     * @param system $controller Controlador en ejecucion
-     * @return stdClass
+     * REG
+     * Inicializa las acciones base para los botones de un controlador.
+     *
+     * Esta función configura las acciones comunes de un controlador, específicamente
+     * las acciones de modificar y eliminar_bd. Además, asigna estilos por defecto
+     * a cada acción, y establece el estado de cada una de ellas.
+     *
+     * La estructura resultante incluye dos acciones con su respectivo estilo y estado,
+     * lo que permite al controlador usar estas configuraciones para generar botones
+     * o realizar otras operaciones de manera consistente.
+     *
+     * @param system $controller Controlador en ejecución, que recibirá las configuraciones
+     *                           de las acciones.
+     *
+     * @return stdClass Devuelve un objeto `stdClass` que contiene las acciones inicializadas.
+     *
+     * @example
+     * ```php
+     * $controller = new system();
+     * $acciones = $this->init_acciones_base($controller);
+     * echo $acciones->modifica->style; // Imprime 'info'
+     * echo $acciones->elimina_bd->style; // Imprime 'danger'
+     * ```
+     *
      * @version 0.92.32
-     * @por_doc true
      */
     private function init_acciones_base(system $controller): stdClass
     {
@@ -120,52 +140,100 @@ class init{
         $controller->acciones->modifica = new stdClass();
         $controller->acciones->elimina_bd = new stdClass();
 
-        $controller->acciones->modifica->style = 'info';
-        $controller->acciones->modifica->style_status = false;
+        // Acción de modificar
+        $controller->acciones->modifica->style = 'info';  // Estilo de color para modificar
+        $controller->acciones->modifica->style_status = false;  // Estado de estilo para modificar
 
-        $controller->acciones->elimina_bd->style = 'danger';
-        $controller->acciones->elimina_bd->style_status = false;
+        // Acción de eliminar_bd
+        $controller->acciones->elimina_bd->style = 'danger';  // Estilo de color para eliminar_bd
+        $controller->acciones->elimina_bd->style_status = false;  // Estado de estilo para eliminar_bd
 
         return $controller->acciones;
     }
 
+
     /**
-     * Inicializa los datos de un controller
-     * @param system $controller Controlador en ejecucion
-     * @param html $html Html de template
-     * @return array|stdClass
+     * REG
+     * Inicializa los datos del controlador y configura mensajes, links y acciones.
+     *
+     * Esta función se encarga de inicializar los datos necesarios para un controlador específico.
+     * Configura los mensajes a mostrar, genera los links asociados a las acciones disponibles
+     * y configura las acciones base (como modificar y eliminar). Devuelve los datos necesarios
+     * para continuar con el flujo de trabajo del controlador.
+     *
+     * Los parámetros de entrada permiten pasar la instancia del controlador y los datos necesarios
+     * para la construcción de la interfaz, mientras que la función devuelve un objeto con los
+     * resultados de la configuración de mensajes, links y acciones.
+     *
+     * @param system $controller Instancia del controlador en ejecución.
+     *                           El controlador es responsable de gestionar la lógica de negocio y
+     *                           de mantener el estado de las variables de sesión y datos.
+     *                           Se espera que el controlador tenga configurada una propiedad `seccion`.
+     *
+     * @param html $html Instancia de la clase `html` que proporciona las funciones necesarias
+     *                   para generar elementos HTML y manejar las plantillas.
+     *
+     * @return array|stdClass Devuelve un objeto `stdClass` con las propiedades `msj` (mensajes) y `links`
+     *                        (links generados). Si hay algún error durante la configuración, se devuelve
+     *                        un array con el mensaje de error.
+     *
+     * @throws array Si ocurre un error en algún paso, se devuelve un array con el mensaje de error.
+     *
+     * @example
+     * ```php
+     * $controller = new system();
+     * $html = new html();
+     * $result = $this->init_controller($controller, $html);
+     * if (isset($result->msj)) {
+     *     echo $result->msj; // Mostrar mensajes inicializados
+     * }
+     * if (isset($result->links)) {
+     *     echo $result->links; // Mostrar links generados
+     * }
+     * ```
+     * En este ejemplo, el controlador y los datos HTML son pasados a la función `init_controller`.
+     * Dependiendo de la configuración de la clase `system`, la función generará los mensajes
+     * y links adecuados, y devolverá los resultados en el objeto `stdClass`.
+     *
+     * @version 0.92.32
      */
     final public function init_controller(system $controller, html $html): array|stdClass
     {
+        // Sección es extraída del controlador para verificar que no esté vacía
         $seccion = $controller->seccion;
 
-        if($seccion === ''){
-            return $this->error->error(mensaje: 'Error seccion esta vacia', data:$seccion);
+        // Si la sección está vacía, se devuelve un error
+        if ($seccion === '') {
+            return $this->error->error(mensaje: 'Error seccion esta vacia', data: $seccion);
         }
 
-        $init_msj = (new mensajeria())->init_mensajes(controler: $controller,html: $html);
-        if(errores::$error){
+        // Inicializa los mensajes usando la clase mensajeria
+        $init_msj = (new mensajeria())->init_mensajes(controler: $controller, html: $html);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al inicializar mensajes', data: $init_msj);
         }
 
+        // Inicializa los links mediante la clase links_menu
         $init_links = (new links_menu(
             link: $controller->link, registro_id: $controller->registro_id))->init_link_controller(
-                controler: $controller);
-        if(errores::$error){
+            controler: $controller);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al inicializar links', data: $init_links);
         }
 
-        $init_acciones = $this->init_acciones_base(controller:$controller);
-        if(errores::$error){
+        // Inicializa las acciones base (como modificar y eliminar)
+        $init_acciones = $this->init_acciones_base(controller: $controller);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al inicializar acciones', data: $init_acciones);
         }
 
-
+        // Devuelve los datos inicializados como un objeto stdClass
         $data = new stdClass();
         $data->msj = $init_msj;
         $data->links = $init_links;
         return $data;
     }
+
 
     /**
      * Obtiene un row para una lista

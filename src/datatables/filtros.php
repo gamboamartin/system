@@ -1,8 +1,6 @@
 <?php
 namespace gamboamartin\system\datatables;
 use gamboamartin\errores\errores;
-use gamboamartin\validacion\validacion;
-
 
 class filtros{
     private errores $error;

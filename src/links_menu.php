@@ -370,23 +370,51 @@ class links_menu{
     }
 
     /**
-     * Genera y asigna los links basicos para views de controller
-     * @param system $controler Controlador en ejecucion
-     * @return stdClass|array
-     * @version v0.21.2
+     * REG
+     * Inicializa los enlaces para el controlador y los asigna a las propiedades correspondientes.
+     *
+     * Esta función verifica la existencia de los enlaces asociados a una sección en el controlador y los inicializa si no están presentes.
+     * Asigna los enlaces correspondientes (alta, alta_bd, elimina_bd, lista, descarga_excel, modifica, modifica_bd)
+     * a las propiedades del controlador. Si la sección está vacía, devuelve un mensaje de error.
+     *
+     * @param system $controler El controlador en ejecución que contiene la sección actual y los enlaces a asignar.
+     *
+     * @return stdClass|array Retorna un objeto `stdClass` con los enlaces inicializados para la sección,
+     *                         o un array con el mensaje de error en caso de que la sección esté vacía o haya un problema.
+     *
+     * @example
+     * ```php
+     * $controler = new system();
+     * $controler->seccion = 'usuario';
+     * $links = $links_menu->init_link_controller($controler);
+     *
+     * // Ejemplo de salida esperada:
+     * if (isset($links->usuario->alta)) {
+     *     echo "El enlace de alta es: " . $links->usuario->alta;
+     * }
+     * ```
+     *
+     * En este ejemplo, si la sección del controlador es "usuario", los enlaces se asignan a las propiedades del controlador,
+     * y podrás acceder a ellos como `$controler->link_alta`, `$controler->link_lista`, etc.
+     *
+     * @throws array Si la sección está vacía o si hay un error al asignar los enlaces.
      */
     final public function init_link_controller(system $controler): stdClass|array
     {
+        // Se obtiene la sección del controlador
         $seccion = $controler->seccion;
 
+        // Verifica si la sección está vacía
         if($seccion === ''){
             return $this->error->error(mensaje: 'Error seccion esta vacia', data:$seccion);
         }
 
-
+        // Inicializa los enlaces de la sección si no existen
         if(!isset($this->links->$seccion)){
             $this->links->$seccion = new stdClass();
         }
+
+        // Asigna valores predeterminados para los enlaces si no están definidos
         if(!isset($this->links->$seccion->alta)){
             $this->links->$seccion->alta = '';
         }
@@ -409,6 +437,7 @@ class links_menu{
             $this->links->$seccion->modifica_bd = '';
         }
 
+        // Asigna los enlaces inicializados a las propiedades del controlador
         $controler->link_alta = $this->links->$seccion->alta;
         $controler->link_alta_bd = $this->links->$seccion->alta_bd;
         $controler->link_elimina_bd = $this->links->$seccion->elimina_bd;
@@ -416,8 +445,11 @@ class links_menu{
         $controler->link_descarga_excel = $this->links->$seccion->descarga_excel;
         $controler->link_modifica = $this->links->$seccion->modifica;
         $controler->link_modifica_bd = $this->links->$seccion->modifica_bd;
+
+        // Retorna los enlaces inicializados
         return $this->links;
     }
+
 
     private function init_links(stdClass $acciones, controler $controler){
         $inits = array();

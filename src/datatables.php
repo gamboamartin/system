@@ -23,40 +23,90 @@ class datatables{
 
 
     /**
-     * Obtiene las acciones permitidas de un grupo de usuario
-     * @param PDO $link Conexion a la base de datos
-     * @param string $seccion Seccion de controlador
-     * @param array $not_actions Acciones que no seran mostradas
-     * @param array $columnas Columnas a mostrar en la lista
-     * @return array
+     * REG
+     * Obtiene las acciones permitidas para un grupo de usuario y una sección específica.
+     *
+     * Este método realiza una serie de validaciones y genera filtros para obtener las acciones que están permitidas
+     * para un grupo determinado, excluyendo algunas acciones específicas si así se indican.
+     *
+     * **Pasos clave:**
+     * 1. Valida que la sección no esté vacía utilizando el método `valida_data_column`.
+     * 2. Genera un filtro de acciones permitidas a partir de la sección utilizando el método `filtro_accion_permitida`.
+     * 3. Obtiene un filtro para excluir acciones específicas mediante `not_in_accion`.
+     * 4. Ejecuta una consulta en el modelo `adm_accion_grupo` para obtener las acciones permitidas.
+     * 5. Retorna las acciones que corresponden, o un error si ocurre algún problema en los pasos anteriores.
+     *
+     * @param PDO $link Instancia de la conexión a la base de datos.
+     * @param string $seccion Nombre de la sección para la cual se desean obtener las acciones permitidas.
+     *                        Este parámetro es crucial y no puede ser vacío.
+     *
+     * @param array $not_actions Lista de identificadores de acciones que deben ser excluidas de los resultados.
+     *                            Este parámetro es opcional, con un valor predeterminado de un arreglo vacío.
+     *
+     * @param array $columnas Lista de columnas que se desean obtener de la base de datos. Si se omiten, se utilizarán las columnas predeterminadas.
+     *
+     * @return array Retorna un arreglo con las acciones permitidas o un objeto `stdClass` con un error en caso de fallo.
+     *
+     * @example Ejemplo 1: Obtener acciones permitidas para una sección "facturacion", sin excluir acciones.
+     * ```php
+     * $link = new PDO(...); // Conexión a la base de datos
+     * $seccion = 'facturacion';
+     * $acciones = $this->acciones_permitidas($link, $seccion);
+     * print_r($acciones);
+     * // Salida: Un arreglo con las acciones permitidas para el grupo de usuario en la sección "facturacion".
+     * ```
+     *
+     * @example Ejemplo 2: Obtener acciones permitidas para la misma sección, excluyendo algunas acciones.
+     * ```php
+     * $link = new PDO(...); // Conexión a la base de datos
+     * $seccion = 'facturacion';
+     * $not_actions = ['action1', 'action2'];
+     * $acciones = $this->acciones_permitidas($link, $seccion, $not_actions);
+     * print_r($acciones);
+     * // Salida: Un arreglo con las acciones permitidas excluyendo 'action1' y 'action2'.
+     * ```
+     *
+     * @example Ejemplo 3: Manejo de error al pasar una sección vacía.
+     * ```php
+     * $link = new PDO(...); // Conexión a la base de datos
+     * $seccion = '';
+     * $acciones = $this->acciones_permitidas($link, $seccion);
+     * print_r($acciones);
+     * // Salida: Un arreglo con un mensaje de error indicando que la sección no puede estar vacía.
+     * ```
      */
     final public function acciones_permitidas(PDO $link, string $seccion, array $not_actions = array(),
                                               array $columnas = array()): array
     {
+        // 1. Validar la sección
         $valida = (new validacion_dt())->valida_data_column(seccion: $seccion);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
         }
 
+        // 2. Obtener el filtro de acciones permitidas
         $filtro = (new filtros())->filtro_accion_permitida(seccion: $seccion);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener not in', data: $filtro);
         }
 
-
+        // 3. Excluir acciones específicas
         $not_in = $this->not_in_accion(not_actions: $not_actions);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener not in', data: $not_in);
         }
 
-        $r_accion_grupo = (new adm_accion_grupo($link))->filtro_and(columnas: $columnas, filtro: $filtro, not_in: $not_in);
-        if(errores::$error){
+        // 4. Obtener las acciones permitidas desde el modelo
+        $r_accion_grupo = (new adm_accion_grupo($link))->filtro_and(
+            columnas: $columnas, filtro: $filtro, not_in: $not_in);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener acciones', data: $r_accion_grupo);
-
         }
 
+        // 5. Retornar los resultados
         return $r_accion_grupo->registros;
     }
+
 
     final public function ajusta_data_result(array $acciones_permitidas, array $data_result, html $html_base,
                                              string $seccion){
@@ -77,34 +127,145 @@ class datatables{
 
 
     /**
-     * Inicializa datatables para get data
-     * @param stdClass $datatables datatables precargadas desde controler
-     * @param array $rows_lista Registros
-     * @param string $seccion Seccion en ejecucion
-     * @return array
-     * @version 7.2.0
+     * REG
+     * Inicializa las columnas de un DataTable basándose en la información proporcionada en `$datatables` o genera nuevas columnas.
      *
+     * Esta función primero verifica si `$datatables` ya contiene columnas definidas. Si es así, valida que el formato sea correcto.
+     * Si no se encuentra ninguna definición de columnas, genera nuevas columnas utilizando la función `columns_datatable`
+     * basándose en los parámetros proporcionados (`rows_lista` y `seccion`).
+     *
+     * ## Pasos clave:
+     * 1. **Validación de parámetros**:
+     *    - Se valida que el parámetro `$seccion` no esté vacío.
+     *    - Se verifica si `$datatables` tiene la propiedad `columns` y si esta es un arreglo.
+     * 2. **Generación de columnas**:
+     *    - Si `$datatables->columns` no está definido o no es un arreglo, se genera un nuevo conjunto de columnas a partir de `rows_lista` y `seccion`.
+     * 3. **Retorno de columnas**:
+     *    - Si todo es correcto, se retorna el arreglo de columnas.
+     *    - Si ocurre un error durante la validación o generación, se retorna un mensaje de error adecuado.
+     *
+     * ## Ejemplo de uso:
+     *
+     * ### Ejemplo 1: Generación de columnas a partir de `datatables` con columnas predefinidas
+     * ```php
+     * $datatables = new stdClass();
+     * $datatables->columns = [
+     *     ['titulo' => 'Nombre', 'type' => 'text'],
+     *     ['titulo' => 'Email', 'type' => 'text']
+     * ];
+     * $rows_lista = ['nombre', 'email'];
+     * $seccion = 'usuarios';
+     *
+     * $resultado = $this->column_datable_init($datatables, $rows_lista, $seccion);
+     *
+     * // El resultado será:
+     * [
+     *     ['titulo' => 'Nombre', 'type' => 'text'],
+     *     ['titulo' => 'Email', 'type' => 'text']
+     * ]
+     * ```
+     *
+     * ### Ejemplo 2: Generación de columnas cuando no están definidas en `datatables`
+     * ```php
+     * $datatables = new stdClass();
+     * $rows_lista = ['nombre', 'email'];
+     * $seccion = 'usuarios';
+     *
+     * $resultado = $this->column_datable_init($datatables, $rows_lista, $seccion);
+     *
+     * // El resultado será un arreglo generado con los títulos formateados:
+     * [
+     *     'usuarios_nombre' => ['titulo' => 'Nombre'],
+     *     'usuarios_email'  => ['titulo' => 'Email']
+     * ]
+     * ```
+     *
+     * ### Ejemplo 3: Error cuando `seccion` está vacío
+     * ```php
+     * $datatables = new stdClass();
+     * $rows_lista = ['nombre', 'email'];
+     * $seccion = '';
+     *
+     * $resultado = $this->column_datable_init($datatables, $rows_lista, $seccion);
+     * // El resultado será un arreglo de error:
+     * // [
+     * //     'mensaje' => 'Error seccion debe ser un string con datos',
+     * //     'data' => ''
+     * // ]
+     * ```
+     *
+     * ### Ejemplo 4: Error cuando `datatables->columns` no es un arreglo
+     * ```php
+     * $datatables = new stdClass();
+     * $datatables->columns = 'no es un arreglo';
+     * $rows_lista = ['nombre', 'email'];
+     * $seccion = 'usuarios';
+     *
+     * $resultado = $this->column_datable_init($datatables, $rows_lista, $seccion);
+     * // El resultado será un arreglo de error:
+     * // [
+     * //     'mensaje' => 'Error $datatables->columns debe se run array',
+     * //     'data' => ...
+     * // ]
+     * ```
+     *
+     * ## Parámetros:
+     * @param stdClass $datatables Objeto que contiene la configuración de los datatables. Si tiene la propiedad `columns`,
+     *                              debe ser un arreglo de columnas ya definidas.
+     * @param array $rows_lista Un arreglo con las claves de las filas que se utilizarán para generar los títulos de las columnas.
+     *                          Cada clave de fila debe ser una cadena no vacía.
+     * @param string $seccion La sección a la que pertenece la columna. Se espera que sea una cadena no vacía.
+     *
+     * ## Retorno:
+     * @return array El arreglo de columnas actualizado, con las claves de columna y sus respectivos títulos.
+     *               Si ocurre un error, se retorna un arreglo con el mensaje de error y los datos relacionados.
+     *
+     * ## Ejemplo de salida:
+     * ### Ejemplo de salida exitosa:
+     * ```php
+     * // Salida:
+     * [
+     *     'usuarios_nombre' => ['titulo' => 'Nombre'],
+     *     'usuarios_email'  => ['titulo' => 'Email']
+     * ]
+     * ```
+     *
+     * ### Ejemplo de salida con error:
+     * ```php
+     * // Salida:
+     * [
+     *     'mensaje' => 'Error $key_row_lista debe ser un string con datos',
+     *     'data' => ''
+     * ]
+     * ```
+     *
+     * @version 1.0.0
      */
     private function column_datable_init(stdClass $datatables, array $rows_lista, string $seccion): array
     {
-        if($seccion === ''){
+        // Validación de la sección
+        if ($seccion === '') {
             return $this->error->error(
-                mensaje: 'Error seccion debe ser un string con datos', data:  $seccion);
+                mensaje: 'Error seccion debe ser un string con datos', data: $seccion);
         }
-        if(isset($datatables->columns)){
-            if(!is_array($datatables->columns)){
-                return $this->error->error(mensaje: 'Error $datatables->columns debe se run array ', data: $datatables);
+
+        // Verificación de las columnas en $datatables
+        if (isset($datatables->columns)) {
+            if (!is_array($datatables->columns)) {
+                return $this->error->error(mensaje: 'Error $datatables->columns debe ser un array ', data: $datatables);
             }
             $columns = $datatables->columns;
-        }
-        else{
+        } else {
+            // Si no hay columnas definidas, generamos nuevas columnas
             $columns = $this->columns_datatable(rows_lista: $rows_lista, seccion: $seccion);
-            if(errores::$error){
+            if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al maquetar columns ', data: $columns);
             }
         }
+
         return $columns;
     }
+
 
     /**
      * Inicializa una columna
@@ -188,33 +349,126 @@ class datatables{
     }
 
     /**
-     * Integra las columnas para datatables
-     * @param array $rows_lista Registros de view
-     * @param string $seccion Seccion en ejecucion
-     * @return array
-     * @version 5.7.0
+     * REG
+     * Asigna títulos a las columnas de un DataTable a partir de las claves de fila y la sección proporcionadas.
+     *
+     * Esta función recorre un conjunto de claves de fila (`rows_lista`) y, para cada una, genera un título legible para la columna
+     * correspondiente en un DataTable. Los títulos se generan utilizando la función `columns_title` para formatear las claves y
+     * se asignan a las columnas dentro de un arreglo `$columns`. Se verifica que tanto la clave de fila como la sección no estén vacías.
+     *
+     * ## Pasos clave:
+     * 1. **Validación de parámetros**:
+     *    - Se valida que la sección no esté vacía.
+     *    - Para cada clave de fila en `rows_lista`, se valida que no esté vacía.
+     * 2. **Generación de títulos de columnas**:
+     *    - Utiliza la función `columns_title` para generar y asignar los títulos a cada columna.
+     * 3. **Construcción del arreglo `$columns`**:
+     *    - El arreglo `$columns` es actualizado con cada título generado, usando las claves de fila y la sección.
+     *
+     * ## Ejemplo de uso:
+     *
+     * ### Ejemplo 1: Generación exitosa de títulos de columnas
+     * ```php
+     * $rows_lista = ['usuario_nombre', 'usuario_email'];
+     * $seccion = 'usuarios';
+     *
+     * $resultado = $this->columns_datatable($rows_lista, $seccion);
+     *
+     * // El resultado será un arreglo con los títulos de las columnas:
+     * [
+     *     'usuarios_usuario_nombre' => ['titulo' => 'Usuario Nombre'],
+     *     'usuarios_usuario_email'  => ['titulo' => 'Usuario Email']
+     * ]
+     * ```
+     *
+     * ### Ejemplo 2: Error al pasar un parámetro vacío para la sección
+     * ```php
+     * $rows_lista = ['usuario_nombre', 'usuario_email'];
+     * $seccion = '';
+     *
+     * $resultado = $this->columns_datatable($rows_lista, $seccion);
+     * // El resultado será un arreglo de error:
+     * // [
+     * //     'mensaje' => 'Error seccion debe ser un string con datos',
+     * //     'data' => ''
+     * // ]
+     * ```
+     *
+     * ### Ejemplo 3: Error al pasar un parámetro vacío para la clave de fila
+     * ```php
+     * $rows_lista = ['', 'usuario_email'];
+     * $seccion = 'usuarios';
+     *
+     * $resultado = $this->columns_datatable($rows_lista, $seccion);
+     * // El resultado será un arreglo de error:
+     * // [
+     * //     'mensaje' => 'Error $key_row_lista debe ser un string con datos',
+     * //     'data' => ''
+     * // ]
+     * ```
+     *
+     * ## Parámetros:
+     * @param array $rows_lista Un arreglo con las claves de las filas que se utilizarán para generar los títulos de las columnas.
+     *                          Cada clave de fila debe ser una cadena no vacía.
+     * @param string $seccion La sección a la que pertenece la columna. Se espera que sea una cadena no vacía.
+     *
+     * ## Retorno:
+     * @return array El arreglo de columnas actualizado, con las claves de columna y sus respectivos títulos.
+     *               Si ocurre un error, se retorna un arreglo con el mensaje de error y los datos relacionados.
+     *
+     * ## Ejemplo de salida:
+     * ### Ejemplo de salida exitosa:
+     * ```php
+     * // Salida:
+     * [
+     *     'usuarios_usuario_nombre' => ['titulo' => 'Usuario Nombre'],
+     *     'usuarios_usuario_email'  => ['titulo' => 'Usuario Email']
+     * ]
+     * ```
+     *
+     * ### Ejemplo de salida con error:
+     * ```php
+     * // Salida:
+     * [
+     *     'mensaje' => 'Error $key_row_lista debe ser un string con datos',
+     *     'data' => ''
+     * ]
+     * ```
+     *
+     * @version 1.0.0
      */
     private function columns_datatable(array $rows_lista, string $seccion): array
     {
-        if($seccion === ''){
+        // Validación de la sección
+        if ($seccion === '') {
             return $this->error->error(
-                mensaje: 'Error seccion debe ser un string con datos', data:  $seccion);
+                mensaje: 'Error seccion debe ser un string con datos', data: $seccion);
         }
+
         $columns = array();
-        foreach ($rows_lista as $key_row_lista){
+
+        // Iteración sobre cada clave de fila
+        foreach ($rows_lista as $key_row_lista) {
             $key_row_lista = trim($key_row_lista);
-            if($key_row_lista === ''){
+
+            // Validación de la clave de fila
+            if ($key_row_lista === '') {
                 return $this->error->error(
-                    mensaje: 'Error $key_row_lista debe ser un string con datos', data:  $key_row_lista);
+                    mensaje: 'Error $key_row_lista debe ser un string con datos', data: $key_row_lista);
             }
 
-            $columns = $this->columns_title(columns: $columns,key_row_lista:  $key_row_lista, seccion: $seccion);
-            if(errores::$error){
+            // Generación del título de la columna
+            $columns = $this->columns_title(
+                columns: $columns, key_row_lista: $key_row_lista, seccion: $seccion);
+
+            if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al maquetar column titulo ', data: $columns);
             }
         }
+
         return $columns;
     }
+
 
     /**
      * Genera las columnas para datatables
@@ -261,15 +515,83 @@ class datatables{
     }
 
     /**
-     * Integra las columnas para listas
-     * @param stdClass $datatables objeto de controller
-     * @param PDO $link Conexion a base de datos
-     * @param array $not_actions Acciones no mostrables
-     * @param array $rows_lista Registros de la lista
-     * @param string $seccion Seccion en ejecucion
-     * @param string $type
-     * @return array
+     * REG
+     * Genera y configura las columnas para un DataTable, y opcionalmente agrega acciones dependiendo del tipo (`datatable` o no).
+     *
+     * Esta función valida el parámetro `$seccion`, genera las columnas necesarias (usando la función `column_datable_init`),
+     * y luego, si el tipo es `datatable`, agrega las acciones permitidas para cada columna a través de la función `acciones_columnas`.
+     * En caso de errores en cualquier etapa, retorna un mensaje de error detallado.
+     *
+     * ## Pasos clave:
+     * 1. **Validación de parámetros**:
+     *    - Se valida que `$seccion` no esté vacío.
+     *    - Se pasa el parámetro `$datatables` junto con los parámetros `$rows_lista` y `$seccion` para inicializar las columnas con `column_datable_init`.
+     * 2. **Generación de columnas**:
+     *    - Si el tipo es `datatable`, se integran las acciones para las columnas utilizando `acciones_columnas`.
+     * 3. **Retorno de columnas**:
+     *    - Si todo es correcto, se retorna el arreglo de columnas.
+     *    - Si ocurre un error, se retorna un mensaje de error adecuado.
+     *
+     * ## Ejemplo de uso:
+     *
+     * ### Ejemplo 1: Generación de columnas con acciones
+     * ```php
+     * $datatables = new stdClass();
+     * $datatables->columns = array(
+     *     'column1' => array('title' => 'Column 1'),
+     *     'column2' => array('title' => 'Column 2')
+     * );
+     * $link = new PDO('mysql:host=localhost;dbname=test', 'username', 'password');
+     * $not_actions = array('action1', 'action2');
+     * $rows_lista = array('column1', 'column2');
+     * $seccion = 'seccion_test';
+     *
+     * $columns = $this->columns_dt($datatables, $link, $not_actions, $rows_lista, $seccion);
+     * // Resultado esperado: Un arreglo con las columnas configuradas, y si el tipo es `datatable`, con las acciones integradas.
+     * ```
+     *
+     * ### Ejemplo 2: Validación de parámetros incorrectos
+     * ```php
+     * $datatables = new stdClass();
+     * $datatables->columns = array();
+     * $link = new PDO('mysql:host=localhost;dbname=test', 'username', 'password');
+     * $not_actions = array();
+     * $rows_lista = array('column1');
+     * $seccion = '';  // Sección vacía, generará un error
+     *
+     * $columns = $this->columns_dt($datatables, $link, $not_actions, $rows_lista, $seccion);
+     * // Resultado esperado: Un error indicando que la sección no puede estar vacía.
+     * ```
+     *
+     * ### Ejemplo 3: Sin acciones
+     * ```php
+     * $datatables = new stdClass();
+     * $datatables->columns = array(
+     *     'column1' => array('title' => 'Column 1')
+     * );
+     * $link = new PDO('mysql:host=localhost;dbname=test', 'username', 'password');
+     * $not_actions = array();
+     * $rows_lista = array('column1');
+     * $seccion = 'seccion_test';
+     *
+     * $columns = $this->columns_dt($datatables, $link, $not_actions, $rows_lista, $seccion, 'other');
+     * // Resultado esperado: Un arreglo con las columnas configuradas, pero sin las acciones añadidas.
+     * ```
+     *
+     * ## Parámetros:
+     *
+     * @param stdClass $datatables Objeto que contiene la configuración del DataTable, incluyendo las columnas.
+     * @param PDO $link Conexión a la base de datos.
+     * @param array $not_actions Acciones que deben ser excluidas de la configuración.
+     * @param array $rows_lista Lista de las filas/columnas que se deben mostrar en el DataTable.
+     * @param string $seccion Sección actual que se está procesando. No puede ser una cadena vacía.
+     * @param string $type Tipo de procesamiento de columnas. Por defecto es `datatable`, pero puede ser otro valor para evitar la adición de acciones.
+     *
+     * ## Retorno:
+     * @return array Un arreglo con las columnas configuradas y las acciones permitidas (si es tipo `datatable`).
+     *               Si ocurre un error, se retorna un arreglo con la información del error.
      */
+
     private function columns_dt(stdClass $datatables, PDO $link, array $not_actions, array $rows_lista,
                                 string $seccion, string $type = "datatable"): array
     {
@@ -296,33 +618,127 @@ class datatables{
     }
 
     /**
-     * Integra las columnas de tipo titulo en datatables
-     * @param array $columns Columnas precargadas datatables
-     * @param string $key_row_lista key de campos a mostrar en lista
-     * @param string $seccion Seccion en ejecucion
-     * @return array
-     * @version 4.54.2
+     * REG
+     * Asigna un título formateado a una columna de un DataTable y actualiza el arreglo de columnas.
+     *
+     * Esta función utiliza la clave de la fila (`key_row_lista`) y la sección (`seccion`) para generar un título legible para la columna en un DataTable.
+     * El título generado se asigna a la columna correspondiente dentro del arreglo `$columns`.
+     * Utiliza la función `titulo_column_datatable` para formatear el título.
+     *
+     * ## Pasos clave:
+     * 1. **Validación de los parámetros**:
+     *    - Se valida que la clave de la fila no esté vacía (`$key_row_lista`).
+     *    - Se valida que la sección no esté vacía (`$seccion`).
+     * 2. **Generación del título**:
+     *    - El título se genera a partir de la clave de la fila, reemplazando los guiones bajos por espacios y capitalizando la primera letra de cada palabra.
+     * 3. **Asignación del título**:
+     *    - El título generado se asigna a la columna correspondiente dentro del arreglo `$columns`, bajo la clave construida con la sección y la clave de fila.
+     *
+     * ## Ejemplo de uso:
+     *
+     * ### Ejemplo 1: Generación exitosa del título de la columna
+     * ```php
+     * $columns = [
+     *     'usuario_nombre' => ['titulo' => '']
+     * ];
+     * $key_row_lista = 'usuario_nombre';
+     * $seccion = 'usuarios';
+     *
+     * $resultado = $this->columns_title($columns, $key_row_lista, $seccion);
+     *
+     * // El resultado será:
+     * [
+     *     'usuarios_usuario_nombre' => ['titulo' => 'Usuario Nombre']
+     * ]
+     * ```
+     *
+     * ### Ejemplo 2: Error al pasar un parámetro vacío para la clave de fila
+     * ```php
+     * $columns = [];
+     * $key_row_lista = '';
+     * $seccion = 'usuarios';
+     *
+     * $resultado = $this->columns_title($columns, $key_row_lista, $seccion);
+     * // El resultado será un arreglo de error:
+     * // [
+     * //     'mensaje' => 'Error $key_row_lista debe ser un string con datos',
+     * //     'data' => ''
+     * // ]
+     * ```
+     *
+     * ### Ejemplo 3: Error al pasar un parámetro vacío para la sección
+     * ```php
+     * $columns = [];
+     * $key_row_lista = 'usuario_nombre';
+     * $seccion = '';
+     *
+     * $resultado = $this->columns_title($columns, $key_row_lista, $seccion);
+     * // El resultado será un arreglo de error:
+     * // [
+     * //     'mensaje' => 'Error seccion debe ser un string con datos',
+     * //     'data' => ''
+     * // ]
+     * ```
+     *
+     * ## Parámetros:
+     * @param array $columns El arreglo de columnas que contiene los títulos de las columnas del DataTable.
+     *                       Este arreglo será modificado para incluir el nuevo título generado.
+     * @param string $key_row_lista La clave de la fila que representa el nombre de la columna. Se espera que
+     *                              esta clave esté en formato `snake_case`, y se usará para generar el título.
+     * @param string $seccion La sección a la que pertenece la columna. Este parámetro se usa para construir la clave
+     *                        en el arreglo `$columns` (ej. 'usuarios_usuario_nombre').
+     *
+     * ## Retorno:
+     * @return array El arreglo de columnas actualizado con el nuevo título asignado a la columna correspondiente.
+     *               Si ocurre un error, se devuelve un arreglo con el mensaje de error y los datos relacionados.
+     *
+     * ## Ejemplo de salida:
+     * ### Ejemplo de salida exitosa:
+     * ```php
+     * // Salida:
+     * [
+     *     'usuarios_usuario_nombre' => ['titulo' => 'Usuario Nombre']
+     * ]
+     * ```
+     *
+     * ### Ejemplo de salida con error:
+     * ```php
+     * // Salida:
+     * [
+     *     'mensaje' => 'Error $key_row_lista debe ser un string con datos',
+     *     'data' => ''
+     * ]
+     * ```
+     *
+     * @version 1.0.0
      */
     private function columns_title(array $columns, string $key_row_lista, string $seccion): array
     {
+        // Validación de key_row_lista
         $key_row_lista = trim($key_row_lista);
-        if($key_row_lista === ''){
+        if ($key_row_lista === '') {
             return $this->error->error(
-                mensaje: 'Error $key_row_lista debe ser un string con datos', data:  $key_row_lista);
-        }
-        $seccion = trim($seccion);
-        if($seccion === ''){
-            return $this->error->error(
-                mensaje: 'Error seccion debe ser un string con datos', data:  $seccion);
+                mensaje: 'Error $key_row_lista debe ser un string con datos', data: $key_row_lista);
         }
 
+        // Validación de seccion
+        $seccion = trim($seccion);
+        if ($seccion === '') {
+            return $this->error->error(
+                mensaje: 'Error seccion debe ser un string con datos', data: $seccion);
+        }
+
+        // Generación del título a partir de key_row_lista
         $columns = $this->titulo_column_datatable(
-            columns: $columns,key_row_lista:  $key_row_lista, seccion: $seccion);
-        if(errores::$error){
+            columns: $columns, key_row_lista: $key_row_lista, seccion: $seccion);
+
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al maquetar column titulo ', data: $columns);
         }
+
         return $columns;
     }
+
 
     /**
      * Integra los datos de un link
@@ -501,45 +917,88 @@ class datatables{
     }
 
     /**
-     * Inicializa datatables
-     * @param stdClass $datatables Objeto de controller
-     * @param PDO $link Conexion a base de datos
-     * @param array $rows_lista Registros de lista
-     * @param string $seccion Seccion en ejecucion
-     * @param array $not_actions Acciones a omitir
-     * @return array|stdClass
+     * REG
+     * Inicializa la estructura base para un DataTable, configurando los filtros, las columnas y otras opciones.
      *
+     * Este método se encarga de inicializar el filtro de datos y las columnas para un DataTable. Además,
+     * se encarga de configurar las opciones relacionadas como la selección múltiple (multi_selects) y el menú activo (menu_active).
+     * Si alguno de los parámetros no está correctamente configurado, el método devolverá un error.
+     *
+     * El método verifica si la sección, los filtros y las opciones están correctamente definidas y, en base a ellas,
+     * construye un objeto que incluye el filtro, las columnas, y las opciones de configuración del DataTable.
+     *
+     * @param stdClass $datatables Objeto que contiene la configuración del DataTable. Este objeto puede incluir
+     *                             propiedades como `type`, `multi_selects`, y `menu_active`.
+     *
+     * @param PDO $link Conexión a la base de datos utilizada para obtener los datos.
+     *
+     * @param array $rows_lista Lista de campos (columnas) que se utilizarán para los filtros del DataTable.
+     *
+     * @param string $seccion Nombre de la sección que se utilizará en los filtros del DataTable. No debe ser una cadena vacía.
+     *
+     * @param array $not_actions Opciones de acciones que deben ser excluidas. Es un array opcional.
+     *
+     * @return array|stdClass Devuelve un objeto con la configuración del DataTable, o un arreglo con un mensaje de error
+     *                        si alguna de las configuraciones no es válida.
+     *
+     * @example
+     *  // Ejemplo 1: Inicialización exitosa
+     *  $datatables = new stdClass();
+     *  $datatables->type = 'scroll';
+     *  $datatables->multi_selects = true;
+     *  $datatables->menu_active = false;
+     *  $rows_lista = ['campo1', 'campo2', 'campo3'];
+     *  $seccion = 'usuarios';
+     *  $resultado = $init->datatable_base_init($datatables, $link, $rows_lista, $seccion);
+     *  // Devuelve un objeto stdClass con las configuraciones del DataTable, como el filtro, las columnas, y las opciones.
+     *
+     *  // Ejemplo 2: Error debido a una sección vacía
+     *  $datatables = new stdClass();
+     *  $rows_lista = ['campo1', 'campo2', 'campo3'];
+     *  $seccion = '';
+     *  $resultado = $init->datatable_base_init($datatables, $link, $rows_lista, $seccion);
+     *  // Devuelve un arreglo con un mensaje de error: 'Error seccion debe ser un string con datos'.
+     *
+     *  // Ejemplo 3: Error debido a un tipo incorrecto en multi_selects
+     *  $datatables = new stdClass();
+     *  $datatables->multi_selects = 'yes'; // Este valor debería ser un booleano
+     *  $rows_lista = ['campo1', 'campo2', 'campo3'];
+     *  $seccion = 'usuarios';
+     *  $resultado = $init->datatable_base_init($datatables, $link, $rows_lista, $seccion);
+     *  // Devuelve un arreglo con un mensaje de error: 'Error multi_selects tiene que ser de tipo bool'.
      */
     final public function datatable_base_init(stdClass $datatables, PDO $link, array $rows_lista, string $seccion,
-                                        array $not_actions = array()): array|stdClass
+                                              array $not_actions = array()): array|stdClass
     {
         $seccion = trim($seccion);
         if($seccion === ''){
             return $this->error->error(mensaje: 'Error seccion debe ser un string con datos', data:  $seccion);
         }
 
+        // Inicialización de filtro
         $filtro = (new \gamboamartin\system\datatables\init())->init_filtro_datatables(datatables: $datatables,
             rows_lista: $rows_lista,seccion: $seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar filtro', data: $filtro);
         }
 
+        // Determina el tipo de DataTable, si es 'scroll' o el tipo por defecto ('datatable')
         $type = "datatable";
-
         if (property_exists($datatables,"type")){
             if (strcasecmp($datatables->type, "scroll") == 0) {
                 $type = $datatables->type;
             }
         }
 
+        // Inicialización de columnas del DataTable
         $columns = $this->columns_dt(datatables: $datatables, link: $link, not_actions: $not_actions,
             rows_lista: $rows_lista, seccion: $seccion, type: $type);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al maquetar columns ', data: $columns);
         }
 
+        // Determina si se permite la selección múltiple
         $multi_selects = false;
-
         if (property_exists($datatables,"multi_selects")){
             if (!is_bool($datatables->multi_selects)){
                 return $this->error->error(mensaje: 'Error multi_selects tiene que ser de tipo bool', data: $datatables);
@@ -547,8 +1006,8 @@ class datatables{
             $multi_selects = $datatables->multi_selects;
         }
 
+        // Determina si el menú está activo
         $menu_active = false;
-
         if (property_exists($datatables,"menu_active")){
             if (!is_bool($datatables->menu_active)){
                 return $this->error->error(mensaje: 'Error menu_active tiene que ser de tipo bool', data: $datatables);
@@ -556,6 +1015,7 @@ class datatables{
             $menu_active = $datatables->menu_active;
         }
 
+        // Construcción del objeto final con la configuración
         $data = new stdClass();
         $data->filtro = $filtro;
         $data->columns = $columns;
@@ -565,6 +1025,7 @@ class datatables{
 
         return $data;
     }
+
 
 
 
@@ -883,30 +1344,129 @@ class datatables{
     }
 
     /**
-     * Genera los titulos para datatables
-     * @param array $columns Columnas a mostrar
-     * @param string $key_row_lista Keys de campos a mostrar
-     * @param string $seccion Seccion en ejecucion
-     * @return array
-     * @version 0.304.39
+     * REG
+     * Asigna el título formateado a una columna de un DataTable.
+     *
+     * Esta función recibe una clave de fila y una sección, y genera un título legible para la columna en un DataTable.
+     * El título se crea a partir de la clave de la fila (`key_row_lista`), convirtiéndola a formato de texto legible
+     * (reemplazando los guiones bajos por espacios y poniendo la primera letra de cada palabra en mayúsculas).
+     * El título generado se asigna a la columna correspondiente dentro de las columnas del DataTable.
+     *
+     * ## Pasos clave:
+     * 1. **Validación de los parámetros**:
+     *    - Se valida que la clave de la fila no esté vacía.
+     *    - Se valida que la sección no esté vacía.
+     * 2. **Generación del título**:
+     *    - Se reemplazan los guiones bajos (`_`) por espacios en la clave de la fila.
+     *    - Se convierte el texto a formato capitalizado, es decir, la primera letra de cada palabra en mayúsculas.
+     * 3. **Asignación del título**:
+     *    - El título generado se asigna a la columna correspondiente en el arreglo `$columns`, bajo la clave construida
+     *      con la sección y la clave de fila.
+     *
+     * ## Ejemplo de uso:
+     *
+     * ### Ejemplo 1: Generación exitosa del título de la columna
+     * ```php
+     * $columns = [
+     *     'usuario_nombre' => ['titulo' => '']
+     * ];
+     * $key_row_lista = 'usuario_nombre';
+     * $seccion = 'usuarios';
+     *
+     * $resultado = $this->titulo_column_datatable($columns, $key_row_lista, $seccion);
+     *
+     * // El resultado será:
+     * [
+     *     'usuarios_usuario_nombre' => ['titulo' => 'Usuario Nombre']
+     * ]
+     * ```
+     *
+     * ### Ejemplo 2: Error al pasar un parámetro vacío para la clave de fila
+     * ```php
+     * $columns = [];
+     * $key_row_lista = '';
+     * $seccion = 'usuarios';
+     *
+     * $resultado = $this->titulo_column_datatable($columns, $key_row_lista, $seccion);
+     * // El resultado será un arreglo de error:
+     * // [
+     * //     'mensaje' => 'Error $key_row_lista debe ser un string con datos',
+     * //     'data' => ''
+     * // ]
+     * ```
+     *
+     * ### Ejemplo 3: Error al pasar un parámetro vacío para la sección
+     * ```php
+     * $columns = [];
+     * $key_row_lista = 'usuario_nombre';
+     * $seccion = '';
+     *
+     * $resultado = $this->titulo_column_datatable($columns, $key_row_lista, $seccion);
+     * // El resultado será un arreglo de error:
+     * // [
+     * //     'mensaje' => 'Error seccion debe ser un string con datos',
+     * //     'data' => ''
+     * // ]
+     * ```
+     *
+     * ## Parámetros:
+     * @param array $columns El arreglo de columnas que contiene los títulos de las columnas del DataTable.
+     *                       Este arreglo será modificado para incluir el nuevo título generado.
+     * @param string $key_row_lista La clave de la fila que representa el nombre de la columna. Se espera que
+     *                              esta clave esté en formato `snake_case`, y se usará para generar el título.
+     * @param string $seccion La sección a la que pertenece la columna. Este parámetro se usa para construir la clave
+     *                        en el arreglo `$columns` (ej. 'usuarios_usuario_nombre').
+     *
+     * ## Retorno:
+     * @return array El arreglo de columnas actualizado con el nuevo título asignado a la columna correspondiente.
+     *               Si ocurre un error, se devuelve un arreglo con el mensaje de error y los datos relacionados.
+     *
+     * ## Ejemplo de salida:
+     * ### Ejemplo de salida exitosa:
+     * ```php
+     * // Salida:
+     * [
+     *     'usuarios_usuario_nombre' => ['titulo' => 'Usuario Nombre']
+     * ]
+     * ```
+     *
+     * ### Ejemplo de salida con error:
+     * ```php
+     * // Salida:
+     * [
+     *     'mensaje' => 'Error $key_row_lista debe ser un string con datos',
+     *     'data' => ''
+     * ]
+     * ```
+     *
+     * @version 1.0.0
      */
     private function titulo_column_datatable(array $columns, string $key_row_lista, string $seccion): array
     {
+        // Validación de key_row_lista
         $key_row_lista = trim($key_row_lista);
-        if($key_row_lista === ''){
+        if ($key_row_lista === '') {
             return $this->error->error(
-                mensaje: 'Error $key_row_lista debe ser un string con datos', data:  $key_row_lista);
+                mensaje: 'Error $key_row_lista debe ser un string con datos', data: $key_row_lista);
         }
+
+        // Validación de seccion
         $seccion = trim($seccion);
-        if($seccion === ''){
+        if ($seccion === '') {
             return $this->error->error(
-                mensaje: 'Error seccion debe ser un string con datos', data:  $seccion);
+                mensaje: 'Error seccion debe ser un string con datos', data: $seccion);
         }
+
+        // Generación del título a partir de key_row_lista
         $titulo = str_replace('_', ' ', $key_row_lista);
-        $titulo = ucwords( $titulo);
-        $columns[$seccion."_$key_row_lista"]["titulo"] = $titulo;
+        $titulo = ucwords($titulo);
+
+        // Asignación del título a la columna correspondiente en el arreglo $columns
+        $columns[$seccion . "_$key_row_lista"]["titulo"] = $titulo;
+
         return $columns;
     }
+
 
     /**
      * Obtiene el type data
