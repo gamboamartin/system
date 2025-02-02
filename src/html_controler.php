@@ -34,91 +34,226 @@ class html_controler
     }
 
     /**
-     * Genera los parametros para un link de tipo button
-     * @param string $css_extra
-     * @param string $cols_html Columnas css
-     * @param string $id_css Identificador de boton para uso de java
-     * @param string $link Link referencia ejecucion
-     * @param string $onclick_event
-     * @param string $role Role de boton submit o button
-     * @param string $style Estilos base del boton
-     * @param string $style_custom Estilos agregados
-     * @param string $target Result de ejecucion link
-     * @param string $title Titulo del boton
-     * @return string|array
-     * @version 8.83.0
+     * REG
+     * Genera los parámetros HTML para un enlace (`<a>`) con estilo y atributos personalizados.
+     *
+     * Esta función genera los parámetros necesarios para un enlace HTML (`<a>`), incluyendo atributos como `role`,
+     * `title`, `href`, `class`, `id`, `style`, `target`, `onclick`, entre otros. Los parámetros de entrada son validados
+     * antes de generar la cadena final. Si alguna validación falla, se genera un mensaje de error. La función también
+     * asegura que los parámetros generados estén formateados correctamente, sin espacios redundantes.
+     *
+     * **Pasos de procesamiento:**
+     * 1. Se recorta y valida cada parámetro de entrada: `style`, `title`, `role`, `target`, etc.
+     * 2. Se genera la cadena de parámetros con los atributos HTML adecuados.
+     * 3. Si todo es válido, se retorna la cadena de parámetros HTML generada.
+     * 4. Si ocurre algún error durante la validación, se retorna un mensaje de error detallado.
+     * 5. Se elimina cualquier redundancia de espacios en la cadena generada.
+     *
+     * **Parámetros:**
+     *
+     * @param string $css_extra Clase CSS adicional que se agrega al botón.
+     * @param string $cols_html Clase de las columnas de Bootstrap (ej. `'col-sm-12'`).
+     * @param string $id_css El identificador único para el enlace (`<a>`), usado en el atributo `id`. Este parámetro es opcional.
+     * @param string $link La URL de destino del enlace. Este parámetro es obligatorio.
+     * @param string $onclick_event Código JavaScript que se ejecuta cuando se hace clic en el enlace (opcional).
+     * @param string $role El valor del atributo `role` del enlace. Este parámetro es obligatorio.
+     * @param string $style El estilo CSS del enlace. Este parámetro es obligatorio.
+     * @param string $style_custom Estilos personalizados adicionales para el enlace.
+     * @param string $target El destino del enlace, especificado con el atributo `target`. Ejemplo: `'_blank'` (opcional).
+     * @param string $title El texto del atributo `title` que se muestra cuando el usuario pasa el cursor sobre el enlace. Este parámetro es obligatorio.
+     *
+     * **Retorno:**
+     * - Devuelve una cadena con los parámetros HTML generados para el enlace (`<a>`), que incluye atributos como `role`, `title`, `href`, `style`, `id`, `onclick`, `target`, etc.
+     * - Si ocurre algún error en los parámetros, se devuelve un mensaje de error detallado.
+     *
+     * **Ejemplos:**
+     *
+     * **Ejemplo 1: Generación exitosa de parámetros HTML para un enlace**
+     * ```php
+     * $css_extra = "extra-class";
+     * $cols_html = "col-sm-12";
+     * $id_css = "myButton";
+     * $link = "https://www.example.com";
+     * $onclick_event = "handleClick";
+     * $role = "button";
+     * $style = "primary";
+     * $style_custom = "background-color: red;";
+     * $target = "_blank";
+     * $title = "Haz clic aquí";
+     *
+     * $resultado = $this->a_params($css_extra, $cols_html, $id_css, $link, $onclick_event, $role, $style, $style_custom, $target, $title);
+     * // Retorna: "role='button' title='Haz clic aquí' href='https://www.example.com' class='btn btn-primary col-sm-12 extra-class' style='background-color: red;' id='myButton' target='_blank' onclick='handleClick(event)'"
+     * ```
+     *
+     * **Ejemplo 2: Error debido a un parámetro vacío**
+     * ```php
+     * $css_extra = "extra-class";
+     * $cols_html = "col-sm-12";
+     * $id_css = "";
+     * $link = "https://www.example.com";
+     * $onclick_event = "handleClick";
+     * $role = "";
+     * $style = "primary";
+     * $style_custom = "background-color: red;";
+     * $target = "_blank";
+     * $title = "Haz clic aquí";
+     *
+     * $resultado = $this->a_params($css_extra, $cols_html, $id_css, $link, $onclick_event, $role, $style, $style_custom, $target, $title);
+     * // Retorna: "Error role esta vacio"
+     * ```
+     *
+     * **@version 1.0.0**
      */
     private function a_params(string $css_extra, string $cols_html, string $id_css, string $link, string $onclick_event,
                               string $role, string $style, string $style_custom, string $target,
                               string $title): string|array
     {
+        // Validar y recortar el estilo
         $style = trim($style);
         if ($style === '') {
             return $this->error->error(mensaje: 'Error style esta vacio', data: $style);
         }
+
+        // Validar y recortar el título
         $title = trim($title);
         if ($title === '') {
             return $this->error->error(mensaje: 'Error title esta vacio', data: $title);
         }
+
+        // Validar y recortar el role
         $role = trim($role);
         if ($role === '') {
             return $this->error->error(mensaje: 'Error role esta vacio', data: $role);
         }
 
+        // Generar HTML para el atributo target
         $target_html = '';
         $target = trim($target);
         if ($target !== '') {
             $target_html = "target='$target'";
         }
 
+        // Generar HTML para el atributo id
         $id_css_html = '';
         if($id_css!==''){
             $id_css_html = "id='$id_css'";
         }
 
+        // Generar HTML para el evento onclick
         $onclick = "";
         $onclick_event = trim($onclick_event);
         if($onclick_event !== ''){
             $onclick = "onclick='$onclick_event(event)'";
         }
+
+        // Crear la cadena de parámetros
         $params = "role='$role' title='$title' href='$link' class='btn btn-$style $cols_html $css_extra' $style_custom";
         $params .= " $id_css_html $target_html $onclick";
         $params = trim($params);
+
+        // Eliminar redundancias de espacios
         $i = 0;
         $iteraciones = 5;
         while ($i <= $iteraciones) {
             $params = str_replace('  ', ' ', $params);
             $i++;
         }
-        return $params;
 
+        return $params;
     }
 
+
     /**
-     * Integra un href para btns
-     * @param string $css_extra
-     * @param int $cols Columnas css
-     * @param string $etiqueta_html Etiqueta a mostrar
-     * @param string $icon_html Icono a mostrar
-     * @param string $id_css Identificador para uso de java
-     * @param string $link Liga de href
-     * @param string $onclick_event
-     * @param string $role tipo de sole button o submit
-     * @param string $style Stilo de boton
-     * @param array $styles Estilos css
-     * @param string $target Ejecucion de ventana resultado
-     * @param string $title Titulo a mostrar del button
-     * @return string|array
+     * REG
+     * Genera un enlace (`<a>`) con atributos personalizados y un ícono o etiqueta HTML, utilizando un conjunto de parámetros.
+     *
+     * Esta función toma los parámetros de un enlace (`<a>`), incluyendo atributos como `role`, `title`, `style`, `href`,
+     * `onclick`, entre otros. También permite incluir un ícono y una etiqueta en el enlace, y se asegura de que los valores
+     * proporcionados sean válidos antes de generar el enlace HTML final.
+     *
+     * **Pasos de procesamiento:**
+     * 1. Se validan los parámetros de entrada `style`, `title`, `role`, `cols`, y otros.
+     * 2. Se genera una clase CSS para las columnas utilizando la función `cols_html`.
+     * 3. Se genera el valor para el atributo `role` utilizando la función `role_button`.
+     * 4. Se genera el atributo `style` personalizado utilizando `genera_styles_custom`.
+     * 5. Se combinan todos los parámetros en una cadena de parámetros HTML para el enlace.
+     * 6. Se combina el ícono y la etiqueta HTML en el enlace.
+     * 7. Se elimina cualquier redundancia en los espacios de la cadena generada.
+     * 8. Si todo es válido, se genera y se retorna el enlace HTML completo.
+     * 9. Si ocurre algún error en el proceso, se genera un mensaje de error detallado.
+     *
+     * **Parámetros:**
+     *
+     * @param string $css_extra Clase CSS adicional que se agrega al enlace.
+     * @param int $cols El número de columnas que se usarán en el enlace (usado para generar la clase `col-sm-{cols}`).
+     * @param string $etiqueta_html El contenido HTML de la etiqueta del enlace (por ejemplo, texto).
+     * @param string $icon_html El contenido HTML del ícono del enlace (opcional).
+     * @param string $id_css El identificador único para el enlace (opcional).
+     * @param string $link La URL de destino del enlace (obligatorio).
+     * @param string $onclick_event El código JavaScript que se ejecuta cuando se hace clic en el enlace (opcional).
+     * @param string $role El valor del atributo `role` del enlace (obligatorio).
+     * @param string $style El estilo CSS del enlace (obligatorio).
+     * @param array $styles Estilos adicionales personalizados que se aplicarán al enlace.
+     * @param string $target El atributo `target` del enlace (opcional), por ejemplo `"_blank"`.
+     * @param string $title El texto del atributo `title` del enlace (obligatorio).
+     *
+     * **Retorno:**
+     * - Devuelve el enlace HTML completo con los atributos generados si todo es válido.
+     * - Si ocurre algún error, devuelve un mensaje de error detallado.
+     *
+     * **Ejemplos:**
+     *
+     * **Ejemplo 1: Generación exitosa de un enlace HTML**
+     * ```php
+     * $css_extra = "extra-class";
+     * $cols = 6;
+     * $etiqueta_html = "Hacer clic aquí";
+     * $icon_html = "<span class='fa fa-check'></span>";
+     * $id_css = "myButton";
+     * $link = "https://www.example.com";
+     * $onclick_event = "handleClick()";
+     * $role = "button";
+     * $style = "primary";
+     * $styles = ['color' => 'red'];
+     * $target = "_blank";
+     * $title = "Haz clic para ir al sitio";
+     *
+     * $resultado = $this->a_role($css_extra, $cols, $etiqueta_html, $icon_html, $id_css, $link, $onclick_event, $role, $style, $styles, $target, $title);
+     * // Retorna: "<a role='button' title='Haz clic para ir al sitio' href='https://www.example.com' class='btn btn-primary col-sm-6 extra-class' style='color: red;' id='myButton' target='_blank' onclick='handleClick()'><span class='fa fa-check'></span> Hacer clic aquí</a>"
+     * ```
+     *
+     * **Ejemplo 2: Error debido a un parámetro vacío**
+     * ```php
+     * $css_extra = "";
+     * $cols = 6;
+     * $etiqueta_html = "Hacer clic aquí";
+     * $icon_html = "<span class='fa fa-check'></span>";
+     * $id_css = "myButton";
+     * $link = "https://www.example.com";
+     * $onclick_event = "handleClick()";
+     * $role = "";
+     * $style = "primary";
+     * $styles = ['color' => 'red'];
+     * $target = "_blank";
+     * $title = "Haz clic para ir al sitio";
+     *
+     * $resultado = $this->a_role($css_extra, $cols, $etiqueta_html, $icon_html, $id_css, $link, $onclick_event, $role, $style, $styles, $target, $title);
+     * // Retorna: "Error role esta vacio"
+     * ```
+     *
+     * **@version 1.0.0**
      */
     private function a_role(string $css_extra, int $cols, string $etiqueta_html, string $icon_html, string $id_css,
                             string $link, string $onclick_event, string $role, string $style, array $styles,
                             string $target, string $title): string|array
     {
-
+        // Validar y recortar el estilo
         $style = trim($style);
         if ($style === '') {
             return $this->error->error(mensaje: 'Error style esta vacio', data: $style);
         }
+
+        // Validar y recortar el título
         $title = trim($title);
         if ($title === '') {
             $title = $etiqueta_html;
@@ -128,21 +263,25 @@ class html_controler
             return $this->error->error(mensaje: 'Error title esta vacio', data: $title);
         }
 
+        // Generar HTML para el atributo cols
         $cols_html = $this->cols_html(cols: $cols);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar cols html', data: $cols_html);
         }
 
+        // Generar el role del botón
         $role = $this->role_button(role: $role);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar role', data: $role);
         }
 
+        // Generar estilos personalizados
         $style_custom = $this->genera_styles_custom(styles: $styles);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar style_custom', data: $style_custom);
         }
 
+        // Generar los parámetros para el enlace
         $params = $this->a_params(css_extra: $css_extra, cols_html: $cols_html, id_css: $id_css, link: $link,
             onclick_event: $onclick_event, role: $role, style: $style, style_custom: $style_custom, target: $target,
             title: $title);
@@ -150,39 +289,113 @@ class html_controler
             return $this->error->error(mensaje: 'Error al generar params', data: $params);
         }
 
+        // Generar el enlace completo
         $a = $this->a_role_button(etiqueta_html: $etiqueta_html, icon_html: $icon_html, params: $params);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar button', data: $a);
         }
 
+        // Retornar el enlace HTML generado
         return $a;
     }
 
+
+    /**
+     * REG
+     * Genera un enlace (`<a>`) con un ícono y una etiqueta HTML a partir de los parámetros proporcionados.
+     *
+     * Esta función toma una etiqueta HTML, un ícono HTML y los parámetros de un enlace (`<a>`) para generar
+     * un enlace completo con los atributos adecuados. Si alguno de los parámetros proporcionados está vacío,
+     * la función genera un mensaje de error. Si todo es válido, se genera y retorna el enlace HTML completo.
+     *
+     * **Pasos de procesamiento:**
+     * 1. Se recortan los valores de los parámetros `etiqueta_html`, `icon_html` y `params`.
+     * 2. Si `params` está vacío, se genera un mensaje de error.
+     * 3. Se combina el ícono y la etiqueta HTML en una sola cadena, generando un mensaje de error si el resultado es vacío.
+     * 4. Se genera el enlace HTML (`<a>`) con los parámetros proporcionados y el contenido combinado del ícono y la etiqueta.
+     * 5. Se eliminan los espacios redundantes en la cadena generada.
+     * 6. Si todo es válido, se retorna el enlace HTML completo.
+     * 7. Si ocurre algún error durante el proceso, se retorna un mensaje de error detallado.
+     *
+     * **Parámetros:**
+     *
+     * @param string $etiqueta_html El contenido HTML de la etiqueta. Este parámetro es obligatorio y se utiliza para
+     *                              la parte visible del enlace (por ejemplo, texto).
+     * @param string $icon_html El contenido HTML del ícono. Este parámetro es opcional y se usa para mostrar un ícono
+     *                          dentro del enlace.
+     * @param string $params Los parámetros del enlace (`<a>`), como `href`, `role`, `style`, etc. Este parámetro es
+     *                       obligatorio y debe contener una cadena de atributos HTML válidos.
+     *
+     * **Retorno:**
+     * - Devuelve una cadena con el enlace (`<a>`) generado si todo es válido.
+     * - Si alguno de los parámetros está vacío o si ocurre un error, se devuelve un mensaje de error.
+     *
+     * **Ejemplos:**
+     *
+     * **Ejemplo 1: Generación exitosa de un enlace**
+     * ```php
+     * $etiqueta_html = "Hacer clic aquí";
+     * $icon_html = "<span class='fa fa-check'></span>";
+     * $params = "href='https://www.example.com' role='button'";
+     * $resultado = $this->a_role_button($etiqueta_html, $icon_html, $params);
+     * // Retorna: "<a href='https://www.example.com' role='button'><span class='fa fa-check'></span> Hacer clic aquí</a>"
+     * ```
+     *
+     * **Ejemplo 2: Error debido a parámetros vacíos**
+     * ```php
+     * $etiqueta_html = "";
+     * $icon_html = "<span class='fa fa-check'></span>";
+     * $params = "href='https://www.example.com' role='button'";
+     * $resultado = $this->a_role_button($etiqueta_html, $icon_html, $params);
+     * // Retorna: "Error al data_a esta vacio"
+     * ```
+     *
+     * **Ejemplo 3: Error debido a `params` vacío**
+     * ```php
+     * $etiqueta_html = "Hacer clic aquí";
+     * $icon_html = "<span class='fa fa-check'></span>";
+     * $params = "";
+     * $resultado = $this->a_role_button($etiqueta_html, $icon_html, $params);
+     * // Retorna: "Error al params esta vacio"
+     * ```
+     *
+     * **@version 1.0.0**
+     */
     private function a_role_button(string $etiqueta_html, string $icon_html, string $params): string|array
     {
+        // Recortar los valores de los parámetros
         $etiqueta_html = trim($etiqueta_html);
         $icon_html = trim($icon_html);
         $params = trim($params);
+
+        // Validar que los parámetros no estén vacíos
         if ($params === '') {
-            return $this->error->error(mensaje: 'Error al params esta vacio', data: $params);
+            return $this->error->error(mensaje: 'Error al params esta vacio', data: $params, es_final: true);
         }
 
+        // Combinar el ícono y la etiqueta en el contenido del enlace
         $data_a = $icon_html . ' ' . $etiqueta_html;
         $data_a = trim($data_a);
+
+        // Validar que el contenido no esté vacío
         if ($data_a === '') {
-            return $this->error->error(mensaje: 'Error al data_a esta vacio', data: $data_a);
+            return $this->error->error(mensaje: 'Error al data_a esta vacio', data: $data_a, es_final: true);
         }
 
+        // Crear el enlace HTML
         $a = "<a $params>$data_a</a>";
 
+        // Eliminar redundancias de espacios
         $i = 0;
         while ($i <= 5) {
             $a = str_replace('  ', ' ', $a);
             $i++;
         }
 
+        // Retornar el enlace HTML generado
         return $a;
     }
+
 
     /**
      * Genera los inputs base de un alta de cualquier controller que herede
@@ -292,24 +505,82 @@ class html_controler
     }
 
     /**
-     * Genera un boton href
-     * @param string $accion Accion a ejecutar
-     * @param string $etiqueta Etiqueta de boton
-     * @param int $registro_id Registro a integrar
-     * @param string $seccion Seccion a ejecutar
-     * @param string $style Stilo del boton
-     * @param string $css_extra
-     * @param int $cols N columnas css
-     * @param string $icon Icono a mostrar en boton
-     * @param string|null $id_css Identificador css
-     * @param bool $muestra_icono_btn Si true entonces muestra icono definido en icon
-     * @param bool $muestra_titulo_btn Si true entonces muestra etiqueta definido en etiqueta
-     * @param string $onclick_event
-     * @param array $params extra-params
-     * @param string $role Role de link , button, submit etc
-     * @param array $styles Propiedades css custom
-     * @param string $target Ejecucion de ventana resultado
-     * @return string|array
+     * REG
+     * Genera un botón de enlace (`<a>`) con los atributos proporcionados y los parámetros personalizados.
+     *
+     * Esta función genera un enlace HTML (`<a>`) que actúa como un botón, con la posibilidad de agregar íconos, etiquetas,
+     * estilos personalizados, y parámetros adicionales para el enlace. Además, valida los parámetros de entrada antes de
+     * generar el enlace final. Si algún parámetro es inválido o falta, la función genera un mensaje de error detallado.
+     *
+     * **Pasos de procesamiento:**
+     * 1. Se valida que los parámetros `accion`, `etiqueta`, `seccion`, y `style` sean correctos.
+     * 2. Se obtiene el ID de sesión del usuario.
+     * 3. Se generan los parámetros del botón, como el ícono y la etiqueta, utilizando la función `params_btn`.
+     * 4. Se genera el enlace (`<a>`) con la URL correspondiente utilizando la función `link_a`.
+     * 5. Se generan los parámetros del enlace, como la clase, el `role`, el estilo, etc., con la función `a_role`.
+     * 6. Se retorna el enlace HTML generado o un mensaje de error si alguno de los pasos falla.
+     *
+     * **Parámetros:**
+     *
+     * @param string $accion La acción a realizar cuando se haga clic en el botón. Ejemplo: "guardar".
+     * @param string $etiqueta El texto que se mostrará en el botón. Ejemplo: "Guardar cambios".
+     * @param int $registro_id El ID del registro asociado a la acción.
+     * @param string $seccion El nombre de la sección donde se realiza la acción. Ejemplo: "usuarios".
+     * @param string $style El estilo CSS del botón (por ejemplo, "primary", "danger").
+     * @param string $css_extra Clases CSS adicionales para el botón (opcional).
+     * @param int $cols Número de columnas para el botón en un diseño basado en la grilla de Bootstrap (opcional, por defecto 12).
+     * @param string $icon El ícono HTML que se mostrará en el botón (opcional).
+     * @param string|null $id_css El ID CSS del botón (opcional).
+     * @param bool $muestra_icono_btn Determina si se debe mostrar el ícono en el botón. Si es `true`, se muestra el ícono.
+     * @param bool $muestra_titulo_btn Determina si se debe mostrar el título en el botón. Por defecto es `true`.
+     * @param string $onclick_event El código JavaScript que se ejecutará al hacer clic en el botón (opcional).
+     * @param array $params Parámetros adicionales que se incluirán en la URL del botón como parámetros GET (opcional).
+     * @param string $role El valor del atributo `role` del botón. Por defecto es `"button"`.
+     * @param array $styles Estilos adicionales personalizados que se aplicarán al botón.
+     * @param string $target El atributo `target` del enlace, que determina cómo se abrirá el destino (opcional).
+     *
+     * **Retorno:**
+     * - Devuelve un enlace HTML completo si todo es válido.
+     * - Si ocurre un error en cualquiera de los pasos, devuelve un mensaje de error detallado.
+     *
+     * **Ejemplos:**
+     *
+     * **Ejemplo 1: Generación exitosa de un botón de enlace**
+     * ```php
+     * $accion = "guardar";
+     * $etiqueta = "Guardar cambios";
+     * $registro_id = 123;
+     * $seccion = "usuarios";
+     * $style = "primary";
+     * $css_extra = "extra-class";
+     * $cols = 6;
+     * $icon = "<span class='fa fa-check'></span>";
+     * $id_css = "guardarBtn";
+     * $muestra_icono_btn = true;
+     * $muestra_titulo_btn = true;
+     * $onclick_event = "handleClick()";
+     * $params = ['redirigir' => 'true'];
+     * $role = "button";
+     * $styles = ['color' => 'red'];
+     * $target = "_blank";
+     *
+     * $resultado = $this->button_href($accion, $etiqueta, $registro_id, $seccion, $style, $css_extra, $cols, $icon, $id_css,
+     * $muestra_icono_btn, $muestra_titulo_btn, $onclick_event, $params, $role, $styles, $target);
+     * // Retorna: "<a role='button' title='Guardar cambios' href='index.php?accion=guardar&seccion=usuarios&registro_id=123&session_id=abc123&adm_menu_id=-1&redirigir=true' class='btn btn-primary col-sm-6 extra-class' style='color: red;' id='guardarBtn' target='_blank' onclick='handleClick()'><span class='fa fa-check'></span> Guardar cambios</a>"
+     * ```
+     *
+     * **Ejemplo 2: Error debido a un parámetro vacío**
+     * ```php
+     * $accion = "";
+     * $etiqueta = "Guardar cambios";
+     * $registro_id = 123;
+     * $seccion = "usuarios";
+     * $style = "primary";
+     * $resultado = $this->button_href($accion, $etiqueta, $registro_id, $seccion, $style);
+     * // Retorna: "Error al validar datos"
+     * ```
+     *
+     * **@version 1.0.0**
      */
     final public function button_href(string $accion, string $etiqueta, int $registro_id, string $seccion,
                                       string $style, string $css_extra = '', int $cols = 12, string $icon = '',
@@ -318,7 +589,8 @@ class html_controler
                                       array $params = array(), string $role = 'button', array $styles = array(),
                                       string $target = ''): string|array
     {
-        if(is_null($id_css)){
+        // Validaciones
+        if (is_null($id_css)) {
             $id_css = '';
         }
 
@@ -333,7 +605,7 @@ class html_controler
             return $this->error->error(mensaje: 'Error la $session_id esta vacia', data: $session_id);
         }
 
-
+        // Generación de parámetros del botón
         $params_btn = $this->params_btn(icon: $icon, etiqueta: $etiqueta, muestra_icono_btn: $muestra_icono_btn,
             muestra_titulo_btn: $muestra_titulo_btn, params: $params);
 
@@ -347,12 +619,14 @@ class html_controler
                 params: $params_error);
         }
 
+        // Generación del enlace
         $link = $this->link_a(accion: $accion, params_get: $params_btn->params_get, registro_id: $registro_id,
             seccion: $seccion, session_id: $session_id);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar link', data: $link);
         }
 
+        // Generación del botón con enlace
         $a = $this->a_role(css_extra: $css_extra, cols: $cols, etiqueta_html: $params_btn->etiqueta_html,
             icon_html: $params_btn->icon_html, id_css: $id_css, link: $link, onclick_event: $onclick_event,
             role: $role, style: $style, styles: $styles, target: $target, title: $etiqueta);
@@ -362,6 +636,7 @@ class html_controler
 
         return $a;
     }
+
 
     /**
      * Genera un boton para ser utilizado con java
@@ -390,10 +665,44 @@ class html_controler
     }
 
     /**
-     * Genera el elemento cols en forma de html
-     * @param int $cols No de columnas css
-     * @return string
-     * @version 8.65.0
+     * REG
+     * Genera una clase CSS para las columnas en una estructura de diseño basada en la grilla de Bootstrap.
+     *
+     * Esta función genera una clase CSS de tipo `col-sm-{cols}`, que es utilizada en el sistema de grillas de Bootstrap.
+     * La clase generada es utilizada para controlar el tamaño de las columnas dentro de una fila en un diseño responsivo.
+     * Si el parámetro `$cols` es igual a `-1`, la función retornará una cadena vacía, indicando que no se debe aplicar ninguna clase.
+     *
+     * **Pasos de procesamiento:**
+     * 1. Se genera la clase CSS `col-sm-{cols}`, donde `{cols}` es el valor de `$cols`.
+     * 2. Si el valor de `$cols` es igual a `-1`, se retorna una cadena vacía para indicar que no se debe aplicar la clase.
+     * 3. Se devuelve la clase CSS generada o una cadena vacía si se aplica el valor especial `-1`.
+     *
+     * **Parámetros:**
+     *
+     * @param int $cols El número de columnas que se utilizarán en el diseño. Este parámetro es obligatorio y debe ser un valor entero.
+     *                  Si es `-1`, se devuelve una cadena vacía, indicando que no se debe aplicar ninguna clase de columna.
+     *
+     * **Retorno:**
+     * - Devuelve una cadena con la clase CSS correspondiente para las columnas de Bootstrap.
+     * - Si el valor de `$cols` es `-1`, retorna una cadena vacía.
+     *
+     * **Ejemplos:**
+     *
+     * **Ejemplo 1: Generación de una clase CSS para 4 columnas**
+     * ```php
+     * $cols = 4;
+     * $resultado = $this->cols_html($cols);
+     * // Retorna: "col-sm-4"
+     * ```
+     *
+     * **Ejemplo 2: No aplicar clase si $cols es -1**
+     * ```php
+     * $cols = -1;
+     * $resultado = $this->cols_html($cols);
+     * // Retorna: ""
+     * ```
+     *
+     * **@version 1.0.0**
      */
     private function cols_html(int $cols): string
     {
@@ -403,6 +712,7 @@ class html_controler
         }
         return $cols_html;
     }
+
 
     /**
      * Genera los inputs de tipo fechas date
@@ -547,10 +857,58 @@ class html_controler
     }
 
     /**
-     * Integra la etiqueta html
-     * @param string $etiqueta Etiqueta a convertir
-     * @param bool $muestra_titulo_btn valida si se muestra o no
-     * @return array|string
+     * REG
+     * Genera el texto HTML de una etiqueta, validando si debe mostrarse o no.
+     *
+     * Esta función recibe una etiqueta y un parámetro que indica si la etiqueta debe mostrarse o no.
+     * Si se debe mostrar la etiqueta (`$muestra_titulo_btn` es `true`), la función valida que el valor de la etiqueta
+     * no esté vacío. Si la etiqueta está vacía cuando se requiere mostrarla, se genera un error. Si todo es válido,
+     * la función devuelve el valor de la etiqueta, de lo contrario se devuelve un mensaje de error.
+     *
+     * **Pasos de procesamiento:**
+     * 1. Si `$muestra_titulo_btn` es `true`, se valida que el valor de la etiqueta no esté vacío.
+     * 2. Si el valor de la etiqueta está vacío, se genera un mensaje de error.
+     * 3. Si todo es válido, se devuelve el valor de la etiqueta.
+     * 4. Si `$muestra_titulo_btn` es `false`, no se devuelve nada (cadena vacía).
+     *
+     * **Parámetros:**
+     *
+     * @param string $etiqueta El texto que se mostrará como etiqueta. Este parámetro es obligatorio y debe ser una cadena.
+     * @param bool $muestra_titulo_btn Determina si se debe mostrar la etiqueta. Si es `true`, se valida y muestra el texto de la etiqueta.
+     *                                 Si es `false`, no se mostrará ningún texto.
+     *
+     * **Retorno:**
+     * - Devuelve el texto de la etiqueta si `$muestra_titulo_btn` es `true` y la etiqueta no está vacía.
+     * - Si la etiqueta está vacía y `$muestra_titulo_btn` es `true`, devuelve un mensaje de error.
+     * - Si `$muestra_titulo_btn` es `false`, devuelve una cadena vacía.
+     *
+     * **Ejemplos:**
+     *
+     * **Ejemplo 1: Generación exitosa de etiqueta**
+     * ```php
+     * $etiqueta = "Guardar cambios";
+     * $muestra_titulo_btn = true;
+     * $resultado = $this->etiqueta_html($etiqueta, $muestra_titulo_btn);
+     * // Retorna: "Guardar cambios"
+     * ```
+     *
+     * **Ejemplo 2: Error cuando la etiqueta está vacía**
+     * ```php
+     * $etiqueta = "";
+     * $muestra_titulo_btn = true;
+     * $resultado = $this->etiqueta_html($etiqueta, $muestra_titulo_btn);
+     * // Retorna: 'Error si muestra_titulo_btn entonces etiqueta no puede venir vacio'
+     * ```
+     *
+     * **Ejemplo 3: No mostrar etiqueta**
+     * ```php
+     * $etiqueta = "Guardar cambios";
+     * $muestra_titulo_btn = false;
+     * $resultado = $this->etiqueta_html($etiqueta, $muestra_titulo_btn);
+     * // Retorna: ""
+     * ```
+     *
+     * **@version 1.0.0**
      */
     private function etiqueta_html(string $etiqueta, bool $muestra_titulo_btn): array|string
     {
@@ -565,6 +923,7 @@ class html_controler
         }
         return $etiqueta_html;
     }
+
 
     /**
      * Genera los inputs de fecha
@@ -707,20 +1066,66 @@ class html_controler
         return $div;
     }
 
+    /**
+     * REG
+     * Genera un atributo `style` personalizado a partir de un conjunto de propiedades CSS.
+     *
+     * Esta función toma un arreglo de propiedades CSS y sus valores, genera la cadena correspondiente a las propiedades
+     * utilizando la función `propiedades_css` y luego encapsula esas propiedades en un atributo `style` utilizando la
+     * función `style_custom`. Si alguna de las propiedades o valores es inválido, se genera un mensaje de error.
+     *
+     * **Pasos de procesamiento:**
+     * 1. Se generan las propiedades CSS a partir del arreglo `$styles` utilizando la función `propiedades_css`.
+     * 2. Si la validación de propiedades falla, se retorna un mensaje de error.
+     * 3. Se genera el atributo `style` con las propiedades CSS utilizando la función `style_custom`.
+     * 4. Si ocurre un error al generar el atributo `style`, se retorna un mensaje de error.
+     * 5. Si todo es válido, se retorna el atributo `style` personalizado generado.
+     *
+     * **Parámetros:**
+     *
+     * @param array $styles Un arreglo asociativo que contiene las propiedades CSS como claves y los valores correspondientes.
+     *                      Por ejemplo, `['color' => 'red', 'font-size' => '12px']`.
+     *
+     * **Retorno:**
+     * - Devuelve el atributo `style` en formato HTML si las propiedades son válidas.
+     * - Si ocurre un error durante la generación de las propiedades o del `style`, se devuelve un mensaje de error.
+     *
+     * **Ejemplos:**
+     *
+     * **Ejemplo 1: Generación exitosa del atributo `style` personalizado**
+     * ```php
+     * $styles = ['color' => 'red', 'font-size' => '12px'];
+     * $resultado = $this->genera_styles_custom($styles);
+     * // Retorna: "style='color: red; font-size: 12px;'"
+     * ```
+     *
+     * **Ejemplo 2: Error al generar el atributo `style`**
+     * ```php
+     * $styles = ['color' => '', 'font-size' => '12px'];
+     * $resultado = $this->genera_styles_custom($styles);
+     * // Retorna: "Error al generar propiedades"
+     * ```
+     *
+     * **@version 1.0.0**
+     */
     private function genera_styles_custom(array $styles)
     {
+        // Generar propiedades CSS
         $propiedades = $this->propiedades_css(styles: $styles);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar propiedades', data: $propiedades);
         }
 
-
+        // Generar el atributo style
         $style_custom = $this->style_custom(propiedades: $propiedades);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar style_custom', data: $style_custom);
         }
+
+        // Retornar el atributo style personalizado
         return $style_custom;
     }
+
 
     /**
      * Integra un header collapsible
@@ -819,8 +1224,68 @@ class html_controler
         return $alta_inputs;
     }
 
+    /**
+     * REG
+     * Genera el HTML de un ícono en formato `span` con una clase CSS dinámica.
+     *
+     * Esta función toma un nombre de ícono y un parámetro que determina si se debe mostrar o no el ícono.
+     * Si se indica que se debe mostrar el ícono (`$muestra_icono_btn` es `true`), la función genera un elemento HTML `span`
+     * con la clase correspondiente al ícono proporcionado. Si el nombre del ícono está vacío cuando se requiere mostrarlo,
+     * se genera un error. Si todo es válido, se devuelve el HTML del ícono; de lo contrario, se devuelve un mensaje de error.
+     *
+     * **Pasos de procesamiento:**
+     * 1. Se recorta el valor del ícono para eliminar espacios adicionales al principio y al final.
+     * 2. Si `$muestra_icono_btn` es `true`:
+     *    - Se valida que el nombre del ícono no esté vacío.
+     *    - Si el nombre del ícono está vacío, se genera un mensaje de error.
+     *    - Si el nombre del ícono es válido, se genera el HTML con el ícono.
+     * 3. Si `$muestra_icono_btn` es `false`, no se genera ningún ícono y se retorna una cadena vacía.
+     * 4. Si todo es válido, se retorna el HTML del ícono.
+     * 5. Si se genera un error, se retorna un mensaje de error detallado.
+     *
+     * **Parámetros:**
+     *
+     * @param string $icon El nombre del ícono. Este parámetro es obligatorio y debe ser una cadena que representa el ícono.
+     *                     Por ejemplo, "fa-user" o "fa-home" si se utilizan íconos de FontAwesome.
+     * @param bool $muestra_icono_btn Determina si se debe mostrar el ícono. Este parámetro es obligatorio.
+     *                                Si es `true`, se genera el ícono; si es `false`, no se genera ningún ícono.
+     *
+     * **Retorno:**
+     * - Devuelve una cadena con el HTML del ícono (como un `<span class="nombre_del_icono"></span>`) si todo es válido.
+     * - Si el ícono debe mostrarse pero está vacío, devuelve un mensaje de error.
+     * - Si `$muestra_icono_btn` es `false`, devuelve una cadena vacía.
+     *
+     * **Ejemplos:**
+     *
+     * **Ejemplo 1: Generación exitosa de ícono**
+     * ```php
+     * $icon = "fa-user";
+     * $muestra_icono_btn = true;
+     * $resultado = $this->icon_html($icon, $muestra_icono_btn);
+     * // Retorna: "<span class='fa-user'></span>"
+     * ```
+     *
+     * **Ejemplo 2: Error cuando el nombre del ícono está vacío**
+     * ```php
+     * $icon = "";
+     * $muestra_icono_btn = true;
+     * $resultado = $this->icon_html($icon, $muestra_icono_btn);
+     * // Retorna: 'Error si muestra_icono_btn entonces icon no puede venir vacio'
+     * ```
+     *
+     * **Ejemplo 3: No mostrar ícono**
+     * ```php
+     * $icon = "fa-user";
+     * $muestra_icono_btn = false;
+     * $resultado = $this->icon_html($icon, $muestra_icono_btn);
+     * // Retorna: ""
+     * ```
+     *
+     * **@version 1.0.0**
+     */
     private function icon_html(string $icon, bool $muestra_icono_btn): array|string
     {
+        $icon = trim($icon);
         $icon_html = '';
         if($muestra_icono_btn){
             $icon = trim($icon);
@@ -832,6 +1297,7 @@ class html_controler
         }
         return $icon_html;
     }
+
 
     /**
      * Integra los inputs para frontend
@@ -1316,24 +1782,64 @@ class html_controler
     }
 
     /**
-     * Integra una propiedad css
-     * @param string $propiedad Nombre de la propiedad
-     * @param string $propiedades Propiedades previas cargadas
-     * @param string $valor Valor de la propiedad a integrar
-     * @return string|array
-     * @version 13.68.1
+     * REG
+     * Integra una propiedad CSS y su valor en una cadena de propiedades CSS.
+     *
+     * Esta función toma una propiedad CSS y su valor, valida que sean correctos y los agrega a una cadena
+     * de propiedades CSS. La propiedad y el valor se concatenan a la cadena de propiedades CSS existente,
+     * separando cada propiedad por punto y coma.
+     *
+     * **Pasos de procesamiento:**
+     * 1. Se valida la propiedad y su valor utilizando la función `valida_propiedad`.
+     * 2. Si la validación es exitosa, se agrega la propiedad y su valor a la cadena de propiedades CSS.
+     * 3. Si ocurre un error durante la validación, se genera un mensaje de error.
+     * 4. Si todo es válido, se retorna la cadena de propiedades CSS actualizada.
+     *
+     * **Parámetros:**
+     *
+     * @param string $propiedad El nombre de la propiedad CSS (por ejemplo, `'color'`, `'font-size'`, etc.). Este parámetro es obligatorio.
+     * @param string $propiedades La cadena de propiedades CSS donde se agregará la nueva propiedad y su valor. Este parámetro es obligatorio.
+     * @param string $valor El valor correspondiente a la propiedad CSS (por ejemplo, `'red'`, `'12px'`, etc.). Este parámetro es obligatorio.
+     *
+     * **Retorno:**
+     * - Devuelve la cadena de propiedades CSS actualizada, con la nueva propiedad y valor agregados al final.
+     * - Si ocurre un error durante la validación de la propiedad o el valor, devuelve un mensaje de error.
+     *
+     * **Ejemplos:**
+     *
+     * **Ejemplo 1: Integración exitosa de propiedad CSS**
+     * ```php
+     * $propiedad = "color";
+     * $valor = "red";
+     * $propiedades = "font-size: 12px; ";
+     * $resultado = $this->integra_propiedad($propiedad, $propiedades, $valor);
+     * // Retorna: "font-size: 12px; color: red; "
+     * ```
+     *
+     * **Ejemplo 2: Error al validar propiedad CSS**
+     * ```php
+     * $propiedad = "";
+     * $valor = "red";
+     * $propiedades = "font-size: 12px; ";
+     * $resultado = $this->integra_propiedad($propiedad, $propiedades, $valor);
+     * // Retorna: "Error propiedad esta vacio"
+     * ```
+     *
+     * **@version 1.0.0**
      */
     private function integra_propiedad(string $propiedad, string $propiedades, string $valor): string|array
     {
-
-        $valida = $this->valida_propiedad(propiedad: $propiedad,valor:  $valor);
-        if(errores::$error){
+        // Validar la propiedad y su valor
+        $valida = $this->valida_propiedad(propiedad: $propiedad, valor: $valor);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar propiedad', data: $valida);
         }
 
-        $propiedades.= $propiedad.': '.$valor.'; ';
+        // Integrar la propiedad y su valor a la cadena de propiedades CSS
+        $propiedades .= $propiedad . ': ' . $valor . '; ';
         return $propiedades;
     }
+
 
     /**
      * Integra los inputs de tipo selects
@@ -1382,23 +1888,115 @@ class html_controler
     }
 
     /**
-     * @param string $accion Accion en ejecucion
-     * @param string $params_get Parametros extra get
-     * @param int $registro_id Registro en proceso
-     * @param string $seccion Seccion en proceso
-     * @param string $session_id Session
-     * @return string
+     * REG
+     * Genera un enlace (URL) con parámetros de consulta (GET) dinámicos y adicionales para ser utilizado en la interfaz.
+     *
+     * Esta función genera una URL a partir de los parámetros proporcionados, agregando parámetros de consulta
+     * como `seccion`, `accion`, `session_id` y `registro_id`. Si los parámetros de la URL contienen valores no vacíos,
+     * estos se agregan a la cadena de parámetros GET. Además, si el parámetro `adm_menu_id` está presente en los parámetros GET,
+     * se incluye en la URL, si no, se usa el valor por defecto `-1`.
+     *
+     * **Pasos de procesamiento:**
+     * 1. Se valida si los parámetros `seccion`, `accion`, `session_id` no están vacíos y se agregan a la URL.
+     * 2. Se agrega el parámetro `adm_menu_id`, si está disponible en los parámetros GET, o se asigna `-1` por defecto.
+     * 3. Se genera la cadena de la URL utilizando todos los parámetros validados.
+     * 4. Se agrega cualquier parámetro adicional proporcionado en `$params_get`.
+     * 5. Se limpia la URL para evitar redundancias, como `?&` o `&&`.
+     * 6. Si todo es válido, la URL generada es retornada. Si ocurre algún error, se devuelve un mensaje de error detallado.
+     *
+     * **Parámetros:**
+     *
+     * @param string $accion La acción que se realizará cuando se haga clic en el enlace. Este parámetro es obligatorio.
+     *                       Representa la acción que se llevará a cabo en la interfaz de usuario, como "guardar", "editar", etc.
+     *                       Ejemplo: `'guardar'`.
+     * @param string $params_get Parámetros adicionales que se incluirán en la URL como parámetros GET. Este parámetro es
+     *                           opcional y debe ser una cadena con parámetros de consulta adicionales. Ejemplo: `'&redirigir=true'`.
+     * @param int $registro_id El ID del registro asociado a la acción. Este parámetro es obligatorio y se incluye en la URL
+     *                         para identificar el registro al que se aplica la acción. Ejemplo: `123`.
+     * @param string $seccion El nombre de la sección en la que se realiza la acción. Este parámetro es obligatorio y se incluye
+     *                         en la URL como un parámetro GET. Ejemplo: `'usuarios'`.
+     * @param string $session_id El ID de la sesión actual. Este parámetro es obligatorio y se usa para identificar la sesión
+     *                           del usuario. Ejemplo: `'abc123'`.
+     *
+     * **Retorno:**
+     * - Devuelve la URL generada con todos los parámetros GET incluidos.
+     * - Si algún parámetro es inválido o falta, se devuelve un mensaje de error.
+     *
+     * **Ejemplos:**
+     *
+     * **Ejemplo 1: Generación exitosa de un enlace con parámetros GET**
+     * ```php
+     * $accion = "guardar";
+     * $params_get = "&redirigir=true";
+     * $registro_id = 123;
+     * $seccion = "usuarios";
+     * $session_id = "abc123";
+     *
+     * $resultado = $this->link_a($accion, $params_get, $registro_id, $seccion, $session_id);
+     * // Retorna: "index.php?seccion=usuarios&accion=guardar&registro_id=123&session_id=abc123&adm_menu_id=-1&redirigir=true"
+     * ```
+     *
+     * **Ejemplo 2: Enlace con un parámetro adicional**
+     * ```php
+     * $accion = "editar";
+     * $params_get = "&mostrar=true";
+     * $registro_id = 456;
+     * $seccion = "productos";
+     * $session_id = "xyz789";
+     *
+     * $resultado = $this->link_a($accion, $params_get, $registro_id, $seccion, $session_id);
+     * // Retorna: "index.php?seccion=productos&accion=editar&registro_id=456&session_id=xyz789&adm_menu_id=-1&mostrar=true"
+     * ```
+     *
+     * **Ejemplo 3: Error por falta de parámetros requeridos**
+     * ```php
+     * $accion = "";
+     * $params_get = "&redirigir=true";
+     * $registro_id = 123;
+     * $seccion = "";
+     * $session_id = "abc123";
+     *
+     * $resultado = $this->link_a($accion, $params_get, $registro_id, $seccion, $session_id);
+     * // Retorna un mensaje de error: "Error la $seccion esta vacia"
+     * ```
+     *
+     * **@version 1.0.0**
      */
-    private function link_a(string $accion, string $params_get, int $registro_id, string $seccion, string $session_id): string
+    private function link_a(
+        string $accion, string $params_get, int $registro_id, string $seccion, string $session_id): string
     {
-        $adm_menu_id = -1;
-        if(isset($_GET['adm_menu_id'])){
-            $adm_menu_id = $_GET['adm_menu_id'];
+        // Inicializar las partes del enlace con valores predeterminados vacíos
+        $query_params = [];
+
+        // Agregar parámetros al arreglo si no están vacíos
+        if (!empty($seccion)) {
+            $query_params[] = "seccion=" . trim($seccion);
         }
-        $link = "index.php?seccion=$seccion&accion=$accion&registro_id=$registro_id&session_id=$session_id&adm_menu_id=$adm_menu_id";
+
+        if (!empty($accion)) {
+            $query_params[] = "accion=" . trim($accion);
+        }
+
+        if (!empty($session_id)) {
+            $query_params[] = "session_id=" . trim($session_id);
+        }
+
+        // Agregar el ID del menú si está disponible en los parámetros GET
+        $adm_menu_id = $_GET['adm_menu_id'] ?? -1;
+        $query_params[] = "adm_menu_id=$adm_menu_id";
+
+        // Crear el enlace base
+        $link = "index.php?" . implode("&", $query_params) . "&registro_id=$registro_id";
+
+        // Agregar los parámetros adicionales
         $link .= $params_get;
-        return $link;
+
+        // Limpiar el enlace para eliminar posibles redundancias
+        $link = str_replace("?&", "?", $link);
+        return str_replace("&&", "&", $link);
     }
+
+
 
     /**
      * Genera un menu lateral con titulo
@@ -1604,16 +2202,136 @@ class html_controler
         return trim($campo['type']);
     }
 
-    private function params_btn(string $icon, string $etiqueta, bool $muestra_icono_btn, bool $muestra_titulo_btn, array $params){
+    /**
+     * REG
+     * Genera un objeto con los parámetros `params_get`, `icon_html` y `etiqueta_html` para ser utilizados en un botón.
+     *
+     * Esta función recibe el nombre de un ícono, una etiqueta y otros parámetros que determinan si se debe mostrar el ícono
+     * y la etiqueta en el botón generado. Además, procesa y valida los parámetros proporcionados, generando el HTML adecuado
+     * para los iconos y etiquetas. Si alguno de los parámetros es inválido, se retorna un mensaje de error.
+     *
+     * **Pasos de procesamiento:**
+     * 1. Se genera una cadena de parámetros GET a partir del arreglo `$params` utilizando la función `params_get`.
+     * 2. Se genera el HTML del ícono utilizando la función `icon_html` si `$muestra_icono_btn` es `true`.
+     * 3. Se genera el HTML de la etiqueta utilizando la función `etiqueta_html` si `$muestra_titulo_btn` es `true`.
+     * 4. Se retorna un objeto con los parámetros generados.
+     * 5. Si ocurre algún error, se retorna un mensaje de error detallado.
+     *
+     * **Parámetros:**
+     * @param string $icon El nombre del ícono que se usará para el botón. Por ejemplo, "fa-user".
+     *                     Este parámetro es obligatorio si se desea mostrar el ícono.
+     * @param string $etiqueta El texto de la etiqueta que se mostrará en el botón. Por ejemplo, "Crear usuario".
+     *                         Este parámetro es obligatorio si se desea mostrar la etiqueta.
+     * @param bool $muestra_icono_btn Determina si el ícono debe mostrarse en el botón. Si es `true`, se genera el ícono.
+     *                                Si es `false`, no se genera ningún ícono.
+     * @param bool $muestra_titulo_btn Determina si la etiqueta debe mostrarse en el botón. Si es `true`, se muestra el texto de la etiqueta.
+     *                                 Si es `false`, no se genera ninguna etiqueta.
+     * @param array $params Un arreglo de parámetros adicionales que se incluirán en la URL del botón como parámetros GET.
+     *
+     * **Retorno:**
+     * - Devuelve un objeto con tres propiedades: `params_get`, `icon_html` y `etiqueta_html`.
+     *   - `params_get` es una cadena con los parámetros GET generados.
+     *   - `icon_html` es el HTML generado para el ícono (o una cadena vacía si no se muestra).
+     *   - `etiqueta_html` es el HTML generado para la etiqueta (o una cadena vacía si no se muestra).
+     * - Si ocurre un error en cualquiera de los pasos, devuelve un arreglo con el mensaje de error correspondiente.
+     *
+     * **Ejemplos:**
+     *
+     * **Ejemplo 1: Generación exitosa de parámetros para el botón**
+     * ```php
+     * $icon = "fa-user";
+     * $etiqueta = "Crear usuario";
+     * $muestra_icono_btn = true;
+     * $muestra_titulo_btn = true;
+     * $params = ['id' => '123', 'redirigir' => 'true'];
+     *
+     * $resultado = $this->params_btn($icon, $etiqueta, $muestra_icono_btn, $muestra_titulo_btn, $params);
+     * // Retorna:
+     * // {
+     * //     "params_get": "&id=123&redirigir=true",
+     * //     "icon_html": "<span class='fa-user'></span>",
+     * //     "etiqueta_html": "Crear usuario"
+     * // }
+     * ```
+     *
+     * **Ejemplo 2: Error al generar parámetros GET debido a una clave vacía**
+     * ```php
+     * $icon = "fa-user";
+     * $etiqueta = "Crear usuario";
+     * $muestra_icono_btn = true;
+     * $muestra_titulo_btn = true;
+     * $params = ['', 'email' => 'juan@example.com'];
+     *
+     * $resultado = $this->params_btn($icon, $etiqueta, $muestra_icono_btn, $muestra_titulo_btn, $params);
+     * // Retorna:
+     * // {
+     * //     "mensaje": "Error en key no puede venir vacio",
+     * //     "data": ""
+     * // }
+     * ```
+     *
+     * **Ejemplo 3: Error al generar HTML del ícono debido a un ícono vacío**
+     * ```php
+     * $icon = "";
+     * $etiqueta = "Crear usuario";
+     * $muestra_icono_btn = true;
+     * $muestra_titulo_btn = true;
+     * $params = ['id' => '123'];
+     *
+     * $resultado = $this->params_btn($icon, $etiqueta, $muestra_icono_btn, $muestra_titulo_btn, $params);
+     * // Retorna:
+     * // {
+     * //     "mensaje": "Error si muestra_icono_btn entonces icon no puede venir vacio",
+     * //     "data": ""
+     * // }
+     * ```
+     *
+     * **Ejemplo 4: Error al generar HTML de la etiqueta debido a una etiqueta vacía**
+     * ```php
+     * $icon = "fa-user";
+     * $etiqueta = "";
+     * $muestra_icono_btn = true;
+     * $muestra_titulo_btn = true;
+     * $params = ['id' => '123'];
+     *
+     * $resultado = $this->params_btn($icon, $etiqueta, $muestra_icono_btn, $muestra_titulo_btn, $params);
+     * // Retorna:
+     * // {
+     * //     "mensaje": "Error si muestra_titulo_btn entonces etiqueta no puede venir vacio",
+     * //     "data": ""
+     * // }
+     * ```
+     *
+     * **Ejemplo 5: Parámetros válidos pero sin mostrar ícono ni etiqueta**
+     * ```php
+     * $icon = "";
+     * $etiqueta = "";
+     * $muestra_icono_btn = false;
+     * $muestra_titulo_btn = false;
+     * $params = ['id' => '123'];
+
+     * $resultado = $this->params_btn($icon, $etiqueta, $muestra_icono_btn, $muestra_titulo_btn, $params);
+     * // Retorna:
+     * // {
+     * //     "params_get": "&id=123",
+     * //     "icon_html": "",
+     * //     "etiqueta_html": ""
+     * // }
+     * ```
+     *
+     * **@version 1.0.0**
+     */
+    private function params_btn(string $icon, string $etiqueta, bool $muestra_icono_btn, bool $muestra_titulo_btn,
+                                array $params){
         $params_get = $this->params_get(params: $params);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar params_get', data: $params_get);
         }
-        $icon_html = $this->icon_html(icon: $icon,muestra_icono_btn:  $muestra_icono_btn);
+        $icon_html = $this->icon_html(icon: $icon, muestra_icono_btn:  $muestra_icono_btn);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar icon_html', data: $icon_html);
         }
-        $etiqueta_html = $this->etiqueta_html(etiqueta: $etiqueta,muestra_titulo_btn:  $muestra_titulo_btn);
+        $etiqueta_html = $this->etiqueta_html(etiqueta: $etiqueta, muestra_titulo_btn:  $muestra_titulo_btn);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar etiqueta_html', data: $etiqueta_html);
         }
@@ -1624,44 +2342,96 @@ class html_controler
         return $data;
     }
 
+
     /**
-     * POR DOCUMENTAR EN WIKI
-     * Esta función toma un arreglo de parámetros y los convierte en una string tipo GET.
-     * Esto es útil para hacer peticiones HTTP GET con múltiples parámetros.
+     * REG
+     * Genera una cadena de parámetros GET a partir de un arreglo de parámetros clave-valor.
      *
-     * @param array $params Arreglo de parámetros que se convertirán en string tipo GET.
-     *                      Cada llave y valor del arreglo se transforma en la forma 'llave=valor'.
-     *                      Luego se unen todos los pares 'llave=valor' con el simbolo '&' entre ellos.
-     *                      Es necesario que cada llave y valor estén no sean vacíos y que la llave no sea numérica.
+     * Esta función recibe un arreglo de parámetros clave-valor y genera una cadena de parámetros GET,
+     * validando que las claves y los valores no estén vacíos. Si alguno de los parámetros es inválido,
+     * la función devolverá un mensaje de error. Si todos los parámetros son válidos, la función retornará
+     * una cadena de texto con los parámetros en formato `&key=value`.
      *
+     * **Pasos de procesamiento:**
+     * 1. Se recorre el arreglo `$params`, donde cada clave y valor se valida:
+     *    - La clave no puede estar vacía ni ser numérica.
+     *    - El valor no puede estar vacío.
+     * 2. Si alguna de las claves o valores es inválida, se genera un mensaje de error.
+     * 3. Si todos los parámetros son válidos, se concatenan en una cadena de texto en formato `&key=value`.
+     * 4. Se devuelve la cadena de parámetros GET generada.
      *
-     * @return string|array Devuelve la cadena formada con parámetros tipo GET.
-     *                      En caso de error, devolverá un error indicando el problema encontrado con detallado en la data.
-     *                      Los errores pueden ser 'Error en key no puede venir vacio', 'Error en key debe ser un texto' ó
-     *                      'Error en value no puede venir vacio' con la data correspondiente al valor o llave con error.
+     * **Parámetros:**
      *
-     * @throws errores Si ocurre alguna excepción, se arroja tal cual.
-     * @version 18.15.0
+     * @param array $params Un arreglo asociativo que contiene las claves y valores para generar los parámetros GET.
+     *
+     * **Retorno:**
+     * - Devuelve una cadena de texto con los parámetros GET generados si todo es válido.
+     * - Si ocurre un error durante la validación, devuelve un arreglo con el mensaje de error correspondiente.
+     *
+     * **Ejemplos:**
+     *
+     * **Ejemplo 1: Generación exitosa de parámetros GET**
+     * ```php
+     * $params = ['nombre' => 'Juan', 'email' => 'juan@example.com'];
+     * $resultado = $this->params_get($params);
+     * // Retorna: "&nombre=Juan&email=juan@example.com"
+     * ```
+     *
+     * **Ejemplo 2: Error por clave vacía**
+     * ```php
+     * $params = ['', 'email' => 'juan@example.com'];
+     * $resultado = $this->params_get($params);
+     * // Retorna: 'Error en key no puede venir vacio'
+     * ```
+     *
+     * **Ejemplo 3: Error por valor vacío**
+     * ```php
+     * $params = ['nombre' => 'Juan', 'email' => ''];
+     * $resultado = $this->params_get($params);
+     * // Retorna: 'Error en value no puede venir vacio'
+     * ```
+     *
+     * **Ejemplo 4: Error por clave numérica**
+     * ```php
+     * $params = [1 => 'Juan', 'email' => 'juan@example.com'];
+     * $resultado = $this->params_get($params);
+     * // Retorna: 'Error en key debe ser un texto'
+     * ```
+     *
+     * **@version 1.0.0**
      */
     private function params_get(array $params): string|array
     {
+        // Inicialización de la cadena que contendrá los parámetros GET
         $params_get = '';
-        foreach ($params as $key=>$value){
+
+        // Recorrer el arreglo de parámetros
+        foreach ($params as $key => $value) {
+            // Validar que la clave no esté vacía
             $key = trim($key);
-            if($key === ''){
+            if ($key === '') {
                 return $this->error->error(mensaje: 'Error en key no puede venir vacio', data: $key);
             }
-            if(is_numeric($key)){
+
+            // Validar que la clave no sea numérica
+            if (is_numeric($key)) {
                 return $this->error->error(mensaje: 'Error en key debe ser un texto', data: $key);
             }
+
+            // Validar que el valor no esté vacío
             $value = trim($value);
-            if($value === ''){
+            if ($value === '') {
                 return $this->error->error(mensaje: 'Error en value no puede venir vacio', data: $value);
             }
+
+            // Concatenar el parámetro en la cadena de parámetros GET
             $params_get .= "&$key=$value";
         }
+
+        // Devolver la cadena de parámetros GET
         return $params_get;
     }
+
 
     /**
      * Integra los parametros de un select
@@ -1833,29 +2603,79 @@ class html_controler
     }
 
     /**
-     * Integra las propiedades css integradas en el elemento
-     * @param array $styles Estilos previos css
-     * @return array|string
-     * @version 13.85.2
+     * REG
+     * Genera una cadena de propiedades CSS a partir de un arreglo de propiedades y valores.
+     *
+     * Esta función toma un arreglo asociativo donde las claves son propiedades CSS y los valores son los valores correspondientes.
+     * La función valida cada propiedad y valor utilizando `valida_propiedad` y luego integra cada propiedad y su valor en una cadena
+     * de propiedades CSS. Si alguna propiedad o valor no es válido, se genera un mensaje de error. Si todas las propiedades son válidas,
+     * se retorna una cadena con todas las propiedades CSS generadas.
+     *
+     * **Pasos de procesamiento:**
+     * 1. Se recorre el arreglo `$styles`, donde cada clave y valor se valida:
+     *    - Se valida que la propiedad y su valor no estén vacíos y que la propiedad no sea un número.
+     * 2. Si la validación es exitosa, se agrega la propiedad y su valor a la cadena de propiedades CSS.
+     * 3. Si ocurre un error durante la validación o la integración, se retorna un mensaje de error detallado.
+     * 4. Si todo es válido, se retorna la cadena de propiedades CSS generada.
+     *
+     * **Parámetros:**
+     *
+     * @param array $styles Un arreglo asociativo donde las claves son propiedades CSS (por ejemplo, `'color'`, `'font-size'`)
+     *                      y los valores son los valores correspondientes (por ejemplo, `'red'`, `'12px'`).
+     *
+     * **Retorno:**
+     * - Devuelve una cadena con todas las propiedades CSS generadas, separadas por punto y coma.
+     * - Si ocurre un error durante la validación o la integración de las propiedades, se devuelve un mensaje de error.
+     *
+     * **Ejemplos:**
+     *
+     * **Ejemplo 1: Generación exitosa de propiedades CSS**
+     * ```php
+     * $styles = ['color' => 'red', 'font-size' => '12px'];
+     * $resultado = $this->propiedades_css($styles);
+     * // Retorna: "color: red; font-size: 12px; "
+     * ```
+     *
+     * **Ejemplo 2: Error al validar propiedad CSS**
+     * ```php
+     * $styles = ['color' => '', 'font-size' => '12px'];
+     * $resultado = $this->propiedades_css($styles);
+     * // Retorna: "Error valor esta vacio"
+     * ```
+     *
+     * **Ejemplo 3: Error al integrar propiedad CSS**
+     * ```php
+     * $styles = ['color' => 'red', 'font-size' => ''];
+     * $resultado = $this->propiedades_css($styles);
+     * // Retorna: "Error valor esta vacio"
+     * ```
+     *
+     * **@version 1.0.0**
      */
     private function propiedades_css(array $styles): array|string
     {
+        // Inicializar la cadena de propiedades CSS
         $propiedades = '';
 
-        foreach ($styles as $propiedad=>$valor){
-
-            $valida = $this->valida_propiedad(propiedad: $propiedad,valor:  $valor);
-            if(errores::$error){
+        // Recorrer el arreglo de estilos
+        foreach ($styles as $propiedad => $valor) {
+            // Validar la propiedad y el valor
+            $valida = $this->valida_propiedad(propiedad: $propiedad, valor: $valor);
+            if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al validar propiedad', data: $valida);
             }
 
-            $propiedades = $this->integra_propiedad(propiedad: $propiedad,propiedades:  $propiedades,valor:  $valor);
-            if(errores::$error){
+            // Integrar la propiedad y el valor en la cadena de propiedades CSS
+            $propiedades = $this->integra_propiedad(propiedad: $propiedad, propiedades: $propiedades, valor: $valor);
+            if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al generar propiedades', data: $propiedades);
             }
         }
+
+        // Retornar la cadena de propiedades CSS generada
         return $propiedades;
     }
+
     /**
      * Retornos hidden
      * @param int $registro_id Registro id a retornar
@@ -1891,10 +2711,43 @@ class html_controler
     }
 
     /**
-     * Integra el role legible html boostrap
-     * @param string $role Role de button
-     * @return string
-     * @version 13.67.1
+     * REG
+     * Asigna un valor al atributo `role` de un botón.
+     *
+     * Esta función recibe un valor para el atributo `role` de un botón. Si el valor proporcionado está vacío,
+     * se asigna el valor por defecto `'button'` para asegurar que el elemento tenga un valor válido para el atributo `role`.
+     * Si el valor de `$role` no está vacío, simplemente se retorna ese valor.
+     *
+     * **Pasos de procesamiento:**
+     * 1. Se recorta el valor de `$role` para eliminar cualquier espacio extra al principio o al final.
+     * 2. Si el valor de `$role` está vacío, se asigna el valor por defecto `'button'`.
+     * 3. Se retorna el valor del atributo `role`, ya sea el proporcionado o el valor por defecto.
+     *
+     * **Parámetros:**
+     *
+     * @param string $role El valor del atributo `role` para el botón. Este parámetro es opcional y, si está vacío,
+     *                     se le asignará el valor por defecto `'button'`.
+     *
+     * **Retorno:**
+     * - Devuelve el valor del atributo `role`, que será el valor proporcionado o `'button'` si el valor estaba vacío.
+     *
+     * **Ejemplos:**
+     *
+     * **Ejemplo 1: Asignar un role válido**
+     * ```php
+     * $role = "submit";
+     * $resultado = $this->role_button($role);
+     * // Retorna: "submit"
+     * ```
+     *
+     * **Ejemplo 2: Asignar el valor por defecto si el role está vacío**
+     * ```php
+     * $role = "";
+     * $resultado = $this->role_button($role);
+     * // Retorna: "button"
+     * ```
+     *
+     * **@version 1.0.0**
      */
     private function role_button(string $role): string
     {
@@ -1904,6 +2757,7 @@ class html_controler
         }
         return $role;
     }
+
 
 
     /**
@@ -2179,35 +3033,127 @@ class html_controler
     }
 
     /**
-     * Obtiene el estilo de un boton
-     * @param array $accion_permitida Accion del boton
-     * @param array $row Registro en proceso
-     * @return array|string
-     * @version 0.237.37
+     * REG
+     * Valida y determina el estilo CSS de un botón de acción permitida basado en el estado de la acción y los parámetros proporcionados.
+     *
+     * Esta función realiza la validación de los datos de la acción permitida, obteniendo el estilo CSS por defecto
+     * o ajustado en función de si la acción está activa. La función verifica si los datos necesarios están presentes y
+     * si son válidos, y ajusta el estilo del botón según el estado de la acción y las condiciones del registro.
+     *
+     * **Pasos principales:**
+     * 1. Se verifica que el parámetro `$row` no esté vacío. Si está vacío, se lanza un error.
+     * 2. Se valida que la acción permitida (`$accion_permitida`) tenga los datos correctos mediante la función
+     *    `valida_boton_data_accion`.
+     * 3. Si la acción está activa (`adm_accion_es_status === 'activo'`), se ajusta el estilo con base en el estado y los datos
+     *    del registro utilizando la función `style_btn_status`.
+     * 4. Si todo es correcto, se retorna el estilo CSS final del botón.
+     *
+     * **Parámetros:**
+     * @param array $accion_permitida Un arreglo asociativo que contiene los datos de la acción permitida. Debe incluir
+     *                                al menos los siguientes campos:
+     *  - `adm_accion_css`: El estilo CSS de la acción, un valor que se usará como base.
+     *  - `adm_accion_es_status`: El estado de la acción (por ejemplo, 'activo' o 'inactivo').
+     *  - `adm_accion_descripcion`: Descripción de la acción (ej. 'alta', 'modificar', etc.).
+     *  - `adm_seccion_descripcion`: Descripción de la sección a la que pertenece la acción (ej. 'usuarios', 'productos', etc.).
+     *
+     * @param array $row Un arreglo asociativo con los datos del registro que se utilizarán para aplicar el estilo.
+     *                   Este parámetro es necesario para poder obtener el estilo ajustado si la acción está activa.
+     *
+     * **Valor de retorno:**
+     * - Retorna un arreglo si ocurre un error durante la validación o la obtención del estilo.
+     * - Retorna una cadena de texto (`string`) que representa el estilo CSS aplicado al botón si todo es válido.
+     *
+     * **Excepciones:**
+     * - Si el parámetro `$row` está vacío, se lanza un error.
+     * - Si los datos de la acción permitida no son válidos, se lanza un error.
+     * - Si no se puede obtener el estilo correspondiente, se lanza un error.
+     *
+     * **Ejemplos de uso:**
+     *
+     * **Ejemplo 1: Estilo por defecto**
+     * ```php
+     * $accion_permitida = [
+     *     'adm_accion_css' => 'info',
+     *     'adm_accion_es_status' => 'inactivo',
+     *     'adm_accion_descripcion' => 'Crear',
+     *     'adm_seccion_descripcion' => 'Usuarios'
+     * ];
+     * $row = ['campo1' => 'valor1', 'campo2' => 'valor2'];
+     * $style = $this->style_btn($accion_permitida, $row);
+     * echo $style;  // Imprimirá 'info', ya que la acción no está activa.
+     * ```
+     *
+     * **Ejemplo 2: Estilo ajustado cuando la acción está activa**
+     * ```php
+     * $accion_permitida = [
+     *     'adm_accion_css' => 'success',
+     *     'adm_accion_es_status' => 'activo',
+     *     'adm_accion_descripcion' => 'Editar',
+     *     'adm_seccion_descripcion' => 'Usuarios'
+     * ];
+     * $row = ['campo1' => 'valor1', 'campo2' => 'valor2'];
+     * $style = $this->style_btn($accion_permitida, $row);
+     * echo $style;  // Imprimirá el estilo ajustado si la acción está activa.
+     * ```
+     *
+     * **Ejemplo 3: Error cuando $row está vacío**
+     * ```php
+     * $accion_permitida = [
+     *     'adm_accion_css' => 'danger',
+     *     'adm_accion_es_status' => 'activo',
+     *     'adm_accion_descripcion' => 'Eliminar',
+     *     'adm_seccion_descripcion' => 'Usuarios'
+     * ];
+     * $row = [];
+     * $style = $this->style_btn($accion_permitida, $row);
+     * // Retornará un error, ya que el parámetro $row está vacío.
+     * ```
+     *
+     * **Ejemplo 4: Error al validar la acción permitida**
+     * ```php
+     * $accion_permitida = [
+     *     'adm_accion_css' => 'danger',
+     *     'adm_accion_es_status' => 'activo',
+     *     'adm_accion_descripcion' => 'Eliminar',
+     *     'adm_seccion_descripcion' => 'Usuarios'
+     * ];
+     * $row = ['campo1' => 'valor1'];
+     * // Suponiendo que la validación de los datos falle
+     * $style = $this->style_btn($accion_permitida, $row);
+     * // Retornará un error si la validación falla.
+     * ```
+     *
+     * @version 1.0.0
      */
-    final public function style_btn(array $accion_permitida, array $row):array|string{
-
-        if(count($row) === 0){
-            return $this->error->error(mensaje: 'Error row esta vacio',data:  $row);
+    final public function style_btn(array $accion_permitida, array $row): array|string
+    {
+        if (count($row) === 0) {
+            return $this->error->error(mensaje: 'Error row esta vacio', data: $row);
         }
+
+        // Valida los datos de la acción permitida
         $valida = $this->valida_boton_data_accion(accion_permitida: $accion_permitida);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar accion_permitida',data:  $valida);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar accion_permitida', data: $valida);
         }
 
         $style = $accion_permitida['adm_accion_css'];
         $es_status = $accion_permitida['adm_accion_es_status'];
         $accion = $accion_permitida['adm_accion_descripcion'];
         $seccion = $accion_permitida['adm_seccion_descripcion'];
-        $key_es_status = $seccion.'_'.$accion;
-        if($es_status === 'activo'){
+        $key_es_status = $seccion . '_' . $accion;
+
+        // Si la acción está activa, ajusta el estilo
+        if ($es_status === 'activo') {
             $style = $this->style_btn_status(key_es_status: $key_es_status, row: $row);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al obtener style',data:  $style);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al obtener style', data: $style);
             }
         }
+
         return $style;
     }
+
 
     /**
      * REG
@@ -2303,17 +3249,61 @@ class html_controler
 
 
     /**
-     * @param string $propiedades
-     * @return string
+     * REG
+     * Genera un atributo `style` en formato de cadena a partir de un conjunto de propiedades CSS.
+     *
+     * Esta función toma una cadena de propiedades CSS y las encapsula en un atributo `style` que puede ser utilizado
+     * en elementos HTML. Si las propiedades proporcionadas no están vacías, se genera una cadena con el formato
+     * adecuado para un atributo `style`. Si las propiedades están vacías, se retorna una cadena vacía.
+     *
+     * **Pasos de procesamiento:**
+     * 1. Se recorta cualquier espacio adicional al principio y al final de la cadena de propiedades CSS.
+     * 2. Si las propiedades no están vacías, se genera una cadena con el formato `style='propiedad1: valor1; propiedad2: valor2;'`.
+     * 3. Si las propiedades están vacías, se retorna una cadena vacía.
+     * 4. Si todo es válido, se retorna el atributo `style` generado.
+     *
+     * **Parámetros:**
+     *
+     * @param string $propiedades La cadena que contiene las propiedades CSS. Este parámetro es obligatorio.
+     *                            Debe ser una cadena con las propiedades en formato `propiedad1: valor1; propiedad2: valor2;`.
+     *
+     * **Retorno:**
+     * - Devuelve una cadena con el atributo `style` en formato HTML si las propiedades no están vacías.
+     * - Si las propiedades están vacías, retorna una cadena vacía.
+     *
+     * **Ejemplos:**
+     *
+     * **Ejemplo 1: Generación exitosa del atributo `style`**
+     * ```php
+     * $propiedades = "color: red; font-size: 12px;";
+     * $resultado = $this->style_custom($propiedades);
+     * // Retorna: "style='color: red; font-size: 12px;'"
+     * ```
+     *
+     * **Ejemplo 2: No generar atributo `style` si las propiedades están vacías**
+     * ```php
+     * $propiedades = "";
+     * $resultado = $this->style_custom($propiedades);
+     * // Retorna: ""
+     * ```
+     *
+     * **@version 1.0.0**
      */
     private function style_custom(string $propiedades): string
     {
+        // Recortar cualquier espacio adicional al principio y al final
+        $propiedades = trim($propiedades);
+
+        // Si las propiedades no están vacías, generar el atributo style
         $style_custom = '';
-        if($propiedades!==''){
+        if ($propiedades !== '') {
             $style_custom = "style='$propiedades'";
         }
+
+        // Retornar el atributo style generado o una cadena vacía
         return $style_custom;
     }
+
 
     /** Genera el template de telefonos para frontend
      * @param modelo $modelo Modelo en ejecucion
@@ -2590,27 +3580,89 @@ class html_controler
     }
 
     /**
-     * valida los parametros de entrada de una propiedad css
-     * @param string $propiedad Propiedad a integrar
-     * @param string $valor Valor a integrar
-     * @return bool|array
-     * @version 13.84.2
+     * REG
+     * Valida que una propiedad y su valor sean correctos para ser utilizados en CSS.
+     *
+     * Esta función valida que tanto la propiedad CSS como su valor no estén vacíos y que la propiedad no sea un valor numérico.
+     * Si alguna de estas condiciones no se cumple, se genera un mensaje de error. Si ambos son válidos, la función retorna `true`.
+     *
+     * **Pasos de procesamiento:**
+     * 1. Se recorta el valor de la propiedad y el valor para eliminar cualquier espacio adicional al principio y al final.
+     * 2. Se valida que la propiedad no esté vacía y que no sea numérica.
+     * 3. Se valida que el valor no esté vacío.
+     * 4. Si alguna validación falla, se genera un mensaje de error.
+     * 5. Si todas las validaciones son correctas, se retorna `true`.
+     *
+     * **Parámetros:**
+     *
+     * @param string $propiedad El nombre de la propiedad CSS (por ejemplo, `'color'`, `'font-size'`, etc.).
+     *                          Este parámetro es obligatorio y debe ser una cadena no vacía ni numérica.
+     * @param string $valor El valor correspondiente a la propiedad CSS (por ejemplo, `'red'`, `'12px'`, etc.).
+     *                      Este parámetro es obligatorio y debe ser una cadena no vacía.
+     *
+     * **Retorno:**
+     * - Devuelve `true` si la propiedad y el valor son válidos.
+     * - Si alguna de las validaciones falla, devuelve un arreglo con el mensaje de error correspondiente.
+     *
+     * **Ejemplos:**
+     *
+     * **Ejemplo 1: Validación exitosa**
+     * ```php
+     * $propiedad = "color";
+     * $valor = "red";
+     * $resultado = $this->valida_propiedad($propiedad, $valor);
+     * // Retorna: true
+     * ```
+     *
+     * **Ejemplo 2: Error por propiedad vacía**
+     * ```php
+     * $propiedad = "";
+     * $valor = "red";
+     * $resultado = $this->valida_propiedad($propiedad, $valor);
+     * // Retorna: "Error propiedad esta vacio"
+     * ```
+     *
+     * **Ejemplo 3: Error por valor vacío**
+     * ```php
+     * $propiedad = "color";
+     * $valor = "";
+     * $resultado = $this->valida_propiedad($propiedad, $valor);
+     * // Retorna: "Error valor esta vacio"
+     * ```
+     *
+     * **Ejemplo 4: Error por propiedad numérica**
+     * ```php
+     * $propiedad = "123";
+     * $valor = "red";
+     * $resultado = $this->valida_propiedad($propiedad, $valor);
+     * // Retorna: "Error propiedad debe ser texto"
+     * ```
+     *
+     * **@version 1.0.0**
      */
     private function valida_propiedad(string $propiedad, string $valor): bool|array
     {
+        // Recortar espacios adicionales de la propiedad y el valor
         $propiedad = trim($propiedad);
-        if($propiedad === ''){
+        if ($propiedad === '') {
             return $this->error->error(mensaje: 'Error propiedad esta vacio', data: $propiedad);
         }
+
+        // Validar que el valor no esté vacío
         $valor = trim($valor);
-        if($valor === ''){
+        if ($valor === '') {
             return $this->error->error(mensaje: 'Error valor esta vacio', data: $valor);
         }
-        if(is_numeric($propiedad)){
+
+        // Validar que la propiedad no sea un número
+        if (is_numeric($propiedad)) {
             return $this->error->error(mensaje: 'Error propiedad debe ser texto', data: $propiedad);
         }
+
+        // Si todo es válido, retornar true
         return true;
     }
+
 
 
 

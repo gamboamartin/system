@@ -15,38 +15,106 @@ class params{
     }
 
     /**
-     * Carga los elementos de un icono
-     * @param array $adm_accion Accion a integrar
-     * @return stdClass|array
-     * @version 2.8.0
+     * REG
+     * Verifica si los botones asociados a una acción deben mostrar un ícono y/o un título según los datos proporcionados.
+     *
+     * Esta función valida que los campos necesarios estén presentes y sean correctos. Luego, determina si los botones
+     * asociados a la acción deben mostrar un ícono y/o un título basándose en los valores de los campos correspondientes.
+     * Los valores de los campos `adm_accion_muestra_icono_btn` y `adm_accion_muestra_titulo_btn` son evaluados,
+     * y si su valor es `'activo'`, se establece a `true`, lo que indica que el ícono o el título deben mostrarse.
+     *
+     * **Pasos de validación y lógica:**
+     * 1. Verifica que los campos `adm_accion_muestra_icono_btn` y `adm_accion_muestra_titulo_btn` existan en el arreglo `$adm_accion`.
+     * 2. Valida que los valores de estos campos sean correctos (usando el método `valida_statuses`).
+     * 3. Si `adm_accion_muestra_icono_btn` es `'activo'`, se establece que el botón debe mostrar un ícono.
+     * 4. Si `adm_accion_muestra_titulo_btn` es `'activo'`, se establece que el botón debe mostrar un título.
+     * 5. Retorna un objeto `stdClass` que contiene dos propiedades: `muestra_icono_btn` y `muestra_titulo_btn`, que indican si el ícono y el título deben mostrarse respectivamente.
+     *
+     * **Parámetros:**
+     *
+     * @param array $adm_accion Datos de la acción permitida, que debe contener los siguientes campos:
+     *  - `adm_accion_muestra_icono_btn`: Define si el botón asociado a la acción debe mostrar un ícono. El valor esperado es `'activo'` o `'inactivo'`.
+     *  - `adm_accion_muestra_titulo_btn`: Define si el botón asociado a la acción debe mostrar un título. El valor esperado es `'activo'` o `'inactivo'`.
+     *
+     * **Retorno:**
+     * - Devuelve un objeto `stdClass` con las propiedades `muestra_icono_btn` y `muestra_titulo_btn`, ambas de tipo `bool`.
+     * - Si los valores de los campos de acción son `'activo'`, las propiedades correspondientes se establecen en `true`, indicando que el ícono y/o el título deben mostrarse.
+     * - Si los valores de los campos son `'inactivo'`, las propiedades se establecerán en `false`.
+     *
+     * **Ejemplos de uso:**
+     *
+     * **Ejemplo 1: Acción con ícono y título visibles**
+     * ```php
+     * $adm_accion = [
+     *     'adm_accion_muestra_icono_btn' => 'activo',
+     *     'adm_accion_muestra_titulo_btn' => 'activo'
+     * ];
+     *
+     * $data = $this->data_icon($adm_accion);
+     * echo $data->muestra_icono_btn; // Imprime 'true'
+     * echo $data->muestra_titulo_btn; // Imprime 'true'
+     * ```
+     *
+     * **Ejemplo 2: Acción sin ícono y título visibles**
+     * ```php
+     * $adm_accion = [
+     *     'adm_accion_muestra_icono_btn' => 'inactivo',
+     *     'adm_accion_muestra_titulo_btn' => 'inactivo'
+     * ];
+     *
+     * $data = $this->data_icon($adm_accion);
+     * echo $data->muestra_icono_btn; // Imprime 'false'
+     * echo $data->muestra_titulo_btn; // Imprime 'false'
+     * ```
+     *
+     * **Ejemplo 3: Error de validación**
+     * ```php
+     * $adm_accion = [
+     *     'adm_accion_muestra_icono_btn' => 'actvo', // Error en el valor
+     *     'adm_accion_muestra_titulo_btn' => 'activo'
+     * ];
+     *
+     * $data = $this->data_icon($adm_accion);
+     * // Retorna un arreglo de error debido a la invalidación de 'actvo'.
+     * ```
+     *
+     * @version 1.0.0
      */
     final public function data_icon(array $adm_accion): stdClass|array
     {
+        // Verificar la existencia de las claves necesarias
         $keys = array('adm_accion_muestra_icono_btn','adm_accion_muestra_titulo_btn');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $adm_accion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar adm_accion', data: $valida);
         }
 
+        // Validar que los estados sean correctos
         $valida = $this->validacion->valida_statuses(keys: $keys, registro: $adm_accion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar adm_accion', data: $valida);
         }
 
+        // Determinar si se debe mostrar el ícono
         $muestra_icono_btn = false;
         if($adm_accion['adm_accion_muestra_icono_btn'] === 'activo'){
             $muestra_icono_btn = true;
         }
 
+        // Determinar si se debe mostrar el título
         $muestra_titulo_btn = false;
         if($adm_accion['adm_accion_muestra_titulo_btn'] === 'activo'){
             $muestra_titulo_btn = true;
         }
+
+        // Crear el objeto de resultado
         $data = new stdClass();
         $data->muestra_icono_btn = $muestra_icono_btn;
         $data->muestra_titulo_btn = $muestra_titulo_btn;
+
         return $data;
     }
+
 
     /**
      * Inicializa los parametros para un input

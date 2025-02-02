@@ -81,6 +81,25 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_a_role_button(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
+
+
+        $etiqueta_html = 'wwww';
+        $icon_html = 'xxxx';
+        $params = 'xxxx';
+        $resultado = $html->a_role_button($etiqueta_html,$icon_html, $params);
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<a xxxx>xxxx wwww</a>",$resultado);
+        errores::$error = false;
+    }
+
     /**
      */
     public function test_alta(): void
@@ -355,6 +374,68 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_emails_alta(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        //$html = new liberator($html);
+
+
+        $_SESSION['usuario_id'] = 2;
+        $_SESSION['grupo_id'] = 2;
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+        $html_controler = new html_controler($html_);
+        $html_controler = new liberator($html_controler);
+
+        $modelo = new adm_accion($this->link);
+        $modelo->campos_view['email']['type'] = 'emails';
+        $row_upd = new stdClass();
+
+        $resultado = $html_controler->emails_alta($modelo, $row_upd);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<div |class|><div |class|><input type='text' name='email' value='' |class| required id='email' placeholder='email' pattern='[^@\s]+@[^@\s]+[^.\s]' /></div></div>", $resultado->email);
+
+        errores::$error = false;
+    }
+    public function test_etiqueta_html(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
+
+        $_SESSION['grupo_id'] = 2;
+
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+
+
+        errores::$error = false;
+        $etiqueta = '';
+        $muestra_titulo_btn = false;
+
+        $resultado = $html->etiqueta_html($etiqueta,$muestra_titulo_btn);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("", $resultado);
+        errores::$error = false;
+
+
+        errores::$error = false;
+        $etiqueta = 'sss';
+        $muestra_titulo_btn = true;
+
+        $resultado = $html->etiqueta_html($etiqueta,$muestra_titulo_btn);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("sss", $resultado);
+        errores::$error = false;
+    }
+
     public function test_fechas_alta(): void
     {
         errores::$error = false;
@@ -461,6 +542,32 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_genera_styles_custom(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
+
+        $_SESSION['grupo_id'] = 2;
+
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+
+        $styles = array();
+        $styles['prop'] = 'x';
+        $styles['xxxxx'] = 'rrr';
+
+        $resultado = $html->genera_styles_custom($styles);
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("style='prop: x; xxxxx: rrr;'",$resultado);
+
+        errores::$error = false;
+    }
+
     public function test_header_collapsible(): void
     {
         errores::$error = false;
@@ -511,6 +618,39 @@ class html_controlerTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("<input type='hidden' name='a' value='c'>",$resultado);
         errores::$error = false;
+    }
+
+    public function test_icon_html(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
+
+        $_SESSION['grupo_id'] = 2;
+
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+        $icon = '';
+        $muestra_icono_btn = false;
+        $resultado = $html->icon_html($icon, $muestra_icono_btn);
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("",$resultado);
+        errores::$error = false;
+
+        $icon = 'xx';
+        $muestra_icono_btn = true;
+        $resultado = $html->icon_html($icon, $muestra_icono_btn);
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<span class='xx'></span>",$resultado);
+
+        errores::$error = false;
+
     }
 
     public function test_init_alta2(): void
@@ -596,32 +736,7 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
-    public function test_emails_alta(): void
-    {
-        errores::$error = false;
-        $html_ = new html();
-        $html = new html_controler($html_);
-        //$html = new liberator($html);
 
-
-        $_SESSION['usuario_id'] = 2;
-        $_SESSION['grupo_id'] = 2;
-        $_GET['session_id'] = 1;
-        $_GET['seccion'] = 'adm_accion';
-        $html_controler = new html_controler($html_);
-        $html_controler = new liberator($html_controler);
-
-        $modelo = new adm_accion($this->link);
-        $modelo->campos_view['email']['type'] = 'emails';
-        $row_upd = new stdClass();
-
-        $resultado = $html_controler->emails_alta($modelo, $row_upd);
-        $this->assertIsObject($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div |class|><div |class|><input type='text' name='email' value='' |class| required id='email' placeholder='email' pattern='[^@\s]+@[^@\s]+[^.\s]' /></div></div>", $resultado->email);
-
-        errores::$error = false;
-    }
 
     public function test_input_id(): void
     {
@@ -790,6 +905,69 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_link_a(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
+
+        $_SESSION['grupo_id'] = 2;
+
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+        $accion = '';
+        $params_get = 'x';
+        $registro_id = '-1';
+        $seccion = '';
+        $session_id = '';
+        $resultado = $html->link_a($accion,$params_get,$registro_id,$seccion,$session_id);
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("index.php?adm_menu_id=-1&registro_id=-1x",$resultado);
+        errores::$error = false;
+
+        $accion = 'a';
+        $params_get = 'x';
+        $registro_id = '-1';
+        $seccion = '';
+        $session_id = '';
+        $resultado = $html->link_a($accion,$params_get,$registro_id,$seccion,$session_id);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("index.php?accion=a&adm_menu_id=-1&registro_id=-1x",$resultado);
+        errores::$error = false;
+
+        errores::$error = false;
+
+        $accion = '';
+        $params_get = 'x';
+        $registro_id = '-1';
+        $seccion = 'v';
+        $session_id = '';
+        $resultado = $html->link_a($accion,$params_get,$registro_id,$seccion,$session_id);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("index.php?seccion=v&adm_menu_id=-1&registro_id=-1x",$resultado);
+        errores::$error = false;
+
+
+
+
+        $accion = 'ddd';
+        $params_get = 'x';
+        $registro_id = '-1';
+        $seccion = 'v';
+        $session_id = '';
+        $resultado = $html->link_a($accion,$params_get,$registro_id,$seccion,$session_id);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("index.php?seccion=v&accion=ddd&adm_menu_id=-1&registro_id=-1x",$resultado);
+        errores::$error = false;
+    }
+
 
     public function test_menu_lateral_title(): void
     {
@@ -882,6 +1060,35 @@ class html_controlerTest extends test {
         $resultado = $html->obtener_tipo_input($campo);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
+    public function test_params_btn(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
+
+        $_SESSION['grupo_id'] = 2;
+
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+        $icon = 'a';
+        $etiqueta = 'd';
+        $muestra_icono_btn = true;
+        $muestra_titulo_btn = true;
+        $params['x'] = 'x';
+        $params['y'] = 'x';
+
+        $resultado = $html->params_btn($icon,$etiqueta,$muestra_icono_btn,$muestra_titulo_btn,$params);
+       // print_r($resultado);exit;
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("&x=x&y=x", $resultado->params_get);
+        $this->assertEquals("<span class='a'></span>", $resultado->icon_html);
+        $this->assertEquals("d", $resultado->etiqueta_html);
         errores::$error = false;
     }
 
@@ -1411,6 +1618,28 @@ class html_controlerTest extends test {
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('success', $resultado);
+        errores::$error = false;
+
+    }
+
+    public function test_style_custom(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        $html = new liberator($html);
+        $_SESSION['grupo_id'] = 2;
+        $_SESSION['usuario_id'] = 2;
+
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+
+        $propiedades = 'xxx';
+        $resultado = $html->style_custom($propiedades);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("style='xxx'", $resultado);
         errores::$error = false;
 
     }
