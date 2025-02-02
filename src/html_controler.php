@@ -2210,34 +2210,97 @@ class html_controler
     }
 
     /**
-     * Obtiene el estilo de un boton
-     * @param string $key_es_status Key del boton
-     * @param array $row Registro en proceso
-     * @return array|string
-     * @version 0.235.37
+     * REG
+     * Ajusta el estilo de un botón basado en el estado de la acción (activo o inactivo).
+     *
+     * Esta función valida el estado de una acción, determinado por la clave `$key_es_status`, en el arreglo `$row`.
+     * Si el estado es 'activo', la función devuelve un estilo CSS de 'success'. Si el estado es 'inactivo',
+     * devuelve un estilo de 'danger'.
+     *
+     * **Pasos de validación y operación:**
+     * 1. Verifica que la clave de estado no esté vacía.
+     * 2. Verifica que la fila (`$row`) no esté vacía.
+     * 3. Valida que el estado de la acción en `$row` sea válido ('activo' o 'inactivo').
+     * 4. Ajusta el estilo según el estado de la acción:
+     *    - Si el estado es 'activo', el estilo será 'success'.
+     *    - Si el estado es 'inactivo', el estilo será 'danger'.
+     *
+     * **Notas:**
+     * - Si la clave o la fila están vacías, o si el estado es inválido, se lanza un error.
+     * - El estilo devuelto se utiliza para aplicar diferentes estilos a los botones según el estado de la acción.
+     *
+     * @param string $key_es_status Clave que indica el estado de la acción en el arreglo `$row`.
+     *                               Este valor debe estar presente en `$row` y contener el estado de la acción ('activo' o 'inactivo').
+     *
+     * @param array $row Datos de la fila que contiene el estado de la acción. Debe incluir la clave `$key_es_status` con su valor correspondiente.
+     *
+     * @return array|string Devuelve:
+     *  - 'success' si el estado de la acción es 'activo'.
+     *  - 'danger' si el estado de la acción es 'inactivo'.
+     *  - Un arreglo con el mensaje de error si alguna validación falla.
+     *
+     * @throws errores Si alguna validación falla, se genera un error que se captura y se devuelve como un mensaje.
+     *
+     * **Ejemplo 1: Estilo de botón para estado 'activo'**
+     * ```php
+     * $key_es_status = 'activo';
+     * $row = [
+     *     'activo' => 'activo'
+     * ];
+     * $resultado = $this->style_btn_status($key_es_status, $row);
+     * // Retorna 'success', ya que el estado es 'activo'.
+     * ```
+     *
+     * **Ejemplo 2: Estilo de botón para estado 'inactivo'**
+     * ```php
+     * $key_es_status = 'activo';
+     * $row = [
+     *     'activo' => 'inactivo'
+     * ];
+     * $resultado = $this->style_btn_status($key_es_status, $row);
+     * // Retorna 'danger', ya que el estado es 'inactivo'.
+     * ```
+     *
+     * **Ejemplo 3: Error por fila vacía**
+     * ```php
+     * $key_es_status = 'activo';
+     * $row = [];
+     * $resultado = $this->style_btn_status($key_es_status, $row);
+     * // Retorna un error con el mensaje 'Error row esta vacio'.
+     * ```
+     *
+     * @version 1.0.0
      */
     private function style_btn_status(string $key_es_status, array $row): array|string
     {
+        // Verifica que la clave no esté vacía
         $key_es_status = trim($key_es_status);
         if($key_es_status === ''){
-            return $this->error->error(mensaje: 'Error key_es_status esta vacio',data:  $key_es_status);
+            return $this->error->error(mensaje: 'Error key_es_status esta vacio', data: $key_es_status);
         }
+
+        // Verifica que la fila no esté vacía
         if(count($row) === 0){
-            return $this->error->error(mensaje: 'Error row esta vacio',data:  $row);
+            return $this->error->error(mensaje: 'Error row esta vacio', data: $row);
         }
 
+        // Valida el estado de la acción en la fila
         $keys = array($key_es_status);
-        $valida = $this->validacion->valida_statuses(keys: $keys,registro:  $row);
+        $valida = $this->validacion->valida_statuses(keys: $keys, registro: $row);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar  registro',data:  $valida);
+            return $this->error->error(mensaje: 'Error al validar registro', data: $valida);
         }
 
-        $style = 'danger';
+        // Asigna el estilo según el estado de la acción
+        $style = 'danger'; // Valor predeterminado para 'inactivo'
         if($row[$key_es_status] === 'activo'){
-            $style = 'success';
+            $style = 'success'; // Si el estado es 'activo', el estilo es 'success'
         }
+
+        // Retorna el estilo correspondiente
         return $style;
     }
+
 
     /**
      * @param string $propiedades
@@ -2383,25 +2446,105 @@ class html_controler
         return $texts;
     }
 
+    /**
+     * REG
+     * Valida los datos de una acción permitida en el sistema.
+     *
+     * Esta función se encarga de verificar que todos los parámetros necesarios para una acción permitida estén presentes
+     * y sean válidos. Asegura que:
+     * - El campo de estilo CSS (`adm_accion_css`) sea un valor válido según una lista de estilos permitidos.
+     * - El estado de la acción (`adm_accion_es_status`) sea uno de los valores válidos: 'activo' o 'inactivo'.
+     * - Los campos obligatorios de la acción estén presentes y no vacíos.
+     *
+     * Si alguna de las validaciones falla, se devuelve un arreglo con el mensaje de error correspondiente.
+     * Si todas las validaciones pasan, se devuelve `true`.
+     *
+     * **Pasos de validación:**
+     * 1. Valida que los campos `adm_accion_css`, `adm_accion_es_status`, `adm_accion_descripcion`,
+     *    y `adm_seccion_descripcion` existan en el registro de la acción permitida.
+     * 2. Valida que el valor de `adm_accion_css` sea un estilo CSS válido.
+     * 3. Valida que el campo `adm_accion_es_status` contenga un valor válido, que sea 'activo' o 'inactivo'.
+     *
+     * **Notas:**
+     * - Si alguna validación falla, se lanza un error con un mensaje descriptivo.
+     * - Si todas las validaciones son correctas, se devuelve `true`.
+     *
+     * @param array $accion_permitida Registro de la acción permitida a validar. Debe contener los siguientes campos:
+     * - `adm_accion_css`: El estilo CSS asociado a la acción (debe ser un estilo válido).
+     * - `adm_accion_es_status`: El estado de la acción, que debe ser 'activo' o 'inactivo'.
+     * - `adm_accion_descripcion`: Descripción de la acción (campo requerido).
+     * - `adm_seccion_descripcion`: Descripción de la sección a la que pertenece la acción (campo requerido).
+     *
+     * @return bool|array Devuelve:
+     *  - `true` si todas las validaciones pasan correctamente.
+     *  - Un arreglo con información del error si alguna validación falla.
+     *
+     * @throws errores Si alguna validación falla, se genera un error que se captura y devuelve como un mensaje.
+     *
+     * @example Ejemplo 1: Validar una acción permitida válida
+     * ```php
+     * $accion_permitida = [
+     *     'adm_accion_css' => 'info',
+     *     'adm_accion_es_status' => 'activo',
+     *     'adm_accion_descripcion' => 'Crear',
+     *     'adm_seccion_descripcion' => 'Usuarios',
+     * ];
+     * $resultado = $this->valida_boton_data_accion($accion_permitida);
+     * // Retorna true si todos los campos son válidos.
+     * ```
+     *
+     * @example Ejemplo 2: Validar acción permitida con estilo CSS inválido
+     * ```php
+     * $accion_permitida = [
+     *     'adm_accion_css' => 'invalid_style', // Estilo no válido
+     *     'adm_accion_es_status' => 'activo',
+     *     'adm_accion_descripcion' => 'Crear',
+     *     'adm_seccion_descripcion' => 'Usuarios',
+     * ];
+     * $resultado = $this->valida_boton_data_accion($accion_permitida);
+     * // Retorna un arreglo con el mensaje de error: 'Error al obtener style'.
+     * ```
+     *
+     * @example Ejemplo 3: Validar acción permitida con estado no válido
+     * ```php
+     * $accion_permitida = [
+     *     'adm_accion_css' => 'info',
+     *     'adm_accion_es_status' => 'pendiente', // Estado no válido
+     *     'adm_accion_descripcion' => 'Crear',
+     *     'adm_seccion_descripcion' => 'Usuarios',
+     * ];
+     * $resultado = $this->valida_boton_data_accion($accion_permitida);
+     * // Retorna un arreglo con el mensaje de error: 'Error al validar $accion_permitida'.
+     * ```
+     *
+     * @version 1.0.0
+     */
     final public function valida_boton_data_accion(array $accion_permitida): bool|array
     {
+        // Validación de existencia de claves
         $keys = array('adm_accion_css','adm_accion_es_status','adm_accion_descripcion','adm_seccion_descripcion');
-        $valida = $this->validacion->valida_existencia_keys(keys:$keys,registro:  $accion_permitida);
+        $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro:  $accion_permitida);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar $accion_permitida',data:  $valida);
         }
+
+        // Validación del estilo CSS
         $valida = $this->validacion->valida_estilo_css(style: $accion_permitida['adm_accion_css']);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener style',data:  $valida);
         }
 
+        // Validación del estado de la acción
         $keys = array('adm_accion_es_status');
         $valida = $this->validacion->valida_statuses(keys:$keys,registro:  $accion_permitida);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar $accion_permitida',data:  $valida);
         }
+
+        // Si todas las validaciones pasan correctamente, retorna true
         return true;
     }
+
 
     /**
      * Valida los datos de un select

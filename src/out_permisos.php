@@ -90,44 +90,81 @@ class out_permisos{
     }
 
     /**
-     * Integra las columnas para integrar en los botones de acciones base en upd
-     * @param array $acciones_permitidas Acciones permitidas de usuario
-     * @return int
-     * @version 10.22.0
+     * REG
+     * Calcula el número de columnas a utilizar en la interfaz en función de la cantidad de acciones permitidas.
+     *
+     * Esta función toma el número de acciones permitidas como entrada y calcula cuántas columnas de un grid CSS
+     * se deben usar para mostrar los botones de las acciones de manera adecuada. El cálculo tiene en cuenta
+     * la cantidad exacta de acciones y ajusta el número de columnas de acuerdo con ciertas reglas predefinidas.
+     *
+     * **Lógica de columnas:**
+     * - Si el número de acciones es 1, se utiliza 12 columnas (un solo botón que ocupa toda la fila).
+     * - Si el número de acciones es 2, se utiliza 6 columnas por acción (dos botones).
+     * - Si el número de acciones es 3, se utilizan 4 columnas por acción.
+     * - Si el número de acciones es 4, se utilizan 3 columnas por acción.
+     * - Si el número de acciones es 6, se utilizan 2 columnas por acción.
+     * - En otros casos, se calcula un valor predeterminado basado en la cantidad de acciones, pero nunca será menor a 3 columnas.
+     *
+     * @param array $acciones_permitidas Un arreglo de acciones permitidas que determina cuántos botones deben mostrarse.
+     *                                      Cada elemento de este arreglo representa una acción que puede ser ejecutada.
+     *
+     * @return int El número de columnas a utilizar en el diseño. Este valor puede ser uno de los siguientes:
+     *             - 12 para una sola acción.
+     *             - 6 para dos acciones.
+     *             - 4 para tres acciones.
+     *             - 3 para cuatro acciones.
+     *             - 2 para seis acciones.
+     *             - Un valor calculado para otros casos.
+     *
+     * @throws array Si el parámetro `$acciones_permitidas` no es un arreglo.
+     *
+     * @example
+     * // Ejemplo de uso:
+     * $acciones = [
+     *     ['accion' => 'alta'],
+     *     ['accion' => 'modificar'],
+     *     ['accion' => 'eliminar']
+     * ];
+     * $cols = $this->cols_btn_action($acciones);
+     * echo $cols; // Imprimirá 4, ya que hay 3 acciones.
+     *
+     * @example
+     * // Si se pasa solo una acción:
+     * $acciones = [['accion' => 'alta']];
+     * $cols = $this->cols_btn_action($acciones);
+     * echo $cols; // Imprimirá 12, ya que hay solo una acción.
      */
     private function cols_btn_action(array $acciones_permitidas): int
     {
-
-        /**
-         * refactorizar
-         */
         $n_acciones = count($acciones_permitidas);
 
+        // Determinar el número de columnas por defecto
         $cols = (int)($n_acciones / 4);
-        if($cols < 3){
-            $cols = 3;
-        }
+        $cols = max($cols, 3);  // Aseguramos que no sea menor que 3
 
-        if($n_acciones === 6){
-            $cols = 2;
-        }
-
-        if($n_acciones === 4){
-            $cols = 3;
-        }
-
-        if($n_acciones === 3){
-            $cols = 4;
-        }
-        if($n_acciones === 2){
-            $cols = 6;
-        }
-        if($n_acciones === 1){
-            $cols = 12;
+        // Ajustar las columnas según el número exacto de acciones
+        switch ($n_acciones) {
+            case 1:
+                $cols = 12;
+                break;
+            case 2:
+                $cols = 6;
+                break;
+            case 3:
+                $cols = 4;
+                break;
+            case 4:
+                $cols = 3;
+                break;
+            case 6:
+                $cols = 2;
+                break;
         }
 
         return $cols;
     }
+
+
 
     /**
      * Genera el conjunto de botones
@@ -260,32 +297,101 @@ class out_permisos{
     }
 
     /**
-     * Valida los datos de una accion
-     * @param array $accion_permitida registro de accion
-     * @return bool|array
-     * @version 0.223.37
+     * REG
+     * Valida los datos de una acción permitida.
+     *
+     * Esta función valida la existencia y la validez de varios campos en un registro de acción permitida.
+     * Se asegura de que los campos requeridos estén presentes y no vacíos, que el estilo CSS sea válido,
+     * y que el ícono de la acción esté definido.
+     *
+     * **Pasos de validación:**
+     * 1. Verifica que los campos esenciales como `adm_accion_descripcion`, `adm_accion_titulo`, etc.,
+     *    estén presentes en el arreglo de la acción permitida.
+     * 2. Valida que el estilo CSS proporcionado en `adm_accion_css` sea un valor válido, según una lista predefinida de estilos.
+     * 3. Asegura que el campo `adm_accion_icono` esté presente en el arreglo de la acción permitida.
+     *
+     * Si alguna de las validaciones falla, se genera un error con un mensaje específico. Si todas las validaciones
+     * pasan correctamente, la función devuelve `true`.
+     *
+     * @param array $accion_permitida Registro de la acción permitida que se va a validar.
+     *     Este parámetro debe ser un arreglo que contenga los siguientes campos:
+     *     - `adm_accion_descripcion`: Descripción de la acción.
+     *     - `adm_accion_titulo`: Título de la acción.
+     *     - `adm_seccion_descripcion`: Descripción de la sección a la que pertenece la acción.
+     *     - `adm_accion_css`: Estilo CSS para la acción.
+     *     - `adm_accion_es_status`: Estado de la acción.
+     *     - `adm_accion_muestra_icono_btn`: Define si la acción muestra un ícono en el botón.
+     *     - `adm_accion_muestra_titulo_btn`: Define si la acción muestra un título en el botón.
+     *     - `adm_accion_icono`: Icono asociado a la acción (opcional).
+     *
+     * @return bool|array Devuelve:
+     *  - `true` si todas las validaciones pasan correctamente.
+     *  - Un arreglo con el mensaje de error si alguna de las validaciones falla.
+     *
+     * @throws errores Si alguna validación falla, se genera un error que se captura y devuelve como un mensaje.
+     *
+     * @example Ejemplo 1: Validar una acción permitida correcta
+     * ```php
+     * $accion_permitida = [
+     *     'adm_accion_descripcion' => 'Alta',
+     *     'adm_accion_titulo' => 'Crear nuevo',
+     *     'adm_seccion_descripcion' => 'Usuarios',
+     *     'adm_accion_css' => 'info',
+     *     'adm_accion_es_status' => true,
+     *     'adm_accion_muestra_icono_btn' => true,
+     *     'adm_accion_muestra_titulo_btn' => true,
+     *     'adm_accion_icono' => 'add'
+     * ];
+     * $resultado = $this->valida_data_action($accion_permitida);
+     * // Retorna true si todos los campos son válidos.
+     * ```
+     *
+     * @example Ejemplo 2: Validar acción permitida con campo CSS inválido
+     * ```php
+     * $accion_permitida = [
+     *     'adm_accion_descripcion' => 'Alta',
+     *     'adm_accion_titulo' => 'Crear nuevo',
+     *     'adm_seccion_descripcion' => 'Usuarios',
+     *     'adm_accion_css' => 'invalid_css',
+     *     'adm_accion_es_status' => true,
+     *     'adm_accion_muestra_icono_btn' => true,
+     *     'adm_accion_muestra_titulo_btn' => true,
+     *     'adm_accion_icono' => 'add'
+     * ];
+     * $resultado = $this->valida_data_action($accion_permitida);
+     * // Retorna un arreglo con el mensaje de error: 'Error style invalido invalid_css'.
+     * ```
+     *
+     * @version 1.0.0
      */
-    private function valida_data_action(array $accion_permitida): bool|array
+    final public function valida_data_action(array $accion_permitida): bool|array
     {
-        $keys = array('adm_accion_descripcion','adm_accion_titulo','adm_seccion_descripcion','adm_accion_css',
-            'adm_accion_es_status','adm_accion_muestra_icono_btn','adm_accion_muestra_titulo_btn');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $accion_permitida);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar  accion_permitida',data:  $valida);
+        // Validación de la existencia de los campos esenciales
+        $keys = array('adm_accion_descripcion', 'adm_accion_titulo', 'adm_seccion_descripcion', 'adm_accion_css',
+            'adm_accion_es_status', 'adm_accion_muestra_icono_btn', 'adm_accion_muestra_titulo_btn');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $accion_permitida);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar  accion_permitida', data: $valida);
         }
 
+        // Validación del estilo CSS
         $valida = $this->validacion->valida_estilo_css(style: $accion_permitida['adm_accion_css']);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener style',data:  $valida);
-        }
-        $keys = array('adm_accion_icono');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $accion_permitida, valida_vacio: false);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar  accion_permitida',data:  $valida);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener style', data: $valida);
         }
 
+        // Validación de la existencia del ícono de la acción
+        $keys = array('adm_accion_icono');
+        $valida = $this->validacion->valida_existencia_keys(
+            keys: $keys, registro: $accion_permitida, valida_vacio: false);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar  accion_permitida', data: $valida);
+        }
+
+        // Si todas las validaciones son exitosas, devuelve true
         return true;
     }
+
 
     /**
      * @param mixed $accion_permitida Accion a validar

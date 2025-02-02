@@ -1493,6 +1493,79 @@ class html_controlerTest extends test {
         errores::$error = false;
     }
 
+    public function test_valida_boton_data_accion(): void
+    {
+        errores::$error = false;
+        $html_ = new html();
+        $html = new html_controler($html_);
+        //$html = new liberator($html);
+
+        $_SESSION['grupo_id'] = 2;
+
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+
+        $validacion = $html;
+
+        // Escenario 1: Acción permitida válida
+        $accion_permitida = [
+            'adm_accion_css' => 'info',
+            'adm_accion_es_status' => 'activo',
+            'adm_accion_descripcion' => 'Crear',
+            'adm_seccion_descripcion' => 'Usuarios',
+        ];
+
+        errores::$error = false;
+        // Llamar a la función
+        $resultado = $validacion->valida_boton_data_accion($accion_permitida);
+
+        // Verificamos que la validación sea correcta
+        $this->assertTrue($resultado);
+
+        // Escenario 2: Falta el campo 'adm_accion_css'
+        $accion_permitida = [
+            'adm_accion_es_status' => 'activo',
+            'adm_accion_descripcion' => 'Crear',
+            'adm_seccion_descripcion' => 'Usuarios',
+        ];
+
+        errores::$error = false;
+        $resultado = $validacion->valida_boton_data_accion($accion_permitida);
+
+        $this->assertIsArray($resultado);
+        $this->assertEquals('<b><span style="color:red">Error al validar $accion_permitida</span></b>', $resultado['mensaje']);
+
+        // Escenario 3: Estilo CSS inválido
+        $accion_permitida = [
+            'adm_accion_css' => 'invalid_style', // Estilo no válido
+            'adm_accion_es_status' => 'activo',
+            'adm_accion_descripcion' => 'Crear',
+            'adm_seccion_descripcion' => 'Usuarios',
+        ];
+
+        errores::$error = false;
+        $resultado = $validacion->valida_boton_data_accion($accion_permitida);
+
+        $this->assertIsArray($resultado);
+        $this->assertEquals('<b><span style="color:red">Error al obtener style</span></b>', $resultado['mensaje']);
+
+        // Escenario 4: Estado de la acción no válido
+        $accion_permitida = [
+            'adm_accion_css' => 'info',
+            'adm_accion_es_status' => 'inactivo',
+            'adm_accion_descripcion' => 'Crear',
+            'adm_seccion_descripcion' => 'Usuarios',
+        ];
+
+        errores::$error = false;
+        $resultado = $validacion->valida_boton_data_accion($accion_permitida);
+
+        $this->assertIsBool($resultado);
+
+
+        errores::$error = false;
+    }
+
     public function test_valida_data_select(): void
     {
         errores::$error = false;

@@ -1484,26 +1484,101 @@ class datatables{
     }
 
     /**
-     * Valida los datos de un permiso
-     * @param array $adm_accion_grupo Permiso a validar
-     * @return array|true
-     * @version 13.63.0
+     * REG
+     * Valida los datos de un grupo de acciones permitidas en el sistema.
+     *
+     * Esta función se encarga de verificar que todos los campos necesarios para una acción permitida estén presentes,
+     * y que sus valores sean válidos. Asegura lo siguiente:
+     *
+     * 1. Verifica la existencia de claves esenciales como `adm_accion_muestra_icono_btn`, `adm_accion_muestra_titulo_btn`,
+     *    `adm_accion_descripcion`, `adm_accion_titulo` y `adm_seccion_descripcion`.
+     * 2. Valida que los campos `adm_accion_muestra_icono_btn` y `adm_accion_muestra_titulo_btn` tengan un valor válido, es decir,
+     *    que su estado sea uno de los valores esperados ('activo' o 'inactivo').
+     *
+     * Si alguna de las validaciones falla, se devuelve un arreglo con el mensaje de error correspondiente.
+     * Si todas las validaciones pasan, la función devuelve `true`.
+     *
+     * **Pasos de validación:**
+     * 1. Valida que las claves necesarias estén presentes en el registro de la acción permitida.
+     * 2. Valida que las claves `adm_accion_muestra_icono_btn` y `adm_accion_muestra_titulo_btn` tengan un estado válido.
+     *
+     * **Notas:**
+     * - Si alguna validación falla, se lanza un error con un mensaje descriptivo.
+     * - Si todas las validaciones son correctas, se devuelve `true`.
+     *
+     * @param array $adm_accion_grupo Registro de la acción permitida a validar. Debe contener las siguientes claves:
+     * - `adm_accion_muestra_icono_btn`: Indica si se debe mostrar un ícono en el botón de acción. Debe ser 'activo' o 'inactivo'.
+     * - `adm_accion_muestra_titulo_btn`: Indica si se debe mostrar un título en el botón de acción. Debe ser 'activo' o 'inactivo'.
+     * - `adm_accion_descripcion`: Descripción de la acción.
+     * - `adm_accion_titulo`: Título de la acción.
+     * - `adm_seccion_descripcion`: Descripción de la sección a la que pertenece la acción.
+     *
+     * @return bool|array Devuelve:
+     *  - `true` si todas las validaciones pasan correctamente.
+     *  - Un arreglo con información del error si alguna validación falla.
+     *
+     * @throws errores Si alguna validación falla, se genera un error que se captura y devuelve como un mensaje.
+     *
+     * **Ejemplo 1: Acción permitida válida**
+     * ```php
+     * $adm_accion_grupo = [
+     *     'adm_accion_muestra_icono_btn' => 'activo',
+     *     'adm_accion_muestra_titulo_btn' => 'activo',
+     *     'adm_accion_descripcion' => 'Crear Nuevo Usuario',
+     *     'adm_accion_titulo' => 'Crear',
+     *     'adm_seccion_descripcion' => 'Usuarios',
+     * ];
+     * $resultado = $this->valida_data_permiso($adm_accion_grupo);
+     * // Retorna true si todas las claves son válidas.
+     * ```
+     *
+     * **Ejemplo 2: Falta una clave necesaria**
+     * ```php
+     * $adm_accion_grupo = [
+     *     'adm_accion_muestra_icono_btn' => 'activo',
+     *     'adm_accion_descripcion' => 'Eliminar Usuario',
+     *     'adm_accion_titulo' => 'Eliminar',
+     * ];
+     * $resultado = $this->valida_data_permiso($adm_accion_grupo);
+     * // Retorna un arreglo con el mensaje de error: 'Error al validar adm_accion_grupo'
+     * ```
+     *
+     * **Ejemplo 3: Estado inválido en una clave**
+     * ```php
+     * $adm_accion_grupo = [
+     *     'adm_accion_muestra_icono_btn' => 'activo',
+     *     'adm_accion_muestra_titulo_btn' => 'pendiente',  // Estado no válido
+     *     'adm_accion_descripcion' => 'Crear Nuevo Usuario',
+     *     'adm_accion_titulo' => 'Crear',
+     *     'adm_seccion_descripcion' => 'Usuarios',
+     * ];
+     * $resultado = $this->valida_data_permiso($adm_accion_grupo);
+     * // Retorna un arreglo con el mensaje de error: 'Error al validar adm_accion_grupo'
+     * ```
+     *
+     * @version 1.0.0
      */
-    private function valida_data_permiso(array $adm_accion_grupo): bool|array
+    final public function valida_data_permiso(array $adm_accion_grupo): bool|array
     {
+        // Validación de existencia de claves en el array de la acción
         $keys = array('adm_accion_muestra_icono_btn','adm_accion_muestra_titulo_btn','adm_accion_descripcion',
             'adm_accion_titulo','adm_seccion_descripcion');
-        $valida = (new validacion())->valida_existencia_keys(keys: $keys, registro: $adm_accion_grupo);
+        $valida = (new validacion())->valida_existencia_keys(keys:$keys, registro:  $adm_accion_grupo);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar adm_accion_grupo', data: $valida);
         }
+
+        // Validación de estado de los botones (si muestra icono y título)
         $keys = array('adm_accion_muestra_icono_btn','adm_accion_muestra_titulo_btn');
-        $valida = (new validacion())->valida_statuses(keys: $keys, registro: $adm_accion_grupo);
+        $valida = (new validacion())->valida_statuses(keys:$keys, registro:  $adm_accion_grupo);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar adm_accion_grupo', data: $valida);
         }
+
+        // Si todas las validaciones son exitosas, devuelve true
         return true;
     }
+
 
 
 
