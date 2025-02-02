@@ -16,53 +16,276 @@ class out_permisos{
     }
 
     /**
-     * Obtiene los botones permitidos definidos por la session en ejecucion
-     * @param array $acciones_permitidas Conjunto de acciones permitidas
-     * @param int $cols Columnas de div css
-     * @param html_controler $html Html base
-     * @param array $params Parametros para GET
-     * @param array $params_ajustados parametros para GET custom
-     * @param array $registro Registro en proceso
-     * @param int $registro_id Identificador
-     * @param array $styles Estilos css a integrar en contenedor como style
-     * @return array
-     * @version 10.24.0
+     * REG
+     * Genera un conjunto de botones HTML a partir de una lista de acciones permitidas.
+     *
+     * Esta función itera sobre un arreglo de acciones permitidas, valida los datos de cada acción, y genera los botones
+     * correspondientes en forma de enlaces HTML. Para cada acción permitida, se personaliza el botón, obteniendo
+     * parámetros adicionales y generando el enlace correspondiente. Si algún paso falla, devuelve un mensaje de error.
+     *
+     * **Flujo de trabajo:**
+     * 1. Verifica que el registro no esté vacío.
+     * 2. Itera sobre el arreglo de acciones permitidas y genera un botón para cada acción.
+     * 3. Personaliza los parámetros del botón con los valores proporcionados y ajustados.
+     * 4. Genera el enlace HTML para el botón usando la función `link_btn_action`.
+     * 5. Retorna el conjunto de botones generados o un mensaje de error si alguna de las validaciones falla.
+     *
+     * **Parámetros:**
+     *
+     * @param array $acciones_permitidas Un arreglo de acciones permitidas, cada una representada por un arreglo con los siguientes campos:
+     *     - `adm_accion_descripcion`: Descripción de la acción (por ejemplo, 'guardar').
+     *     - `adm_accion_titulo`: Título del botón (por ejemplo, 'Guardar cambios').
+     *     - `adm_accion_icono`: Icono del botón (opcional, por ejemplo, `<span class='fa fa-check'></span>`).
+     *     - `adm_seccion_descripcion`: Descripción de la sección donde se ejecuta la acción (por ejemplo, 'usuarios').
+     *
+     * **Ejemplo:**
+     * ```php
+     * $acciones_permitidas = [
+     *     [
+     *         'adm_accion_descripcion' => 'guardar',
+     *         'adm_accion_titulo' => 'Guardar cambios',
+     *         'adm_accion_icono' => '<span class="fa fa-check"></span>',
+     *         'adm_seccion_descripcion' => 'usuarios'
+     *     ],
+     *     [
+     *         'adm_accion_descripcion' => 'eliminar',
+     *         'adm_accion_titulo' => 'Eliminar usuario',
+     *         'adm_accion_icono' => '<span class="fa fa-trash"></span>',
+     *         'adm_seccion_descripcion' => 'usuarios'
+     *     ]
+     * ];
+     * ```
+     *
+     * @param int $cols Número de columnas que el botón ocupará en un diseño basado en la grilla de Bootstrap.
+     *
+     * **Ejemplo:**
+     * ```php
+     * $cols = 6;  // El botón ocupará 6 columnas en la grilla de Bootstrap.
+     * ```
+     *
+     * @param html_controler $html Instancia del controlador HTML que manejará la creación del botón.
+     *
+     * **Ejemplo:**
+     * ```php
+     * $html = new html_controler();
+     * ```
+     *
+     * @param array $params Parámetros adicionales que se incluirán en la URL del enlace como parámetros GET.
+     *
+     * **Ejemplo:**
+     * ```php
+     * $params = ['redirigir' => 'true'];  // Parámetros GET adicionales para el enlace
+     * ```
+     *
+     * @param array $params_ajustados Parámetros ajustados para cada acción. Se usa para personalizar los botones de manera específica.
+     *
+     * **Ejemplo:**
+     * ```php
+     * $params_ajustados = [
+     *     'guardar' => ['extra_param' => 'value'],
+     *     'eliminar' => ['extra_param' => 'other_value']
+     * ];
+     * ```
+     *
+     * @param array $registro Datos del registro asociado a la acción. Usado para obtener valores relacionados con el registro.
+     *
+     * **Ejemplo:**
+     * ```php
+     * $registro = ['id' => 123, 'nombre' => 'Juan Pérez'];  // Datos del registro
+     * ```
+     *
+     * @param int $registro_id El ID del registro relacionado con la acción.
+     *
+     * **Ejemplo:**
+     * ```php
+     * $registro_id = 123;  // El ID del registro relacionado con la acción
+     * ```
+     *
+     * @param array $styles Estilos CSS adicionales aplicados al botón.
+     *
+     * **Ejemplo:**
+     * ```php
+     * $styles = ['color' => 'red', 'font-size' => '16px'];  // Estilos CSS adicionales
+     * ```
+     *
+     * **Retorno:**
+     * - Devuelve un arreglo de botones HTML generados.
+     * - Si ocurre un error en cualquiera de los pasos, devuelve un mensaje de error detallado.
+     *
+     * **Ejemplos de salida:**
+     *
+     * **Ejemplo 1: Resultado exitoso con todos los parámetros válidos:**
+     * ```html
+     * <a role="button" title="Guardar cambios" href="index.php?accion=guardar&seccion=usuarios&registro_id=123&session_id=abc123&redirigir=true"
+     *    class="btn btn-primary col-sm-6" style="margin-bottom: 5px;" id="guardarBtn">
+     *     <span class="fa fa-check"></span> Guardar cambios
+     * </a>
+     * <a role="button" title="Eliminar usuario" href="index.php?accion=eliminar&seccion=usuarios&registro_id=123&session_id=abc123&redirigir=true"
+     *    class="btn btn-danger col-sm-6" style="margin-bottom: 5px;" id="eliminarBtn">
+     *     <span class="fa fa-trash"></span> Eliminar usuario
+     * </a>
+     * ```
+     *
+     * **Ejemplo 2: Error debido a un registro vacío:**
+     * ```php
+     * $registro = [];
+     * // Salida: "Error registro esta vacio"
+     * ```
+     *
+     * **Ejemplo 3: Error al generar un enlace debido a un parámetro inválido:**
+     * ```php
+     * $acciones_permitidas = [
+     *     'adm_accion_descripcion' => 'guardar',
+     *     'adm_accion_titulo' => 'Guardar cambios',
+     *     'adm_accion_icono' => 'invalid_icon',  // Ícono inválido
+     *     'adm_seccion_descripcion' => 'usuarios',
+     * ];
+     * // Salida: "Error al generar link"
+     * ```
+     *
+     * **Excepciones:**
+     * - Si alguno de los parámetros es inválido o falta, la función generará un mensaje de error detallado y devolverá un arreglo con el error correspondiente.
+     *
+     * **@version 1.0.0**
      */
     private function buttons_permitidos(array $acciones_permitidas, int $cols, html_controler $html,
                                         array $params, array $params_ajustados, array $registro, int $registro_id,
                                         array $styles =  array('margin-bottom'=>'5px')): array
     {
+        // Validación si el registro está vacío
         if(count($registro) === 0){
-            return $this->error->error(mensaje: 'Error registro esta vacio',data:  $registro);
+            return $this->error->error(mensaje: 'Error registro esta vacio', data:  $registro);
         }
+
+        // Inicialización de la lista de botones
         $buttons = array();
-        foreach ($acciones_permitidas as $accion_permitida){
+
+        // Iterar sobre las acciones permitidas
+        foreach ($acciones_permitidas as $accion_permitida) {
+            // Ajustar parámetros para la acción específica
             $params_btn = $params;
-            if(isset($params_ajustados[$accion_permitida['adm_accion_descripcion']])){
+            if (isset($params_ajustados[$accion_permitida['adm_accion_descripcion']])) {
                 $params_btn = $params_ajustados[$accion_permitida['adm_accion_descripcion']];
             }
-            $link = $this->link_btn_action(accion_permitida: $accion_permitida, cols: $cols,
-                html: $html, params: $params_btn, registro: $registro, registro_id: $registro_id, styles: $styles);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar link',data:  $link);
+
+            // Generar el enlace para el botón
+            $link = $this->link_btn_action(
+                accion_permitida: $accion_permitida,
+                cols: $cols,
+                html: $html,
+                params: $params_btn,
+                registro: $registro,
+                registro_id: $registro_id,
+                styles: $styles
+            );
+
+            // Verificar si hubo error al generar el enlace
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al generar link', data:  $link);
             }
+
+            // Agregar el botón al arreglo de botones
             $buttons[] = $link;
         }
+
+        // Devolver los botones generados
         return $buttons;
     }
 
+
     /**
-     * Integra los botones de ejecucion de acciones permitidas en una vista
-     * @param system $controler Controlador en ejecucion
-     * @param array $not_actions Acciones a omitir
-     * @param array $params Parametros para GET
-     * @param array $params_ajustados Parametros para GET
-     * @param array $styles Estilos css por incrustar en div o contenedor
-     * @return array
+     * REG
+     * Genera los botones HTML para un controlador dado, basándose en las acciones permitidas y sus parámetros.
+     *
+     * Esta función valida que los datos del controlador y las acciones permitidas sean correctos, calcula el número de columnas
+     * necesarias para la interfaz, y genera los botones correspondientes en forma de enlaces HTML. Si algún paso falla,
+     * la función devuelve un mensaje de error.
+     *
+     * **Flujo de trabajo:**
+     * 1. Verifica que el registro del controlador no esté vacío.
+     * 2. Obtiene las acciones permitidas a partir del controlador y los filtros especificados.
+     * 3. Calcula el número de columnas necesarias usando el método `cols_btn_action`.
+     * 4. Genera los botones HTML mediante la función `buttons_permitidos`.
+     * 5. Retorna el conjunto de botones generados o un mensaje de error si alguna validación falla.
+     *
+     * **Parámetros:**
+     *
+     * @param system $controler Instancia del controlador que contiene los datos necesarios para generar los botones, como el registro y la sección.
+     *
+     * **Ejemplo:**
+     * ```php
+     * $controler = new system();  // Instancia del controlador
+     * ```
+     *
+     * @param array $not_actions Lista de identificadores de acciones que deben ser excluidas de los resultados.
+     *                            Este parámetro es opcional y tiene un valor predeterminado de un arreglo vacío.
+     *
+     * **Ejemplo:**
+     * ```php
+     * $not_actions = ['action1', 'action2'];  // Acciones a excluir
+     * ```
+     *
+     * @param array $params Parámetros adicionales que se incluirán en la URL del enlace como parámetros GET.
+     *
+     * **Ejemplo:**
+     * ```php
+     * $params = ['redirigir' => 'true'];  // Parámetros GET adicionales
+     * ```
+     *
+     * @param array $params_ajustados Parámetros ajustados para cada acción permitida. Se usa para personalizar los botones de manera específica.
+     *
+     * **Ejemplo:**
+     * ```php
+     * $params_ajustados = [
+     *     'guardar' => ['extra_param' => 'value'],
+     *     'eliminar' => ['extra_param' => 'other_value']
+     * ];
+     * ```
+     *
+     * @param array $styles Estilos CSS adicionales aplicados a los botones.
+     *
+     * **Ejemplo:**
+     * ```php
+     * $styles = ['margin-bottom' => '5px'];  // Estilo CSS para los botones
+     * ```
+     *
+     * **Retorno:**
+     * - Devuelve un arreglo de botones HTML generados.
+     * - Si ocurre un error en cualquiera de los pasos, devuelve un mensaje de error detallado.
+     *
+     * **Ejemplos de salida:**
+     *
+     * **Ejemplo 1: Resultado exitoso con todos los parámetros válidos:**
+     * ```html
+     * <a role="button" title="Guardar cambios" href="index.php?accion=guardar&seccion=usuarios&registro_id=123&session_id=abc123&redirigir=true"
+     *    class="btn btn-primary col-sm-6" style="margin-bottom: 5px;" id="guardarBtn">
+     *     <span class="fa fa-check"></span> Guardar cambios
+     * </a>
+     * <a role="button" title="Eliminar usuario" href="index.php?accion=eliminar&seccion=usuarios&registro_id=123&session_id=abc123&redirigir=true"
+     *    class="btn btn-danger col-sm-6" style="margin-bottom: 5px;" id="eliminarBtn">
+     *     <span class="fa fa-trash"></span> Eliminar usuario
+     * </a>
+     * ```
+     *
+     * **Ejemplo 2: Error debido a un registro vacío:**
+     * ```php
+     * $controler = new system();  // Registro vacío
+     * $buttons = $this->buttons_view($controler, $not_actions, $params);
+     * // Salida: "Error controler->registro esta vacio"
+     * ```
+     *
+     * **Ejemplo 3: Error al generar botones debido a un parámetro inválido:**
+     * ```php
+     * $not_actions = ['action1'];
+     * $buttons = $this->buttons_view($controler, $not_actions, $params);
+     * // Salida: "Error al generar botones"
+     * ```
+     *
+     * **@version 1.0.0**
      */
     final public function buttons_view(system $controler, array $not_actions, array $params,
-                                 array $params_ajustados = array(),
-                                 array $styles = array('margin-bottom'=>'5px')): array
+                                       array $params_ajustados = array(),
+                                       array $styles = array('margin-bottom'=>'5px')): array
     {
         if(count($controler->registro) === 0){
             return $this->error->error(mensaje: 'Error controler->registro esta vacio',data:  $controler->registro);
@@ -88,6 +311,7 @@ class out_permisos{
         }
         return $buttons;
     }
+
 
     /**
      * REG
@@ -245,56 +469,165 @@ class out_permisos{
         return $rows;
     }
 
-    /**
-     * Genera un link de tipo accion
-     * @param array $accion_permitida Accion permitida
-     * @param int $cols N cols css
-     * @param html_controler $html Base html
-     * @param array $params Parametros para GET
-     * @param array $registro Registro en proceso
-     * @param int $registro_id Identificador de registro
-     * @param array $styles Estilos css
-     * @return array|string
-     * @version 0.253.37
-     */
 
+    /**
+     * REG
+     * Genera un enlace HTML (`<a>`) que actúa como un botón con los parámetros proporcionados.
+     *
+     * Esta función valida que los datos de la acción permitida sean correctos, obtiene el estilo y el icono del botón,
+     * y genera el enlace HTML que será renderizado como un botón. Si alguno de los pasos falla, devuelve un mensaje de error.
+     * El enlace resultante puede incluir el título y el ícono del botón dependiendo de los parámetros de entrada.
+     *
+     * **Flujo de trabajo:**
+     * 1. Verifica que el registro no esté vacío.
+     * 2. Valida los datos de la acción permitida con el método `valida_data_action`.
+     * 3. Obtiene el estilo del botón usando el método `style_btn`.
+     * 4. Asigna un ícono de acción utilizando el método `data_icon`.
+     * 5. Genera un enlace HTML (`<a>`) usando el método `button_href`.
+     * 6. Devuelve el enlace HTML generado o un mensaje de error si alguna de las validaciones falla.
+     *
+     * **Parámetros:**
+     *
+     * @param array $accion_permitida Un arreglo que contiene los datos de la acción permitida, incluyendo:
+     *     - `adm_accion_descripcion`: Descripción de la acción (por ejemplo, 'guardar').
+     *     - `adm_accion_titulo`: Título del botón (por ejemplo, 'Guardar cambios').
+     *     - `adm_accion_icono`: Icono del botón (opcional, por ejemplo, `<span class='fa fa-check'></span>`).
+     *     - `adm_seccion_descripcion`: Descripción de la sección donde se ejecuta la acción (por ejemplo, 'usuarios').
+     *
+     * **Ejemplo:**
+     * ```php
+     * $accion_permitida = [
+     *     'adm_accion_descripcion' => 'guardar',
+     *     'adm_accion_titulo' => 'Guardar cambios',
+     *     'adm_accion_icono' => '<span class="fa fa-check"></span>',
+     *     'adm_seccion_descripcion' => 'usuarios',
+     * ];
+     * ```
+     *
+     * @param int $cols Número de columnas que el botón ocupará en un diseño basado en la grilla de Bootstrap.
+     *
+     * **Ejemplo:**
+     * ```php
+     * $cols = 6;  // El botón ocupará 6 columnas en la grilla de Bootstrap.
+     * ```
+     *
+     * @param html_controler $html Instancia del controlador HTML que manejará la creación del botón.
+     *
+     * **Ejemplo:**
+     * ```php
+     * $html = new html_controler();
+     * ```
+     *
+     * @param array $params Parámetros adicionales que se incluirán en la URL del enlace como parámetros GET.
+     *
+     * **Ejemplo:**
+     * ```php
+     * $params = ['redirigir' => 'true'];  // Parámetros GET adicionales para el enlace
+     * ```
+     *
+     * @param array $registro Datos del registro asociado a la acción. Usado para obtener valores relacionados con el registro.
+     *
+     * **Ejemplo:**
+     * ```php
+     * $registro = ['id' => 123, 'nombre' => 'Juan Pérez'];  // Datos del registro
+     * ```
+     *
+     * @param int $registro_id El ID del registro relacionado con la acción.
+     *
+     * **Ejemplo:**
+     * ```php
+     * $registro_id = 123;  // El ID del registro relacionado con la acción
+     * ```
+     *
+     * @param array $styles Estilos CSS adicionales aplicados al botón.
+     *
+     * **Ejemplo:**
+     * ```php
+     * $styles = ['color' => 'red', 'font-size' => '16px'];  // Estilos CSS adicionales
+     * ```
+     *
+     * **Retorno:**
+     * - Devuelve un enlace HTML completo si todos los parámetros son válidos.
+     * - Si ocurre un error en cualquiera de los pasos, devuelve un mensaje de error detallado.
+     *
+     * **Ejemplos de salida:**
+     *
+     * **Ejemplo 1: Resultado exitoso con todos los parámetros válidos:**
+     * ```html
+     * <a role="button" title="Guardar cambios" href="index.php?accion=guardar&seccion=usuarios&registro_id=123&session_id=abc123&redirigir=true"
+     *    class="btn btn-primary col-sm-6" style="margin-bottom: 5px;" id="guardarBtn">
+     *     <span class="fa fa-check"></span> Guardar cambios
+     * </a>
+     * ```
+     *
+     * **Ejemplo 2: Error debido a un registro vacío:**
+     * ```php
+     * $registro = [];
+     * // Salida: "Error registro esta vacio"
+     * ```
+     *
+     * **Ejemplo 3: Error en validación de la acción permitida:**
+     * ```php
+     * $accion_permitida = [
+     *     'adm_accion_descripcion' => 'guardar',
+     *     'adm_accion_titulo' => 'Guardar cambios',
+     *     'adm_accion_icono' => '<span class="fa fa-check"></span>',
+     *     'adm_seccion_descripcion' => 'usuarios',
+     * ];
+     * $valida = false;  // Simulación de error en validación
+     * // Salida: "Error al validar accion_permitida"
+     * ```
+     *
+     * **Excepciones:**
+     * - Si alguno de los parámetros es inválido o falta, la función generará un mensaje de error detallado y devolverá un arreglo con el error correspondiente.
+     *
+     * **@version 1.0.0**
+     */
     private function link_btn_action(array $accion_permitida, int $cols, html_controler $html, array $params,
                                      array $registro, int $registro_id,
                                      array $styles =  array('margin-bottom'=>'5px')): array|string
     {
+        // Validación si el registro está vacío
         if(count($registro) === 0){
-            return $this->error->error(mensaje: 'Error registro esta vacio',data:  $registro);
+            return $this->error->error(mensaje: 'Error registro esta vacio', data:  $registro);
         }
+
+        // Validación de los datos de la acción permitida
         $valida = $this->valida_data_action(accion_permitida: $accion_permitida);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar accion_permitida',data:  $valida);
+            return $this->error->error(mensaje: 'Error al validar accion_permitida', data:  $valida);
         }
 
+        // Obtener el estilo del botón
         $style = $html->style_btn(accion_permitida: $accion_permitida, row: $registro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener style',data:  $style);
+            return $this->error->error(mensaje: 'Error al obtener style', data:  $style);
         }
 
+        // Asignación del icono de la acción
         $icon = $accion_permitida['adm_accion_icono'];
 
-
-
+        // Obtener datos del ícono
         $data_icon = (new params())->data_icon(adm_accion: $accion_permitida);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al asignar data_icon', data: $data_icon);
         }
 
-
+        // Generación del enlace (botón)
         $link = $html->button_href(accion: $accion_permitida['adm_accion_descripcion'],
             etiqueta: $accion_permitida['adm_accion_titulo'], registro_id: $registro_id,
             seccion: $accion_permitida['adm_seccion_descripcion'], style: $style, cols: $cols, icon: $icon,
             muestra_icono_btn: $data_icon->muestra_icono_btn, muestra_titulo_btn: $data_icon->muestra_titulo_btn,
             params: $params, styles: $styles);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar link',data:  $link);
+            return $this->error->error(mensaje: 'Error al generar link', data:  $link);
         }
+
         return $link;
     }
+
+
+
 
     /**
      * REG
