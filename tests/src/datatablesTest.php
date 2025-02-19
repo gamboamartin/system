@@ -404,9 +404,11 @@ class datatablesTest extends test {
         $adm_accion_grupo['adm_accion_icono'] = 'a';
 
         $resultado = $datatables->data_link($adm_accion_grupo, $data_result, $html_base, $key, $registro_id);
+
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<a role='button' title='a' href='index.php?seccion=a&accion=a&registro_id=-1&session_id=1&adm_menu_id=-1' class='btn btn-success ' style='margin-left: 2px; margin-bottom: 2px; '><span class='a'></span> a</a>", $resultado->link_con_id);
+        //$this->assertEquals("<a role='button' title='a' href='index.php?seccion=a&accion=a&registro_id=-1&session_id=1&adm_menu_id=-1' class='btn btn-success ' style='margin-left: 2px; margin-bottom: 2px; '><span class='a'></span> a</a>", $resultado->link_con_id);
+        $this->assertEquals("<a role='button' title='a' href='index.php?seccion=a&accion=a&session_id=1&adm_menu_id=-1&registro_id=-1' class='btn btn-success ' style='margin-left: 2px; margin-bottom: 2px;'><span class='a'></span> a</a>", $resultado->link_con_id);
         errores::$error = false;
     }
 
@@ -430,15 +432,17 @@ class datatablesTest extends test {
         $adm_accion_grupo['adm_seccion_descripcion'] = 'c';
 
         $resultado = $datatables->database_link($adm_accion_grupo, $html, array(), $registro_id, $style);
+        //print_r($resultado);exit;
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<a role='button' title='c' href='index.php?seccion=c&accion=c&registro_id=-1&session_id=1&adm_menu_id=-1' class='btn btn-a ' style='margin-left: 2px; margin-bottom: 2px; '>c</a>", $resultado->link_con_id);
+        $this->assertEquals("<a role='button' title='c' href='index.php?seccion=c&accion=c&session_id=1&adm_menu_id=-1&registro_id=-1' class='btn btn-a ' style='margin-left: 2px; margin-bottom: 2px;'>c</a>", $resultado->link_con_id);
         errores::$error = false;
         $params_get['a'] = 'd';
         $resultado = $datatables->database_link($adm_accion_grupo, $html, $params_get, $registro_id, $style);
+        //print_r($resultado);exit;
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<a role='button' title='c' href='index.php?seccion=c&accion=c&registro_id=-1&session_id=1&adm_menu_id=-1&a=d' class='btn btn-a ' style='margin-left: 2px; margin-bottom: 2px; '>c</a>", $resultado->link_con_id);
+        $this->assertEquals("<a role='button' title='c' href='index.php?seccion=c&accion=c&session_id=1&adm_menu_id=-1&registro_id=-1&a=d' class='btn btn-a ' style='margin-left: 2px; margin-bottom: 2px;'>c</a>", $resultado->link_con_id);
         $this->assertEquals("c", $resultado->accion);
         errores::$error = false;
 

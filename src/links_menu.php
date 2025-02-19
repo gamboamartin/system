@@ -147,10 +147,81 @@ class links_menu{
     }
 
     /**
-     * Asigna la seccion a controler via tabla
-     * @param controler $controler Controlador en ejecucion
-     * @return array|string
-     * @version 8.4.0
+     * REG
+     * Asigna la sección a un controlador a partir de su tabla.
+     *
+     * Esta función toma el nombre de la tabla asociada al controlador y lo asigna como su sección.
+     * Primero, valida que el nombre de la tabla no esté vacío. Luego, inicializa la tabla usando `init_tabla`
+     * y finalmente asigna el valor al atributo `seccion` del controlador.
+     *
+     * Si la tabla está vacía o se produce un error en la inicialización, la función devuelve un mensaje de error.
+     * De lo contrario, retorna el nombre de la sección correctamente asignada.
+     *
+     * ### Ejemplo de Uso:
+     * ```php
+     * $controlador = new controler();
+     * $controlador->tabla = "productos";
+     * $links_menu = new links_menu($pdo, 1);
+     * $resultado = $links_menu->asigna_seccion($controlador);
+     *
+     * if (is_array($resultado)) {
+     *     echo "Error: " . $resultado['mensaje']; // Manejo de error
+     * } else {
+     *     echo "Sección asignada: " . $resultado;
+     * }
+     * ```
+     *
+     * ### Ejemplo de Entrada y Salida:
+     *
+     * **Entrada válida:**
+     * ```php
+     * $controler->tabla = "usuarios";
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * "usuarios"
+     * ```
+     *
+     * **Entrada con espacios:**
+     * ```php
+     * $controler->tabla = "  clientes  ";
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * "clientes"
+     * ```
+     *
+     * **Entrada con tabla vacía (Error):**
+     * ```php
+     * $controler->tabla = "";
+     * ```
+     * **Salida esperada (array con error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error tabla esta vacia',
+     *     'data' => ''
+     * ]
+     * ```
+     *
+     * **Error en la inicialización de la tabla:**
+     * ```php
+     * $controler->tabla = "ordenes";
+     * // Supongamos que `init_tabla` falla por alguna razón.
+     * ```
+     * **Salida esperada (array con error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error al inicializar tabla',
+     *     'data' => 'ordenes'
+     * ]
+     * ```
+     *
+     * @param controler $controler Instancia del controlador en ejecución, que contiene la tabla a asignar como sección.
+     *
+     * @return array|string Retorna el nombre de la sección asignada si es válido.
+     *                      Retorna un array con un mensaje de error si la tabla está vacía o si falla la inicialización.
+     *
+     * @throws array Si la tabla está vacía o hay un error en la inicialización, devuelve un array con el mensaje de error.
      */
     private function asigna_seccion(controler $controler): array|string
     {
@@ -161,12 +232,13 @@ class links_menu{
 
         $tabla = $this->init_tabla(controler: $controler);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al inicializar tabla',data:  $tabla);
+            return $this->error->error(mensaje: 'Error al inicializar tabla', data: $tabla);
         }
 
         $controler->seccion = $tabla;
         return $controler->seccion;
     }
+
 
     /**
      * @param string $accion Accion a asignar o generar link
@@ -464,10 +536,65 @@ class links_menu{
     }
 
     /**
-     * Inicializa el nombre de la tabla integrada en el constructor
-     * @param controler $controler Controlador en ejecucion
-     * @return string|array
-     * @version 8.3.0
+     * REG
+     * Inicializa y valida el nombre de la tabla integrada en el controlador.
+     *
+     * Esta función obtiene y valida el nombre de la tabla asociada a un controlador (`controler`).
+     * Si la tabla está vacía, devuelve un mensaje de error.
+     * En caso contrario, retorna el nombre de la tabla después de eliminar los espacios en blanco adicionales.
+     *
+     * ### Ejemplo de Uso:
+     * ```php
+     * $controlador = new controler();
+     * $controlador->tabla = "usuarios";
+     * $links_menu = new links_menu($pdo, 1);
+     * $resultado = $links_menu->init_tabla($controlador);
+     *
+     * if (is_array($resultado)) {
+     *     echo "Error: " . $resultado['mensaje']; // Manejo de error
+     * } else {
+     *     echo "Nombre de la tabla: " . $resultado;
+     * }
+     * ```
+     *
+     * ### Ejemplo de Entrada y Salida:
+     *
+     * **Entrada:**
+     * ```php
+     * $controler->tabla = "productos";
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * "productos"
+     * ```
+     *
+     * **Entrada:**
+     * ```php
+     * $controler->tabla = "   clientes   ";
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * "clientes"
+     * ```
+     *
+     * **Entrada (Error - tabla vacía):**
+     * ```php
+     * $controler->tabla = "";
+     * ```
+     * **Salida esperada (array con error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error tabla esta vacia',
+     *     'data' => ''
+     * ]
+     * ```
+     *
+     * @param controler $controler Controlador en ejecución que contiene la tabla a validar.
+     *
+     * @return string|array Retorna el nombre de la tabla si es válido.
+     *                      Retorna un array con un mensaje de error si la tabla está vacía.
+     *
+     * @throws array Si la tabla está vacía, devuelve un array con un mensaje de error detallado.
      */
     private function init_tabla(controler $controler): string|array
     {
@@ -478,6 +605,7 @@ class links_menu{
         $tabla = $controler->tabla;
         return trim($tabla);
     }
+
 
     private function integra_link_ancla(string $accion, PDO $link, array $params, int $registro_id, string $seccion, bool $valida_permiso)
     {
@@ -1133,10 +1261,81 @@ class links_menu{
     }
 
     /**
-     * Inicializa la seccion de una entidad controller
-     * @param controler $controler Controlador en ejecucion
-     * @return array|string
-     * @version 8.5.0
+     * REG
+     * Obtiene y valida la sección de un controlador.
+     *
+     * Esta función devuelve el valor de la sección (`seccion`) del controlador. Si la sección está vacía,
+     * intenta asignarla a partir de la tabla del controlador utilizando `asigna_seccion()`.
+     * Si la asignación falla, devuelve un error. En caso contrario, retorna la sección validada.
+     *
+     * ### Ejemplo de Uso:
+     * ```php
+     * $controlador = new controler();
+     * $controlador->tabla = "clientes"; // La sección será asignada automáticamente
+     * $links_menu = new links_menu($pdo, 1);
+     * $resultado = $links_menu->seccion($controlador);
+     *
+     * if (is_array($resultado)) {
+     *     echo "Error: " . $resultado['mensaje']; // Manejo de error
+     * } else {
+     *     echo "Sección obtenida: " . $resultado;
+     * }
+     * ```
+     *
+     * ### Ejemplo de Entrada y Salida:
+     *
+     * **Entrada: Sección ya definida en el controlador**
+     * ```php
+     * $controler->seccion = "ordenes";
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * "ordenes"
+     * ```
+     *
+     * **Entrada: Sección vacía, pero tabla definida**
+     * ```php
+     * $controler->seccion = "";
+     * $controler->tabla = "productos";
+     * ```
+     * **Salida esperada (sección asignada automáticamente):**
+     * ```php
+     * "productos"
+     * ```
+     *
+     * **Entrada: Sección y tabla vacías (Error)**
+     * ```php
+     * $controler->seccion = "";
+     * $controler->tabla = "";
+     * ```
+     * **Salida esperada (array con error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error tabla esta vacia',
+     *     'data' => ''
+     * ]
+     * ```
+     *
+     * **Error en la asignación de sección:**
+     * ```php
+     * $controler->seccion = "";
+     * $controler->tabla = "usuarios";
+     * // Supongamos que `asigna_seccion` falla por alguna razón.
+     * ```
+     * **Salida esperada (array con error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error al inicializar seccion',
+     *     'data' => 'usuarios'
+     * ]
+     * ```
+     *
+     * @param controler $controler Instancia del controlador en ejecución.
+     *
+     * @return array|string Retorna el nombre de la sección si es válido.
+     *                      Retorna un array con un mensaje de error si la sección o tabla están vacías.
+     *
+     * @throws array Si la tabla está vacía o hay un error al asignar la sección, devuelve un array con el mensaje de error.
      */
     private function seccion(controler $controler): array|string
     {
@@ -1144,11 +1343,12 @@ class links_menu{
         if($seccion === ''){
             $seccion_rs = $this->asigna_seccion(controler: $controler);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al inicializar seccion',data:  $seccion_rs);
+                return $this->error->error(mensaje: 'Error al inicializar seccion', data: $seccion_rs);
             }
         }
         return $controler->seccion;
     }
+
 
     /**
      * Genera los parametros de in link sin registro_id

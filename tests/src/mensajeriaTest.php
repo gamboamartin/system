@@ -92,10 +92,10 @@ class mensajeriaTest extends test {
         //$inicializacion = new liberator($inicializacion);
 
         $resultado = $msj->init_mensajes($controler,$html);
-
+        //print_r($resultado);exit;
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("<div class='alert alert-success' role='alert' ><strong>Muy bien!", $resultado->exito);
+        $this->assertStringContainsStringIgnoringCase("<div class='alert alert-success' role='alert'><strong>Muy bien!</strong>", $resultado->exito);
 
 
         errores::$error = false;

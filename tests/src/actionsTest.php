@@ -165,7 +165,7 @@ class actionsTest extends test {
         $resultado = $act->asigna_link_rows(accion: $accion,indice:  $indice, link: $this->link,
             obj_link:  $obj_link,registros_view:  $registros_view,row:  $row,seccion:  $seccion, style: $style);
 
-
+        //print_r($resultado);exit;
 
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);

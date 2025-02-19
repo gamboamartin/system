@@ -278,10 +278,10 @@ class _ctl_referenciasTest extends test {
         $ctl = new liberator($ctl);
 
         $resultado = $ctl->genera_botones_parent(controler: $controler,etiqueta: 'Nueva adm_mes',model_parent: $modelo);
-
+        //print_r($resultado);exit;
         $this->assertNotTrue(errores::$error);
 
-        $this->assertEquals("<a role='button' title='Nueva adm_mes' href='index.php?seccion=adm_mes&accion=alta&registro_id=-1&session_id=1&adm_menu_id=-1' class='btn btn-warning col-sm-12 '>Nueva adm_mes</a>",$resultado->adm_mes);
+        $this->assertEquals("<a role='button' title='Nueva adm_mes' href='index.php?seccion=adm_mes&accion=alta&session_id=1&adm_menu_id=-1&registro_id=-1' class='btn btn-warning col-sm-12 '>Nueva adm_mes</a>",$resultado->adm_mes);
         $this->assertIsObject($resultado);
         errores::$error = false;
 
@@ -328,9 +328,11 @@ class _ctl_referenciasTest extends test {
         $registro_id = 1;
 
         $resultado = $ctl->genera_botones_parent_ir($controler, $etiqueta, $model_parent, $registro_id);
+        //print_r($resultado);exit;
         $this->assertNotTrue(errores::$error);
         $this->assertIsObject($resultado);
-        $this->assertEquals("<a role='button' title='a' href='index.php?seccion=adm_seccion&accion=modifica&registro_id=1&session_id=1&adm_menu_id=-1' class='btn btn-info col-sm-12 '>a</a>",$resultado->adm_seccion);
+
+        $this->assertEquals("<a role='button' title='a' href='index.php?seccion=adm_seccion&accion=modifica&session_id=1&adm_menu_id=-1&registro_id=1' class='btn btn-info col-sm-12 '>a</a>",$resultado->adm_seccion);
 
         errores::$error = false;
     }
@@ -434,11 +436,12 @@ class _ctl_referenciasTest extends test {
         $ctl = new liberator($ctl);
 
         $resultado = $ctl->integra_button_parent($controler, 'Nueva adm_accion',$modelo,'success');
-
+        //print_r($resultado);exit;
         $this->assertNotTrue(errores::$error);
         $this->assertIsObject($resultado);
 
-        $this->assertEquals("<a role='button' title='Nueva adm_accion' href='index.php?seccion=adm_accion&accion=alta&registro_id=-1&session_id=1&adm_menu_id=-1' class='btn btn-success col-sm-12 '>Nueva adm_accion</a>",$resultado->adm_accion);
+
+        $this->assertEquals("<a role='button' title='Nueva adm_accion' href='index.php?seccion=adm_accion&accion=alta&session_id=1&adm_menu_id=-1&registro_id=-1' class='btn btn-success col-sm-12 '>Nueva adm_accion</a>",$resultado->adm_accion);
         errores::$error = false;
     }
 
@@ -448,6 +451,7 @@ class _ctl_referenciasTest extends test {
         $_SESSION['grupo_id'] = 2;
         $_GET['session_id'] = 1;
         $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
         $html = new html();
         $html_controler = new html_controler($html);
 
@@ -466,9 +470,10 @@ class _ctl_referenciasTest extends test {
         $registro_id = -1;
         $style = 'a';
         $resultado = $ctl->integra_button_parent_ir($controler, $etiqueta, $model_parent, $registro_id, $style);
+
         $this->assertNotTrue(errores::$error);
         $this->assertIsObject($resultado);
-        $this->assertEquals("<a role='button' title='a' href='index.php?seccion=adm_seccion&accion=modifica&registro_id=-1&session_id=1&adm_menu_id=-1' class='btn btn-a col-sm-12 '>a</a>",$resultado->adm_seccion);
+        $this->assertEquals("<a role='button' title='a' href='index.php?seccion=adm_seccion&accion=modifica&session_id=1&adm_menu_id=-1&registro_id=-1' class='btn btn-a col-sm-12 '>a</a>",$resultado->adm_seccion);
         errores::$error = false;
     }
 

@@ -795,7 +795,7 @@ class _ctl_baseTest extends test {
             exit;
         }
 
-        $adm_accion['id'] = 1;
+        //$adm_accion['id'] = 1;
         $adm_accion['adm_seccion_id'] = 1;
         $adm_accion['descripcion'] = 'test';
         $adm_accion['muestra_icono_btn'] = 'inactivo';
