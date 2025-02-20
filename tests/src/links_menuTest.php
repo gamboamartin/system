@@ -142,6 +142,30 @@ class links_menuTest extends test {
         errores::$error = false;
     }
 
+    #[NoReturn] public function test_con_id(): void
+    {
+        errores::$error = false;
+        $_SESSION['usuario_id'] = 2;
+        $_SESSION['grupo_id'] = 2;
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+        $_GET['adm_menu_id'] = 5;
+        $html = new links_menu($this->link, -1);
+        $html = new liberator($html);
+
+        errores::$error = false;
+
+        $accion = 'modifica';
+        $registro_id = '-1';
+        $seccion = 'c';
+        $resultado = $html->con_id($accion,$this->link,$registro_id,$seccion);
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("./index.php?seccion=adm_session&accion=inicio&adm_menu_id=5&session_id=1", $resultado->adm_session->inicio);
+        errores::$error = false;
+    }
+
     /**
      */
     #[NoReturn] public function test_init_action(): void
@@ -217,6 +241,28 @@ class links_menuTest extends test {
         errores::$error = false;
     }
 
+    #[NoReturn] public function test_links_con_id(): void
+    {
+        errores::$error = false;
+        $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_GET['session_id'] = '1';
+        $html = new links_menu($this->link, -1);
+        $html = new liberator($html);
+
+
+        $registro_id = '-1';
+        $accion = '';
+
+        $resultado = $html->links_con_id($accion,$this->link,$registro_id);
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("./index.php?seccion=adm_session&accion=logout&session_id=1", $resultado->adm_session->logout);
+        errores::$error = false;
+    }
+
 
     #[NoReturn] public function test_init_link_controller(): void
     {
@@ -250,6 +296,39 @@ class links_menuTest extends test {
         errores::$error = false;
     }
 
+    #[NoReturn] public function test_liga(): void
+    {
+        errores::$error = false;
+        $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
+        $_SESSION['usuario_id'] = 2;
+        $_SESSION['grupo_id'] = 2;
+        $_GET['session_id'] = '1';
+        $_GET['adm_menu_id'] = 5;
+        $html = new links_menu($this->link, -1);
+        $html = new liberator($html);
+
+        $accion = '';
+        $registro_id = -1;
+        $seccion = '';
+        $tengo_permiso = false;
+        $resultado = $html->liga($accion,$registro_id,$seccion,$tengo_permiso);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("", $resultado);
+        errores::$error = false;
+
+        $accion = 'a';
+        $registro_id = -1;
+        $seccion = 's';
+        $tengo_permiso = true;
+        $resultado = $html->liga($accion,$registro_id,$seccion,$tengo_permiso);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("./index.php?seccion=s&accion=a&registro_id=-1&session_id=1&adm_menu_id=5", $resultado);
+        errores::$error = false;
+    }
+
     #[NoReturn] public function test_liga_completa(): void
     {
         errores::$error = false;
@@ -270,6 +349,49 @@ class links_menuTest extends test {
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("./index.php?seccion=a&accion=b&registro_id=-1&session_id=1&adm_menu_id=-1", $resultado);
+        errores::$error = false;
+    }
+
+    #[NoReturn] public function test_liga_con_permiso(): void
+    {
+        errores::$error = false;
+        $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
+        $_SESSION['usuario_id'] = 2;
+        $_SESSION['grupo_id'] = 2;
+        $_GET['session_id'] = '1';
+        $_GET['adm_menu_id'] = 5;
+        $html = new links_menu($this->link, -1);
+        $html = new liberator($html);
+
+        $accion = 'b';
+        $registro_id = -1;
+        $seccion = 'a';
+
+        $resultado = $html->liga_con_permiso($accion,$registro_id,$seccion);
+        //print_r($resultado);exit;
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("./index.php?seccion=a&accion=b&registro_id=-1&session_id=1&adm_menu_id=5", $resultado);
+        errores::$error = false;
+    }
+
+    #[NoReturn] public function test_link(): void
+    {
+        errores::$error = false;
+        $_GET['session_id'] = 1;
+        $html = new links_menu($this->link, -1);
+        $html = new liberator($html);
+
+
+        $accion = 'a';
+        $registro_id = '-1';
+        $seccion = 'a';
+        $resultado = $html->link($accion,$this->link,$registro_id,$seccion);
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("", $resultado);
         errores::$error = false;
     }
 

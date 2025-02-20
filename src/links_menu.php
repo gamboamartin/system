@@ -50,18 +50,61 @@ class links_menu{
     }
 
     /**
-     * Obtiene el menu id para se utilizado por GET en los links
-     * @return int
-     * @version 7.88.3
+     * REG
+     * Obtiene el ID del menú de administración desde los parámetros GET.
+     *
+     * Este método busca el parámetro `adm_menu_id` en la URL (`$_GET`).
+     * Si el parámetro existe, lo convierte a un entero y lo devuelve.
+     * Si no existe, devuelve `-1` como valor por defecto.
+     *
+     * ### Ejemplo de Uso:
+     * ```php
+     * $links_menu = new links_menu($pdo, 1);
+     * $menu_id = $links_menu->adm_menu_id();
+     * echo "ID del menú: " . $menu_id;
+     * ```
+     *
+     * ### Ejemplo de Entrada y Salida:
+     *
+     * **Caso 1: `adm_menu_id` presente en la URL**
+     * ```php
+     * $_GET['adm_menu_id'] = "5";
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * 5
+     * ```
+     *
+     * **Caso 2: `adm_menu_id` no está en la URL**
+     * ```php
+     * unset($_GET['adm_menu_id']);
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * -1
+     * ```
+     *
+     * **Caso 3: `adm_menu_id` con un valor no numérico**
+     * ```php
+     * $_GET['adm_menu_id'] = "abc";
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * -1
+     * ```
+     *
+     * @return int Retorna el ID del menú (`adm_menu_id`) si está definido en la URL.
+     *             Si no está presente, retorna `-1` como valor por defecto.
      */
     private function adm_menu_id(): int
     {
         $adm_menu_id = -1;
-        if(isset($_GET['adm_menu_id'])){
+        if (isset($_GET['adm_menu_id'])) {
             $adm_menu_id = (int)$_GET['adm_menu_id'];
         }
         return $adm_menu_id;
     }
+
 
     /**
      * Genera un link de alta
@@ -241,26 +284,113 @@ class links_menu{
 
 
     /**
-     * @param string $accion Accion a asignar o generar link
-     * @param PDO $link
-     * @param int $registro_id Registro a aplicar identificador
-     * @param string $seccion
-     * @return array|stdClass
+     * REG
+     * Genera un enlace de acción basado en un ID de registro y lo asigna a la estructura de enlaces.
+     *
+     * Este método genera un enlace dinámico para una acción específica dentro de una sección,
+     * utilizando un identificador de registro. Valida que los parámetros sean correctos,
+     * obtiene el enlace llamando a la función correspondiente (`link_{accion}`) y lo inicializa en la estructura `links`.
+     *
+     * ### Comportamiento:
+     * - Valida que la acción y la sección no estén vacías.
+     * - Construye el enlace utilizando un método dinámico basado en el nombre de la acción.
+     * - Inicializa el enlace en la estructura `links` del objeto.
+     *
+     * ### Ejemplo de Uso:
+     * ```php
+     * $links_menu = new links_menu($pdo, 1);
+     * $resultado = $links_menu->con_id("modifica", $pdo, 5, "productos");
+     * print_r($resultado);
+     * ```
+     *
+     * ### Ejemplo de Entrada y Salida:
+     *
+     * **Caso 1: Acción y sección válidas**
+     * ```php
+     * $accion = "modifica";
+     * $link = $pdo;
+     * $registro_id = 5;
+     * $seccion = "productos";
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * stdClass Object
+     * (
+     *     [productos] => stdClass Object
+     *         (
+     *             [modifica] => index.php?seccion=productos&accion=modifica&registro_id=5&session_id=xyz
+     *         )
+     * )
+     * ```
+     *
+     * **Caso 2: Acción vacía**
+     * ```php
+     * $accion = "";
+     * $registro_id = 5;
+     * $seccion = "usuarios";
+     * ```
+     * **Salida esperada (error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error accion esta vacia',
+     *     'data' => ''
+     * ]
+     * ```
+     *
+     * **Caso 3: Sección vacía**
+     * ```php
+     * $accion = "elimina";
+     * $registro_id = 10;
+     * $seccion = "";
+     * ```
+     * **Salida esperada (error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error seccion esta vacia',
+     *     'data' => ''
+     * ]
+     * ```
+     *
+     * @param string $accion La acción a ejecutar en el enlace.
+     * @param PDO $link Conexión a la base de datos.
+     * @param int $registro_id Identificador del registro al que se aplicará la acción.
+     * @param string $seccion La sección en la que se ejecutará la acción.
+     *
+     * @return array|stdClass Retorna un objeto `stdClass` con el enlace generado si los parámetros son válidos.
+     *                        Retorna un array con un mensaje de error si la acción o la sección están vacías.
      */
     private function con_id(string $accion, PDO $link, int $registro_id, string $seccion): array|stdClass
     {
-        $function = 'link_'.$accion;
-        $link = $this->$function(registro_id: $registro_id, link: $link, seccion: $seccion);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener link de elimina bd', data: $link);
+        // Elimina espacios en blanco de la acción y valida que no esté vacía
+        $accion = trim($accion);
+        if ($accion === '') {
+            return $this->error->error(mensaje: 'Error accion esta vacia', data: $accion, es_final: true);
         }
 
-        $init = $this->init_action(accion: $accion,link: $link,seccion: $seccion);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al inicializa link', data: $init);
+        // Elimina espacios en blanco de la sección y valida que no esté vacía
+        $seccion = trim($seccion);
+        if ($seccion === '') {
+            return $this->error->error(mensaje: 'Error seccion esta vacia', data: $seccion, es_final: true);
         }
+
+        // Construye dinámicamente el nombre del método que genera el enlace de la acción
+        $function = 'link_' . $accion;
+
+        // Llama al método generado dinámicamente para obtener el enlace de la acción
+        $link = $this->$function(registro_id: $registro_id, link: $link, seccion: $seccion);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener link de ' . $accion, data: $link);
+        }
+
+        // Inicializa la acción en la estructura de enlaces
+        $init = $this->init_action(accion: $accion, link: $link, seccion: $seccion);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al inicializar link', data: $init);
+        }
+
         return $init;
     }
+
 
     private function data_link(string $accion, PDO $link, array $params, string $seccion)
     {
@@ -395,31 +525,105 @@ class links_menu{
     }
 
     /**
-     * Inicializa un link para generar una accion
-     * @param string $accion Accion a asignar o generar link
-     * @param string $link Link href con ruta
-     * @param string $seccion Seccion a asignar link
-     * @return stdClass|array
-     * @version 0.10.5
+     * REG
+     * Inicializa un enlace de acción dentro de una sección específica.
+     *
+     * Este método asigna un enlace (`URL`) a una acción dentro de una sección en la propiedad `links`.
+     * Si la sección aún no ha sido definida, se inicializa como un objeto `stdClass`.
+     *
+     * ### Comportamiento:
+     * - Se valida que la acción y la sección no estén vacías.
+     * - Se asigna el enlace a la acción correspondiente dentro de la sección.
+     *
+     * ### Ejemplo de Uso:
+     * ```php
+     * $links_menu = new links_menu($pdo, 1);
+     * $resultado = $links_menu->init_action("modifica", "index.php?seccion=productos&accion=modifica", "productos");
+     * print_r($resultado);
+     * ```
+     *
+     * ### Ejemplo de Entrada y Salida:
+     *
+     * **Caso 1: Acción y sección válidas**
+     * ```php
+     * $accion = "modifica";
+     * $link = "index.php?seccion=productos&accion=modifica";
+     * $seccion = "productos";
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * stdClass Object
+     * (
+     *     [productos] => stdClass Object
+     *         (
+     *             [modifica] => index.php?seccion=productos&accion=modifica
+     *         )
+     * )
+     * ```
+     *
+     * **Caso 2: Acción vacía**
+     * ```php
+     * $accion = "";
+     * $link = "index.php?seccion=usuarios&accion=modifica";
+     * $seccion = "usuarios";
+     * ```
+     * **Salida esperada (error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error la accion esta vacia',
+     *     'data' => ''
+     * ]
+     * ```
+     *
+     * **Caso 3: Sección vacía**
+     * ```php
+     * $accion = "elimina";
+     * $link = "index.php?seccion=usuarios&accion=elimina";
+     * $seccion = "";
+     * ```
+     * **Salida esperada (error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error seccion esta vacia',
+     *     'data' => ''
+     * ]
+     * ```
+     *
+     * @param string $accion La acción que se ejecutará en la URL.
+     * @param string $link La URL de la acción.
+     * @param string $seccion La sección en la que se ejecutará la acción.
+     *
+     * @return stdClass|array Retorna un objeto `stdClass` con la estructura de enlaces si los parámetros son válidos.
+     *                        Retorna un array con un mensaje de error si la acción o la sección están vacías.
      */
     private function init_action(string $accion, string $link, string $seccion): stdClass|array
     {
+        // Elimina espacios en blanco de la acción
         $accion = trim($accion);
-        if($accion === ''){
-            return $this->error->error(mensaje: 'Error la accion esta vacia', data:$accion);
+        if ($accion === '') {
+            return $this->error->error(mensaje: 'Error la accion esta vacia', data: $accion);
         }
+
+        // Elimina espacios en blanco del enlace
         $link = trim($link);
 
+        // Elimina espacios en blanco de la sección
         $seccion = trim($seccion);
-        if($seccion === ''){
-            return $this->error->error(mensaje: 'Error $seccion esta vacia', data:$seccion);
+        if ($seccion === '') {
+            return $this->error->error(mensaje: 'Error seccion esta vacia', data: $seccion);
         }
-        if(!isset($this->links->$seccion)){
+
+        // Si la sección aún no está definida en links, la inicializa como un objeto vacío
+        if (!isset($this->links->$seccion)) {
             $this->links->$seccion = new stdClass();
         }
-        $this->links->$seccion->$accion =  $link;
+
+        // Asigna el enlace a la acción dentro de la sección
+        $this->links->$seccion->$accion = $link;
+
         return $this->links;
     }
+
 
     /**
      * @param controler $controler
@@ -634,98 +838,407 @@ class links_menu{
         return $inits;
     }
 
-    private function liga(string $accion, int $registro_id, string $seccion, bool $tengo_permiso){
+    /**
+     * REG
+     * Genera un enlace validando los permisos y los parámetros requeridos.
+     *
+     * Este método construye un enlace basado en la acción, el ID del registro y la sección.
+     * Antes de generar la URL, valida que los valores de `seccion` y `accion` no estén vacíos.
+     * Si el usuario tiene permiso (`$tengo_permiso`), se genera la URL utilizando `liga_con_permiso()`.
+     *
+     * ### Ejemplo de Uso:
+     * ```php
+     * $links_menu = new links_menu($pdo, 1);
+     * $liga = $links_menu->liga("modifica", 15, "productos", true);
+     * echo $liga;
+     * ```
+     *
+     * ### Ejemplo de Entrada y Salida:
+     *
+     * **Caso 1: Parámetros válidos y permiso concedido**
+     * ```php
+     * $accion = "modifica";
+     * $registro_id = 15;
+     * $seccion = "productos";
+     * $tengo_permiso = true;
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * "./index.php?seccion=productos&accion=modifica&registro_id=15&session_id=xyz123&adm_menu_id=3"
+     * ```
+     *
+     * **Caso 2: `$tengo_permiso` es falso**
+     * ```php
+     * $accion = "modifica";
+     * $registro_id = 20;
+     * $seccion = "usuarios";
+     * $tengo_permiso = false;
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * ""
+     * ```
+     *
+     * **Caso 3: `seccion` vacía**
+     * ```php
+     * $accion = "alta";
+     * $registro_id = 10;
+     * $seccion = "";
+     * $tengo_permiso = true;
+     * ```
+     * **Salida esperada (error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error seccion esta vacia',
+     *     'data' => ''
+     * ]
+     * ```
+     *
+     * **Caso 4: `accion` vacía**
+     * ```php
+     * $accion = "";
+     * $registro_id = 5;
+     * $seccion = "clientes";
+     * $tengo_permiso = true;
+     * ```
+     * **Salida esperada (error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error accion esta vacia',
+     *     'data' => ''
+     * ]
+     * ```
+     *
+     * @param string $accion Acción a ejecutar en la URL.
+     * @param int $registro_id ID del registro en la base de datos.
+     * @param string $seccion Sección a la que pertenece la acción.
+     * @param bool $tengo_permiso Indica si el usuario tiene permisos para acceder a la acción.
+     *
+     * @return string|array Retorna la URL generada si los parámetros son válidos y el usuario tiene permisos.
+     *                      Retorna un array con un mensaje de error si `seccion` o `accion` están vacíos.
+     *                      Retorna una cadena vacía si `$tengo_permiso` es `false`.
+     */
+    private function liga(string $accion, int $registro_id, string $seccion, bool $tengo_permiso): array|string
+    {
         $liga = '';
-        if($tengo_permiso){
+
+        // Solo se genera la URL si el usuario tiene permisos
+        if ($tengo_permiso) {
             $seccion = trim($seccion);
-            if($seccion === ''){
+            if ($seccion === '') {
                 return $this->error->error(mensaje: 'Error seccion esta vacia', data: $seccion);
             }
+
             $accion = trim($accion);
-            if($accion === ''){
+            if ($accion === '') {
                 return $this->error->error(mensaje: 'Error accion esta vacia', data: $accion);
             }
-            $liga = $this->liga_con_permiso(accion: $accion,registro_id:  $registro_id,seccion:  $seccion);
-            if(errores::$error){
+
+            $liga = $this->liga_con_permiso(accion: $accion, registro_id: $registro_id, seccion: $seccion);
+            if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al generar liga', data: $liga);
             }
         }
+
         return $liga;
     }
 
+
     /**
-     * Genera el link para uso de anclas
-     * @param string $accion accion a llamar
-     * @param int $adm_menu_id Menu a llamar
-     * @param int $registro_id Registro a ejecutar transaccion
-     * @param string $seccion Seccion a ejecutar
-     * @return string|array
-     * @version 8.6.0
+     * REG
+     * Genera una URL completa con los parámetros necesarios para ejecutar una acción en una sección específica.
+     *
+     * Este método construye un enlace con los parámetros esenciales (`seccion`, `accion`, `registro_id`, `session_id`,
+     * `adm_menu_id`) para navegar dentro del sistema. Valida que los parámetros `seccion` y `accion` no estén vacíos.
+     *
+     * ### Ejemplo de Uso:
+     * ```php
+     * $links_menu = new links_menu($pdo, 1);
+     * $liga = $links_menu->liga_completa("modifica", 3, 25, "usuarios");
+     * echo $liga;
+     * ```
+     *
+     * ### Ejemplo de Entrada y Salida:
+     *
+     * **Caso 1: Parámetros válidos**
+     * ```php
+     * $accion = "modifica";
+     * $adm_menu_id = 3;
+     * $registro_id = 25;
+     * $seccion = "usuarios";
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * "./index.php?seccion=usuarios&accion=modifica&registro_id=25&session_id=xyz123&adm_menu_id=3"
+     * ```
+     *
+     * **Caso 2: `seccion` vacía**
+     * ```php
+     * $accion = "alta";
+     * $adm_menu_id = 1;
+     * $registro_id = 10;
+     * $seccion = "";
+     * ```
+     * **Salida esperada (error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error seccion esta vacia',
+     *     'data' => ''
+     * ]
+     * ```
+     *
+     * **Caso 3: `accion` vacía**
+     * ```php
+     * $accion = "";
+     * $adm_menu_id = 2;
+     * $registro_id = 5;
+     * $seccion = "productos";
+     * ```
+     * **Salida esperada (error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error accion esta vacia',
+     *     'data' => ''
+     * ]
+     * ```
+     *
+     * @param string $accion Acción que se ejecutará en la URL.
+     * @param int $adm_menu_id ID del menú de administración.
+     * @param int $registro_id ID del registro en la base de datos.
+     * @param string $seccion Sección a la que pertenece la acción.
+     *
+     * @return string|array Retorna la URL completa si los parámetros son válidos.
+     *                      Retorna un array con un mensaje de error si `seccion` o `accion` están vacíos.
      */
     private function liga_completa(string $accion, int $adm_menu_id, int $registro_id, string $seccion): string|array
     {
         $seccion = trim($seccion);
-        if($seccion === ''){
+        if ($seccion === '') {
             return $this->error->error(mensaje: 'Error seccion esta vacia', data: $seccion);
         }
+
         $accion = trim($accion);
-        if($accion === ''){
+        if ($accion === '') {
             return $this->error->error(mensaje: 'Error accion esta vacia', data: $accion);
         }
-        return "./index.php?seccion=$seccion&accion=$accion&registro_id=$registro_id&session_id=$this->session_id&adm_menu_id=$adm_menu_id";
+
+        $seccion_g = "seccion=$seccion";
+        $accion_g = "accion=$accion";
+        $registro_id_g = "registro_id=$registro_id";
+        $session_id_g = "session_id=$this->session_id";
+        $menu_id_g = "adm_menu_id=$adm_menu_id";
+
+        return "./index.php?$seccion_g&$accion_g&$registro_id_g&$session_id_g&$menu_id_g";
     }
 
-    private function liga_con_permiso(string $accion, int $registro_id, string $seccion){
+
+    /**
+     * REG
+     * Genera un enlace validando los permisos de acceso y los parámetros requeridos.
+     *
+     * Este método construye una URL con los parámetros `seccion`, `accion`, `registro_id`, `session_id` y `adm_menu_id`.
+     * Antes de generar la URL, valida que los valores de `seccion` y `accion` no estén vacíos.
+     * También obtiene el `adm_menu_id` mediante el método `adm_menu_id()`. Si hay errores en el proceso, retorna
+     * un mensaje de error con los detalles correspondientes.
+     *
+     * ### Ejemplo de Uso:
+     * ```php
+     * $links_menu = new links_menu($pdo, 1);
+     * $liga = $links_menu->liga_con_permiso("modifica", 12, "usuarios");
+     * echo $liga;
+     * ```
+     *
+     * ### Ejemplo de Entrada y Salida:
+     *
+     * **Caso 1: Parámetros válidos**
+     * ```php
+     * $accion = "modifica";
+     * $registro_id = 12;
+     * $seccion = "usuarios";
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * "./index.php?seccion=usuarios&accion=modifica&registro_id=12&session_id=xyz123&adm_menu_id=3"
+     * ```
+     *
+     * **Caso 2: `seccion` vacía**
+     * ```php
+     * $accion = "alta";
+     * $registro_id = 5;
+     * $seccion = "";
+     * ```
+     * **Salida esperada (error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error seccion esta vacia',
+     *     'data' => ''
+     * ]
+     * ```
+     *
+     * **Caso 3: `accion` vacía**
+     * ```php
+     * $accion = "";
+     * $registro_id = 8;
+     * $seccion = "productos";
+     * ```
+     * **Salida esperada (error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error accion esta vacia',
+     *     'data' => ''
+     * ]
+     * ```
+     *
+     * **Caso 4: Error al obtener `adm_menu_id`**
+     * ```php
+     * $accion = "ver";
+     * $registro_id = 3;
+     * $seccion = "pedidos";
+     * // Supongamos que `adm_menu_id()` genera un error.
+     * ```
+     * **Salida esperada (error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error al obtener adm_menu_id',
+     *     'data' => -1
+     * ]
+     * ```
+     *
+     * @param string $accion Acción que se ejecutará en la URL.
+     * @param int $registro_id ID del registro en la base de datos.
+     * @param string $seccion Sección a la que pertenece la acción.
+     *
+     * @return string|array Retorna la URL completa si los parámetros son válidos.
+     *                      Retorna un array con un mensaje de error si `seccion`, `accion` están vacíos o si `adm_menu_id` es inválido.
+     */
+    private function liga_con_permiso(string $accion, int $registro_id, string $seccion): array|string
+    {
         $seccion = trim($seccion);
-        if($seccion === ''){
-            return $this->error->error(mensaje: 'Error seccion esta vacia', data: $seccion);
+        if ($seccion === '') {
+            return $this->error->error(mensaje: 'Error seccion esta vacia', data: $seccion, es_final: true);
         }
+
         $accion = trim($accion);
-        if($accion === ''){
-            return $this->error->error(mensaje: 'Error accion esta vacia', data: $accion);
+        if ($accion === '') {
+            return $this->error->error(mensaje: 'Error accion esta vacia', data: $accion, es_final: true);
         }
 
         $adm_menu_id = $this->adm_menu_id();
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener adm_menu_id', data: $adm_menu_id);
         }
 
-        $liga = $this->liga_completa(accion: $accion,adm_menu_id:  $adm_menu_id,registro_id:  $registro_id, seccion: $seccion);
-        if(errores::$error){
+        $liga = $this->liga_completa(
+            accion: $accion,
+            adm_menu_id: $adm_menu_id,
+            registro_id: $registro_id,
+            seccion: $seccion
+        );
+
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar liga', data: $liga);
         }
+
         return $liga;
     }
 
+
     /**
-     * Genera un link basado en datos de controler
-     * @param string $accion Accion a ejecutar
-     * @param PDO $link Conexion a base de datos
-     * @param int $registro_id Registro en proceso
-     * @param string $seccion Seccion a ejecutar
-     * @return string|array
+     * REG
+     * Genera un enlace para ejecutar una acción en una sección específica, validando permisos.
      *
+     * Este método construye un enlace (`URL`) para una acción dentro de una sección específica.
+     * Antes de generar la URL, se validan las siguientes condiciones:
+     * - Que la sección no esté vacía.
+     * - Que el usuario tenga permisos para ejecutar la acción en la sección indicada.
+     *
+     * Si se cumplen los requisitos, se genera el enlace con la función `liga()`.
+     *
+     * ### Ejemplo de Uso:
+     * ```php
+     * $links_menu = new links_menu($pdo, 1);
+     * $enlace = $links_menu->link("modifica", $pdo, 15, "productos");
+     * echo $enlace;
+     * ```
+     *
+     * ### Ejemplo de Entrada y Salida:
+     *
+     * **Caso 1: Acción válida con permisos**
+     * ```php
+     * $accion = "modifica";
+     * $registro_id = 15;
+     * $seccion = "productos";
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * "./index.php?seccion=productos&accion=modifica&registro_id=15&session_id=xyz123&adm_menu_id=3"
+     * ```
+     *
+     * **Caso 2: Sección vacía**
+     * ```php
+     * $accion = "alta";
+     * $registro_id = 10;
+     * $seccion = "";
+     * ```
+     * **Salida esperada (error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error seccion esta vacia',
+     *     'data' => ''
+     * ]
+     * ```
+     *
+     * **Caso 3: Usuario sin permisos**
+     * ```php
+     * $accion = "elimina_bd";
+     * $registro_id = 20;
+     * $seccion = "usuarios";
+     * // El usuario no tiene permisos para eliminar registros en la sección "usuarios"
+     * ```
+     * **Salida esperada (error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error al validar si tengo permiso',
+     *     'data' => false
+     * ]
+     * ```
+     *
+     * @param string $accion La acción que se ejecutará en la URL.
+     * @param PDO $link Conexión a la base de datos.
+     * @param int $registro_id ID del registro al que se aplicará la acción.
+     * @param string $seccion Sección en la que se ejecutará la acción.
+     *
+     * @return string|array Retorna la URL generada si los parámetros son válidos y el usuario tiene permisos.
+     *                      Retorna un array con un mensaje de error si la sección está vacía o si el usuario no tiene permisos.
      */
     private function link(string $accion, PDO $link, int $registro_id, string $seccion): string|array
     {
-
+        // Elimina espacios en blanco de la sección
         $seccion = trim($seccion);
-        if($seccion === ''){
-            return $this->error->error(mensaje: 'Error seccion esta vacia', data:$seccion);
+        if ($seccion === '') {
+            return $this->error->error(mensaje: 'Error seccion esta vacia', data: $seccion);
+        }
+        $accion = trim($accion);
+        if ($accion === '') {
+            return $this->error->error(mensaje: 'Error $accion esta vacia', data: $accion);
         }
 
+        // Verifica si el usuario tiene permisos para ejecutar la acción en la sección
         $tengo_permiso = (new adm_usuario(link: $link))->tengo_permiso(adm_accion: $accion, adm_seccion: $seccion);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar si tengo permiso', data: $tengo_permiso);
         }
 
-        $liga = $this->liga(accion: $accion,registro_id:  $registro_id,seccion:  $seccion,tengo_permiso:  $tengo_permiso);
-        if(errores::$error){
+        // Genera la liga si el usuario tiene permisos
+        $liga = $this->liga(accion: $accion, registro_id: $registro_id, seccion: $seccion,
+            tengo_permiso: $tengo_permiso);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar liga', data: $liga);
         }
 
         return $liga;
     }
+
 
     /**
      * Genera un link de tipo alta
@@ -1060,23 +1573,99 @@ class links_menu{
     }
 
     /**
-     * @param string $accion Accion a asignar o generar link
-     * @param PDO $link
-     * @param int $registro_id Registro a aplicar identificador
-     * @return array|stdClass
+     * REG
+     * Genera enlaces con ID para una acción en todas las secciones disponibles.
+     *
+     * Este método recorre todas las secciones almacenadas en la propiedad `$this->secciones`
+     * y genera un enlace para cada una de ellas llamando al método `con_id()`, el cual crea
+     * un enlace basado en la acción y el ID del registro.
+     *
+     * Si ocurre algún error en el proceso, se devuelve un mensaje de error con los detalles.
+     * En caso contrario, se retorna la estructura de enlaces generada.
+     *
+     * ### Comportamiento:
+     * - Recorre todas las secciones registradas.
+     * - Para cada sección, genera un enlace llamando a `con_id()`.
+     * - Si ocurre un error, devuelve un mensaje de error.
+     * - Retorna el objeto `links` con todos los enlaces generados.
+     *
+     * ### Ejemplo de Uso:
+     * ```php
+     * $links_menu = new links_menu($pdo, 1);
+     * $resultado = $links_menu->links_con_id("modifica", $pdo, 5);
+     * print_r($resultado);
+     * ```
+     *
+     * ### Ejemplo de Entrada y Salida:
+     *
+     * **Caso 1: Generación de enlaces exitosa**
+     * ```php
+     * $accion = "modifica";
+     * $registro_id = 10;
+     * ```
+     * **Salida esperada (`$this->links` con enlaces generados para cada sección):**
+     * ```php
+     * stdClass Object
+     * (
+     *     [productos] => stdClass Object
+     *         (
+     *             [modifica] => index.php?seccion=productos&accion=modifica&registro_id=10&session_id=xyz
+     *         )
+     *     [usuarios] => stdClass Object
+     *         (
+     *             [modifica] => index.php?seccion=usuarios&accion=modifica&registro_id=10&session_id=xyz
+     *         )
+     * )
+     * ```
+     *
+     * **Caso 2: Error en la generación de un enlace**
+     * ```php
+     * $accion = "";
+     * $registro_id = 10;
+     * ```
+     * **Salida esperada (array con error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error accion esta vacia',
+     *     'data' => ''
+     * ]
+     * ```
+     *
+     * **Caso 3: Secciones vacías**
+     * ```php
+     * $this->secciones = [];
+     * ```
+     * **Salida esperada (`$this->links` sin cambios):**
+     * ```php
+     * stdClass Object
+     * (
+     * )
+     * ```
+     *
+     * @param string $accion La acción para la cual se generarán enlaces.
+     * @param PDO $link Conexión a la base de datos.
+     * @param int $registro_id Identificador del registro al que se aplicará la acción.
+     *
+     * @return array|stdClass Retorna un objeto `stdClass` con los enlaces generados para cada sección.
+     *                        Retorna un array con un mensaje de error si ocurre un problema en la generación de enlaces.
      */
     private function links_con_id(string $accion, PDO $link, int $registro_id): array|stdClass
     {
-        foreach ($this->secciones as $seccion){
+        // Recorre todas las secciones registradas
+        foreach ($this->secciones as $seccion) {
+            // Genera un enlace para la acción en la sección actual
+            $init = $this->con_id(accion: $accion, link: $link, registro_id: $registro_id, seccion: $seccion);
 
-            $init = $this->con_id(accion: $accion, link: $link,registro_id: $registro_id,seccion: $seccion);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al inicializa link', data: $init);
+            // Si ocurre un error, retorna un mensaje de error con los detalles
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al inicializar link', data: $init);
             }
-
         }
+
+        // Retorna la estructura de enlaces generada
         return $this->links;
     }
+
 
     /**
      * Genera los links sin ID
