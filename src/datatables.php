@@ -741,27 +741,118 @@ class datatables{
 
 
     /**
-     * Integra los datos de un link
-     * @param array $adm_accion_grupo Registro de permiso
-     * @param array $data_result Resultado previo
-     * @param html $html_base Html lib
-     * @param string $key Key de link
-     * @param int $registro_id Registro de ejecucion
-     * @param array $params_get Parametros adicionales para integrar en link por GET
+     * REG
+     * Genera un enlace de acción basado en los permisos del usuario y los datos de la fila seleccionada.
+     *
+     * Este método valida la existencia de los datos necesarios en el conjunto de resultados (`$data_result`),
+     * verifica los permisos de la acción (`$adm_accion_grupo`), y genera un enlace HTML utilizando la función
+     * `database_link`. Devuelve un objeto `stdClass` con el enlace generado y la acción correspondiente.
+     *
+     * ## Pasos clave:
+     * 1. **Validación de `$data_result`**: Se verifica que el conjunto de resultados contenga datos válidos.
+     * 2. **Validación de `$adm_accion_grupo`**: Se comprueba que la acción es válida y que el usuario tiene permisos.
+     * 3. **Validación de `$session_id`**: Se asegura que la sesión esté activa antes de generar el enlace.
+     * 4. **Obtención del estilo del botón**: Se extrae el estilo CSS del botón desde `html_controler`.
+     * 5. **Generación del enlace**: Se llama a `database_link` para crear el botón HTML.
+     * 6. **Retorno del enlace generado**: Se devuelve un objeto con el enlace HTML y la acción asociada.
+     *
+     * ## Parámetros:
+     *
+     * @param array $adm_accion_grupo
+     *      Arreglo con los detalles de la acción permitida. Debe incluir claves como:
+     *      - `adm_accion_descripcion` (string) → Nombre de la acción (Ej: "editar").
+     *      - `adm_accion_titulo` (string) → Título del botón (Ej: "Editar Usuario").
+     *      - `adm_seccion_descripcion` (string) → Sección del sistema donde se encuentra la acción.
+     *      - `adm_accion_icono` (string) → (Opcional) Icono CSS de la acción.
+     *
+     * @param array $data_result
+     *      Arreglo que contiene los datos de la tabla, debe incluir:
+     *      - `registros` (array) → Lista de registros obtenidos de la base de datos.
+     *      - `n_registros` (int) → Número total de registros disponibles.
+     *
+     * @param html $html_base
+     *      Objeto de la clase `html` utilizado para generar el botón HTML.
+     *
+     * @param string $key
+     *      Clave que identifica el registro dentro de `$data_result['registros']`. Debe ser un string no vacío.
+     *
+     * @param int $registro_id
+     *      ID del registro asociado al botón (Ej: ID de un usuario o factura).
+     *
+     * @param array $params_get
+     *      Arreglo de parámetros adicionales que se añadirán al enlace como variables GET.
+     *
      * @return array|stdClass
-     * @version 13.63.0
+     *      Devuelve un objeto `stdClass` con las siguientes propiedades:
+     *      - `link_con_id` (string) → HTML del botón generado.
+     *      - `accion` (string) → Descripción de la acción generada.
+     *
+     *      En caso de error, devuelve un array con un mensaje de error.
+     *
+     * ## Ejemplo de uso:
+     *
+     * ```php
+     * $adm_accion_grupo = [
+     *     'adm_accion_descripcion' => 'editar',
+     *     'adm_accion_titulo' => 'Editar Usuario',
+     *     'adm_seccion_descripcion' => 'usuarios',
+     *     'adm_accion_icono' => 'fa fa-edit'
+     * ];
+     *
+     * $data_result = [
+     *     'registros' => [
+     *         'usuario_1' => ['id' => 10, 'nombre' => 'Juan Pérez']
+     *     ],
+     *     'n_registros' => 1
+     * ];
+     *
+     * $html = new html();
+     * $key = 'usuario_1';
+     * $registro_id = 10;
+     * $params_get = ['id' => 10, 'token' => 'abcd1234'];
+     *
+     * $resultado = $this->data_link($adm_accion_grupo, $data_result, $html, $key, $registro_id, $params_get);
+     * print_r($resultado);
+     * ```
+     *
+     * ## Ejemplo de salida esperada:
+     * ```php
+     * stdClass Object
+     * (
+     *     [link_con_id] => '<a href="usuarios.php?accion=editar&id=10&token=abcd1234" class="btn btn-primary">
+     *                      <i class="fa fa-edit"></i> Editar Usuario</a>'
+     *     [accion] => 'editar'
+     * )
+     * ```
+     *
+     * ## Ejemplo de error:
+     * ```php
+     * $resultado = $this->data_link([], [], $html, '', 0, []);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada en caso de error:**
+     * ```php
+     * Array
+     * (
+     *     [mensaje] => 'Error data_result[registros] no existe'
+     *     [data] => Array()
+     * )
+     * ```
      */
     final public function data_link(array $adm_accion_grupo, array $data_result, html $html_base, string $key,
                                     int $registro_id, array $params_get = array()): array|stdClass
     {
 
+        // 1. Validación de `data_result`
         if(!isset($data_result['registros'])){
             return $this->error->error(mensaje: 'Error data_result[registros] no existe',data:  $data_result);
         }
         if(!is_array($data_result['registros'])){
-            return $this->error->error(mensaje: 'Error data_result[registros] debe ser una array',data:  $data_result);
+            return $this->error->error(mensaje: 'Error data_result[registros] debe ser un array',data:  $data_result);
         }
 
+        // 2. Validación de `key`
         $key = trim($key);
         if($key === ''){
             return $this->error->error(mensaje: 'Error key esta vacio',data:  $key);
@@ -777,6 +868,8 @@ class datatables{
         if(count($data_result['registros'][$key]) === 0){
             return $this->error->error(mensaje: 'Error $data_result[registros][key] esta vacio', data:  $data_result);
         }
+
+        // 3. Validación de `adm_accion_grupo`
         $valida = (new html_controler(html: $html_base))->valida_boton_data_accion(accion_permitida: $adm_accion_grupo);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar adm_accion_grupo',data:  $valida);
@@ -786,19 +879,21 @@ class datatables{
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar adm_accion_grupo', data: $valida);
         }
-        $session_id = (new generales())->session_id;
 
+        // 4. Validar la sesión activa
+        $session_id = (new generales())->session_id;
         if($session_id === ''){
             return $this->error->error(mensaje: 'Error la $session_id esta vacia', data: $session_id);
         }
 
+        // 5. Obtener estilo del botón
         $style = (new html_controler(html: $html_base))->style_btn(
             accion_permitida: $adm_accion_grupo, row: $data_result['registros'][$key]);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener style',data:  $style);
         }
 
-
+        // 6. Generar enlace de botón
         $data_link = $this->database_link(adm_accion_grupo: $adm_accion_grupo,
             html: (new html_controler(html: $html_base)), params_get: $params_get, registro_id: $registro_id,
             style: $style);
@@ -810,65 +905,168 @@ class datatables{
         return $data_link;
     }
 
+
     /**
-     * Obtiene el link de accion
-     * @param array $adm_accion_grupo Permiso
-     * @param html_controler $html Base html
-     * @param array $params_get Parametros adicionales para integrar por GET
-     * @param int $registro_id Identificador de registro en row
-     * @param string $style Estilo de boton
-     * @param array $styles Estilos
+     * REG
+     * Genera un enlace de acción basado en los permisos de un usuario y los estilos especificados.
+     *
+     * Este método construye un enlace de botón con los parámetros proporcionados, validando los permisos
+     * del usuario y configurando los atributos HTML necesarios. Devuelve un objeto con el enlace generado
+     * y la acción correspondiente.
+     *
+     * ## Pasos clave:
+     * 1. **Validación de permisos:** Se valida que el usuario tenga permisos para ejecutar la acción.
+     * 2. **Limpieza y validación del estilo:** Se asegura de que `$style` sea un string no vacío.
+     * 3. **Validación del ID de sesión:** Se verifica que la sesión esté iniciada.
+     * 4. **Configuración de iconos y atributos adicionales:** Se procesan los iconos y estilos opcionales.
+     * 5. **Generación del botón:** Se usa `button_href` para construir el enlace del botón.
+     * 6. **Retorno del enlace generado y la acción:** Se devuelve un objeto con los datos finales.
+     *
+     * ## Parámetros:
+     *
+     * @param array $adm_accion_grupo
+     *      Arreglo con los detalles de la acción permitida. Debe incluir claves como:
+     *      - `adm_accion_descripcion` (string) → Nombre de la acción (Ej: "editar").
+     *      - `adm_accion_titulo` (string) → Título del botón (Ej: "Editar Usuario").
+     *      - `adm_seccion_descripcion` (string) → Sección del sistema donde se encuentra la acción.
+     *      - `adm_accion_icono` (string) → (Opcional) Icono CSS de la acción.
+     *      - `adm_accion_id_css` (string) → (Opcional) ID del botón CSS.
+     *      - `adm_accion_target` (string) → (Opcional) Target del enlace (`_blank`, `_self`, etc.).
+     *
+     * @param html_controler $html
+     *      Objeto de la clase `html_controler` utilizado para generar el botón HTML.
+     *
+     * @param array $params_get
+     *      Arreglo de parámetros adicionales que se añadirán al enlace como variables GET.
+     *
+     * @param int $registro_id
+     *      ID del registro asociado al botón (Ej: ID de un usuario o factura).
+     *
+     * @param string $style
+     *      Clase de estilo CSS que se aplicará al botón. Debe ser un string no vacío.
+     *
+     * @param array $styles
+     *      Arreglo asociativo de estilos CSS opcionales, por defecto:
+     *      ```php
+     *      array('margin-left' => '2px', 'margin-bottom' => '2px')
+     *      ```
+     *
      * @return array|stdClass
-     * @version 13.62.0
+     *      Devuelve un objeto `stdClass` con las siguientes propiedades:
+     *      - `link_con_id` (string) → HTML del botón generado.
+     *      - `accion` (string) → Descripción de la acción generada.
+     *
+     *      En caso de error, devuelve un array con un mensaje de error.
+     *
+     * ## Ejemplo de uso:
+     *
+     * ```php
+     * $adm_accion_grupo = [
+     *     'adm_accion_descripcion' => 'editar',
+     *     'adm_accion_titulo' => 'Editar Usuario',
+     *     'adm_seccion_descripcion' => 'usuarios',
+     *     'adm_accion_icono' => 'fa fa-edit'
+     * ];
+     *
+     * $html = new html_controler();
+     * $params_get = ['id' => 10, 'token' => 'abcd1234'];
+     * $registro_id = 10;
+     * $style = 'btn btn-primary';
+     *
+     * $resultado = $this->database_link($adm_accion_grupo, $html, $params_get, $registro_id, $style);
+     * print_r($resultado);
+     * ```
+     *
+     * ## Ejemplo de salida esperada:
+     * ```php
+     * stdClass Object
+     * (
+     *     [link_con_id] => '<a href="usuarios.php?accion=editar&id=10&token=abcd1234" class="btn btn-primary">
+     *                      <i class="fa fa-edit"></i> Editar Usuario</a>'
+     *     [accion] => 'editar'
+     * )
+     * ```
+     *
+     * ## Ejemplo de error:
+     * ```php
+     * $resultado = $this->database_link([], $html, [], 0, '');
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada en caso de error:**
+     * ```php
+     * Array
+     * (
+     *     [mensaje] => 'Error al validar adm_accion_grupo'
+     *     [data] => Array()
+     * )
+     * ```
      */
     private function database_link(array $adm_accion_grupo, html_controler $html, array $params_get, int $registro_id,
                                    string $style,
                                    array $styles = array('margin-left'=>'2px', 'margin-bottom'=>'2px') ): array|stdClass
     {
+        // 1. Validación de los datos de la acción permitida
         $valida = $this->valida_data_permiso(adm_accion_grupo: $adm_accion_grupo);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar adm_accion_grupo', data: $valida);
         }
+
+        // 2. Validar que el estilo no esté vacío
         $style = trim($style);
         if($style === ''){
             return $this->error->error(mensaje: 'Error la $style esta vacia', data: $style);
         }
-        $session_id = (new generales())->session_id;
 
+        // 3. Validar que la sesión esté iniciada
+        $session_id = (new generales())->session_id;
         if($session_id === ''){
             return $this->error->error(mensaje: 'Error la $session_id esta vacia', data: $session_id);
         }
 
+        // 4. Configurar icono
         if(!isset($adm_accion_grupo['adm_accion_icono'])){
             $adm_accion_grupo['adm_accion_icono']  = '';
         }
-
         $icon = trim($adm_accion_grupo['adm_accion_icono']);
 
-
+        // 5. Obtener configuración del botón
         $data_icon = (new params())->data_icon(adm_accion: $adm_accion_grupo);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al asignar data_icon', data: $data_icon);
         }
 
-        $id_css = '';
-        $css_extra = '';
-        $onclick_event = '';
-        if(isset($adm_accion_grupo['adm_accion_id_css'])){
-            $id_css = $adm_accion_grupo['adm_accion_id_css'];
-            $css_extra = $adm_accion_grupo['adm_accion_id_css'];
-            $onclick_event = $adm_accion_grupo['adm_accion_id_css'];
-        }
+        // 6. Configurar atributos opcionales
+        $id_css = $adm_accion_grupo['adm_accion_id_css'] ?? '';
+        $css_extra = $adm_accion_grupo['adm_accion_id_css'] ?? '';
+        $onclick_event = $adm_accion_grupo['adm_accion_id_css'] ?? '';
 
-        $link_con_id = $html->button_href(accion: $adm_accion_grupo['adm_accion_descripcion'],
-            etiqueta: $adm_accion_grupo['adm_accion_titulo'], registro_id: $registro_id,
-            seccion: $adm_accion_grupo['adm_seccion_descripcion'], style: $style, css_extra: $css_extra, cols: -1,
-            icon: $icon, id_css: $id_css, muestra_icono_btn: $data_icon->muestra_icono_btn,
-            muestra_titulo_btn: $data_icon->muestra_titulo_btn, onclick_event: $onclick_event, params: $params_get,
-            styles: $styles);
+        $target = $adm_accion_grupo['adm_accion_target'] ?? '';
+
+        // 7. Generar el botón HTML
+        $link_con_id = $html->button_href(
+            accion: $adm_accion_grupo['adm_accion_descripcion'],
+            etiqueta: $adm_accion_grupo['adm_accion_titulo'],
+            registro_id: $registro_id,
+            seccion: $adm_accion_grupo['adm_seccion_descripcion'],
+            style: $style,
+            css_extra: $css_extra,
+            cols: -1,
+            icon: $icon,
+            id_css: $id_css,
+            muestra_icono_btn: $data_icon->muestra_icono_btn,
+            muestra_titulo_btn: $data_icon->muestra_titulo_btn,
+            onclick_event: $onclick_event,
+            params: $params_get,
+            styles: $styles,
+            target: $target
+        );
+
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al asignar button', data: $link_con_id);
         }
+
+        // 8. Retornar datos generados
         $accion = $adm_accion_grupo['adm_accion_descripcion'];
 
         $data = new stdClass();
@@ -876,8 +1074,8 @@ class datatables{
         $data->accion = $accion;
 
         return $data;
-
     }
+
 
     /**
      * Genera la estructura para datatables
