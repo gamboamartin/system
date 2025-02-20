@@ -5,6 +5,7 @@ namespace tests\src;
 use gamboamartin\administrador\models\adm_accion;
 use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\administrador\tests\base_test;
+use gamboamartin\controllers\controlador_adm_session;
 use gamboamartin\errores\errores;
 use gamboamartin\system\html_controler;
 use gamboamartin\system\links_menu;
@@ -166,6 +167,30 @@ class links_menuTest extends test {
         errores::$error = false;
     }
 
+    #[NoReturn] public function test_genera_links(): void
+    {
+        errores::$error = false;
+        $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_GET['session_id'] = '1';
+        $_GET['adm_menu_id'] = -1;
+        $html = new links_menu($this->link, -1);
+        //$html = new liberator($html);
+
+
+        $controler = new controlador_adm_session($this->link,$this->paths_conf);
+
+
+        $resultado = $html->genera_links($controler);
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("./index.php?seccion=adm_session&accion=inicio&adm_menu_id=-1&session_id=1", $resultado->adm_session->inicio);
+
+        errores::$error = false;
+    }
+
     /**
      */
     #[NoReturn] public function test_init_action(): void
@@ -187,6 +212,51 @@ class links_menuTest extends test {
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("c", $resultado->c->a);
+        errores::$error = false;
+    }
+
+    #[NoReturn] public function test_init_data_link(): void
+    {
+        errores::$error = false;
+        $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_GET['session_id'] = '1';
+        $html = new links_menu($this->link, -1);
+        $html = new liberator($html);
+
+
+        $controler = new controlador_adm_session($this->link,$this->paths_conf);
+        $registro = array();
+        $registro['adm_accion_descripcion'] = 'x';
+
+        $resultado = $html->init_data_link($controler,$registro);
+        //print_r($resultado);exit;
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("./index.php?seccion=adm_session&accion=inicio&adm_menu_id=-1&session_id=1", $resultado->adm_session->inicio);
+        errores::$error = false;
+    }
+
+    #[NoReturn] public function test_init_links(): void
+    {
+        errores::$error = false;
+        $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_GET['session_id'] = '1';
+        $html = new links_menu($this->link, -1);
+        $html = new liberator($html);
+
+
+        $controler = new controlador_adm_session($this->link,$this->paths_conf);
+        $acciones = new stdClass();
+
+
+        $resultado = $html->init_links($acciones,$controler);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+
         errores::$error = false;
     }
 
@@ -214,6 +284,31 @@ class links_menuTest extends test {
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("adm_accion", $resultado);
+        errores::$error = false;
+    }
+
+
+    #[NoReturn] public function test_integra_links(): void
+    {
+        errores::$error = false;
+        $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_GET['session_id'] = '1';
+        $html = new links_menu($this->link, -1);
+        $html = new liberator($html);
+
+
+        $controler = new controlador_adm_session($this->link,$this->paths_conf);
+        $acciones = new stdClass();
+
+
+
+        $resultado = $html->integra_links($acciones,$controler);
+
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+
         errores::$error = false;
     }
 
@@ -392,6 +487,25 @@ class links_menuTest extends test {
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("", $resultado);
+        errores::$error = false;
+    }
+
+    #[NoReturn] public function test_link_init(): void
+    {
+        errores::$error = false;
+        $_GET['session_id'] = 1;
+        $html = new links_menu($this->link, -1);
+        $html = new liberator($html);
+
+
+        $seccion = 'adm_session';
+        $accion = 'inicio';
+        $registro_id = -1;
+        $resultado = $html->link_init($this->link,$seccion,$accion,$registro_id);
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("./index.php?seccion=adm_session&accion=logout&session_id=1", $resultado->adm_session->logout);
         errores::$error = false;
     }
 

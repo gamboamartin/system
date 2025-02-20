@@ -460,22 +460,126 @@ class links_menu{
 
     }
 
+    /**
+     * REG
+     * Genera los enlaces de acciones disponibles para una sección específica del controlador.
+     *
+     * Este método obtiene todas las acciones permitidas para la sección correspondiente al controlador,
+     * y luego integra los enlaces utilizando `integra_links()`. Si hay un error en la obtención de acciones
+     * o en la integración de enlaces, devuelve un mensaje de error.
+     *
+     * ---
+     *
+     * ### Pasos del método:
+     * 1. **Obtener las acciones**: Se filtran las acciones asociadas a la sección actual del controlador.
+     * 2. **Validar errores**: Si ocurre un error al obtener las acciones, se retorna un mensaje de error.
+     * 3. **Integrar los enlaces**: Se llama a `integra_links()` para generar los enlaces a partir de las acciones.
+     * 4. **Validar errores en la integración**: Si hay un problema en `integra_links()`, se retorna un error.
+     * 5. **Devolver los enlaces generados**: Se retorna el objeto `$this->links` con los enlaces de la sección.
+     *
+     * ---
+     *
+     * ### Ejemplo de Uso:
+     * ```php
+     * $controler = new controler();
+     * $controler->seccion = "usuarios";
+     * $controler->modelo = new modelo();
+     * $controler->modelo->tabla = "usuarios";
+     * $controler->link = $pdo;
+     *
+     * $links_menu = new links_menu($pdo, 1);
+     * $resultado = $links_menu->genera_links($controler);
+     * print_r($resultado);
+     * ```
+     *
+     * ---
+     *
+     * ### Ejemplo de Entrada y Salida:
+     *
+     * **Caso 1: Generación exitosa de enlaces**
+     * ```php
+     * $controler->modelo->tabla = "usuarios";
+     * ```
+     * **Salida esperada (ejemplo de estructura de enlaces generados):**
+     * ```php
+     * stdClass Object
+     * (
+     *     [usuarios] => stdClass Object
+     *         (
+     *             [alta] => "./index.php?seccion=usuarios&accion=alta&registro_id=10&session_id=xyz"
+     *             [modifica] => "./index.php?seccion=usuarios&accion=modifica&registro_id=10&session_id=xyz"
+     *             [elimina_bd] => "./index.php?seccion=usuarios&accion=elimina_bd&registro_id=10&session_id=xyz"
+     *         )
+     * )
+     * ```
+     *
+     * ---
+     *
+     * **Caso 2: No hay acciones registradas**
+     * ```php
+     * $controler->modelo->tabla = "clientes";
+     * ```
+     * **Salida esperada (enlaces vacíos):**
+     * ```php
+     * stdClass Object ()
+     * ```
+     *
+     * ---
+     *
+     * **Caso 3: Error al obtener las acciones**
+     * ```php
+     * // Simulación de error en la obtención de acciones
+     * $controler->modelo->tabla = "ordenes";
+     * ```
+     * **Salida esperada (array con error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error al obtener acciones de la seccion',
+     *     'data' => [...]
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * @param controler $controler Instancia del controlador que contiene la sección y el modelo con la tabla.
+     *
+     * @return array|stdClass Retorna un objeto `stdClass` con los enlaces generados si es exitoso.
+     *                        Retorna un array con un mensaje de error si ocurre un problema en la obtención de acciones o en la integración de enlaces.
+     */
     final public function genera_links(controler $controler): array|stdClass
     {
-        $filtro['adm_seccion.descripcion']  = $controler->modelo->tabla;
-        $acciones = (new adm_accion($controler->link))->filtro_and(columnas: array("adm_accion_descripcion"),
-            filtro: $filtro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener acciones de la seccion',data:  $acciones);
+        // Se filtran las acciones asociadas a la sección del controlador
+        $filtro['adm_seccion.descripcion'] = $controler->modelo->tabla;
+
+        // Obtiene las acciones disponibles en la base de datos
+        $acciones = (new adm_accion($controler->link))->filtro_and(
+            columnas: array("adm_accion_descripcion"),
+            filtro: $filtro
+        );
+
+        // Si hay un error al obtener las acciones, retorna un mensaje de error
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al obtener acciones de la seccion',
+                data: $acciones
+            );
         }
 
-        $inits = $this->integra_links(acciones: $acciones,controler:  $controler);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al inicializar links', data: $inits);
+        // Integra los enlaces basados en las acciones obtenidas
+        $inits = $this->integra_links(acciones: $acciones, controler: $controler);
+
+        // Si hay un error en la integración de enlaces, retorna un mensaje de error
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al inicializar links',
+                data: $inits
+            );
         }
 
+        // Retorna los enlaces generados
         return $this->links;
     }
+
 
     private function get_datos_ancla(string $accion, PDO $link, array $params, string $seccion, bool $valida_permiso)
     {
@@ -626,24 +730,165 @@ class links_menu{
 
 
     /**
-     * @param controler $controler
-     * @param array $registro
-     * @return array|stdClass
+     * REG
+     * Inicializa los enlaces para una acción específica basada en un registro de permisos.
+     *
+     * Este método toma un registro con información de permisos (`adm_accion_descripcion`),
+     * valida su existencia y lo usa para generar un enlace dentro de la sección actual del controlador.
+     *
+     * ### Pasos del método:
+     * 1. Verifica que el campo `adm_accion_descripcion` esté presente en el registro.
+     * 2. Asegura que `adm_accion_descripcion` no esté vacío.
+     * 3. Obtiene y valida la sección del controlador mediante `seccion()`.
+     * 4. Genera el enlace correspondiente usando `link_init()`.
+     * 5. Retorna un `stdClass` con el enlace generado o un array con un error si algo falla.
+     *
+     * ---
+     *
+     * ### Ejemplo de Uso:
+     * ```php
+     * $controler = new controler();
+     * $controler->seccion = "productos";
+     * $controler->registro_id = 5;
+     * $registro = ["adm_accion_descripcion" => "modifica"];
+     *
+     * $links_menu = new links_menu($pdo, 1);
+     * $resultado = $links_menu->init_data_link($controler, $registro);
+     * print_r($resultado);
+     * ```
+     *
+     * ---
+     *
+     * ### Ejemplo de Entrada y Salida:
+     *
+     * **Caso 1: Generación exitosa de enlace**
+     * ```php
+     * $registro = ["adm_accion_descripcion" => "modifica"];
+     * ```
+     * **Salida esperada (`$this->links` con el enlace generado):**
+     * ```php
+     * stdClass Object
+     * (
+     *     [productos] => stdClass Object
+     *         (
+     *             [modifica] => "./index.php?seccion=productos&accion=modifica&registro_id=5&session_id=xyz"
+     *         )
+     * )
+     * ```
+     *
+     * ---
+     *
+     * **Caso 2: Error - Falta el campo `adm_accion_descripcion`**
+     * ```php
+     * $registro = [];
+     * ```
+     * **Salida esperada (array con error):**
+     * ```php
+     * [
+     *     'mensaje' => '$registro[adm_accion_descripcion] no existe',
+     *     'data' => []
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * **Caso 3: Error - `adm_accion_descripcion` vacío**
+     * ```php
+     * $registro = ["adm_accion_descripcion" => ""];
+     * ```
+     * **Salida esperada (array con error):**
+     * ```php
+     * [
+     *     'mensaje' => '$registro[adm_accion_descripcion] esta vacia',
+     *     'data' => ["adm_accion_descripcion" => ""]
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * **Caso 4: Error - Problema al inicializar la sección**
+     * ```php
+     * // Supongamos que `seccion()` devuelve un error.
+     * ```
+     * **Salida esperada (array con error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error al inicializar seccion',
+     *     'data' => [detalle del error]
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * **Caso 5: Error - Problema al generar el enlace**
+     * ```php
+     * // Supongamos que `link_init()` devuelve un error.
+     * ```
+     * **Salida esperada (array con error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error al inicializar links',
+     *     'data' => [detalle del error]
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * @param controler $controler Instancia del controlador con los datos de la sección y el registro.
+     * @param array $registro Registro que contiene `adm_accion_descripcion`, la acción a inicializar.
+     *
+     * @return array|stdClass Retorna un objeto `stdClass` con el enlace generado si es exitoso.
+     *                        Retorna un array con un mensaje de error si ocurre un problema en la validación o generación del enlace.
      */
     private function init_data_link(controler $controler, array $registro): array|stdClass
     {
+        // Verifica que el campo 'adm_accion_descripcion' exista en el registro
+        if (!isset($registro['adm_accion_descripcion'])) {
+            return $this->error->error(
+                mensaje: '$registro[adm_accion_descripcion] no existe',
+                data: $registro,
+                es_final: true
+            );
+        }
+
+        // Verifica que el campo 'adm_accion_descripcion' no esté vacío
+        if (trim($registro['adm_accion_descripcion']) === '') {
+            return $this->error->error(
+                mensaje: '$registro[adm_accion_descripcion] esta vacia',
+                data: $registro,
+                es_final: true
+            );
+        }
+
+        // Obtiene y valida la sección del controlador
         $seccion_rs = $this->seccion(controler: $controler);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al inicializar seccion',data:  $seccion_rs);
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al inicializar seccion',
+                data: $seccion_rs
+            );
         }
+
+        // Genera el enlace usando el valor de 'adm_accion_descripcion'
         $accion = $registro['adm_accion_descripcion'];
-        $init = $this->link_init(link: $controler->link, seccion: $controler->seccion, accion: $accion,
-            registro_id: $controler->registro_id);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al inicializar links', data: $init);
+        $init = $this->link_init(
+            link: $controler->link,
+            seccion: $controler->seccion,
+            accion: $accion,
+            registro_id: $controler->registro_id
+        );
+
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al inicializar links',
+                data: $init
+            );
         }
+
+        // Retorna el objeto `$this->links` con el enlace generado
         return $init;
     }
+
 
     /**
      * REG
@@ -727,17 +972,138 @@ class links_menu{
     }
 
 
-    private function init_links(stdClass $acciones, controler $controler){
+    /**
+     * REG
+     * Inicializa los enlaces de múltiples acciones para una sección del controlador.
+     *
+     * Este método recorre la lista de registros de acciones contenida en `$acciones->registros`
+     * y genera un enlace para cada una de ellas usando `init_data_link()`. Si ocurre un error
+     * durante la inicialización de cualquier enlace, devuelve un array con un mensaje de error.
+     *
+     * ---
+     *
+     * ### Pasos del método:
+     * 1. Inicializa un array `$inits` para almacenar los enlaces generados.
+     * 2. Itera sobre la lista de registros (`$acciones->registros`).
+     * 3. Para cada registro, llama a `init_data_link()` para inicializar el enlace.
+     * 4. Si ocurre un error, devuelve un array con el mensaje de error.
+     * 5. Retorna un array con todos los enlaces generados exitosamente.
+     *
+     * ---
+     *
+     * ### Ejemplo de Uso:
+     * ```php
+     * $controler = new controler();
+     * $controler->seccion = "productos";
+     * $controler->registro_id = 5;
+     *
+     * $acciones = new stdClass();
+     * $acciones->registros = [
+     *     ["adm_accion_descripcion" => "modifica"],
+     *     ["adm_accion_descripcion" => "elimina_bd"]
+     * ];
+     *
+     * $links_menu = new links_menu($pdo, 1);
+     * $resultado = $links_menu->init_links($acciones, $controler);
+     * print_r($resultado);
+     * ```
+     *
+     * ---
+     *
+     * ### Ejemplo de Entrada y Salida:
+     *
+     * **Caso 1: Generación exitosa de enlaces**
+     * ```php
+     * $acciones->registros = [
+     *     ["adm_accion_descripcion" => "modifica"],
+     *     ["adm_accion_descripcion" => "elimina_bd"]
+     * ];
+     * ```
+     * **Salida esperada (array de enlaces generados):**
+     * ```php
+     * [
+     *     stdClass Object
+     *     (
+     *         [productos] => stdClass Object
+     *             (
+     *                 [modifica] => "./index.php?seccion=productos&accion=modifica&registro_id=5&session_id=xyz"
+     *             )
+     *     ),
+     *     stdClass Object
+     *     (
+     *         [productos] => stdClass Object
+     *             (
+     *                 [elimina_bd] => "./index.php?seccion=productos&accion=elimina_bd&registro_id=5&session_id=xyz"
+     *             )
+     *     )
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * **Caso 2: Error - `adm_accion_descripcion` falta en un registro**
+     * ```php
+     * $acciones->registros = [
+     *     ["adm_accion_descripcion" => "modifica"],
+     *     [] // Falta el campo requerido
+     * ];
+     * ```
+     * **Salida esperada (array con error):**
+     * ```php
+     * [
+     *     'mensaje' => '$registro[adm_accion_descripcion] no existe',
+     *     'data' => []
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * **Caso 3: Error - `adm_accion_descripcion` vacío**
+     * ```php
+     * $acciones->registros = [
+     *     ["adm_accion_descripcion" => ""]
+     * ];
+     * ```
+     * **Salida esperada (array con error):**
+     * ```php
+     * [
+     *     'mensaje' => '$registro[adm_accion_descripcion] esta vacia',
+     *     'data' => ["adm_accion_descripcion" => ""]
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * @param stdClass $acciones Objeto que contiene la lista de registros con acciones a inicializar.
+     * @param controler $controler Instancia del controlador con los datos de la sección y el registro.
+     *
+     * @return array|stdClass Retorna un array con los enlaces generados si es exitoso.
+     *                        Retorna un array con un mensaje de error si ocurre un problema en la inicialización.
+     */
+    private function init_links(stdClass $acciones, controler $controler): array|stdClass
+    {
         $inits = array();
-        foreach ($acciones->registros as $registro){
-            $init = $this->init_data_link(controler: $controler,registro:  $registro);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al inicializar links', data: $init);
+
+        // Itera sobre los registros de acciones
+        foreach ($acciones->registros as $registro) {
+            // Inicializa el enlace para cada acción
+            $init = $this->init_data_link(controler: $controler, registro: $registro);
+
+            // Verifica si ocurrió un error
+            if (errores::$error) {
+                return $this->error->error(
+                    mensaje: 'Error al inicializar links',
+                    data: $init
+                );
             }
+
+            // Agrega el enlace generado a la lista
             $inits[] = $init;
         }
+
         return $inits;
     }
+
 
     /**
      * REG
@@ -827,16 +1193,133 @@ class links_menu{
 
     }
 
-    private function integra_links(stdClass $acciones, controler $controler){
+    /**
+     * REG
+     * Integra y genera los enlaces de acciones de un controlador si existen registros.
+     *
+     * Este método valida si existen registros (`n_registros > 0`) en el objeto `$acciones` y, en caso afirmativo,
+     * procede a inicializar los enlaces llamando a `init_links()`. Si no hay registros, retorna un array vacío.
+     * Si ocurre un error en la generación de los enlaces, devuelve un mensaje de error con los detalles del problema.
+     *
+     * ---
+     *
+     * ### Pasos del método:
+     * 1. Inicializa un array `$inits` vacío.
+     * 2. Verifica si hay registros (`$acciones->n_registros > 0`).
+     * 3. Si hay registros, llama a `init_links()` para inicializar los enlaces.
+     * 4. Si ocurre un error, devuelve un mensaje de error.
+     * 5. Retorna el array con los enlaces generados o un array vacío si no hay registros.
+     *
+     * ---
+     *
+     * ### Ejemplo de Uso:
+     * ```php
+     * $controler = new controler();
+     * $controler->seccion = "usuarios";
+     * $controler->registro_id = 10;
+     *
+     * $acciones = new stdClass();
+     * $acciones->n_registros = 2;
+     * $acciones->registros = [
+     *     ["adm_accion_descripcion" => "modifica"],
+     *     ["adm_accion_descripcion" => "elimina_bd"]
+     * ];
+     *
+     * $links_menu = new links_menu($pdo, 1);
+     * $resultado = $links_menu->integra_links($acciones, $controler);
+     * print_r($resultado);
+     * ```
+     *
+     * ---
+     *
+     * ### Ejemplo de Entrada y Salida:
+     *
+     * **Caso 1: Generación exitosa de enlaces**
+     * ```php
+     * $acciones->n_registros = 2;
+     * $acciones->registros = [
+     *     ["adm_accion_descripcion" => "modifica"],
+     *     ["adm_accion_descripcion" => "elimina_bd"]
+     * ];
+     * ```
+     * **Salida esperada (array de enlaces generados):**
+     * ```php
+     * [
+     *     stdClass Object
+     *     (
+     *         [usuarios] => stdClass Object
+     *             (
+     *                 [modifica] => "./index.php?seccion=usuarios&accion=modifica&registro_id=10&session_id=xyz"
+     *             )
+     *     ),
+     *     stdClass Object
+     *     (
+     *         [usuarios] => stdClass Object
+     *             (
+     *                 [elimina_bd] => "./index.php?seccion=usuarios&accion=elimina_bd&registro_id=10&session_id=xyz"
+     *             )
+     *     )
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * **Caso 2: No hay registros (`n_registros = 0`)**
+     * ```php
+     * $acciones->n_registros = 0;
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * []
+     * ```
+     *
+     * ---
+     *
+     * **Caso 3: Error en la inicialización de enlaces**
+     * ```php
+     * $acciones->n_registros = 2;
+     * $acciones->registros = [
+     *     ["adm_accion_descripcion" => ""]
+     * ];
+     * ```
+     * **Salida esperada (array con error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error al inicializar links',
+     *     'data' => [...]
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * @param stdClass $acciones Objeto que contiene la cantidad de registros (`n_registros`) y la lista de acciones.
+     * @param controler $controler Instancia del controlador con la sección y el registro a procesar.
+     *
+     * @return array|stdClass Retorna un array con los enlaces generados si es exitoso.
+     *                        Retorna un array vacío si no hay registros.
+     *                        Retorna un array con un mensaje de error si ocurre un problema en la inicialización.
+     */
+    private function integra_links(stdClass $acciones, controler $controler): array|stdClass
+    {
         $inits = array();
-        if ($acciones->n_registros > 0){
-            $inits = $this->init_links(acciones: $acciones,controler:  $controler);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al inicializar links', data: $inits);
+
+        // Verifica si hay registros de acciones para procesar
+        if ($acciones->n_registros > 0) {
+            // Llama a init_links para generar los enlaces
+            $inits = $this->init_links(acciones: $acciones, controler: $controler);
+
+            // Verifica si ocurrió un error en la generación de enlaces
+            if (errores::$error) {
+                return $this->error->error(
+                    mensaje: 'Error al inicializar links',
+                    data: $inits
+                );
             }
         }
+
         return $inits;
     }
+
 
     /**
      * REG
@@ -1382,33 +1865,122 @@ class links_menu{
     }
 
     /**
-     * Inicializa un link para uso general
-     * @param PDO $link Conexion a base de datos
-     * @param string $seccion Seccion en ejecucion
-     * @param string $accion Accion en ejecucion
-     * @param int $registro_id Registro a integrar link
-     * @return array|stdClass
+     * REG
+     * Inicializa un enlace para una acción específica dentro de una sección.
+     *
+     * Este método genera un enlace para una acción determinada dentro de una sección específica,
+     * validando que los parámetros sean correctos y asegurando que el enlace se cree adecuadamente.
+     *
+     * ### Pasos del método:
+     * 1. Valida que la sección y la acción no estén vacías.
+     * 2. Genera el enlace llamando al método `link()`, el cual verifica permisos y construye la URL.
+     * 3. Asigna el enlace al objeto `$this->links` llamando a `init_action()`.
+     * 4. Retorna el objeto `$this->links` con el enlace generado o un error en caso de fallo.
+     *
+     * ### Ejemplo de Uso:
+     * ```php
+     * $links_menu = new links_menu($pdo, 1);
+     * $resultado = $links_menu->link_init($pdo, "productos", "modifica", 10);
+     * print_r($resultado);
+     * ```
+     *
+     * ### Ejemplo de Entrada y Salida:
+     *
+     * **Caso 1: Generación exitosa de enlace**
+     * ```php
+     * $seccion = "productos";
+     * $accion = "modifica";
+     * $registro_id = 10;
+     * ```
+     * **Salida esperada (`$this->links` con el enlace generado):**
+     * ```php
+     * stdClass Object
+     * (
+     *     [productos] => stdClass Object
+     *         (
+     *             [modifica] => "./index.php?seccion=productos&accion=modifica&registro_id=10&session_id=xyz"
+     *         )
+     * )
+     * ```
+     *
+     * **Caso 2: Error - Sección vacía**
+     * ```php
+     * $seccion = "";
+     * $accion = "modifica";
+     * $registro_id = 10;
+     * ```
+     * **Salida esperada (array con error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error seccion esta vacia',
+     *     'data' => ''
+     * ]
+     * ```
+     *
+     * **Caso 3: Error - Acción vacía**
+     * ```php
+     * $seccion = "productos";
+     * $accion = "";
+     * $registro_id = 10;
+     * ```
+     * **Salida esperada (array con error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error $accion esta vacia',
+     *     'data' => ''
+     * ]
+     * ```
+     *
+     * **Caso 4: Error - Problema al generar el enlace**
+     * ```php
+     * // Si la función `link()` devuelve un error:
+     * ```
+     * **Salida esperada (array con error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error al generar link',
+     *     'data' => [detalles del error]
+     * ]
+     * ```
+     *
+     * @param PDO $link Conexión a la base de datos.
+     * @param string $seccion Sección en la que se generará el enlace.
+     * @param string $accion Acción específica dentro de la sección.
+     * @param int $registro_id Identificador del registro al que se aplicará la acción.
+     *
+     * @return array|stdClass Retorna un objeto `stdClass` con el enlace generado para la acción.
+     *                        Retorna un array con un mensaje de error si ocurre un problema en la generación del enlace.
      */
-    private function link_init(PDO $link, string $seccion, string $accion,int $registro_id): array|stdClass
+    private function link_init(PDO $link, string $seccion, string $accion, int $registro_id): array|stdClass
     {
+        // Valida que la sección no esté vacía
         $seccion = trim($seccion);
-        if($seccion === ''){
-
-            return $this->error->error(mensaje: 'Error seccion esta vacia', data:$seccion);
+        if ($seccion === '') {
+            return $this->error->error(mensaje: 'Error seccion esta vacia', data: $seccion);
         }
 
+        // Valida que la acción no esté vacía
+        $accion = trim($accion);
+        if ($accion === '') {
+            return $this->error->error(mensaje: 'Error $accion esta vacia', data: $accion);
+        }
+
+        // Genera el enlace validando permisos y construyendo la URL
         $link = $this->link(accion: $accion, link: $link, registro_id: $registro_id, seccion: $seccion);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar link', data: $link);
         }
 
-        $init = $this->init_action(accion: $accion,link: $link,seccion: $seccion);
-        if(errores::$error){
+        // Asigna el enlace al objeto `$this->links`
+        $init = $this->init_action(accion: $accion, link: $link, seccion: $seccion);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al inicializar link', data: $init);
         }
 
+        // Retorna el objeto `$this->links` con el enlace generado
         return $init;
     }
+
 
     private function link_lista(PDO $link, string $seccion): array|string
     {
