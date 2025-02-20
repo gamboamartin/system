@@ -402,32 +402,89 @@ class system extends controlador_base{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
-     * Función para asignar propiedades a un objeto identificado por un identificador en particular.
+     * REG
+     * Asigna propiedades a un identificador dentro del array `$keys_selects`.
+     * Si el identificador no existe en `$keys_selects`, lo inicializa como un objeto `stdClass`.
      *
-     * @param string $identificador Representa la clave única utilizada para identificar el objeto a modificar.
-     * @param array $propiedades Una matriz clave-valor donde la clave es el nombre de la propiedad y el valor es el valor de la propiedad a asignar.
+     * @param string $identificador Identificador único para la propiedad a asignar.
+     * @param array $propiedades Array asociativo con las propiedades a asignar. Las claves son los nombres de las propiedades y los valores sus respectivos valores.
      *
-     * @return array|stdClass Devuelve un objeto stdClass actualizado o un array con todos los objetos stdClass.
-     * @throws errores Si el identificador proporcionado está vacío, se lanzará una excepción.
-     * @version 17.6.0
+     * @return array|stdClass Devuelve `$keys_selects` con los valores asignados o un objeto `stdClass` con las nuevas propiedades.
+     *
+     * @throws array Si el identificador está vacío, devuelve un error a través de `$this->errores->error()`.
+     *
+     * @example
+     * Ejemplo 1: Asignación de una propiedad nueva
+     * ```php
+     * $system = new system();
+     * $resultado = $system->asignar_propiedad('usuario', ['nombre' => 'Juan', 'edad' => 30]);
+     * print_r($resultado);
+     * ```
+     * Salida esperada:
+     * ```php
+     * Array
+     * (
+     *     [usuario] => stdClass Object
+     *         (
+     *             [nombre] => Juan
+     *             [edad] => 30
+     *         )
+     * )
+     * ```
+     *
+     * @example
+     * Ejemplo 2: Asignar propiedades a un identificador ya existente
+     * ```php
+     * $system = new system();
+     * $system->asignar_propiedad('producto', ['precio' => 100]);
+     * $resultado = $system->asignar_propiedad('producto', ['stock' => 50]);
+     * print_r($resultado);
+     * ```
+     * Salida esperada:
+     * ```php
+     * Array
+     * (
+     *     [producto] => stdClass Object
+     *         (
+     *             [precio] => 100
+     *             [stock] => 50
+     *         )
+     * )
+     * ```
+     *
+     * @example
+     * Ejemplo 3: Error al pasar un identificador vacío
+     * ```php
+     * $system = new system();
+     * $resultado = $system->asignar_propiedad('', ['clave' => 'valor']);
+     * print_r($resultado);
+     * ```
+     * Salida esperada (error):
+     * ```php
+     * Array
+     * (
+     *     [error] => Error identificador esta vacio
+     *     [data] => ''
+     * )
+     * ```
      */
     public function asignar_propiedad(string $identificador, array $propiedades): array|stdClass
     {
         $identificador = trim($identificador);
-        if($identificador === ''){
-            return $this->errores->error(mensaje: 'Error identificador esta vacio',data:  $identificador);
+        if ($identificador === '') {
+            return $this->errores->error(mensaje: 'Error identificador esta vacio', data: $identificador);
         }
 
-        if (!array_key_exists($identificador,$this->keys_selects)){
+        if (!array_key_exists($identificador, $this->keys_selects)) {
             $this->keys_selects[$identificador] = new stdClass();
         }
 
-        foreach ($propiedades as $key => $value){
+        foreach ($propiedades as $key => $value) {
             $this->keys_selects[$identificador]->$key = $value;
         }
         return $this->keys_selects;
     }
+
 
     public function data_ajax(bool $header, bool $ws = false, array $not_actions = array()){
 
