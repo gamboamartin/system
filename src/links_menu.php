@@ -598,15 +598,65 @@ class links_menu{
     }
 
     /**
-     * Obtiene el link a ejecutar
-     * @param string $seccion Seccion a ejecutar
-     * @param string $accion Accion a integrar
-     * @param bool $valida_error
-     * @return array|string
+     * REG
+     * Obtiene el enlace almacenado en `$links` para una sección y acción específica.
+     *
+     * Este método se encarga de recuperar la URL asociada a una acción dentro de una sección. Si el enlace no existe,
+     * puede generar un error o inicializarlo con un valor vacío dependiendo del valor de `$valida_error`.
+     *
+     * Comportamiento según `$valida_error`:
+     * - Si es `true`, valida que la sección y la acción existan en `$links`. Si no existen, devuelve un error.
+     * - Si es `false`, crea la sección y la acción si no existen, asignando un valor vacío (`''`).
+     *
+     * @param string $seccion Nombre de la sección en `$links`.
+     * @param string $accion Nombre de la acción dentro de la sección.
+     * @param bool $valida_error Indica si se debe validar la existencia de la sección y la acción.
+     *
+     * @return array|string Devuelve el enlace almacenado en `$links->$seccion->$accion`.
+     *                      En caso de error, devuelve un array con detalles del error.
+     *
+     * @example Uso básico sin validación de errores:
+     * ```php
+     * $links_menu = new links_menu();
+     * $links_menu->links = new stdClass();
+     * $links_menu->links->usuarios = new stdClass();
+     * $links_menu->links->usuarios->crear = 'https://miapp.com/usuarios/crear';
+     *
+     * // Obtener un enlace existente sin validar errores
+     * echo $links_menu->get_link('usuarios', 'crear'); // Salida: https://miapp.com/usuarios/crear
+     *
+     * // Obtener un enlace inexistente sin validar errores (se inicializa vacío)
+     * echo $links_menu->get_link('productos', 'editar'); // Salida: ''
+     * ```
+     *
+     * @example Uso con validación de errores:
+     * ```php
+     * $links_menu = new links_menu();
+     * $links_menu->links = new stdClass();
+     *
+     * // Obtener un enlace inexistente con validación de errores
+     * print_r($links_menu->get_link('productos', 'eliminar', true));
+     * // Salida:
+     * // Array (
+     * //     [error] => Error no existe la sección productos
+     * // )
+     * ```
+     *
+     * @example Agregar enlaces y luego obtenerlos:
+     * ```php
+     * $links_menu = new links_menu();
+     * $links_menu->links = new stdClass();
+     *
+     * // Se agregan enlaces manualmente
+     * $links_menu->links->productos = new stdClass();
+     * $links_menu->links->productos->ver = 'https://miapp.com/productos/ver';
+     *
+     * echo $links_menu->get_link('productos', 'ver'); // Salida: https://miapp.com/productos/ver
+     * ```
      */
     final public function get_link(string $seccion, string $accion, bool $valida_error = false): array|string
     {
-        if($valida_error) {
+        if ($valida_error) {
             if (!property_exists($this->links, $seccion)) {
                 return $this->error->error(mensaje: 'Error no existe la seccion ' . $seccion, data: $seccion);
             }
@@ -614,8 +664,7 @@ class links_menu{
             if (!property_exists($this->links->$seccion, $accion)) {
                 return $this->error->error(mensaje: 'Error no existe la accion ' . $accion, data: $accion);
             }
-        }
-        else{
+        } else {
             if (!property_exists($this->links, $seccion)) {
                 $this->links->$seccion = new stdClass();
             }
@@ -627,6 +676,7 @@ class links_menu{
 
         return $this->links->$seccion->$accion;
     }
+
 
     /**
      * REG
@@ -2608,31 +2658,69 @@ class links_menu{
     }
 
     /**
-     * TOTAL
-     * Construye una cadena de consulta GET a partir de un array de parámetros GET.
+     * REG
+     * Genera una cadena de parámetros GET a partir de un array asociativo.
      *
-     * @param array $params_get Un array asociativo donde las claves son los nombres de las variables GET y los valores
-     * son los valores asociados.
+     * Este método toma un array asociativo donde las claves representan los nombres de los parámetros
+     * y los valores representan sus respectivos valores. Luego, construye una cadena de consulta GET
+     * concatenando cada par `clave=valor` con `&`.
      *
-     * @return string|array Retorna una cadena de consulta GET si todos los parámetros son válidos. Si hay algún error,
-     * retorna un array con un mensaje de error indicando el problema encontrado.
-     * @url https://github.com/gamboamartin/system/wiki/src.links_menu.var_gets.22.5.0
+     * Validaciones:
+     * - Si una clave (`var`) está vacía (`''`), devuelve un error.
+     * - Si un valor (`value`) está vacío (`''`), devuelve un error.
+     * - Todos los espacios en blanco en los nombres y valores se eliminan (`trim()`).
+     *
+     * @param array $params_get Un array asociativo con los parámetros GET a generar.
+     *
+     * @return string|array Devuelve una cadena con los parámetros GET formateados o un array con un error si hay valores vacíos.
+     *
+     * @example Uso correcto:
+     * ```php
+     * $params = ['usuario' => 'admin', 'id' => '123'];
+     * $resultado = $this->var_gets($params);
+     * echo $resultado;
+     * // Salida esperada: "&usuario=admin&id=123"
+     * ```
+     *
+     * @example Error: Clave vacía
+     * ```php
+     * $params = ['' => 'admin', 'id' => '123'];
+     * print_r($this->var_gets($params));
+     * // Salida esperada:
+     * // Array (
+     * //     [error] => Error var esta vacio
+     * // )
+     * ```
+     *
+     * @example Error: Valor vacío
+     * ```php
+     * $params = ['usuario' => '', 'id' => '123'];
+     * print_r($this->var_gets($params));
+     * // Salida esperada:
+     * // Array (
+     * //     [error] => Error value esta vacio
+     * // )
+     * ```
      */
     private function var_gets(array $params_get): string|array
     {
         $vars_get = '';
-        foreach ($params_get as $var=>$value){
+
+        foreach ($params_get as $var => $value) {
             $var = trim($var);
-            if($var === ''){
+            if ($var === '') {
                 return $this->error->error(mensaje: 'Error var esta vacio', data: $params_get, es_final: true);
             }
+
             $value = trim($value);
-            if($value === ''){
+            if ($value === '') {
                 return $this->error->error(mensaje: 'Error value esta vacio', data: $params_get, es_final: true);
             }
-            $vars_get.="&$var=$value";
-        }
-        return $vars_get;
 
+            $vars_get .= "&$var=$value";
+        }
+
+        return $vars_get;
     }
+
 }

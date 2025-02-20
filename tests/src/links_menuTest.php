@@ -143,6 +143,44 @@ class links_menuTest extends test {
         errores::$error = false;
     }
 
+    #[NoReturn] public function test_get_link(): void
+    {
+        errores::$error = false;
+        $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_GET['session_id'] = '1';
+        $_GET['adm_menu_id'] = -1;
+        $html = new links_menu($this->link, -1);
+        //$html = new liberator($html);
+
+
+
+        $seccion = '';
+        $accion = '';
+        $valida_error = false;
+        $resultado = $html->get_link($seccion,$accion,$valida_error);
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("", $resultado);
+
+        errores::$error = false;
+
+        $seccion = 'adm_session';
+        $accion = 'inicio';
+        $valida_error = true;
+        $resultado = $html->get_link($seccion,$accion,$valida_error);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("./index.php?seccion=adm_session&accion=inicio&adm_menu_id=-1&session_id=1", $resultado);
+
+        errores::$error = false;
+
+
+
+    }
+
     #[NoReturn] public function test_con_id(): void
     {
         errores::$error = false;
