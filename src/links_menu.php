@@ -138,11 +138,62 @@ class links_menu{
     }
 
     /**
-     * Precarga un link alta bd
-     * @param PDO $link
-     * @param string $seccion Seccion a ejecutar
-     * @return string|array
-     * @version 0.158.34
+     * REG
+     * Genera un enlace para la acción `alta_bd` en una sección si el usuario tiene permiso.
+     *
+     * Este método verifica si el usuario tiene permiso para realizar la acción `alta_bd` en la sección especificada.
+     * Si el usuario tiene permiso, genera una URL con los parámetros necesarios para realizar la acción.
+     *
+     * Validaciones:
+     * - Si la sección está vacía, devuelve un error.
+     * - Verifica si el usuario tiene permiso mediante la clase `adm_usuario`.
+     * - Si ocurre un error en la validación de permisos, devuelve un error.
+     * - Si el usuario tiene permiso, genera la URL con los parámetros adecuados.
+     * - Si `adm_menu_id` está presente en `$_GET`, se incluye en la URL generada.
+     *
+     * @param PDO    $link    Conexión activa a la base de datos mediante PDO.
+     * @param string $seccion Nombre de la sección donde se ejecutará la acción `alta_bd`.
+     *
+     * @return string|array Si el usuario tiene permiso, devuelve la URL generada.
+     *                      Si hay errores, devuelve un array con el mensaje de error.
+     *
+     * @example Uso correcto con permiso:
+     * ```php
+     * $pdo = new PDO('mysql:host=localhost;dbname=test', 'usuario', 'password');
+     * $seccion = 'productos';
+     * $_GET['adm_menu_id'] = 5;
+     * echo $this->alta_bd($pdo, $seccion);
+     * // Salida esperada: "./index.php?seccion=productos&accion=alta_bd&adm_menu_id=5"
+     * ```
+     *
+     * @example Uso correcto sin `adm_menu_id`:
+     * ```php
+     * $pdo = new PDO('mysql:host=localhost;dbname=test', 'usuario', 'password');
+     * $seccion = 'usuarios';
+     * echo $this->alta_bd($pdo, $seccion);
+     * // Salida esperada: "./index.php?seccion=usuarios&accion=alta_bd&adm_menu_id=-1"
+     * ```
+     *
+     * @example Error: Sección vacía:
+     * ```php
+     * $pdo = new PDO('mysql:host=localhost;dbname=test', 'usuario', 'password');
+     * print_r($this->alta_bd($pdo, ''));
+     * // Salida esperada:
+     * // Array (
+     * //     [error] => Error seccion esta vacia
+     * // )
+     * ```
+     *
+     * @example Error en validación de permisos:
+     * ```php
+     * $pdo = new PDO('mysql:host=localhost;dbname=test', 'usuario', 'password');
+     * $seccion = 'facturas';
+     * print_r($this->alta_bd($pdo, $seccion));
+     * // Salida esperada si el usuario no tiene permiso:
+     * // Array (
+     * //     [error] => Error al validar si tengo permiso
+     * // )
+     * ```
      */
     private function alta_bd(PDO $link, string $seccion): string|array
     {
@@ -1814,11 +1865,64 @@ class links_menu{
     }
 
     /**
-     * Genera un link de tipo alta bd
-     * @param PDO $link Conexion a la base de datos
-     * @param string $seccion Seccion en ejecucion
-     * @return array|string
-     * @version 0.189.35
+     * REG
+     * Genera un enlace para la acción `alta_bd` en una sección si el usuario tiene permiso.
+     *
+     * Este método verifica si el usuario tiene permiso para realizar la acción `alta_bd` en la sección especificada.
+     * Si el usuario tiene permiso, genera una URL con los parámetros necesarios (`session_id`, `adm_menu_id`)
+     * para ejecutar la acción correctamente.
+     *
+     * Validaciones:
+     * - Verifica si el usuario tiene permiso mediante la clase `adm_usuario`.
+     * - Si ocurre un error en la validación de permisos, devuelve un error.
+     * - Si el usuario tiene permiso, obtiene la URL base usando `alta_bd()`.
+     * - Si hay un error al obtener el enlace, devuelve un error.
+     * - Añade los parámetros `session_id` y `adm_menu_id` a la URL generada.
+     *
+     * @param PDO    $link    Conexión activa a la base de datos mediante PDO.
+     * @param string $seccion Nombre de la sección donde se ejecutará la acción `alta_bd`.
+     *
+     * @return string|array Si el usuario tiene permiso, devuelve la URL generada.
+     *                      Si hay errores, devuelve un array con el mensaje de error.
+     *
+     * @example Uso correcto con permiso:
+     * ```php
+     * $pdo = new PDO('mysql:host=localhost;dbname=test', 'usuario', 'password');
+     * $seccion = 'productos';
+     * $_GET['adm_menu_id'] = 5;
+     * echo $this->link_alta_bd($pdo, $seccion);
+     * // Salida esperada: "./index.php?seccion=productos&accion=alta_bd&adm_menu_id=5&session_id=123abc"
+     * ```
+     *
+     * @example Uso correcto sin `adm_menu_id` en `$_GET`:
+     * ```php
+     * $pdo = new PDO('mysql:host=localhost;dbname=test', 'usuario', 'password');
+     * $seccion = 'usuarios';
+     * echo $this->link_alta_bd($pdo, $seccion);
+     * // Salida esperada: "./index.php?seccion=usuarios&accion=alta_bd&adm_menu_id=-1&session_id=123abc"
+     * ```
+     *
+     * @example Error en validación de permisos:
+     * ```php
+     * $pdo = new PDO('mysql:host=localhost;dbname=test', 'usuario', 'password');
+     * $seccion = 'facturas';
+     * print_r($this->link_alta_bd($pdo, $seccion));
+     * // Salida esperada si el usuario no tiene permiso:
+     * // Array (
+     * //     [error] => Error al validar si tengo permiso
+     * // )
+     * ```
+     *
+     * @example Error al obtener la URL base:
+     * ```php
+     * $pdo = new PDO('mysql:host=localhost;dbname=test', 'usuario', 'password');
+     * $seccion = 'ordenes';
+     * print_r($this->link_alta_bd($pdo, $seccion));
+     * // Salida esperada si hay error en `alta_bd`:
+     * // Array (
+     * //     [error] => Error al obtener link de alta_bd
+     * // )
+     * ```
      */
     final public function link_alta_bd(PDO $link, string $seccion): array|string
     {

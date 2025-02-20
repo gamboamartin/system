@@ -350,6 +350,23 @@ class links_menuTest extends test {
         errores::$error = false;
     }
 
+    #[NoReturn] public function test_link_alta_bd(): void
+    {
+        errores::$error = false;
+        $_GET['session_id'] = 1;
+        $html = new links_menu($this->link, -1);
+        //$html = new liberator($html);
+
+
+        $seccion = 'adm_seccion';
+        $resultado = $html->link_alta_bd($this->link,$seccion);
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("", $resultado);
+        errores::$error = false;
+    }
+
     /**
      */
     #[NoReturn] public function test_link_con_id(): void
