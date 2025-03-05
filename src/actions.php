@@ -334,39 +334,72 @@ class actions{
     }
 
     /**
-     * Genera un link para ser aplicado en header despues de una accion
-     * @param int $registro_id Registro identificador del registro a procesar
-     * @param string $seccion Seccion en ejecucion
-     * @param string $siguiente_view Que accion se ejecutara
-     * @param array $params Parametros extra por get
-     * @param bool $valida_permiso Si valida permiso retorna error en caso de no tener permiso
-     * @return array|string link para header
+     * REG
+     * Genera un link de retorno después de una acción de alta en la base de datos.
+     *
+     * Esta función construye un enlace basado en la sección, el identificador de registro y la siguiente vista a ejecutar.
+     * También valida la existencia de permisos si es necesario.
+     *
+     * @param PDO $link Conexión a la base de datos.
+     * @param int $registro_id ID del registro recién creado o en proceso.
+     * @param string $seccion Sección en la que se ejecuta la acción.
+     * @param string $siguiente_view Vista a la que se redirige después de la acción. Por defecto, 'modifica'.
+     * @param array $params Parámetros adicionales para la URL (por defecto, un array vacío).
+     * @param bool $valida_permiso Indica si se debe validar el permiso antes de generar el enlace (por defecto, `false`).
+     *
+     * @return array|string Retorna un string con la URL generada o un array con un mensaje de error en caso de fallo.
+     *
+     * @example
+     * // Ejemplo de uso:
+     * $pdo = new PDO('mysql:host=localhost;dbname=test', 'user', 'password');
+     * $registro_id = 15;
+     * $seccion = 'usuarios';
+     * $siguiente_view = 'detalle';
+     * $params = ['extra_param' => 'valor'];
+     * $valida_permiso = true;
+     *
+     * $link = $this->retorno_alta_bd($pdo, $registro_id, $seccion, $siguiente_view, $params, $valida_permiso);
+     *
+     * @example
+     * // Posible salida exitosa:
+     * "./index.php?seccion=usuarios&accion=detalle&registro_id=15&adm_menu_id=2&session_id=abcd1234&extra_param=valor"
+     *
+     * @example
+     * // Posible salida en caso de error:
+     * [
+     *     'error' => true,
+     *     'mensaje' => 'Error al generar link',
+     *     'data' => null
+     * ]
+     *
+     * @throws errores Si la sección está vacía o si falla la generación del enlace.
      * @version 0.22.2
      */
     final public function retorno_alta_bd(PDO $link, int $registro_id, string $seccion, string $siguiente_view,
-                                    array $params = array(), bool $valida_permiso = false): array|string
+                                          array $params = array(), bool $valida_permiso = false): array|string
     {
         $seccion = trim($seccion);
-        if($seccion === ''){
-            return $this->error->error(mensaje: 'Error la seccion esta vacia', data:  $seccion);
+        if ($seccion === '') {
+            return $this->error->error(mensaje: 'Error la seccion esta vacia', data: $seccion);
         }
 
         $siguiente_view = trim($siguiente_view);
-        if($siguiente_view === ''){
+        if ($siguiente_view === '') {
             $siguiente_view = 'modifica';
         }
 
         $link = (new links_menu(link: $link, registro_id: $registro_id))->link_con_id(
-            accion:$siguiente_view, link: $link, registro_id: $registro_id, seccion: $seccion,params: $params,
-            valida_permiso: $valida_permiso);
+            accion: $siguiente_view, link: $link, registro_id: $registro_id, seccion: $seccion, params: $params,
+            valida_permiso: $valida_permiso
+        );
 
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar link', data:  $link);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar link', data: $link);
         }
-
 
         return $link;
     }
+
 
     /**
      * TOTAL

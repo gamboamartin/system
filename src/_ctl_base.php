@@ -664,43 +664,107 @@ class _ctl_base extends system{
     }
 
     /**
-     * Ajusta los elementos de salida de un alta bd
-     * @param bool $header is header aplica redirect
-     * @param stdClass $data_retorno datos de redirect para get
-     * @param stdClass $result Resultado de la transaccion
-     * @param bool $ws is ws muestra salida json
-     * @return stdClass|void
-     * @version 8.2.0
+     * REG
+     * Gestiona la salida después de una operación de alta en la base de datos.
+     *
+     * Esta función determina si se debe redirigir a otra vista o devolver la información
+     * en formato JSON según los parámetros proporcionados. Si `$header` es `true`,
+     * se redirige a la vista especificada en `$data_retorno->siguiente_view`. Si `$ws` es `true`,
+     * se devuelve un JSON con los datos de `$result`.
+     *
+     * @param bool $header Indica si se debe realizar una redirección a una nueva vista.
+     *                     - `true`: Redirecciona a la URL generada.
+     *                     - `false`: Devuelve los datos sin redirigir.
+     *
+     * @param stdClass $data_retorno Contiene la información de retorno después del alta.
+     *                                Debe incluir:
+     *                                - `siguiente_view` (string): Nombre de la vista a la que se redirigirá.
+     *                                - `id_retorno` (int): ID del registro creado.
+     *                                - `seccion_retorno` (string): Sección de retorno después del alta.
+     *
+     * @param stdClass $result Contiene los resultados de la operación de alta en la base de datos.
+     *                         Debe incluir:
+     *                         - `registro_id` (int): Identificador del registro creado.
+     *                         - Otros datos relevantes del registro insertado.
+     *
+     * @param bool $ws Indica si se debe devolver la respuesta en formato JSON.
+     *                 - `true`: Devuelve un JSON con los datos de `$result`.
+     *                 - `false`: No devuelve JSON.
+     *
+     * @return stdClass Devuelve `$result` con la propiedad `siguiente_view` añadida si `$ws` es `false`.
+     *
+     *
+     * @example Entrada:
+     * ```php
+     * $header = true;
+     * $data_retorno = new stdClass();
+     * $data_retorno->siguiente_view = 'detalle';
+     * $data_retorno->id_retorno = -1;
+     * $data_retorno->seccion_retorno = 'factura';
+     *
+     * $result = new stdClass();
+     * $result->registro_id = 101;
+     * $result->nombre = 'Factura #101';
+     *
+     * $ws = false;
+     *
+     * out_alta_bd($header, $data_retorno, $result, $ws);
+     * ```
+     *
+     * @example Salida cuando `$header` es `true`:
+     * Redirección a:
+     * ```
+     * Location: /factura/detalle?id=101
+     * ```
+     *
+     * @example Salida cuando `$ws` es `true`:
+     * ```json
+     * {
+     *   "registro_id": 101,
+     *   "nombre": "Factura #101",
+     *   "siguiente_view": "detalle"
+     * }
+     * ```
      */
-    final protected function out_alta_bd(bool $header, stdClass $data_retorno, stdClass $result, bool $ws){
-        if(!isset($data_retorno->siguiente_view)){
+    final protected function out_alta_bd(bool $header, stdClass $data_retorno, stdClass $result, bool $ws): stdClass
+    {
+        // Asegurar que 'siguiente_view' está definido
+        if (!isset($data_retorno->siguiente_view)) {
             $data_retorno->siguiente_view = '';
         }
-        if($header){
 
-            if($data_retorno->id_retorno === -1) {
+        // Redirección si $header es true
+        if ($header) {
+            if ($data_retorno->id_retorno === -1) {
                 $data_retorno->id_retorno = $result->registro_id;
             }
             $this->retorno_base(
-                registro_id:$data_retorno->id_retorno, result: $result,
-                siguiente_view: $data_retorno->siguiente_view, ws:  $ws,seccion_retorno: $data_retorno->seccion_retorno);
-
+                registro_id: $data_retorno->id_retorno,
+                result: $result,
+                siguiente_view: $data_retorno->siguiente_view,
+                ws: $ws,
+                seccion_retorno: $data_retorno->seccion_retorno
+            );
         }
-        if($ws){
+
+        // Respuesta en JSON si $ws es true
+        if ($ws) {
             header('Content-Type: application/json');
             try {
                 echo json_encode($result, JSON_THROW_ON_ERROR);
-            }
-            catch (Throwable $e){
-                $error = (new errores())->error(mensaje: 'Error al maquetar JSON' , data: $e);
+            } catch (Throwable $e) {
+                $error = (new errores())->error(mensaje: 'Error al maquetar JSON', data: $e);
                 print_r($error);
             }
             exit;
         }
+
+        // Asigna la siguiente vista al resultado
         $result->siguiente_view = $data_retorno->siguiente_view;
 
         return $result;
     }
+
 
     protected function retorno(
         stdClass $data_retorno, bool $header, int $registro_id, mixed $result, bool $ws){

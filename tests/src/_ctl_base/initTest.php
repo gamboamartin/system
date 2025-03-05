@@ -2,6 +2,7 @@
 namespace tests\src\_ctl_base;
 
 
+use gamboamartin\administrador\models\adm_elemento_lista;
 use gamboamartin\administrador\tests\base_test;
 use gamboamartin\controllers\controlador_adm_grupo;
 use gamboamartin\controllers\controlador_adm_seccion;
@@ -86,6 +87,14 @@ class initTest extends test {
         $_SESSION['session_id'] = 1;
         $_SESSION['grupo_id'] = 1;
         $_SESSION['usuario_id'] = 2;
+
+
+        $del = (new adm_elemento_lista($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al del', $del);
+            print_r($error);
+            exit;
+        }
 
         $del = (new base_test)->del_adm_seccion(link: $this->link);
         if(errores::$error){

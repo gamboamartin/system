@@ -143,6 +143,28 @@ class links_menuTest extends test {
         errores::$error = false;
     }
 
+    #[NoReturn] public function test_data_link(): void
+    {
+        errores::$error = false;
+        $_SESSION['usuario_id'] = 2;
+        $_SESSION['grupo_id'] = 2;
+        $_GET['session_id'] = 1;
+        $_GET['seccion'] = 'adm_accion';
+        $html = new links_menu($this->link, -1);
+        $html = new liberator($html);
+
+        errores::$error = false;
+
+        $accion = 'accion';
+        $params = array();
+        $seccion = 'seccion';
+        $resultado = $html->data_link($accion,$this->link,$params,$seccion);
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     #[NoReturn] public function test_get_link(): void
     {
         errores::$error = false;
@@ -205,6 +227,31 @@ class links_menuTest extends test {
         errores::$error = false;
     }
 
+    public function test_genera_link_ancla(): void
+    {
+        errores::$error = false;
+        $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_GET['session_id'] = '1';
+        $html = new links_menu($this->link,-1);
+        $html = new liberator($html);
+
+        $accion = '';
+        $seccion = '';
+        $registro_id = -1;
+        $vars_gets = '';
+        $tengo_permiso = true;
+        $resultado = $html->genera_link_ancla($accion,$registro_id,$seccion,$tengo_permiso,$vars_gets);
+
+        $this->assertIsString($resultado);
+        $this->assertStringContainsStringIgnoringCase("./index.php?&&adm_menu_id",$resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+
+
+    }
+
     #[NoReturn] public function test_genera_links(): void
     {
         errores::$error = false;
@@ -227,6 +274,29 @@ class links_menuTest extends test {
         $this->assertEquals("./index.php?seccion=adm_session&accion=inicio&adm_menu_id=-1&session_id=1", $resultado->adm_session->inicio);
 
         errores::$error = false;
+    }
+
+    public function test_get_datos_ancla(): void
+    {
+        errores::$error = false;
+        $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_GET['session_id'] = '1';
+        $html = new links_menu($this->link,-1);
+        $html = new liberator($html);
+
+        $accion = 'adm_accion';
+        $seccion = 'seccion';
+        $valida_permiso = false;
+        $params = array();
+        $resultado = $html->get_datos_ancla($accion,$this->link,$params,$seccion,$valida_permiso);
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+
+
     }
 
     /**
@@ -325,6 +395,32 @@ class links_menuTest extends test {
         errores::$error = false;
     }
 
+    public function test_integra_link_ancla(): void
+    {
+        errores::$error = false;
+        $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_GET['session_id'] = '1';
+        $html = new links_menu($this->link,-1);
+        $html = new liberator($html);
+
+        $accion = 'adm_accion';
+        $seccion = 'adm_seccion';
+        $registro_id = -1;
+        $params = array();
+        $valida_permiso = false;
+        $resultado = $html->integra_link_ancla($accion,$this->link,$params,$registro_id,$seccion,$valida_permiso);
+
+
+        $this->assertIsString($resultado);
+        $this->assertEquals("",$resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+
+
+    }
+
 
     #[NoReturn] public function test_integra_links(): void
     {
@@ -365,6 +461,30 @@ class links_menuTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("", $resultado);
         errores::$error = false;
+    }
+
+    public function test_link_ancla(): void
+    {
+        errores::$error = false;
+        $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_GET['session_id'] = '1';
+        $html = new links_menu($this->link,-1);
+        $html = new liberator($html);
+
+        $accion = 'a';
+        $seccion = 'b';
+        $registro_id = -1;
+        $vars_gets = 'c';
+        $resultado = $html->link_ancla($accion,$registro_id,$seccion,$vars_gets);
+
+        $this->assertIsString($resultado);
+        $this->assertEquals("./index.php?seccion=b&accion=a&adm_menu_id=-1&session_id=1c",$resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+
+
     }
 
     /**
@@ -685,6 +805,41 @@ class links_menuTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertTrue($resultado);
         errores::$error = false;
+    }
+
+    public function test_valida_permiso(): void
+    {
+        errores::$error = false;
+        $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_GET['session_id'] = '1';
+        $html = new links_menu($this->link,-1);
+        $html = new liberator($html);
+
+        $accion = '';
+        $seccion = '';
+        $data_link = new stdClass();
+        $valida_permiso = true;
+        $resultado = $html->valida_permiso($accion,$data_link,$seccion,$valida_permiso);
+
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertEquals("Error permiso denegado",$resultado['mensaje_limpio']);
+        errores::$error = false;
+
+        $accion = '';
+        $seccion = '';
+        $data_link = new stdClass();
+        $data_link->tengo_permiso = true;
+        $valida_permiso = true;
+        $resultado = $html->valida_permiso($accion,$data_link,$seccion,$valida_permiso);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+
+
     }
 
     public function test_var_gets(): void

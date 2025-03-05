@@ -1560,39 +1560,84 @@ class system extends controlador_base{
     }
 
     /**
-     * Ejecuta el retorno de una transaccion
-     * @param int $registro_id Identificador en proceso
-     * @param mixed $result Resultado
-     * @param string $siguiente_view Vista de retorno
-     * @param bool $ws si webservice
-     * @param bool $header Si header
-     * @param array $params Envia parametros por GET en retorno $_GET['PARAMETRO'] = 1
-     * @param string $seccion_retorno Seccion de retorno default this->tabla
-     * @param bool $valida_permiso Si valida permiso y no hay permiso de retorno da error
-     * @return bool|array
+     * REG
+     * Ejecuta el retorno de una transacción después de una operación de alta o modificación en la base de datos.
+     *
+     * Esta función genera una URL de redirección basada en la vista siguiente y la sección de retorno. Si el `header`
+     * está habilitado, redirige al usuario a la URL generada. Si ocurre un error, devuelve un mensaje de error con los
+     * detalles de la operación.
+     *
+     * @param int $registro_id Identificador del registro procesado.
+     * @param mixed $result Resultado de la operación previa (puede ser un objeto o array con los datos del proceso).
+     * @param string $siguiente_view Vista a la que se redirigirá después de la operación.
+     * @param bool $ws Si es `true`, la respuesta se enviará en formato JSON.
+     * @param bool $header Si es `true`, realiza una redirección HTTP a la vista generada.
+     * @param array $params Parámetros adicionales a incluir en la URL de redirección.
+     * @param string $seccion_retorno Sección a la que se redirige después de la operación (por defecto, el valor de `$this->tabla`).
+     * @param bool $valida_permiso Si es `true`, valida los permisos antes de permitir la redirección.
+     *
+     * @return bool|array Retorna `true` si la redirección se ejecuta correctamente. Si ocurre un error, devuelve un array con los detalles del error.
+     *
+     * @throws errores Si se produce un error en la generación del link de redirección.
+     *
+     * @example
+     * // Ejemplo 1: Redirigir después de un alta a la vista "modifica"
+     * $resultado = $this->retorno_base(
+     *     registro_id: 15,
+     *     result: $registro,
+     *     siguiente_view: 'modifica',
+     *     ws: false
+     * );
+     *
+     * // Ejemplo 2: Retorno sin redirección, solo devuelve la URL
+     * $resultado = $this->retorno_base(
+     *     registro_id: 20,
+     *     result: $registro,
+     *     siguiente_view: 'detalle',
+     *     ws: false,
+     *     header: false
+     * );
+     *
      * @version 0.90.32
      */
     final public function retorno_base(int $registro_id, mixed $result, string $siguiente_view, bool $ws,
-                                    bool $header = true, array $params = array(),
-                                    string $seccion_retorno = '', bool $valida_permiso = false):bool|array{
+                                       bool $header = true, array $params = array(),
+                                       string $seccion_retorno = '', bool $valida_permiso = false): bool|array {
 
-        if($seccion_retorno === ''){
+        // Si no se proporciona una sección de retorno, se usa la tabla actual.
+        if ($seccion_retorno === '') {
             $seccion_retorno = $this->tabla;
         }
 
-        $retorno = (new actions())->retorno_alta_bd(link: $this->link, registro_id: $registro_id,
-            seccion: $seccion_retorno, siguiente_view: $siguiente_view, params: $params,
-            valida_permiso: $valida_permiso);
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al dar de alta registro', data: $result, header:  $header,
-                ws: $ws);
+        // Genera el enlace de redirección basado en los parámetros proporcionados.
+        $retorno = (new actions())->retorno_alta_bd(
+            link: $this->link,
+            registro_id: $registro_id,
+            seccion: $seccion_retorno,
+            siguiente_view: $siguiente_view,
+            params: $params,
+            valida_permiso: $valida_permiso
+        );
+
+        // Si hay un error en la generación del enlace, devuelve un mensaje de error.
+        if (errores::$error) {
+            return $this->retorno_error(
+                mensaje: 'Error al dar de alta registro',
+                data: $result,
+                header: $header,
+                ws: $ws
+            );
         }
-        if($header) {
+
+        // Si `header` está habilitado, realiza la redirección HTTP.
+        if ($header) {
             header('Location:' . $retorno);
             exit;
         }
+
         return true;
     }
+
 
     /**
      * Actualiza elementos por campo

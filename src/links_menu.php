@@ -443,25 +443,82 @@ class links_menu{
     }
 
 
-    private function data_link(string $accion, PDO $link, array $params, string $seccion)
+    /**
+     * REG
+     * Genera y valida los datos necesarios para construir un enlace.
+     *
+     * Esta función realiza las siguientes acciones:
+     * 1. Genera los parámetros GET en base al array `$params` usando el método `var_gets()`.
+     * 2. Verifica si el usuario tiene permiso para ejecutar una acción en una sección determinada
+     *    utilizando la clase `adm_usuario`.
+     * 3. Retorna un objeto `stdClass` con los parámetros GET generados y el resultado de la validación de permisos.
+     *
+     * Si ocurre algún error en la generación de los parámetros GET o en la validación de permisos,
+     * la función retorna un array con los detalles del error.
+     *
+     * @param string $accion  La acción a validar. Debe ser una cadena no vacía.
+     * @param PDO    $link    Conexión a la base de datos para ejecutar validaciones.
+     * @param array  $params  Parámetros a incluir en la URL, estructurados en un array asociativo.
+     * @param string $seccion La sección del sistema donde se ejecutará la acción.
+     *
+     * @return stdClass|array Retorna un objeto con dos propiedades:
+     *                        - `vars_get`: los parámetros GET generados.
+     *                        - `tengo_permiso`: el resultado de la validación de permisos.
+     *                        En caso de error, retorna un array con los detalles del error.
+     *
+     * @example
+     * ```php
+     * $params = ['id' => 123, 'modulo' => 'ventas'];
+     * $resultado = $this->data_link('crear', $pdo, $params, 'usuarios');
+     * // Salida esperada (si tiene permisos y no hay errores):
+     * // stdClass Object (
+     * //     [vars_get] => Array (
+     * //         [id] => 123
+     * //         [modulo] => 'ventas'
+     * //     )
+     * //     [tengo_permiso] => true
+     * // )
+     *
+     * $params = ['id' => 456];
+     * $resultado = $this->data_link('eliminar', $pdo, $params, 'facturas');
+     * // Salida esperada (si el usuario no tiene permiso):
+     * // Array (
+     * //     [error] => true
+     * //     [mensaje] => 'Error al validar si tengo permiso'
+     * //     [data] => false
+     * // )
+     *
+     * $params = ['id' => null];
+     * $resultado = $this->data_link('actualizar', $pdo, $params, 'productos');
+     * // Salida esperada (si ocurre un error en la generación de parámetros GET):
+     * // Array (
+     * //     [error] => true
+     * //     [mensaje] => 'Error al generar params get'
+     * //     [data] => null
+     * // )
+     * ```
+     */
+    private function data_link(string $accion, PDO $link, array $params, string $seccion): array|stdClass
     {
+        // Genera los parámetros GET
         $vars_get = $this->var_gets(params_get: $params);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar params get', data: $vars_get);
         }
 
+        // Verifica si el usuario tiene permiso para la acción y sección indicadas
         $tengo_permiso = (new adm_usuario(link: $link))->tengo_permiso(adm_accion: $accion, adm_seccion: $seccion);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar si tengo permiso', data: $tengo_permiso);
         }
 
+        // Crea y retorna el objeto con los datos generados
         $data = new stdClass();
         $data->vars_get = $vars_get;
         $data->tengo_permiso = $tengo_permiso;
         return $data;
-
-
     }
+
 
     private function elimina_bd(PDO $link, int $registro_id, string $seccion): string
     {
@@ -498,18 +555,79 @@ class links_menu{
         return $this->links;
     }
 
-    private function genera_link_ancla(string $accion, int $registro_id, string $seccion, bool $tengo_permiso, string $vars_get)
+    /**
+     * Genera un enlace (URL) solo si el usuario tiene permisos para la acción y la sección especificadas.
+     *
+     * Esta función evalúa si el usuario tiene permiso para ejecutar una acción en una determinada
+     * sección y, en caso afirmativo, genera un enlace utilizando `link_ancla()`. Si el usuario no
+     * tiene permisos, retorna una cadena vacía.
+     *
+     * **Flujo de la función:**
+     * 1. Inicializa la variable `$link_ancla` como una cadena vacía.
+     * 2. Verifica si el usuario tiene permisos (`$tengo_permiso`).
+     * 3. Si tiene permisos, llama a `link_ancla()` para construir el enlace.
+     * 4. Si hay un error en `link_ancla()`, retorna un mensaje de error con los detalles.
+     * 5. Retorna la URL generada o una cadena vacía si no hay permisos.
+     *
+     * @param string $accion La acción a ejecutar en la URL (ejemplo: 'editar', 'eliminar', 'ver').
+     * @param int $registro_id ID del registro sobre el cual se realizará la acción (0 si no aplica).
+     * @param string $seccion La sección del sistema donde se ejecutará la acción (ejemplo: 'clientes', 'facturas').
+     * @param bool $tengo_permiso Indica si el usuario tiene permiso para ejecutar la acción.
+     * @param string $vars_get Variables adicionales para la URL en formato de `query string` (ejemplo: '&page=1&sort=desc').
+     *
+     * @return string|array Retorna la URL generada si el usuario tiene permiso; de lo contrario, retorna una cadena vacía.
+     *
+     * @example
+     * ```php
+     * // Usuario con permisos para editar el usuario con ID 15
+     * $link = $this->genera_link_ancla('editar', 15, 'usuarios', true, '&pagina=2');
+     *
+     * // Salida esperada:
+     * // "./index.php?seccion=usuarios&accion=editar&registro_id=15&adm_menu_id=3&session_id=xyz123&pagina=2"
+     *
+     * // Usuario sin permisos para eliminar el usuario con ID 20
+     * $link = $this->genera_link_ancla('eliminar', 20, 'usuarios', false, '');
+     *
+     * // Salida esperada:
+     * // ""
+     *
+     * // Usuario con permisos para ver reportes sin ID de registro
+     * $link = $this->genera_link_ancla('ver', 0, 'reportes', true, '');
+     *
+     * // Salida esperada:
+     * // "./index.php?seccion=reportes&accion=ver&adm_menu_id=3&session_id=xyz123"
+     * ```
+     */
+    private function genera_link_ancla(
+        string $accion,
+        int $registro_id,
+        string $seccion,
+        bool $tengo_permiso,
+        string $vars_get
+    ): string|array
     {
+        // Inicializa el enlace vacío
         $link_ancla = '';
-        if($tengo_permiso) {
-            $link_ancla = $this->link_ancla(accion: $accion,registro_id:  $registro_id,seccion:  $seccion,vars_get:  $vars_get);
-            if(errores::$error){
+
+        // Solo genera el enlace si el usuario tiene permisos
+        if ($tengo_permiso) {
+            $link_ancla = $this->link_ancla(
+                accion: $accion,
+                registro_id: $registro_id,
+                seccion: $seccion,
+                vars_get: $vars_get
+            );
+
+            // Si ocurre un error en link_ancla(), retorna un mensaje de error
+            if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al obtener link', data: $link_ancla);
             }
         }
-        return $link_ancla;
 
+        // Retorna la URL generada o una cadena vacía si no hay permisos
+        return $link_ancla;
     }
+
 
     /**
      * REG
@@ -632,21 +750,97 @@ class links_menu{
     }
 
 
-    private function get_datos_ancla(string $accion, PDO $link, array $params, string $seccion, bool $valida_permiso)
+    /**
+     * REG
+     * Obtiene y valida los datos de anclaje para la generación de enlaces con permisos.
+     *
+     * Esta función combina la obtención de los datos necesarios para un enlace (`data_link`)
+     * con la validación de permisos (`valida_permiso`).
+     *
+     * **Flujo de la función:**
+     * 1. Llama a `data_link()` para obtener la información de la acción y su contexto.
+     * 2. Si hay un error al generar `data_link`, retorna un error.
+     * 3. Llama a `valida_permiso()` para verificar si el usuario tiene permiso para ejecutar la acción.
+     * 4. Si hay un error en la validación del permiso, retorna un error.
+     * 5. Si todo es válido, retorna el objeto `data_link` con la información necesaria.
+     *
+     * @param string   $accion         La acción que se desea validar (ejemplo: 'crear', 'editar', 'eliminar').
+     * @param PDO      $link           Conexión activa a la base de datos.
+     * @param array    $params         Parámetros adicionales para la generación del enlace.
+     * @param string   $seccion        La sección del sistema en la que se ejecutará la acción (ejemplo: 'usuarios', 'facturas').
+     * @param bool     $valida_permiso Indica si se debe validar el permiso (`true`) o no (`false`).
+     *
+     * @return stdClass|array Retorna un objeto `stdClass` con los datos del enlace si todo es válido.
+     *                        En caso de error, retorna un array con detalles del error.
+     *
+     * @example
+     * ```php
+     * $link = new PDO('mysql:host=localhost;dbname=sistema', 'usuario', 'contraseña');
+     * $params = ['id' => 10, 'token' => 'abc123'];
+     *
+     * // Ejemplo con validación de permisos activada
+     * $data_ancla = $this->get_datos_ancla('editar', $link, $params, 'usuarios', true);
+     *
+     * // Salida esperada si el usuario tiene permisos:
+     * // stdClass Object (
+     * //     [vars_get] => Array (
+     * //         [id] => 10
+     * //         [token] => 'abc123'
+     * //     )
+     * //     [tengo_permiso] => true
+     * // )
+     *
+     * // Ejemplo sin permisos
+     * $data_ancla = $this->get_datos_ancla('eliminar', $link, $params, 'facturas', true);
+     * // Salida esperada si no tiene permisos:
+     * // Array (
+     * //     [error] => true
+     * //     [mensaje] => 'Error permiso denegado facturas eliminar'
+     * //     [data] => false
+     * //     [es_final] => true
+     * // )
+     *
+     * // Ejemplo sin validación de permisos
+     * $data_ancla = $this->get_datos_ancla('ver', $link, $params, 'reportes', false);
+     * // Salida esperada:
+     * // stdClass Object (
+     * //     [vars_get] => Array (
+     * //         [id] => 10
+     * //         [token] => 'abc123'
+     * //     )
+     * //     [tengo_permiso] => true // No se valida, se asigna por defecto
+     * // )
+     * ```
+     */
+    private function get_datos_ancla(
+        string $accion,
+        PDO $link,
+        array $params,
+        string $seccion,
+        bool $valida_permiso
+    ): array|stdClass
     {
-        $data_link = $this->data_link(accion: $accion,link:  $link,params:  $params,seccion:  $seccion);
-        if(errores::$error){
+        // Obtiene los datos del enlace
+        $data_link = $this->data_link(accion: $accion, link: $link, params: $params, seccion: $seccion);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al integrar data_link', data: $data_link);
         }
-        $valida = $this->valida_permiso(accion: $accion,data_link:  $data_link,seccion:  $seccion,
-            valida_permiso:  $valida_permiso);
-        if(errores::$error){
+
+        // Valida los permisos del usuario si es necesario
+        $valida = $this->valida_permiso(
+            accion: $accion,
+            data_link: $data_link,
+            seccion: $seccion,
+            valida_permiso: $valida_permiso
+        );
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar permiso', data: $valida);
         }
 
+        // Retorna la información del enlace
         return $data_link;
-
     }
+
 
     /**
      * REG
@@ -1278,21 +1472,89 @@ class links_menu{
     }
 
 
-    private function integra_link_ancla(string $accion, PDO $link, array $params, int $registro_id, string $seccion, bool $valida_permiso)
+    /**
+     * REG
+     * Genera un enlace (URL) basado en los permisos del usuario y los datos obtenidos para la acción y sección especificadas.
+     *
+     * Esta función integra la obtención de datos de ancla (`get_datos_ancla`) y la generación del enlace (`genera_link_ancla`).
+     * Se encarga de validar si el usuario tiene permiso para ejecutar la acción en la sección correspondiente.
+     * Si hay algún error en el proceso, retorna un mensaje de error con los detalles.
+     *
+     * **Flujo de la función:**
+     * 1. Llama a `get_datos_ancla()` para obtener datos como permisos y parámetros GET.
+     * 2. Si ocurre un error en `get_datos_ancla()`, retorna un mensaje de error.
+     * 3. Llama a `genera_link_ancla()` para construir el enlace con los datos obtenidos.
+     * 4. Si `genera_link_ancla()` falla, retorna un mensaje de error.
+     * 5. Retorna el enlace generado correctamente.
+     *
+     * @param string  $accion         La acción a ejecutar en la URL (ejemplo: 'editar', 'eliminar', 'ver').
+     * @param PDO     $link           Conexión a la base de datos utilizada para validar permisos.
+     * @param array   $params         Parámetros adicionales para la URL en formato clave-valor.
+     * @param int     $registro_id    ID del registro sobre el cual se realizará la acción (0 si no aplica).
+     * @param string  $seccion        La sección del sistema donde se ejecutará la acción (ejemplo: 'clientes', 'facturas').
+     * @param bool    $valida_permiso Indica si se debe validar el permiso del usuario antes de generar el enlace.
+     *
+     * @return string|array Retorna la URL generada si el usuario tiene permiso; de lo contrario, retorna un array con el error.
+     *
+     * @example
+     * ```php
+     * // Generar un enlace para editar un cliente con ID 10, validando permisos
+     * $link = $this->integra_link_ancla('editar', $link, [], 10, 'clientes', true);
+     *
+     * // Salida esperada si el usuario tiene permiso:
+     * // "./index.php?seccion=clientes&accion=editar&registro_id=10&adm_menu_id=3&session_id=xyz123"
+     *
+     * // Salida esperada si el usuario no tiene permiso:
+     * // [ 'error' => true, 'mensaje' => 'Error permiso denegado clientes editar', 'data' => false ]
+     *
+     * // Generar un enlace sin validación de permisos
+     * $link = $this->integra_link_ancla('ver', $link, ['page' => 2], 0, 'reportes', false);
+     *
+     * // Salida esperada:
+     * // "./index.php?seccion=reportes&accion=ver&adm_menu_id=3&session_id=xyz123&page=2"
+     * ```
+     */
+    private function integra_link_ancla(
+        string $accion,
+        PDO $link,
+        array $params,
+        int $registro_id,
+        string $seccion,
+        bool $valida_permiso
+    ): array|string
     {
-        $data_link = $this->get_datos_ancla(accion: $accion,link:  $link,params:  $params,
-            seccion:  $seccion,valida_permiso:  $valida_permiso);
-        if(errores::$error){
+        // Obtiene los datos necesarios para el enlace, como permisos y parámetros GET
+        $data_link = $this->get_datos_ancla(
+            accion: $accion,
+            link: $link,
+            params: $params,
+            seccion: $seccion,
+            valida_permiso: $valida_permiso
+        );
+
+        // Si hay un error en la obtención de datos, retorna un mensaje de error
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al integrar data_link', data: $data_link);
         }
-        $link_ancla = $this->genera_link_ancla(accion: $accion,registro_id:  $registro_id,seccion:  $seccion,
-            tengo_permiso:  $data_link->tengo_permiso,vars_get:  $data_link->vars_get);
-        if(errores::$error){
+
+        // Genera el enlace con los datos obtenidos
+        $link_ancla = $this->genera_link_ancla(
+            accion: $accion,
+            registro_id: $registro_id,
+            seccion: $seccion,
+            tengo_permiso: $data_link->tengo_permiso,
+            vars_get: $data_link->vars_get
+        );
+
+        // Si hay un error al generar el enlace, retorna un mensaje de error
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener link', data: $link_ancla);
         }
-        return $link_ancla;
 
+        // Retorna la URL generada correctamente
+        return $link_ancla;
     }
+
 
     /**
      * REG
@@ -1945,54 +2207,158 @@ class links_menu{
         return $alta_bd;
     }
 
-    private function link_ancla(string $accion, int $registro_id, string $seccion, string $vars_get): string
+    /**
+     * REG
+     * Genera un enlace (URL) con los parámetros adecuados para la navegación dentro del sistema.
+     *
+     * La función construye un link con la estructura necesaria para acceder a una acción
+     * específica en una sección determinada, incluyendo el ID de registro, ID de menú y sesión.
+     *
+     * **Flujo de la función:**
+     * 1. Obtiene el ID del menú activo llamando a `adm_menu_id()`.
+     * 2. Si el `registro_id` es mayor a 0, lo agrega como parámetro en la URL.
+     * 3. Valida y asigna los parámetros de `seccion`, `accion` y `adm_menu_id`.
+     * 4. Construye la URL con los valores obtenidos, incluyendo el `session_id` y otros `vars_get`.
+     * 5. Retorna la URL generada.
+     *
+     * @param string $accion La acción a ejecutar en la URL (ejemplo: 'editar', 'eliminar', 'ver').
+     * @param int $registro_id ID del registro sobre el cual se realizará la acción (0 si no aplica).
+     * @param string $seccion La sección del sistema donde se ejecutará la acción (ejemplo: 'clientes', 'facturas').
+     * @param string $vars_get Variables adicionales para la URL en formato de `query string` (ejemplo: '&page=1&sort=desc').
+     *
+     * @return string|array Retorna la URL generada con los parámetros adecuados.
+     *
+     * @example
+     * ```php
+     * // Generar un enlace para editar un usuario con ID 15
+     * $link = $this->link_ancla('editar', 15, 'usuarios', '&pagina=2');
+     *
+     * // Salida esperada:
+     * // "./index.php?seccion=usuarios&accion=editar&registro_id=15&adm_menu_id=3&session_id=xyz123&pagina=2"
+     *
+     * // Generar un enlace para ver reportes sin ID de registro
+     * $link = $this->link_ancla('ver', 0, 'reportes', '');
+     *
+     * // Salida esperada:
+     * // "./index.php?seccion=reportes&accion=ver&adm_menu_id=3&session_id=xyz123"
+     *
+     * // Generar un enlace sin acción ni registro
+     * $link = $this->link_ancla('', 0, '', '');
+     *
+     * // Salida esperada:
+     * // "./index.php?adm_menu_id=3&session_id=xyz123"
+     * ```
+     */
+    private function link_ancla(string $accion, int $registro_id, string $seccion, string $vars_get): string|array
     {
+        // Obtiene el ID del menú activo
         $adm_menu_id = $this->adm_menu_id();
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener menu id', data: $adm_menu_id);
         }
 
+        // Parámetro del ID de registro si aplica
         $param_registro_id = '';
-        if($registro_id > 0){
+        if ($registro_id > 0) {
             $param_registro_id = "&registro_id=$registro_id";
         }
-        $link_ancla = "./index.php?seccion=$seccion&accion=$accion$param_registro_id&adm_menu_id=$adm_menu_id";
-        $link_ancla.="&session_id=$this->session_id$vars_get";
-        return $link_ancla;
 
+        // Parámetros de sección y acción (si existen)
+        $seccion = trim($seccion);
+        $seccion_p = $seccion !== '' ? "seccion=$seccion" : '';
+
+        $accion = trim($accion);
+        $accion_p = $accion !== '' ? "accion=$accion" : '';
+
+        // Parámetro del ID de menú
+        $adm_menu_id_p = "adm_menu_id=$adm_menu_id";
+
+        // Construcción del enlace con los parámetros
+        $link_ancla = "./index.php?$seccion_p&$accion_p$param_registro_id&$adm_menu_id_p";
+        $link_ancla .= "&session_id=$this->session_id$vars_get";
+
+        return $link_ancla;
     }
 
+
     /**
-     * Funcion que genera un link con un id definido para la ejecucion de una accion
-     * @param string $accion Accion a ejecutar
-     * @param PDO $link Conexion a la base de datos
-     * @param int $registro_id Registro identificador
-     * @param string $seccion Seccion de envio
-     * @param array $params Parametros para integrar en GET
-     * @param bool $valida_permiso Si valida retorna error si no tiene permiso
-     * @return array|string
-     * @version 0.81.32
+     * REG
+     * Genera un enlace (URL) con un ID de registro, validando permisos opcionalmente.
+     *
+     * Esta función se encarga de:
+     * 1. Validar la acción y la sección utilizando `valida_link()`.
+     * 2. Si la validación falla, retorna un mensaje de error con los detalles.
+     * 3. Integrar los datos necesarios para la URL mediante `integra_link_ancla()`.
+     * 4. Si ocurre un error en la integración del enlace, retorna un mensaje de error.
+     * 5. Devolver el enlace generado en caso de éxito.
+     *
+     * **Uso típico:** Se utiliza para construir enlaces dentro del sistema asegurando que la acción,
+     * la sección y los permisos sean correctos antes de generar el enlace definitivo.
+     *
+     * @param string  $accion         La acción a ejecutar en la URL (ejemplo: 'editar', 'eliminar', 'ver').
+     * @param PDO     $link           Conexión a la base de datos utilizada para validar permisos.
+     * @param int     $registro_id    ID del registro sobre el cual se realizará la acción (0 si no aplica).
+     * @param string  $seccion        La sección del sistema donde se ejecutará la acción (ejemplo: 'clientes', 'facturas').
+     * @param array   $params         Parámetros adicionales para la URL en formato clave-valor (opcional, por defecto vacío).
+     * @param bool    $valida_permiso Indica si se debe validar el permiso del usuario antes de generar el enlace (por defecto `false`).
+     *
+     * @return array|string Retorna la URL generada si todo es correcto; en caso de error, retorna un array con el detalle del error.
+     *
+     * @example
+     * ```php
+     * // Generar un enlace para editar un cliente con ID 10, validando permisos
+     * $link = $this->link_con_id('editar', $link, 10, 'clientes', [], true);
+     *
+     * // Salida esperada si el usuario tiene permiso:
+     * // "./index.php?seccion=clientes&accion=editar&registro_id=10&adm_menu_id=3&session_id=xyz123"
+     *
+     * // Salida esperada si el usuario no tiene permiso:
+     * // [ 'error' => true, 'mensaje' => 'Error permiso denegado clientes editar', 'data' => false ]
+     *
+     * // Generar un enlace sin validación de permisos
+     * $link = $this->link_con_id('ver', $link, 0, 'reportes', ['page' => 2], false);
+     *
+     * // Salida esperada:
+     * // "./index.php?seccion=reportes&accion=ver&adm_menu_id=3&session_id=xyz123&page=2"
+     * ```
      */
-    final public function link_con_id(string $accion, PDO $link, int $registro_id, string $seccion,
-                                array $params = array(), bool $valida_permiso = false): array|string
-    {
+    final public function link_con_id(
+        string $accion,
+        PDO $link,
+        int $registro_id,
+        string $seccion,
+        array $params = array(),
+        bool $valida_permiso = false
+    ): array|string {
+        // Elimina espacios en blanco en los parámetros de entrada
         $accion = trim($accion);
         $seccion = trim($seccion);
 
-        $valida = $this->valida_link(accion: $accion,seccion:  $seccion);
-        if(errores::$error){
+        // Valida que la acción y la sección sean válidas
+        $valida = $this->valida_link(accion: $accion, seccion: $seccion);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar entrada de datos', data: $valida);
         }
 
-        $link_ancla = $this->integra_link_ancla(accion: $accion,link:  $link,params:  $params,
-            registro_id:  $registro_id,seccion:  $seccion,valida_permiso:  $valida_permiso);
-        if(errores::$error){
+        // Genera el enlace con la validación de permisos correspondiente
+        $link_ancla = $this->integra_link_ancla(
+            accion: $accion,
+            link: $link,
+            params: $params,
+            registro_id: $registro_id,
+            seccion: $seccion,
+            valida_permiso: $valida_permiso
+        );
+
+        // Si hay un error al generar el enlace, retorna un mensaje de error
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener link', data: $link_ancla);
         }
 
-
+        // Retorna el enlace generado correctamente
         return $link_ancla;
     }
+
 
     private function link_elimina_bd(PDO $link, int $registro_id, string $seccion): array|string
     {
@@ -2708,58 +3074,145 @@ class links_menu{
     }
 
     /**
-     * TOTAL
-     * Valida si la acción y la sección no están vacías.
+     * REG
+     * Valida que los parámetros `$accion` y `$seccion` no estén vacíos.
      *
-     * Esta función verifica que los valores de acción y sección no estén vacíos.
-     * Si ambos valores están presentes, devuelve verdadero; de lo contrario,
-     * devuelve un mensaje de error indicando qué valor está vacío.
+     * Esta función recibe dos cadenas de texto (`$accion` y `$seccion`), elimina espacios en blanco
+     * al inicio y final de cada una, y verifica que no estén vacías. Si alguna de ellas está vacía,
+     * se registra un error y se retorna un array con los detalles del error. En caso contrario,
+     * la función retorna `true`.
      *
-     * @param string $accion La acción a validar.
-     * @param string $seccion La sección a validar.
+     * @param string $accion  La acción a validar. No debe estar vacía después de aplicar `trim()`.
+     * @param string $seccion La sección a validar. No debe estar vacía después de aplicar `trim()`.
      *
-     * @return true|array Retorna true si tanto la acción como la sección no están vacías.
-     *                     Retorna un array con un mensaje de error si uno de los valores está vacío.
+     * @return true|array Retorna `true` si ambos parámetros son válidos. Si alguno está vacío,
+     *                    retorna un array con los detalles del error.
      *
      * @example
      * ```php
-     * $validador = new links_menu();
-     * $accion = "alta";
-     * $seccion = "contrato";
-     * $resultado = $validador->valida_link($accion, $seccion);
-     * if ($resultado === true) {
-     *     echo "Los valores de acción y sección son válidos.";
-     * } else {
-     *     echo "Error: " . $resultado['mensaje'];
-     * }
+     * $resultado = $this->valida_link('crear', 'usuario');
+     * // Salida esperada:
+     * // true
+     *
+     * $resultado = $this->valida_link(' ', 'usuario');
+     * // Salida esperada:
+     * // [
+     * //     'error' => true,
+     * //     'mensaje' => 'Error al accion esta vacia',
+     * //     'data' => '',
+     * //     'es_final' => true
+     * // ]
+     *
+     * $resultado = $this->valida_link('crear', '');
+     * // Salida esperada:
+     * // [
+     * //     'error' => true,
+     * //     'mensaje' => 'Error al seccion esta vacia',
+     * //     'data' => '',
+     * //     'es_final' => true
+     * // ]
      * ```
-     * @url https://github.com/gamboamartin/system/wiki/src.links_menu.valida_link.22.5.0
      */
     private function valida_link(string $accion, string $seccion): true|array
     {
         $accion = trim($accion);
-        if($accion === ''){
+        if ($accion === '') {
             return $this->error->error(mensaje: 'Error al accion esta vacia', data: $accion, es_final: true);
         }
-        $seccion = trim($seccion);
-        if($seccion === ''){
-            return $this->error->error(mensaje: 'Error al $seccion esta vacia', data: $seccion, es_final: true);
-        }
-        return true;
 
+        $seccion = trim($seccion);
+        if ($seccion === '') {
+            return $this->error->error(mensaje: 'Error al seccion esta vacia', data: $seccion, es_final: true);
+        }
+
+        return true;
     }
 
-    private function valida_permiso(string $accion,stdClass $data_link, string $seccion, bool $valida_permiso): true|array
-    {
-        if($valida_permiso){
-            if(!$data_link->tengo_permiso){
-                return $this->error->error(mensaje: 'Error permiso denegado '.$seccion.' '.$accion,
-                    data: $data_link->tengo_permiso);
+    /**
+     * REG
+     * Valida si el usuario tiene permiso para ejecutar una acción en una sección específica.
+     *
+     * Esta función se encarga de verificar si el usuario tiene permiso para realizar una acción
+     * dentro de una sección del sistema, basándose en los datos obtenidos de `data_link`.
+     *
+     * **Comportamiento de la función:**
+     * 1. Si `$valida_permiso` es `false`, la función retorna `true` sin realizar validaciones.
+     * 2. Si `$valida_permiso` es `true`, la función verifica si la propiedad `tengo_permiso`
+     *    existe en el objeto `$data_link`. Si no existe, la inicializa en `false`.
+     * 3. Si `tengo_permiso` es `false`, la función retorna un error indicando que el permiso
+     *    ha sido denegado.
+     * 4. Si `tengo_permiso` es `true`, la función retorna `true`, permitiendo la ejecución de la acción.
+     *
+     * @param string   $accion         La acción que se desea validar (ejemplo: 'crear', 'editar', 'eliminar').
+     * @param stdClass $data_link      Objeto que contiene la información sobre los permisos, generado en `data_link()`.
+     * @param string   $seccion        La sección en la que se desea ejecutar la acción (ejemplo: 'usuarios', 'facturas').
+     * @param bool     $valida_permiso Si es `true`, se valida el permiso; si es `false`, se omite la validación y retorna `true`.
+     *
+     * @return true|array Retorna `true` si el permiso es válido o si la validación de permisos está deshabilitada.
+     *                    En caso de error, retorna un array con detalles del error.
+     *
+     * @example
+     * ```php
+     * $data_link = new stdClass();
+     * $data_link->tengo_permiso = true;
+     *
+     * $resultado = $this->valida_permiso('crear', $data_link, 'usuarios', true);
+     * // Salida esperada:
+     * // true
+     *
+     * $data_link = new stdClass();
+     * $data_link->tengo_permiso = false;
+     *
+     * $resultado = $this->valida_permiso('eliminar', $data_link, 'facturas', true);
+     * // Salida esperada:
+     * // Array (
+     * //     [error] => true
+     * //     [mensaje] => 'Error permiso denegado facturas eliminar'
+     * //     [data] => false
+     * //     [es_final] => true
+     * // )
+     *
+     * $data_link = new stdClass();
+     * // Sin definir `tengo_permiso`, la función lo inicializa en `false`
+     *
+     * $resultado = $this->valida_permiso('actualizar', $data_link, 'productos', true);
+     * // Salida esperada:
+     * // Array (
+     * //     [error] => true
+     * //     [mensaje] => 'Error permiso denegado productos actualizar'
+     * //     [data] => false
+     * //     [es_final] => true
+     * // )
+     *
+     * // Cuando `$valida_permiso` es `false`, no se realiza validación y siempre retorna `true`.
+     * $resultado = $this->valida_permiso('ver', $data_link, 'reportes', false);
+     * // Salida esperada:
+     * // true
+     * ```
+     */
+    private function valida_permiso(
+        string $accion,
+        stdClass $data_link,
+        string $seccion,
+        bool $valida_permiso
+    ): true|array {
+        if ($valida_permiso) {
+            // Si no está definido, inicializa tengo_permiso en false
+            if (!isset($data_link->tengo_permiso)) {
+                $data_link->tengo_permiso = false;
+            }
+            // Si no tiene permiso, retorna error
+            if (!$data_link->tengo_permiso) {
+                return $this->error->error(
+                    mensaje: 'Error permiso denegado ' . $seccion . ' ' . $accion,
+                    data: $data_link->tengo_permiso,
+                    es_final: true
+                );
             }
         }
         return true;
-
     }
+
 
     /**
      * REG
