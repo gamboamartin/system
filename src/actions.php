@@ -106,38 +106,106 @@ class actions{
     }
 
     /**
-     * TOTAL
-     * Resumen: Esta función inicializa la creación de la base de datos
+     * REG
+     * Inicializa el proceso de alta en la base de datos y define la vista siguiente.
      *
-     * Descripción extendida: Esta función implementa la lógica necesaria para
-     * inicializar el proceso de creación de una nueva base de datos. Primero
-     * verifica si hay algún error al obtener la vista siguiente. En caso de
-     * error, devuelve un mensaje de error. Posteriormente, limpia los botones.
-     * Si ocurre algún error, devuelve un mensaje de error. Finalmente, retorna
-     * la vista siguiente.
+     * Esta función realiza dos acciones principales:
+     * 1. **Determina la siguiente vista** después de completar la acción de alta.
+     * 2. **Limpia los botones de la solicitud** eliminando ciertos valores de `$_POST`.
      *
-     * @param string $siguiente_view La vista a la que se redireccionará después
-     * de la función. Por default, es 'modifica'.
+     * Si ocurre un error en cualquiera de estos procesos, se retorna un mensaje de error.
+     * De lo contrario, la función devuelve el nombre de la vista siguiente.
      *
-     * @return array|string Retorna un array en caso de éxito o un string en caso de error.
+     * ### Flujo de la función:
+     * 1. Llama a `siguiente_view()` para obtener la vista siguiente.
+     * 2. Si hay errores en la obtención de la vista, se devuelve un mensaje de error.
+     * 3. Llama a `limpia_butons()` para eliminar botones no necesarios de `$_POST`.
+     * 4. Si hay errores en la limpieza, se devuelve un mensaje de error.
+     * 5. Finalmente, retorna el nombre de la vista siguiente.
      *
-     * @throws errores En caso de que ocurran errores al obtener la vista siguiente
-     * o al limpiar los botones, se lanza una excepción.
+     * @param string $siguiente_view Vista por defecto a la que se redirigirá tras completar la acción.
+     *                               Por defecto, su valor es `'modifica'`.
+     *
+     * @return array|string Retorna el nombre de la vista a la que se debe redirigir o un array con un error en caso de fallo.
+     *
+     * ### Ejemplos de entrada y salida:
+     *
+     * #### Ejemplo 1: Caso exitoso con vista por defecto
+     * **Entrada:**
+     * ```php
+     * $_POST = ['nombre' => 'Ejemplo', 'btn_action_next' => 'detalle'];
+     * $resultado = init_alta_bd();
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * "detalle" // La vista definida en $_POST['btn_action_next']
+     * ```
+     *
+     * #### Ejemplo 2: Caso exitoso con vista personalizada
+     * **Entrada:**
+     * ```php
+     * $_POST = ['nombre' => 'Ejemplo'];
+     * $resultado = init_alta_bd('alta');
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * "alta" // Se usa la vista proporcionada como parámetro
+     * ```
+     *
+     * #### Ejemplo 3: Error al obtener la vista siguiente
+     * **Simulación de error en `siguiente_view()`:**
+     * ```php
+     * $_POST = ['btn_action_next' => ''];
+     * $resultado = init_alta_bd();
+     * ```
+     * **Salida esperada (Error manejado):**
+     * ```php
+     * [
+     *     'error' => true,
+     *     'mensaje' => 'Error al obtener siguiente view',
+     *     'data' => ''
+     * ]
+     * ```
+     *
+     * #### Ejemplo 4: Error en la limpieza de botones
+     * **Simulación de error en `limpia_butons()`:**
+     * ```php
+     * $_POST = ['btn_action_next' => null]; // Supongamos que la limpieza de botones genera un error
+     * $resultado = init_alta_bd();
+     * ```
+     * **Salida esperada (Error manejado):**
+     * ```php
+     * [
+     *     'error' => true,
+     *     'mensaje' => 'Error al limpiar botones',
+     *     'data' => []
+     * ]
+     * ```
+     *
+     * ### Notas:
+     * - Si la función `siguiente_view()` falla, se devuelve un error inmediatamente.
+     * - Se limpia `$_POST` antes de continuar con el flujo normal de ejecución.
+     * - Es fundamental manejar los posibles errores antes de usar el valor de retorno.
+     *
+     * @throws errores Si falla la obtención de la vista siguiente o la limpieza de botones.
      * @version 18.7.0
      * @url https://github.com/gamboamartin/system/wiki/src.actions.init_alta_bd.22.4.0
      */
     final public function init_alta_bd(string $siguiente_view = 'modifica'): array|string
     {
         $siguiente_view = $this->siguiente_view(siguiente_view: $siguiente_view);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener siguiente view', data: $siguiente_view);
         }
+
         $limpia_button = $this->limpia_butons();
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al limpiar botones', data: $limpia_button);
         }
+
         return $siguiente_view;
     }
+
 
     /**
      * @param string $accion Accion a ejecutar en el boton
@@ -193,31 +261,79 @@ class actions{
     }
 
     /**
-     * TOTAL
-     * Limpieza de botones
+     * REG
+     * Elimina botones de acción de la variable `$_POST` antes de procesar los datos.
      *
-     * Este método se utiliza para limpiar ciertos botones de la entrada POST.
-     * Específicamente, elimina los siguientes botones si están presentes:
-     * 'guarda', 'guarda_otro' y 'btn_action_next'.
-     * Una vez que los botones se han eliminado, devuelve el array POST modificado.
+     * Esta función revisa la existencia de ciertos botones dentro de `$_POST` y los elimina si están presentes.
+     * Su objetivo es limpiar la solicitud POST antes de continuar con el procesamiento de datos,
+     * evitando que estos botones interfieran en la lógica posterior.
      *
-     * @return array $_POST El array POST después de que se han eliminado los botones.
+     * ### Botones eliminados:
+     * - `'guarda'`: Indica que se intentó guardar un registro.
+     * - `'guarda_otro'`: Indica que se intentó guardar y crear otro registro.
+     * - `'btn_action_next'`: Define la siguiente acción a realizar.
+     *
+     * @return array Retorna el array `$_POST` limpio, sin los botones de acción eliminados.
+     *
+     * ### Ejemplos de entrada y salida:
+     *
+     * #### Ejemplo 1: `$_POST` con botones de acción
+     * **Entrada (`$_POST` antes de la limpieza):**
+     * ```php
+     * $_POST = [
+     *     'nombre' => 'Ejemplo',
+     *     'email' => 'ejemplo@email.com',
+     *     'guarda' => 'Guardar',
+     *     'guarda_otro' => 'Guardar y crear otro',
+     *     'btn_action_next' => 'detalle'
+     * ];
+     * ```
+     * **Salida (`$_POST` después de la limpieza):**
+     * ```php
+     * [
+     *     'nombre' => 'Ejemplo',
+     *     'email' => 'ejemplo@email.com'
+     * ]
+     * ```
+     *
+     * #### Ejemplo 2: `$_POST` sin botones de acción
+     * **Entrada (`$_POST` sin los botones a eliminar):**
+     * ```php
+     * $_POST = [
+     *     'usuario' => 'admin',
+     *     'clave' => 'secreta'
+     * ];
+     * ```
+     * **Salida (sin cambios, ya que no había botones a eliminar):**
+     * ```php
+     * [
+     *     'usuario' => 'admin',
+     *     'clave' => 'secreta'
+     * ]
+     * ```
+     *
+     * ### Notas:
+     * - La función **no** afecta otros valores dentro de `$_POST`.
+     * - Solo se eliminan los botones mencionados si existen en la solicitud.
+     * - Se utiliza para limpiar datos antes de su procesamiento posterior en el sistema.
+     *
      * @version 18.1.0
      * @url https://github.com/gamboamartin/system/wiki/src.actions.limpia_butons.22.4.0
      */
     private function limpia_butons(): array
     {
-        if(isset($_POST['guarda'])){
+        if (isset($_POST['guarda'])) {
             unset($_POST['guarda']);
         }
-        if(isset($_POST['guarda_otro'])){
+        if (isset($_POST['guarda_otro'])) {
             unset($_POST['guarda_otro']);
         }
-        if(isset($_POST['btn_action_next'])){
+        if (isset($_POST['btn_action_next'])) {
             unset($_POST['btn_action_next']);
         }
         return $_POST;
     }
+
 
     /**
      * Asigna los datos de un link para ser usado en la views
@@ -402,34 +518,66 @@ class actions{
 
 
     /**
-     * TOTAL
-     * Esta es la función "siguiente_view" en el archivo actions.php
+     * REG
+     * Determina la siguiente vista a mostrar en la aplicación.
      *
-     * @param string $siguiente_view - Es la próxima vista a mostrar por defecto, que es 'modifica'.
-     * Si no se especifica un valor por parte del usuario, se toma este valor por defecto
+     * Esta función evalúa ciertos valores dentro de la variable `$_POST` para definir cuál será la siguiente vista
+     * a la que se redirigirá después de una acción. Si un usuario ha presionado un botón específico, la vista
+     * cambiará en función del botón presionado. En caso contrario, se mantiene la vista por defecto.
      *
-     * @return string Retorna la próxima vista a mostrar dependiendo de las acciones del usuario.
-     * Si el usuario ha hecho clic en el botón 'guarda_otro',
-     * el valor devuelto por la función será 'alta'.
-     * Si el usuario ha hecho clic en algún botón con nombre 'btn_action_next',
-     * la función devolverá el valor que tenga asignado dicho botón.
-     * Si no se cumple ninguna de las condiciones anteriores,
-     * la función devuelve el valor del parámetro que se le pasó.
+     * ### Comportamiento:
+     * - Si se presiona el botón `guarda_otro`, la siguiente vista será `'alta'`.
+     * - Si existe un botón `btn_action_next`, la siguiente vista será el valor asignado a este botón.
+     * - Si no se cumplen las condiciones anteriores, se retorna el valor por defecto de `$siguiente_view`.
+     *
+     * @param string $siguiente_view Vista a la que se redirigirá por defecto si no hay un cambio explícito.
+     *                                Por defecto, su valor es `'modifica'`.
+     *
+     * @return string Retorna el nombre de la vista que se debe mostrar a continuación.
+     *
+     * ### Ejemplos de entrada y salida:
+     * #### Ejemplo 1: Sin botones en `$_POST`
+     * ```php
+     * $_POST = [];
+     * $resultado = siguiente_view(); // Retorna: 'modifica'
+     * ```
+     *
+     * #### Ejemplo 2: Botón "guarda_otro" presente
+     * ```php
+     * $_POST = ['guarda_otro' => 'Guardar y crear otro'];
+     * $resultado = siguiente_view(); // Retorna: 'alta'
+     * ```
+     *
+     * #### Ejemplo 3: Botón "btn_action_next" con un valor específico
+     * ```php
+     * $_POST = ['btn_action_next' => 'detalle'];
+     * $resultado = siguiente_view(); // Retorna: 'detalle'
+     * ```
+     *
+     * #### Ejemplo 4: Ambos botones presentes
+     * ```php
+     * $_POST = ['guarda_otro' => 'Guardar y crear otro', 'btn_action_next' => 'detalle'];
+     * $resultado = siguiente_view(); // Retorna: 'alta' (prioriza "guarda_otro" sobre "btn_action_next")
+     * ```
+     *
+     * ### Notas:
+     * - Si `$_POST['guarda_otro']` está definido, siempre se prioriza la vista `'alta'`, ignorando `btn_action_next`.
+     * - Si `$_POST['btn_action_next']` está definido, se tomará su valor como la siguiente vista.
+     * - Si ninguno de los dos está definido, la vista por defecto es `'modifica'`.
      *
      * @version 17.2.0
      * @url https://github.com/gamboamartin/system/wiki/src.actions.siguiente_view.22.4.0
      */
-    public function siguiente_view(string $siguiente_view = 'modifica'): string
+    final public function siguiente_view(string $siguiente_view = 'modifica'): string
     {
-
-        if(isset($_POST['guarda_otro'])){
+        if (isset($_POST['guarda_otro'])) {
             $siguiente_view = 'alta';
-        }
-        elseif (isset($_POST['btn_action_next'])){
-            $siguiente_view = (string)$_POST['btn_action_next'];
+        } elseif (isset($_POST['btn_action_next'])) {
+            $siguiente_view = (string) $_POST['btn_action_next'];
         }
         return $siguiente_view;
     }
+
 
     /**
      * Genera el estilo de un css

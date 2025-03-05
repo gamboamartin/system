@@ -271,22 +271,117 @@ class _ctl_base extends system{
     }
 
     /**
-     * TOTAL
-     * Obtiene los datos de retorno
-     * @return array|stdClass
+     * REG
+     * Obtiene los datos de retorno después de una transacción en el controlador.
+     *
+     * Esta función recupera la información de retorno necesaria después de una operación,
+     * como la sección a la que se debe redirigir (`seccion_retorno`) y el identificador
+     * del registro recién procesado (`id_retorno`).
+     *
+     * Primero, obtiene la sección de retorno llamando a `seccion_retorno()`. Si hay un error,
+     * se devuelve un mensaje de error. Luego, obtiene el ID de retorno llamando a `id_retorno()`
+     * y maneja cualquier error en el proceso. Finalmente, devuelve un objeto con los datos de retorno.
+     *
+     * @return array|stdClass Retorna un objeto con la siguiente estructura:
+     * ```php
+     * stdClass {
+     *     string $seccion_retorno  // Sección de retorno tras la transacción
+     *     int $id_retorno         // ID de retorno del registro procesado
+     * }
+     * ```
+     * En caso de error, retorna un **array con un mensaje de error**.
+     *
+     * ### Ejemplos de entrada y salida:
+     *
+     * #### Ejemplo 1: Caso exitoso con valores en `$_POST`
+     * **Entrada (`$_POST` antes de la ejecución):**
+     * ```php
+     * $_POST = [
+     *     'seccion_retorno' => 'factura',
+     *     'id_retorno' => 101
+     * ];
+     * $resultado = data_retorno();
+     * ```
+     * **Salida esperada (`stdClass` con datos de retorno):**
+     * ```php
+     * stdClass {
+     *     "seccion_retorno" => "factura",
+     *     "id_retorno" => 101
+     * }
+     * ```
+     * **Efecto secundario (`$_POST` después de la ejecución):**
+     * ```php
+     * $_POST = []; // 'seccion_retorno' y 'id_retorno' han sido eliminados
+     * ```
+     *
+     * #### Ejemplo 2: Caso exitoso sin valores en `$_POST`
+     * **Entrada (`$_POST` vacío):**
+     * ```php
+     * $_POST = [];
+     * $this->tabla = 'cliente';
+     * $resultado = data_retorno();
+     * ```
+     * **Salida esperada (`stdClass` con valores predeterminados):**
+     * ```php
+     * stdClass {
+     *     "seccion_retorno" => "cliente", // Tomado de $this->tabla
+     *     "id_retorno" => -1              // Valor predeterminado
+     * }
+     * ```
+     *
+     * #### Ejemplo 3: Error en `seccion_retorno()`
+     * **Simulación de error en `seccion_retorno()`:**
+     * ```php
+     * $this->tabla = '';
+     * $resultado = data_retorno();
+     * ```
+     * **Salida esperada (Error manejado):**
+     * ```php
+     * [
+     *     "error" => true,
+     *     "mensaje" => "Error al obtener seccion retorno",
+     *     "data" => ""
+     * ]
+     * ```
+     *
+     * #### Ejemplo 4: Error en `id_retorno()`
+     * **Simulación de error en `id_retorno()`:**
+     * ```php
+     * $_POST['id_retorno'] = 'invalid'; // Un valor no numérico
+     * $resultado = data_retorno();
+     * ```
+     * **Salida esperada (Error manejado):**
+     * ```php
+     * [
+     *     "error" => true,
+     *     "mensaje" => "Error al obtener id retorno",
+     *     "data" => "invalid"
+     * ]
+     * ```
+     *
+     * ### Notas:
+     * - Se basa en `seccion_retorno()` y `id_retorno()` para obtener la información.
+     * - Si `$_POST['seccion_retorno']` está definido, se usa su valor, de lo contrario, usa `$this->tabla`.
+     * - Si `$_POST['id_retorno']` no está definido, usa `-1` como valor predeterminado.
+     * - **Elimina automáticamente** los valores `seccion_retorno` e `id_retorno` de `$_POST` tras su uso.
+     * - Si ocurre un error en cualquiera de las funciones llamadas, la ejecución se detiene y se devuelve un error.
+     *
+     * @throws errores Si ocurre un error en la obtención de `seccion_retorno` o `id_retorno`.
+     * @version 0.285.38
      * @url https://github.com/gamboamartin/system/wiki/src._ctl_base.data_retorno.22.4.0
      */
     private function data_retorno(): array|stdClass
     {
         $seccion_retorno = $this->seccion_retorno();
-        if(errores::$error){
+        if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al obtener seccion retorno', data: $seccion_retorno);
         }
 
         $id_retorno = $this->id_retorno();
-        if(errores::$error){
+        if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al obtener id retorno', data: $id_retorno);
         }
+
         $data = new stdClass();
         $data->seccion_retorno = $seccion_retorno;
         $data->id_retorno = $id_retorno;
@@ -294,27 +389,126 @@ class _ctl_base extends system{
         return $data;
     }
 
+
     /**
-     * TOTAL
-     * Genera los datos de retorno despues de una transaccion de controller
-     * @return array|stdClass
-     * Retorna despues de transaccion con header
+     * REG
+     * Obtiene los datos de retorno después de una transacción en el controlador, incluyendo la siguiente vista.
+     *
+     * Esta función extiende `data_retorno()` agregando la vista a la que se debe redirigir (`siguiente_view`).
+     * Se usa después de una operación de alta en la base de datos para definir:
+     * - La sección a la que se debe regresar (`seccion_retorno`).
+     * - El ID del registro recién procesado (`id_retorno`).
+     * - La siguiente vista a la que se debe redirigir (`siguiente_view`).
+     *
+     * ### Flujo de la función:
+     * 1. Obtiene la vista siguiente con `actions::init_alta_bd()`. Si hay un error, se detiene la ejecución.
+     * 2. Obtiene los datos básicos de retorno con `data_retorno()`. Si hay un error, se detiene la ejecución.
+     * 3. Agrega `siguiente_view` al objeto de datos de retorno.
+     * 4. Devuelve un `stdClass` con los datos de retorno o un array con un mensaje de error si algo falla.
+     *
+     * @return array|stdClass Retorna un objeto con la siguiente estructura:
+     * ```php
+     * stdClass {
+     *     string $seccion_retorno  // Sección de retorno tras la transacción
+     *     int $id_retorno         // ID de retorno del registro procesado
+     *     string $siguiente_view  // Vista siguiente tras la operación
+     * }
+     * ```
+     * En caso de error, retorna un **array con un mensaje de error**.
+     *
+     * ### Ejemplos de entrada y salida:
+     *
+     * #### Ejemplo 1: Caso exitoso con valores en `$_POST`
+     * **Entrada (`$_POST` antes de la ejecución):**
+     * ```php
+     * $_POST = [
+     *     'seccion_retorno' => 'factura',
+     *     'id_retorno' => 101,
+     *     'btn_action_next' => 'detalle'
+     * ];
+     * $resultado = data_retorno_base();
+     * ```
+     * **Salida esperada (`stdClass` con datos de retorno):**
+     * ```php
+     * stdClass {
+     *     "seccion_retorno" => "factura",
+     *     "id_retorno" => 101,
+     *     "siguiente_view" => "detalle"
+     * }
+     * ```
+     *
+     * #### Ejemplo 2: Caso exitoso sin valores en `$_POST`
+     * **Entrada (`$_POST` vacío, sin `seccion_retorno` ni `id_retorno`):**
+     * ```php
+     * $_POST = [];
+     * $this->tabla = 'cliente';
+     * $resultado = data_retorno_base();
+     * ```
+     * **Salida esperada (`stdClass` con valores predeterminados):**
+     * ```php
+     * stdClass {
+     *     "seccion_retorno" => "cliente", // Tomado de $this->tabla
+     *     "id_retorno" => -1,             // Valor predeterminado
+     *     "siguiente_view" => "modifica"  // Vista predeterminada de init_alta_bd()
+     * }
+     * ```
+     *
+     * #### Ejemplo 3: Error en `init_alta_bd()`
+     * **Simulación de error en `actions::init_alta_bd()`:**
+     * ```php
+     * $_POST['btn_action_next'] = ''; // Provoca un error en init_alta_bd()
+     * $resultado = data_retorno_base();
+     * ```
+     * **Salida esperada (Error manejado):**
+     * ```php
+     * [
+     *     "error" => true,
+     *     "mensaje" => "Error al obtener siguiente view",
+     *     "data" => ""
+     * ]
+     * ```
+     *
+     * #### Ejemplo 4: Error en `data_retorno()`
+     * **Simulación de error en `data_retorno()`:**
+     * ```php
+     * $this->tabla = ''; // Provoca un error en seccion_retorno()
+     * $resultado = data_retorno_base();
+     * ```
+     * **Salida esperada (Error manejado):**
+     * ```php
+     * [
+     *     "error" => true,
+     *     "mensaje" => "Error al obtener datos de retorno",
+     *     "data" => ""
+     * ]
+     * ```
+     *
+     * ### Notas:
+     * - Llama a `actions::init_alta_bd()` para obtener la siguiente vista.
+     * - Se basa en `data_retorno()` para recuperar la sección e ID de retorno.
+     * - Si `$_POST['btn_action_next']` está definido, se usa su valor como `siguiente_view`, de lo contrario, usa `'modifica'`.
+     * - Si hay errores en cualquier función llamada, la ejecución se detiene y se devuelve un error.
+     *
+     * @throws errores Si ocurre un error en `init_alta_bd()` o `data_retorno()`.
+     * @version 22.4.0
      * @url https://github.com/gamboamartin/system/wiki/src._ctl_base.data_retorno_base.22.4.0
      */
     final protected function data_retorno_base(): array|stdClass
     {
         $siguiente_view = (new actions())->init_alta_bd();
-        if(errores::$error){
+        if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al obtener siguiente view', data: $siguiente_view);
         }
 
         $data_retorno = $this->data_retorno();
-        if(errores::$error){
+        if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al obtener datos de retorno', data: $data_retorno);
         }
+
         $data_retorno->siguiente_view = $siguiente_view;
         return $data_retorno;
     }
+
 
     /**
      * Integra un filtro para get childrens
@@ -382,21 +576,63 @@ class _ctl_base extends system{
     }
 
     /**
-     * TOTAL
-     * Obtiene el id de retorno depsues de una transaccion
-     * @return int
+     * REG
+     * Obtiene el ID de retorno después de una operación en el controlador.
+     *
+     * Esta función determina el ID de retorno utilizado en la aplicación después de una transacción.
+     * Si `$_POST['id_retorno']` está presente, se utiliza su valor como ID de retorno.
+     * En caso contrario, se devuelve `-1`, indicando que no hay un ID válido definido.
+     *
+     * @return int Retorna el ID de retorno de la operación o `-1` si no está definido.
+     *
+     * ### Ejemplos de entrada y salida:
+     *
+     * #### Ejemplo 1: `$_POST['id_retorno']` definido
+     * **Entrada (`$_POST` antes de la ejecución):**
+     * ```php
+     * $_POST = [
+     *     'id_retorno' => 25
+     * ];
+     * $resultado = id_retorno();
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * 25 // Se obtiene el ID de $_POST['id_retorno']
+     * ```
+     * **Efecto secundario (`$_POST` después de la ejecución):**
+     * ```php
+     * $_POST = []; // 'id_retorno' ha sido eliminado
+     * ```
+     *
+     * #### Ejemplo 2: `$_POST['id_retorno']` no definido
+     * **Entrada (`$_POST` vacío):**
+     * ```php
+     * $_POST = [];
+     * $resultado = id_retorno();
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * -1 // No hay ID definido, se usa el valor por defecto
+     * ```
+     *
+     * ### Notas:
+     * - Si `$_POST['id_retorno']` está presente, se usa su valor y luego se elimina de `$_POST` para evitar duplicaciones.
+     * - Si no está definido, la función devuelve `-1`, indicando que no hay un ID válido configurado.
+     * - Se usa típicamente en procesos de redirección o carga de datos tras una transacción.
+     *
      * @version 0.285.38
      * @url https://github.com/gamboamartin/system/wiki/src._ctl_base.id_retorno.22.4.0
      */
     private function id_retorno(): int
     {
         $id_retorno = -1;
-        if(isset($_POST['id_retorno'])){
+        if (isset($_POST['id_retorno'])) {
             $id_retorno = $_POST['id_retorno'];
             unset($_POST['id_retorno']);
         }
         return $id_retorno;
     }
+
 
     /**
      * Inicializa los elementos de datos de un children para una view
@@ -817,19 +1053,65 @@ class _ctl_base extends system{
     }
 
     /**
-     * TOTAL
-     * Obtiene la seccion de retorno
-     * @return string
+     * REG
+     * Obtiene la sección de retorno después de una operación en el controlador.
+     *
+     * Esta función determina la sección a la que se debe redirigir después de una acción.
+     * Si `$_POST['seccion_retorno']` está presente, se utiliza su valor como la sección de retorno.
+     * En caso contrario, se usa el valor de `$this->tabla`, que generalmente representa la entidad actual del controlador.
+     *
+     * @return string Retorna el nombre de la sección a la que se debe redirigir.
+     *
+     * ### Ejemplos de entrada y salida:
+     *
+     * #### Ejemplo 1: `$_POST['seccion_retorno']` definido
+     * **Entrada (`$_POST` antes de la ejecución):**
+     * ```php
+     * $_POST = [
+     *     'seccion_retorno' => 'factura'
+     * ];
+     * $this->tabla = 'cliente';
+     * $resultado = seccion_retorno();
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * "factura" // Sección obtenida desde $_POST['seccion_retorno']
+     * ```
+     * **Efecto secundario (`$_POST` después de la ejecución):**
+     * ```php
+     * $_POST = []; // 'seccion_retorno' ha sido eliminado
+     * ```
+     *
+     * #### Ejemplo 2: `$_POST['seccion_retorno']` no definido
+     * **Entrada (`$_POST` vacío):**
+     * ```php
+     * $_POST = [];
+     * $this->tabla = 'cliente';
+     * $resultado = seccion_retorno();
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * "cliente" // Sección obtenida de $this->tabla
+     * ```
+     *
+     * ### Notas:
+     * - Si `$_POST['seccion_retorno']` está presente, se usa su valor y luego se elimina de `$_POST`.
+     * - Si no está definido, se usa `$this->tabla`.
+     * - Esta función es útil para determinar a qué vista o módulo debe regresar la aplicación después de una operación.
+     *
+     * @version 0.285.38
      * @url https://github.com/gamboamartin/system/wiki/src._ctl_base.seccion_retorno.22.4.0
      */
-    private function seccion_retorno():string{
+    private function seccion_retorno(): string
+    {
         $seccion_retorno = $this->tabla;
-        if(isset($_POST['seccion_retorno'])){
+        if (isset($_POST['seccion_retorno'])) {
             $seccion_retorno = $_POST['seccion_retorno'];
             unset($_POST['seccion_retorno']);
         }
         return $seccion_retorno;
     }
+
 
     /**
      * Integra los selectores base con codigo disabled
