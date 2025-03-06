@@ -958,8 +958,9 @@ class system extends controlador_base{
             return $this->retorno_error(mensaje: 'Error al obtener params', data: $params,header:  $header, ws: $ws);
         }
 
-        $data_result = $this->modelo->get_data_lista(filtro:$params->filtro,filtro_especial: $params->filtro_especial,
-            n_rows_for_page: $params->n_rows_for_page, pagina: $params->pagina,in: $params->in,order: $params->order);
+        $data_result = $this->modelo->get_data_lista(filtro: $params->filtro, filtro_especial: $params->filtro_especial,
+            filtro_rango: $params->filtro_rango, n_rows_for_page: $params->n_rows_for_page, pagina: $params->pagina,
+            in: $params->in, order: $params->order);
 
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al obtener data result', data: $data_result,

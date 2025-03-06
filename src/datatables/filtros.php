@@ -11,11 +11,34 @@ class filtros{
    
     }
 
-    public function filtro(){
-        $filtro  = array();
-        if (isset($_GET['data'])){
+    public function filtro()
+    {
+
+        $filtro = array();
+        if (isset($_GET['data'])) {
             $filtro = $_GET['data'];
         }
+
+        if (isset($_GET['filtros_avanzados']) && isset($_GET['filtros_avanzados']['filtro'])) {
+            $filtro = array_merge($filtro, $_GET['filtros_avanzados']['filtro']);
+        }
+
+        return $filtro;
+    }
+
+    public function filtro_rango()
+    {
+        $filtro = array();
+
+        if (isset($_GET['filtros_avanzados']) && isset($_GET['filtros_avanzados']['rango-fechas'])) {
+            $campo = $_GET['filtros_avanzados']['rango-fechas']['filtro_tabla'];
+
+            $fecha_inicio = $_GET['filtros_avanzados']['rango-fechas']['campo1'] ?? '2000-01-01';
+            $fecha_fin = $_GET['filtros_avanzados']['rango-fechas']['campo2'] ?? date('Y-m-d');
+
+            $filtro[$campo] = ['valor1' => $fecha_inicio, 'valor2' => $fecha_fin];
+        }
+
         return $filtro;
     }
 

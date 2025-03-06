@@ -1497,6 +1497,11 @@ class datatables{
             return $this->error->error(mensaje: 'Error al obtener filtro', data: $filtro);
         }
 
+        $filtro_rango = (new filtros())->filtro_rango();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener filtro_rango', data: $filtro_rango);
+        }
+
         $filtro_especial = (new filtros())->genera_filtro_especial_datatable(datatable: $datatable);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener filtro_especial', data: $filtro_especial);
@@ -1518,6 +1523,7 @@ class datatables{
         $data->n_rows_for_page = $n_rows_for_page;
         $data->pagina = $pagina;
         $data->filtro = $filtro;
+        $data->filtro_rango = $filtro_rango;
         $data->filtro_especial = $filtro_especial;
         $data->in = $in;
         $data->order = $order;
