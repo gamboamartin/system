@@ -34,7 +34,9 @@ class filtros{
             $campo = $_GET['filtros_avanzados']['rango-fechas']['filtro_tabla'];
 
             $fecha_inicio = $_GET['filtros_avanzados']['rango-fechas']['campo1'] ?? '2000-01-01';
+            $fecha_inicio .= ' 00:00:00';
             $fecha_fin = $_GET['filtros_avanzados']['rango-fechas']['campo2'] ?? date('Y-m-d');
+            $fecha_fin .= ' 23:59:59';
 
             $filtro[$campo] = ['valor1' => $fecha_inicio, 'valor2' => $fecha_fin];
         }
