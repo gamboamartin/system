@@ -13,17 +13,31 @@ class filtros{
 
     public function filtro()
     {
-
         $filtro = array();
         if (isset($_GET['data'])) {
             $filtro = $_GET['data'];
         }
 
+        return $filtro;
+    }
+
+    public function filtro_extra()
+    {
+        $filtro_extra = array();
+
         if (isset($_GET['filtros_avanzados']) && isset($_GET['filtros_avanzados']['filtro'])) {
-            $filtro = array_merge($filtro, $_GET['filtros_avanzados']['filtro']);
+            foreach ($_GET['filtros_avanzados']['filtro'] as $key => $value) {
+                $filtro_extra[] = [
+                    $key => [
+                        'operador' => 'LIKE',
+                        'valor' => addslashes(trim("%$value%")),
+                        'comparacion' => 'AND'
+                    ]
+                ];
+            }
         }
 
-        return $filtro;
+        return $filtro_extra;
     }
 
     public function filtro_rango()
