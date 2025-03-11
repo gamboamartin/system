@@ -119,6 +119,36 @@ class selectTest extends test {
         errores::$error = false;
     }
 
+    public function test_integra_descripcion_select(): void
+    {
+        errores::$error = false;
+
+        $html = new select();
+        $html = new liberator($html);
+
+        $aplica_default = true;
+        $keys = new stdClass();
+        $registro = array();
+        $tabla = 'a';
+
+        $keys->id = 'key_id';
+        $keys->descripcion_select = 'descripcion_select';
+
+        $registro['key_id'] = 'a';
+        $registro['a_descripcion'] = 'b';
+
+        $resultado = $html->integra_descripcion_select($aplica_default,$keys,$registro,$tabla);
+
+
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a', $resultado['key_id']);
+        $this->assertEquals('b', $resultado['a_descripcion']);
+        $this->assertEquals('a b', $resultado['descripcion_select']);
+
+        errores::$error = false;
+    }
+
     public function test_keys_base(): void
     {
         errores::$error = false;
@@ -171,6 +201,31 @@ class selectTest extends test {
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('a_descripcion_select', $resultado);
+        errores::$error = false;
+    }
+
+    public function test_key_descripcion_select_default(): void
+    {
+        errores::$error = false;
+
+        $html = new select();
+        $html = new liberator($html);
+
+        $key_descripcion = 'descripcion';
+        $keys = new stdClass();
+        $registro = array();
+
+        $keys->id = 'x';
+        $keys->descripcion_select = 'xd';
+        $registro['x'] = 'key_id';
+        $registro['descripcion'] = 'xxx';
+
+        $resultado = $html->key_descripcion_select_default($key_descripcion, $keys,$registro);
+
+
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('key_id xxx', $resultado['xd']);
         errores::$error = false;
     }
     public function test_key_id(): void
@@ -411,6 +466,95 @@ class selectTest extends test {
         $this->assertIsNumeric( $resultado[0]['adm_accion_id']);
         $this->assertEquals('test', $resultado[0]['adm_accion_descripcion']);
         $this->assertEquals('adm_accion', $resultado[0]['adm_seccion_descripcion']);
+
+    }
+
+    public function test_value_select(): void
+    {
+        errores::$error = false;
+
+        $html = new select();
+        $html = new liberator($html);
+
+
+        $keys = new stdClass();
+        $registro = array();
+        $values = array();
+
+        $keys->id = 'tabla_id';
+        $keys->descripcion_select = 'tabla_ds';
+        $registro['tabla_id'] ='1';
+        $registro['tabla_ds'] ='ds';
+
+        $resultado = $html->value_select($keys,$registro,$values);
+
+
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('1', $resultado[1]['tabla_id']);
+
+
+        errores::$error = false;
+    }
+
+    public function test_value_select_row(): void
+    {
+        errores::$error = false;
+
+        $html = new select();
+        $html = new liberator($html);
+
+
+        $aplica_default = true;
+        $keys = new stdClass();
+        $registro = array();
+        $tabla = 'table';
+        $values = array();
+
+        $keys->id = 'tabla_id';
+        $keys->descripcion_select = 'descripcion_select';
+
+        $registro['tabla_id'] = -1;
+        $registro['table_descripcion'] = -1;
+
+        $resultado = $html->value_select_row($aplica_default,$keys,$registro,$tabla,$values);
+
+
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('-1', $resultado[-1]['tabla_id']);
+        $this->assertEquals('-1 -1', $resultado[-1]['descripcion_select']);
+
+
+        errores::$error = false;
+    }
+
+    public function test_values(): void
+    {
+        errores::$error = false;
+
+        $html = new select();
+        $html = new liberator($html);
+
+        $aplica_default = true;
+        $keys = new stdClass();
+        $registros = array();
+        $tabla = 'aa';
+        $registros[0] = array();
+        $keys->id = 'kid';
+        $keys->descripcion_select = 'descripcion_select';
+
+        $registros[0]['kid'] = 'x';
+        $registros[0]['aa_descripcion'] = 'x';
+
+        $resultado = $html->values($aplica_default,$keys,$registros,$tabla);
+
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('x x',$resultado['x']['descripcion_select']);
+
+
+        errores::$error = false;
 
     }
 
