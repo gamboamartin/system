@@ -14,39 +14,165 @@ class select{
         $this->validacion = new validacion();
     }
 
+    /**
+     * REG
+     * Genera un objeto con las claves de descripción y descripción seleccionada para un conjunto de datos.
+     *
+     * Este método permite definir las claves que serán utilizadas para la descripción de los registros
+     * en un select o una lista de datos. Si `$columns_ds` tiene valores, se asigna el primer elemento de ese
+     * array como las claves `key_descripcion` y `key_descripcion_select`.
+     *
+     * ### Ejemplo de uso:
+     * ```php
+     * $objeto = new ClaseEjemplo();
+     * $dataKeys = $objeto->data_keys(
+     *     columns_ds: ['nombre_producto', 'codigo_producto'],
+     *     key_descripcion: 'descripcion_producto',
+     *     key_descripcion_select: 'descripcion_producto_select'
+     * );
+     * echo json_encode($dataKeys);
+     * ```
+     *
+     * ### Ejemplo de salida esperada:
+     * Si `$columns_ds` tiene valores:
+     * ```json
+     * {
+     *   "key_descripcion": "nombre_producto",
+     *   "key_descripcion_select": "nombre_producto"
+     * }
+     * ```
+     * Si `$columns_ds` está vacío:
+     * ```json
+     * {
+     *   "key_descripcion": "descripcion_producto",
+     *   "key_descripcion_select": "descripcion_producto_select"
+     * }
+     * ```
+     *
+     * @param array $columns_ds Lista de columnas disponibles en el dataset. Si tiene valores,
+     *                          la primera columna se usa como `key_descripcion` y `key_descripcion_select`.
+     * @param string $key_descripcion Clave por defecto para la descripción.
+     * @param string $key_descripcion_select Clave por defecto para la descripción seleccionada.
+     * @return stdClass Devuelve un objeto con las propiedades `key_descripcion` y `key_descripcion_select`.
+     */
     private function data_keys(array $columns_ds, string $key_descripcion, string $key_descripcion_select): stdClass
     {
         $data = new stdClass();
         $data->key_descripcion = $key_descripcion;
         $data->key_descripcion_select = $key_descripcion_select;
-        if (count($columns_ds) > 0){
+
+        // Si hay columnas en $columns_ds, usar la primera como clave de descripción
+        if (count($columns_ds) > 0) {
             $data->key_descripcion = $columns_ds[0];
             $data->key_descripcion_select = $columns_ds[0];
         }
-        return $data;
 
+        return $data;
     }
 
-    private function genera_data_keys(array $columns_ds, string $key_descripcion, string $key_descripcion_select, string $tabla)
+
+    /**
+     * REG
+     * Genera un objeto con las claves de descripción y descripción seleccionada para un conjunto de datos.
+     *
+     * Este método permite definir las claves que serán utilizadas para la descripción de los registros
+     * en un select o una lista de datos, asegurando que los valores no estén vacíos y asignando valores
+     * predeterminados si es necesario.
+     *
+     * ### Ejemplo de uso:
+     * ```php
+     * $objeto = new ClaseEjemplo();
+     * $dataKeys = $objeto->genera_data_keys(
+     *     columns_ds: ['nombre_producto', 'codigo_producto'],
+     *     key_descripcion: 'descripcion_producto',
+     *     key_descripcion_select: 'descripcion_producto_select',
+     *     tabla: 'productos'
+     * );
+     * echo json_encode($dataKeys);
+     * ```
+     *
+     * ### Ejemplo de salida esperada:
+     * Si `$columns_ds` tiene valores:
+     * ```json
+     * {
+     *   "key_descripcion": "nombre_producto",
+     *   "key_descripcion_select": "nombre_producto"
+     * }
+     * ```
+     * Si `$columns_ds` está vacío:
+     * ```json
+     * {
+     *   "key_descripcion": "productos_descripcion",
+     *   "key_descripcion_select": "productos_descripcion_select"
+     * }
+     * ```
+     *
+     * @param array $columns_ds Lista de columnas disponibles en el dataset. Si tiene valores,
+     *                          la primera columna se usa como `key_descripcion` y `key_descripcion_select`.
+     * @param string $key_descripcion Clave predeterminada para la descripción.
+     * @param string $key_descripcion_select Clave predeterminada para la descripción seleccionada.
+     * @param string $tabla Nombre de la tabla en la base de datos.
+     *
+     * @return stdClass|array Devuelve un objeto con las propiedades `key_descripcion` y `key_descripcion_select`,
+     *                        o un array con el error en caso de fallo.
+     */
+    private function genera_data_keys(
+        array $columns_ds,
+        string $key_descripcion,
+        string $key_descripcion_select,
+        string $tabla
+    ): array|stdClass
     {
-        $key_descripcion_select = $this->key_descripcion_select(key_descripcion_select: $key_descripcion_select,tabla:  $tabla);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar key_descripcion_select',data:  $key_descripcion_select);
+        // Validar que la tabla no esté vacía
+        $tabla = trim($tabla);
+        if ($tabla === '') {
+            return $this->error->error(
+                mensaje: 'Error tabla esta vacia',
+                data: $tabla,
+                es_final: true
+            );
         }
 
-        $key_descripcion = $this->key_descripcion(key_descripcion: $key_descripcion,tabla:  $tabla);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar key_descripcion',data:  $key_descripcion);
+        // Obtener la clave de descripción seleccionada
+        $key_descripcion_select = $this->key_descripcion_select(
+            key_descripcion_select: $key_descripcion_select,
+            tabla: $tabla
+        );
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al asignar key_descripcion_select',
+                data: $key_descripcion_select
+            );
         }
 
-        $data_keys = $this->data_keys(columns_ds: $columns_ds,key_descripcion: $key_descripcion,key_descripcion_select:  $key_descripcion_select);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar data_keys',data:  $data_keys);
+        // Obtener la clave de descripción
+        $key_descripcion = $this->key_descripcion(
+            key_descripcion: $key_descripcion,
+            tabla: $tabla
+        );
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al asignar key_descripcion',
+                data: $key_descripcion
+            );
+        }
+
+        // Generar las claves de descripción con base en columnas disponibles
+        $data_keys = $this->data_keys(
+            columns_ds: $columns_ds,
+            key_descripcion: $key_descripcion,
+            key_descripcion_select: $key_descripcion_select
+        );
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al asignar data_keys',
+                data: $data_keys
+            );
         }
 
         return $data_keys;
-
     }
+
 
     /**
      * Asigna los values de un select
@@ -129,15 +255,47 @@ class select{
         return $keys;
     }
 
-    private function key_descripcion(string $key_descripcion, string $tabla): string
+    /**
+     * REG
+     * Genera la clave de descripción de un elemento basado en el nombre de la tabla.
+     *
+     * Este método valida que el nombre de la tabla no esté vacío y, si `$key_descripcion` está vacío,
+     * genera una clave predeterminada basada en el nombre de la tabla, agregando el sufijo `_descripcion`.
+     *
+     * ### Ejemplo de uso:
+     * ```php
+     * $objeto = new ClaseEjemplo();
+     * $key = $objeto->key_descripcion('', 'producto');
+     * echo $key; // producto_descripcion
+     *
+     * $key = $objeto->key_descripcion('nombre_producto', 'producto');
+     * echo $key; // nombre_producto
+     * ```
+     *
+     * ### Ejemplo de salida esperada:
+     * - Entrada: `('', 'producto')` → Salida: `'producto_descripcion'`
+     * - Entrada: `('nombre_producto', 'producto')` → Salida: `'nombre_producto'`
+     * - Entrada: `('', '')` → **Error: "Error $tabla esta vacia"**
+     *
+     * @param string $key_descripcion Clave de descripción proporcionada. Si está vacía, se generará automáticamente.
+     * @param string $tabla Nombre de la tabla asociada. No debe estar vacío.
+     * @return array|string Devuelve la clave de descripción generada o un error si la tabla está vacía.
+     */
+    private function key_descripcion(string $key_descripcion, string $tabla): array|string
     {
-        $key_descripcion = trim($key_descripcion);
-        if($key_descripcion === ''){
-            $key_descripcion = $tabla.'_descripcion';
+        $tabla = trim($tabla);
+        if ($tabla === '') {
+            return $this->error->error(mensaje: 'Error $tabla esta vacia', data: $tabla, es_final: true);
         }
-        return $key_descripcion;
 
+        $key_descripcion = trim($key_descripcion);
+        if ($key_descripcion === '') {
+            $key_descripcion = $tabla . '_descripcion';
+        }
+
+        return $key_descripcion;
     }
+
 
 
     private function integra_descripcion_select(bool $aplica_default, stdClass $keys, array $registro, string $tabla){
@@ -153,98 +311,201 @@ class select{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI ERROR FINAL
-     * Genera una key para obtener el elemento de la descripcion a mostrar en un option
-     * @param string $key_descripcion_select key a validar
-     * @param string $tabla Tabla de select
-     * @return string|array
-     * @version 20.1.0
+     * REG
+     * Genera la clave de descripción para la selección de un elemento en una tabla.
+     *
+     * Este método valida que el nombre de la tabla no esté vacío y genera una clave de descripción
+     * para un select basado en el nombre de la tabla si `$key_descripcion_select` no se proporciona.
+     *
+     * ### Ejemplo de uso:
+     * ```php
+     * $objeto = new ClaseEjemplo();
+     * $key = $objeto->key_descripcion_select('', 'usuario');
+     * echo $key; // usuario_descripcion_select
+     *
+     * $key = $objeto->key_descripcion_select('nombre_completo', 'usuario');
+     * echo $key; // nombre_completo
+     * ```
+     *
+     * ### Ejemplo de salida esperada:
+     * - Entrada: `('', 'producto')` → Salida: `'producto_descripcion_select'`
+     * - Entrada: `('nombre_producto', 'producto')` → Salida: `'nombre_producto'`
+     *
+     * @param string $key_descripcion_select Clave de descripción proporcionada. Si está vacía, se generará automáticamente.
+     * @param string $tabla Nombre de la tabla asociada. No debe estar vacío.
+     * @return string|array Devuelve la clave de descripción generada o un error si la tabla está vacía.
      */
     private function key_descripcion_select(string $key_descripcion_select, string $tabla): string|array
     {
         $tabla = trim($tabla);
-        if($tabla === ''){
-            return $this->error->error(mensaje: 'Error tabla esta vacia',data:  $tabla,es_final: true);
+        if ($tabla === '') {
+            return $this->error->error(mensaje: 'Error tabla esta vacia', data: $tabla, es_final: true);
         }
+
         $key_descripcion_select = trim($key_descripcion_select);
-        if($key_descripcion_select === '') {
-            $key_descripcion_select = $tabla.'_descripcion_select';
+        if ($key_descripcion_select === '') {
+            $key_descripcion_select = $tabla . '_descripcion_select';
         }
+
         return $key_descripcion_select;
     }
 
+
     /**
-     * POR DOCUMENTAR EN WIKI
-     * Función key_id
+     * REG
+     * Genera un identificador clave (`key_id`) basado en el nombre de la tabla.
      *
-     * Esta función se encarga de devolver la clave única para un registro de una tabla específica en la base de datos.
-     * Se le proporciona inicialmente una clave y el nombre de una tabla.
-     * Primero, verifica que el nombre de la tabla no esté vacío. Si está vacío, devuelve un error.
-     * Luego, verifica si se le proporcionó una clave. Si no se proporcionó ninguna clave, la genera automáticamente
-     * agregando el sufijo '_id' al nombre de la tabla.
+     * Este método valida si el identificador clave (`key_id`) está vacío y, en ese caso, lo genera concatenando
+     * el nombre de la tabla con el sufijo `_id`. También valida que el nombre de la tabla no esté vacío.
      *
-     * @param string $key_id La clave única proporcionada. Si está vacía, la función genera una automáticamente.
-     * @param string $tabla El nombre de la tabla en cuestión
-     * @return string|array Devuelve la clave única, o un error si el nombre de la tabla está vacío
-     * @version 18.19.0
+     * ### Ejemplo de uso:
+     * ```php
+     * $objeto = new ClaseEjemplo();
+     * $key_id = $objeto->key_id('', 'usuario');
+     * echo $key_id; // usuario_id
+     *
+     * $key_id = $objeto->key_id('cliente_id', 'cliente');
+     * echo $key_id; // cliente_id
+     * ```
+     *
+     * ### Ejemplo de salida esperada:
+     * - Entrada: `('', 'usuario')` → Salida: `'usuario_id'`
+     * - Entrada: `('cliente_id', 'cliente')` → Salida: `'cliente_id'`
+     * - Entrada: `('', '')` → Salida: `array` con error
+     *
+     * @param string $key_id Identificador clave proporcionado. Si está vacío, se generará automáticamente.
+     * @param string $tabla Nombre de la tabla en cuestión. No debe estar vacío.
+     * @return string|array Devuelve el identificador clave generado o el mismo proporcionado.
+     *                      En caso de error, devuelve un array con el mensaje de error.
      */
     private function key_id(string $key_id, string $tabla): string|array
     {
         $tabla = trim($tabla);
-        if($tabla === ''){
-            return $this->error->error(mensaje: 'Error tabla esta vacia',data:  $tabla);
+        if ($tabla === '') {
+            return $this->error->error(mensaje: 'Error tabla esta vacia', data: $tabla);
         }
-        if($key_id === '') {
+
+        if ($key_id === '') {
             $key_id = $tabla . '_id';
         }
-        return $key_id;
 
+        return $key_id;
     }
 
 
+
     /**
-     * Asigna los keys necesarios para un select
-     * @param string $tabla Tabla del select
-     * @param string $key_descripcion_select base de descripcion
-     * @param string $key_id identificador key
-     * @param string $name Name del input
-     * @return stdClass|array obj->id, obj->descripcion_select
+     * REG
+     * Genera un objeto con las claves necesarias para la estructuración de un `select` o una consulta de datos.
+     *
+     * Este método asigna identificadores clave (`id`), nombres de campo (`name`), y descripciones (`descripcion`)
+     * asegurando que los valores sean consistentes y no estén vacíos. Si los valores proporcionados están vacíos,
+     * se generan con base en el nombre de la tabla y los parámetros predeterminados.
+     *
+     * ### Ejemplo de uso:
+     * ```php
+     * $objeto = new ClaseEjemplo();
+     * $keys = $objeto->keys_base(
+     *     tabla: 'clientes',
+     *     key_descripcion: 'nombre_cliente',
+     *     key_descripcion_select: 'nombre_cliente_select',
+     *     key_id: 'id_cliente',
+     *     name: 'select_cliente',
+     *     columns_ds: ['nombre_cliente', 'apellido_cliente']
+     * );
+     * print_r($keys);
+     * ```
+     *
+     * ### Ejemplo de salida esperada:
+     * ```json
+     * {
+     *   "id": "id_cliente",
+     *   "descripcion_select": "nombre_cliente_select",
+     *   "name": "select_cliente",
+     *   "descripcion": "nombre_cliente"
+     * }
+     * ```
+     * Si los valores opcionales están vacíos:
+     * ```json
+     * {
+     *   "id": "clientes_id",
+     *   "descripcion_select": "clientes_descripcion_select",
+     *   "name": "clientes_id",
+     *   "descripcion": "clientes_descripcion"
+     * }
+     * ```
+     *
+     * @param string $tabla Nombre de la tabla en la base de datos.
+     * @param string $key_descripcion Clave de descripción principal (opcional, por defecto se genera como `{tabla}_descripcion`).
+     * @param string $key_descripcion_select Clave para la descripción del `select` (opcional, por defecto `{tabla}_descripcion_select`).
+     * @param string $key_id Clave identificadora (opcional, por defecto `{tabla}_id`).
+     * @param string $name Nombre del campo `name` en HTML (opcional, por defecto `{tabla}_id`).
+     * @param array $columns_ds Lista de columnas disponibles en el dataset para asignar descripciones dinámicas.
+     *
+     * @return stdClass|array Devuelve un objeto con las propiedades `id`, `descripcion_select`, `name`, y `descripcion`,
+     *                        o un array con el error en caso de fallo.
      */
-    private function keys_base(string $tabla, string $key_descripcion = '', string $key_descripcion_select = '',
-                               string $key_id = '', string $name = '', array $columns_ds = array()): stdClass|array
+    private function keys_base(
+        string $tabla,
+        string $key_descripcion = '',
+        string $key_descripcion_select = '',
+        string $key_id = '',
+        string $name = '',
+        array $columns_ds = array()
+    ): stdClass|array
     {
+        // Validar que la tabla no esté vacía
         $tabla = trim($tabla);
-        if($tabla === ''){
-            return $this->error->error(mensaje: 'Error tabla esta vacia',data:  $tabla);
+        if ($tabla === '') {
+            return $this->error->error(
+                mensaje: 'Error tabla esta vacia',
+                data: $tabla,
+                es_final: true
+            );
         }
 
-        $key_id = $this->key_id(key_id: $key_id,tabla:  $tabla);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar key_id',data:  $key_id);
+        // Obtener el key ID, si está vacío se genera con base en la tabla
+        $key_id = $this->key_id(key_id: $key_id, tabla: $tabla);
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al asignar key_id',
+                data: $key_id
+            );
         }
 
-        $name = $this->name(key_id: $key_id,name:  $name);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar name',data:  $name);
+        // Obtener el nombre, si está vacío se usa el key ID
+        $name = $this->name(key_id: $key_id, name: $name);
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al asignar name',
+                data: $name
+            );
         }
 
-
+        // Generar claves de descripción y descripción seleccionada
         $data_keys = $this->genera_data_keys(
-            columns_ds: $columns_ds,key_descripcion: $key_descripcion,key_descripcion_select:  $key_descripcion_select,
-            tabla:  $tabla);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar data_keys',data:  $data_keys);
+            columns_ds: $columns_ds,
+            key_descripcion: $key_descripcion,
+            key_descripcion_select: $key_descripcion_select,
+            tabla: $tabla
+        );
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al asignar data_keys',
+                data: $data_keys
+            );
         }
 
+        // Crear y retornar el objeto con las claves generadas
         $data = new stdClass();
         $data->id = $key_id;
         $data->descripcion_select = $data_keys->key_descripcion_select;
         $data->name = $name;
         $data->descripcion = $data_keys->key_descripcion;
 
-
         return $data;
     }
+
 
     /**
      * Integra una descripcion select con id y descripcion
@@ -321,23 +582,39 @@ class select{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
-     * Este método se encarga de asignar un nombre a la clave dada.
+     * REG
+     * Genera un nombre basado en el identificador clave (`key_id`).
      *
-     * @param string $key_id La clave a la que se asignará el nombre.
-     * @param string $name El nombre que se asignará a la clave.
-     * @return string El nombre que se ha asignado a la clave. Si el nombre proporcionado estaba vacío, se devolverá la misma clave.
-     * @version 19.3.0
+     * Este método verifica si el parámetro `$name` está vacío. En ese caso, asigna el valor de `$key_id`
+     * como nombre. Si `$name` ya tiene un valor, lo devuelve sin modificaciones.
+     *
+     * ### Ejemplo de uso:
+     * ```php
+     * $objeto = new ClaseEjemplo();
+     * $nombre = $objeto->name('usuario_id', '');
+     * echo $nombre; // usuario_id
+     *
+     * $nombre = $objeto->name('cliente_id', 'nombre_cliente');
+     * echo $nombre; // nombre_cliente
+     * ```
+     *
+     * ### Ejemplo de salida esperada:
+     * - Entrada: `('usuario_id', '')` → Salida: `'usuario_id'`
+     * - Entrada: `('cliente_id', 'nombre_cliente')` → Salida: `'nombre_cliente'`
+     *
+     * @param string $key_id Identificador clave, utilizado como valor por defecto si `$name` está vacío.
+     * @param string $name Nombre proporcionado. Si está vacío, se le asignará el valor de `$key_id`.
+     * @return string Devuelve el nombre final asignado.
      */
     private function name(string $key_id, string $name): string
     {
         $name = trim($name);
-        if($name === ''){
+        if ($name === '') {
             $name = $key_id;
         }
         return $name;
-
     }
+
 
     /**
      * Obtiene los registros para un select

@@ -32,6 +32,44 @@ class selectTest extends test {
         $this->paths_conf->views = '/var/www/html/system/config/views.php';
     }
 
+    public function test_data_keys(): void
+    {
+        errores::$error = false;
+
+        $html = new select();
+        $html = new liberator($html);
+
+        $columns_ds = array();
+        $key_descripcion = '';
+        $key_descripcion_select = '';
+        $resultado = $html->data_keys($columns_ds, $key_descripcion,$key_descripcion_select);
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
+    public function test_genera_data_keys(): void
+    {
+        errores::$error = false;
+
+        $html = new select();
+        $html = new liberator($html);
+
+        $columns_ds = array();
+        $key_descripcion = '';
+        $key_descripcion_select = '';
+        $tabla = 'a';
+        $resultado = $html->genera_data_keys($columns_ds, $key_descripcion,$key_descripcion_select, $tabla);
+
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
     public function test_genera_values_selects(): void
     {
         errores::$error = false;
@@ -96,6 +134,24 @@ class selectTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('a_id', $resultado->id);
         $this->assertEquals('a_descripcion_select', $resultado->descripcion_select);
+        errores::$error = false;
+    }
+
+    public function test_key_descripcion(): void
+    {
+        errores::$error = false;
+
+        $html = new select();
+        $html = new liberator($html);
+
+        $tabla = 'a';
+        $key_descripcion = '';
+
+        $resultado = $html->key_descripcion($key_descripcion,$tabla);
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a_descripcion', $resultado);
         errores::$error = false;
     }
 
