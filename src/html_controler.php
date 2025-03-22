@@ -1477,18 +1477,46 @@ class html_controler
     }
 
     /**
-     * Genera un input de tipo fecha
-     * @param int $cols Cols css
-     * @param stdClass $row_upd registro en proceso
-     * @param bool $value_vacio is vacio no muestra datos
-     * @param bool $disabled attr disabled
-     * @param string $name Name input
-     * @param string $place_holder Tag de input
-     * @param bool $required Atributo required default true
-     * @param mixed|null $value value input
-     * @param bool $value_hora Integra hora si true
-     * @return array|string
-     * @version 13.66.1
+     * REG
+     * Genera un input tipo fecha o datetime-local (si se habilita `value_hora`) dentro de un `div` de tamaño de columnas especificado.
+     * Este input se genera a través de la clase `directivas`, incluyendo validaciones de parámetros y construcción completa del HTML.
+     *
+     * @param int $cols Número de columnas Bootstrap (1 a 12) para el `div` contenedor del input.
+     * @param stdClass $row_upd Objeto con valores preexistentes que pueden llenar el input. Debe contener al menos la propiedad con nombre igual al parámetro `$name`.
+     * @param bool $value_vacio Si es `true`, se vacía el valor del campo en `$row_upd->$name` para forzar un valor en blanco.
+     * @param bool $disabled Si es `true`, el input se genera como deshabilitado (`disabled`).
+     * @param string $name Nombre del input (`name` y `id`). También se usa para recuperar el valor desde `$row_upd`.
+     * @param string $place_holder Texto que se muestra como placeholder del input. Si está vacío, se genera a partir del nombre.
+     * @param bool $required Si es `true`, se agrega el atributo `required` al input.
+     * @param mixed $value Valor que se usará como contenido del input si no se toma de `$row_upd`.
+     * @param bool $value_hora Si es `true`, se genera un input tipo `datetime-local`, si es `false`, tipo `date`.
+     *
+     * @return array|string Devuelve el HTML generado como string o un array con información del error en caso de falla.
+     *
+     * @example Ejemplo de entrada:
+     * ```php
+     * $row_upd = new stdClass();
+     * $row_upd->fecha = '2025-03-20';
+     * $html = $html_controler->input_fecha(
+     *     cols: 6,
+     *     row_upd: $row_upd,
+     *     value_vacio: false,
+     *     disabled: false,
+     *     name: 'fecha',
+     *     place_holder: 'Fecha del evento',
+     *     required: true,
+     *     value: null,
+     *     value_hora: false
+     * );
+     * ```
+     *
+     * @example Ejemplo de salida:
+     * ```html
+     * <div class='control-group col-sm-6'>
+     *     <label class='control-label' for='fecha'>Fecha del evento</label>
+     *     <input type='date' name='fecha' value='2025-03-20' class='form-control' required id='fecha' placeholder='Fecha del evento' />
+     * </div>
+     * ```
      */
     public function input_fecha(int $cols, stdClass $row_upd, bool $value_vacio, bool $disabled = false,
                                 string $name ='fecha', string $place_holder = 'Fecha', bool $required = true,
@@ -1496,10 +1524,10 @@ class html_controler
     {
 
         if($cols<=0){
-            return $this->error->error(mensaje: 'Error cold debe ser mayor a 0', data: $cols );
+            return $this->error->error(mensaje: 'Error cold debe ser mayor a 0', data: $cols, es_final: true );
         }
         if($cols>=13){
-            return $this->error->error(mensaje: 'Error cold debe ser menor o igual a  12', data: $cols);
+            return $this->error->error(mensaje: 'Error cold debe ser menor o igual a  12', data: $cols, es_final: true);
         }
 
         $html =$this->directivas->input_fecha_required(disabled: $disabled, name: $name, place_holder: $place_holder,
